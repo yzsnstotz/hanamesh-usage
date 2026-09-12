@@ -1,0 +1,9 @@
+$ npm run test:mutations
+
+> @hanamesh/dsh-activity@0.1.0-rc.1 test:mutations
+> node tools/mutations.mjs
+
+{"mutation":"T05-unavailable-to-zero","baselineExit":0,"mutantExit":1,"killedBy":"ERR_ASSERTION","evidence":"FIXTURE","site":"lib/core/privacy.js"}
+{"mutation":"X03-reverse-durable-order","baselineExit":0,"mutantExit":1,"killedBy":"ERR_ASSERTION","evidence":"FIXTURE","site":"lib/core/boundary.js"}
+
+EXIT_CODE=0

@@ -1,0 +1,80 @@
+DSH_HOME=/tmp/hm-wave2-activity.6oAWHR
+PROFILE_EXIT=0
+Progress: resolved 0, reused 0, downloaded 1, added 0
+ WARN  Issues with peer dependencies found
+.
+└─┬ @hanamesh/dsh-agent-registry 0.1.0-rc.2
+  ├── ✕ missing peer @deepseek-ai/cordis@^4.0.2
+  ├── ✕ missing peer @deepseek-ai/dsh-agent@^0.1.5-alpha.1
+  ├── ✕ missing peer @deepseek-ai/dsh-brand@^0.1.5-alpha.1
+  ├── ✕ missing peer @deepseek-ai/dsh-llm@^0.1.5-alpha.1
+  ├── ✕ missing peer @deepseek-ai/dsh-scope@^0.1.5-alpha.1
+  ├── ✕ missing peer @deepseek-ai/dsh-session@^0.1.5-alpha.1
+  ├── ✕ missing peer @deepseek-ai/dsh-session-persistence@^0.1.5-alpha.1
+  ├── ✕ missing peer @deepseek-ai/dsh-storage-domain@^0.1.5-alpha.1
+  └── ✕ missing peer @deepseek-ai/schemastery@^3.18.2
+Peer dependencies that should be installed:
+  @deepseek-ai/cordis@^4.0.2
+  @deepseek-ai/dsh-agent@^0.1.5-alpha.1
+  @deepseek-ai/dsh-brand@^0.1.5-alpha.1
+  @deepseek-ai/dsh-llm@^0.1.5-alpha.1
+  @deepseek-ai/dsh-scope@^0.1.5-alpha.1
+  @deepseek-ai/dsh-session-persistence@^0.1.5-alpha.1
+  @deepseek-ai/dsh-session@^0.1.5-alpha.1
+  @deepseek-ai/dsh-storage-domain@^0.1.5-alpha.1
+  @deepseek-ai/schemastery@^3.18.2
+
+dependencies:
++ @hanamesh/dsh-agent-registry file:/Users/yzliu/work/projects/hanamesh/hanamesh-plugin-runtime-registry/artifacts/hanamesh-dsh-agent-registry-0.1.0-rc.2.tgz
+
+Packages: +2
+++
+Progress: resolved 2, reused 1, downloaded 1, added 2, done
+Done in 349ms using pnpm v10.33.0
+dsh: warning: @hanamesh/dsh-agent-registry declares no dsh.bundle — installed as a plain dependency, not a profile layer (a later update that gains one activates it automatically)
+REGISTRY_ADD_EXIT=0
+Progress: resolved 0, reused 1, downloaded 0, added 0
+ WARN  Issues with peer dependencies found
+.
+├─┬ @hanamesh/dsh-agent-registry 0.1.0-rc.2
+│ ├── ✕ missing peer @deepseek-ai/cordis@^4.0.2
+│ ├── ✕ missing peer @deepseek-ai/dsh-agent@^0.1.5-alpha.1
+│ ├── ✕ missing peer @deepseek-ai/dsh-brand@^0.1.5-alpha.1
+│ ├── ✕ missing peer @deepseek-ai/dsh-llm@^0.1.5-alpha.1
+│ ├── ✕ missing peer @deepseek-ai/dsh-scope@^0.1.5-alpha.1
+│ ├── ✕ missing peer @deepseek-ai/dsh-session@^0.1.5-alpha.1
+│ ├── ✕ missing peer @deepseek-ai/dsh-session-persistence@^0.1.5-alpha.1
+│ ├── ✕ missing peer @deepseek-ai/dsh-storage-domain@^0.1.5-alpha.1
+│ └── ✕ missing peer @deepseek-ai/schemastery@^3.18.2
+└─┬ @hanamesh/dsh-activity 0.1.0-rc.1
+  ├── ✕ missing peer @deepseek-ai/cordis@4.0.2
+  ├── ✕ missing peer @deepseek-ai/dsh-agent@0.1.5-alpha.1
+  ├── ✕ missing peer @deepseek-ai/dsh-llm@0.1.5-alpha.1
+  ├── ✕ missing peer @deepseek-ai/dsh-session@0.1.5-alpha.1
+  ├── ✕ missing peer @deepseek-ai/dsh-session-persistence@0.1.5-alpha.1
+  ├── ✕ missing peer @deepseek-ai/dsh-storage-domain@0.1.5-alpha.1
+  ├── ✕ missing peer @deepseek-ai/dsh-storage@0.1.5-alpha.1
+  └── ✕ missing peer @deepseek-ai/dsh-attachment@0.1.5-alpha.1
+✕ Conflicting peer dependencies:
+  @deepseek-ai/dsh-agent
+  @deepseek-ai/dsh-llm
+  @deepseek-ai/dsh-session
+  @deepseek-ai/dsh-session-persistence
+  @deepseek-ai/dsh-storage-domain
+Peer dependencies that should be installed:
+  @deepseek-ai/cordis@4.0.2
+  @deepseek-ai/dsh-attachment@0.1.5-alpha.1
+  @deepseek-ai/dsh-brand@^0.1.5-alpha.1
+  @deepseek-ai/dsh-scope@^0.1.5-alpha.1
+  @deepseek-ai/dsh-storage@0.1.5-alpha.1
+  @deepseek-ai/schemastery@^3.18.2
+
+dependencies:
++ @hanamesh/dsh-activity file:/Users/yzliu/work/projects/hanamesh/hanamesh-plugin-activity/artifacts/hanamesh-dsh-activity-0.1.0-rc.1.tgz
+
+Packages: +1
++
+Progress: resolved 3, reused 1, downloaded 1, added 1, done
+Done in 232ms using pnpm v10.33.0
+dsh: warning: @hanamesh/dsh-activity declares no dsh.bundle — installed as a plain dependency, not a profile layer (a later update that gains one activates it automatically)
+ACTIVITY_ADD_EXIT=0

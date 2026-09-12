@@ -1,0 +1,76 @@
+$ npm run preflight:host
+
+> @hanamesh/dsh-activity@0.1.0-rc.1 preflight:host
+> node tools/preflight.mjs
+
+{
+  "observedAt": "2026-09-12T22:48:09.970Z",
+  "checks": {
+    "node": {
+      "target": "v24.13.1",
+      "actual": "v24.13.1"
+    },
+    "pnpm": {
+      "target": "10.33.0",
+      "actual": "10.33.0"
+    },
+    "typescript": {
+      "target": "Version 5.9.3",
+      "actual": "Version 5.9.3"
+    },
+    "platform": {
+      "target": "darwin-arm64",
+      "actual": "darwin-arm64"
+    },
+    "@deepseek-ai/cordis": {
+      "target": "4.0.2",
+      "actual": null
+    },
+    "@deepseek-ai/dsh-agent": {
+      "target": "0.1.5-alpha.1",
+      "actual": null
+    },
+    "@deepseek-ai/dsh-session": {
+      "target": "0.1.5-alpha.1",
+      "actual": null
+    },
+    "@deepseek-ai/dsh-session-persistence": {
+      "target": "0.1.5-alpha.1",
+      "actual": null
+    },
+    "@deepseek-ai/dsh-storage": {
+      "target": "0.1.5-alpha.1",
+      "actual": null
+    },
+    "@deepseek-ai/dsh-storage-domain": {
+      "target": "0.1.5-alpha.1",
+      "actual": null
+    },
+    "@deepseek-ai/dsh-client-connection": {
+      "target": "0.1.5-alpha.1",
+      "actual": null
+    },
+    "@hanamesh/dsh-agent-registry": {
+      "target": "0.1.0-rc.2",
+      "actual": null
+    },
+    "zod": {
+      "target": "4.5.4",
+      "actual": null
+    },
+    "@deepseek-ai/dsh-attachment": {
+      "target": "0.1.5-alpha.1",
+      "actual": null
+    },
+    "@deepseek-ai/dsh-llm": {
+      "target": "0.1.5-alpha.1",
+      "actual": null
+    }
+  },
+  "dshCLI": "0.1.5-alpha.1",
+  "isolatedDSHHomeProvided": true,
+  "scope": "READ_ONLY_PREFLIGHT_NO_RUNTIME_START_NO_NETWORK_NO_PERSONAL_STATE"
+}
+PRECONDITIONS_NOT_MET: pinned host/toolchain or isolated DSH_HOME unavailable; no host tests attempted.
+
+EXIT_CODE=2
