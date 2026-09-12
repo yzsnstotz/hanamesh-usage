@@ -1,0 +1,2 @@
+{"mutation":"T05-unavailable-to-zero","baselineExit":0,"mutantExit":1,"killedBy":"ERR_ASSERTION","evidence":"FIXTURE","site":"lib/core/privacy.js"}
+{"mutation":"X03-reverse-durable-order","baselineExit":0,"mutantExit":1,"killedBy":"ERR_ASSERTION","evidence":"FIXTURE","site":"lib/core/boundary.js"}

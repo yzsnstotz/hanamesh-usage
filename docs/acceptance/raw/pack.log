@@ -1,0 +1,156 @@
+[
+  {
+    "id": "@hanamesh/dsh-activity@0.1.0-rc.1",
+    "name": "@hanamesh/dsh-activity",
+    "version": "0.1.0-rc.1",
+    "size": 20484,
+    "unpackedSize": 58390,
+    "shasum": "de74644acaabb6859ad5efed4ee6e51abdc32bcd",
+    "integrity": "sha512-Oua0ijYl/G4tWSwbQQPn4zYSRHZ54JEioy+5BuDX6HYU8O84Hm9ylfsfUdV7ouShNiWoR/0mpWXluEdwcZLbSA==",
+    "filename": "hanamesh-dsh-activity-0.1.0-rc.1.tgz",
+    "files": [
+      {
+        "path": "LICENSE",
+        "size": 76,
+        "mode": 420
+      },
+      {
+        "path": "README.md",
+        "size": 10012,
+        "mode": 420
+      },
+      {
+        "path": "consistency.json",
+        "size": 858,
+        "mode": 420
+      },
+      {
+        "path": "lib/core/boundary.d.ts",
+        "size": 221,
+        "mode": 420
+      },
+      {
+        "path": "lib/core/boundary.js",
+        "size": 235,
+        "mode": 420
+      },
+      {
+        "path": "lib/core/index.d.ts",
+        "size": 233,
+        "mode": 420
+      },
+      {
+        "path": "lib/core/index.js",
+        "size": 233,
+        "mode": 420
+      },
+      {
+        "path": "lib/core/privacy.d.ts",
+        "size": 1061,
+        "mode": 420
+      },
+      {
+        "path": "lib/core/privacy.js",
+        "size": 3659,
+        "mode": 420
+      },
+      {
+        "path": "lib/core/project.d.ts",
+        "size": 475,
+        "mode": 420
+      },
+      {
+        "path": "lib/core/project.js",
+        "size": 5222,
+        "mode": 420
+      },
+      {
+        "path": "lib/core/query.d.ts",
+        "size": 505,
+        "mode": 420
+      },
+      {
+        "path": "lib/core/query.js",
+        "size": 4154,
+        "mode": 420
+      },
+      {
+        "path": "lib/core/store.d.ts",
+        "size": 578,
+        "mode": 420
+      },
+      {
+        "path": "lib/core/store.js",
+        "size": 2513,
+        "mode": 420
+      },
+      {
+        "path": "lib/core/types.d.ts",
+        "size": 4018,
+        "mode": 420
+      },
+      {
+        "path": "lib/core/types.js",
+        "size": 11,
+        "mode": 420
+      },
+      {
+        "path": "lib/core/validate.d.ts",
+        "size": 296,
+        "mode": 420
+      },
+      {
+        "path": "lib/core/validate.js",
+        "size": 4715,
+        "mode": 420
+      },
+      {
+        "path": "lib/core/view.d.ts",
+        "size": 272,
+        "mode": 420
+      },
+      {
+        "path": "lib/core/view.js",
+        "size": 2710,
+        "mode": 420
+      },
+      {
+        "path": "lib/host/contracts.d.ts",
+        "size": 515,
+        "mode": 420
+      },
+      {
+        "path": "lib/host/index.d.ts",
+        "size": 445,
+        "mode": 420
+      },
+      {
+        "path": "lib/host/index.js",
+        "size": 1982,
+        "mode": 420
+      },
+      {
+        "path": "lib/host/mount.js",
+        "size": 7513,
+        "mode": 420
+      },
+      {
+        "path": "lib/host/transport.js",
+        "size": 2903,
+        "mode": 420
+      },
+      {
+        "path": "package.json",
+        "size": 2659,
+        "mode": 420
+      },
+      {
+        "path": "profile/cordis.patch.yml",
+        "size": 316,
+        "mode": 420
+      }
+    ],
+    "entryCount": 28,
+    "bundled": []
+  }
+]

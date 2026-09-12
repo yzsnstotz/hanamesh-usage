@@ -1,0 +1,274 @@
+TAP version 13
+# Subtest: X01 SOURCE: declaration schema valid and all stateful groups/boundaries enumerated
+ok 1 - X01 SOURCE: declaration schema valid and all stateful groups/boundaries enumerated
+  ---
+  duration_ms: 0.739395
+  type: 'test'
+  ...
+# Subtest: X01 schema rejects absent reasons, one-sided boundary and invalid safe side
+ok 2 - X01 schema rejects absent reasons, one-sided boundary and invalid safe side
+  ---
+  duration_ms: 1.814065
+  type: 'test'
+  ...
+# Subtest: T03 FIXTURE: complete FR-10 schema, source tuple and pins
+ok 3 - T03 FIXTURE: complete FR-10 schema, source tuple and pins
+  ---
+  duration_ms: 2.112476
+  type: 'test'
+  ...
+# Subtest: T04 FIXTURE: unknown is null with reason, NOT zero
+ok 4 - T04 FIXTURE: unknown is null with reason, NOT zero
+  ---
+  duration_ms: 1.150925
+  type: 'test'
+  ...
+# Subtest: T04 FIXTURE: actual normalized zero stays reported, empty bucket stays null
+ok 5 - T04 FIXTURE: actual normalized zero stays reported, empty bucket stays null
+  ---
+  duration_ms: 0.370409
+  type: 'test'
+  ...
+# Subtest: T06 FIXTURE: reported and estimated NEVER add together
+ok 6 - T06 FIXTURE: reported and estimated NEVER add together
+  ---
+  duration_ms: 6.529746
+  type: 'test'
+  ...
+# Subtest: T07 FIXTURE: terminal result vocabulary preserves failures and interruptions
+ok 7 - T07 FIXTURE: terminal result vocabulary preserves failures and interruptions
+  ---
+  duration_ms: 0.614597
+  type: 'test'
+  ...
+# Subtest: missing TokenUsage contract never infers numeric fields or totals
+ok 8 - missing TokenUsage contract never infers numeric fields or totals
+  ---
+  duration_ms: 0.139831
+  type: 'test'
+  ...
+# Subtest: attribution reads immutable binding, invalid binding ids fail closed
+ok 9 - attribution reads immutable binding, invalid binding ids fail closed
+  ---
+  duration_ms: 0.505763
+  type: 'test'
+  ...
+# Subtest: fork prefix is not a new execution; source identities are not synthesized
+ok 10 - fork prefix is not a new execution; source identities are not synthesized
+  ---
+  duration_ms: 0.17961
+  type: 'test'
+  ...
+# Subtest: route change stays unavailable instead of attributing to last model
+ok 11 - route change stays unavailable instead of attributing to last model
+  ---
+  duration_ms: 0.647406
+  type: 'test'
+  ...
+# Subtest: no start time never infers wall clock or creates duration
+ok 12 - no start time never infers wall clock or creates duration
+  ---
+  duration_ms: 0.330378
+  type: 'test'
+  ...
+# Subtest: T08 FIXTURE: concurrent replay has one publication, restart still dedups
+ok 13 - T08 FIXTURE: concurrent replay has one publication, restart still dedups
+  ---
+  duration_ms: 5.122404
+  type: 'test'
+  ...
+# Subtest: concurrent different source turns retain both, no lost write
+ok 14 - concurrent different source turns retain both, no lost write
+  ---
+  duration_ms: 0.474746
+  type: 'test'
+  ...
+# Subtest: failed durable write leaves old snapshot and can be retried
+ok 15 - failed durable write leaves old snapshot and can be retried
+  ---
+  duration_ms: 0.520535
+  type: 'test'
+  ...
+# Subtest: immutable input and query results cannot mutate authoritative snapshot
+ok 16 - immutable input and query results cannot mutate authoritative snapshot
+  ---
+  duration_ms: 0.334394
+  type: 'test'
+  ...
+# Subtest: identity conflict refuses rewrite of terminal fact
+ok 17 - identity conflict refuses rewrite of terminal fact
+  ---
+  duration_ms: 0.364699
+  type: 'test'
+  ...
+# Subtest: capacity refusal does not evict dedup history
+ok 18 - capacity refusal does not evict dedup history
+  ---
+  duration_ms: 0.404289
+  type: 'test'
+  ...
+# Subtest: closing denies new writes and new queries
+ok 19 - closing denies new writes and new queries
+  ---
+  duration_ms: 0.342456
+  type: 'test'
+  ...
+# Subtest: filters and stable pagination aggregate all matched rows
+ok 20 - filters and stable pagination aggregate all matched rows
+  ---
+  duration_ms: 0.535738
+  type: 'test'
+  ...
+# Subtest: invalid measurements are not treated as zero; overflow is explicit
+ok 21 - invalid measurements are not treated as zero; overflow is explicit
+  ---
+  duration_ms: 0.181234
+  type: 'test'
+  ...
+# Subtest: corrupt/unknown fields and duplicate stored identities fail closed
+ok 22 - corrupt/unknown fields and duplicate stored identities fail closed
+  ---
+  duration_ms: 0.518591
+  type: 'test'
+  ...
+# Subtest: remote four-state labels remain distinct and prototype keys are refused
+ok 23 - remote four-state labels remain distinct and prototype keys are refused
+  ---
+  duration_ms: 0.119069
+  type: 'test'
+  ...
+# Subtest: T12 FIXTURE: live source flush/read must precede sidecar write
+ok 24 - T12 FIXTURE: live source flush/read must precede sidecar write
+  ---
+  duration_ms: 3.953401
+  type: 'test'
+  ...
+# Subtest: live listener absence never creates a falsely durable summary
+ok 25 - live listener absence never creates a falsely durable summary
+  ---
+  duration_ms: 0.705273
+  type: 'test'
+  ...
+# Subtest: source read missing terminal refuses publication
+ok 26 - source read missing terminal refuses publication
+  ---
+  duration_ms: 0.60976
+  type: 'test'
+  ...
+# Subtest: source error produces only bounded code diagnostics, not raw credentials
+ok 27 - source error produces only bounded code diagnostics, not raw credentials
+  ---
+  duration_ms: 0.542919
+  type: 'test'
+  ...
+# Subtest: cold replay is read-only, flushes source and deduplicates second reconciliation
+ok 28 - cold replay is read-only, flushes source and deduplicates second reconciliation
+  ---
+  duration_ms: 1.148171
+  type: 'test'
+  ...
+# Subtest: DSH session without Registry binding is not mislabeled as Registry execution
+ok 29 - DSH session without Registry binding is not mislabeled as Registry execution
+  ---
+  duration_ms: 0.260353
+  type: 'test'
+  ...
+# Subtest: fork inherited end is skipped on both live and cold paths
+ok 30 - fork inherited end is skipped on both live and cold paths
+  ---
+  duration_ms: 0.593746
+  type: 'test'
+  ...
+# Subtest: T08 FIXTURE: replayed session/event notifications do not inflate counts
+ok 31 - T08 FIXTURE: replayed session/event notifications do not inflate counts
+  ---
+  duration_ms: 1.656378
+  type: 'test'
+  ...
+# Subtest: export defaults disabled; enabling local policy exposes only projected record
+ok 32 - export defaults disabled; enabling local policy exposes only projected record
+  ---
+  duration_ms: 2.007978
+  type: 'test'
+  ...
+# Subtest: T11 FIXTURE ONLY: no connection/cloud module is required for local service
+ok 33 - T11 FIXTURE ONLY: no connection/cloud module is required for local service
+  ---
+  duration_ms: 0.834037
+  type: 'test'
+  ...
+# Subtest: T09 FIXTURE ONLY: prompt, paths, files, full result and credentials never enter summary
+ok 34 - T09 FIXTURE ONLY: prompt, paths, files, full result and credentials never enter summary
+  ---
+  duration_ms: 3.599328
+  type: 'test'
+  ...
+# Subtest: metadata guards reject likely secrets, URLs, personal paths and HTML
+ok 35 - metadata guards reject likely secrets, URLs, personal paths and HTML
+  ---
+  duration_ms: 0.164267
+  type: 'test'
+  ...
+# Subtest: provider/model unsafe text is redacted, not truncated into an apparently safe value
+ok 36 - provider/model unsafe text is redacted, not truncated into an apparently safe value
+  ---
+  duration_ms: 0.203407
+  type: 'test'
+  ...
+# Subtest: export allowlist drops future local-only properties and untrusted eventRef
+ok 37 - export allowlist drops future local-only properties and untrusted eventRef
+  ---
+  duration_ms: 0.176456
+  type: 'test'
+  ...
+# Subtest: HTML escapes unsafe content instead of executable markup
+ok 38 - HTML escapes unsafe content instead of executable markup
+  ---
+  duration_ms: 0.560435
+  type: 'test'
+  ...
+# Subtest: T10 SOURCE/SCHEMA: no local economic assertions and reserved attestation fields stay null
+ok 39 - T10 SOURCE/SCHEMA: no local economic assertions and reserved attestation fields stay null
+  ---
+  duration_ms: 0.198459
+  type: 'test'
+  ...
+# Subtest: authenticated exact route registry only; lifecycle removes all routes
+ok 40 - authenticated exact route registry only; lifecycle removes all routes
+  ---
+  duration_ms: 0.920167
+  type: 'test'
+  ...
+# Subtest: query API uses no-store headers; HTML has distinct unavailable label
+ok 41 - query API uses no-store headers; HTML has distinct unavailable label
+  ---
+  duration_ms: 22.268898
+  type: 'test'
+  ...
+# Subtest: unknown, repeated, nonnumeric or out-of-range parameters are rejected
+ok 42 - unknown, repeated, nonnumeric or out-of-range parameters are rejected
+  ---
+  duration_ms: 1.912754
+  type: 'test'
+  ...
+# Subtest: export is POST only and opt-in
+ok 43 - export is POST only and opt-in
+  ---
+  duration_ms: 0.9088
+  type: 'test'
+  ...
+# Subtest: transport unexpected errors never serialize original Error
+ok 44 - transport unexpected errors never serialize original Error
+  ---
+  duration_ms: 0.90204
+  type: 'test'
+  ...
+1..44
+# tests 44
+# suites 0
+# pass 44
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 162.25574

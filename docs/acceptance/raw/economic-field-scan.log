@@ -1,0 +1,2 @@
+$ grep -RInE economic field identifiers src
+grep_exit=1 (1 means no matches)

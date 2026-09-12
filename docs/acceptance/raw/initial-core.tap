@@ -1,0 +1,172 @@
+TAP version 13
+# Subtest: T03 FIXTURE: complete FR-10 schema, source tuple and pins
+ok 1 - T03 FIXTURE: complete FR-10 schema, source tuple and pins
+  ---
+  duration_ms: 2.451207
+  type: 'test'
+  ...
+# Subtest: T04 FIXTURE: unknown is null with reason, NOT zero
+ok 2 - T04 FIXTURE: unknown is null with reason, NOT zero
+  ---
+  duration_ms: 1.383036
+  type: 'test'
+  ...
+# Subtest: T04 FIXTURE: actual normalized zero stays reported, empty bucket stays null
+ok 3 - T04 FIXTURE: actual normalized zero stays reported, empty bucket stays null
+  ---
+  duration_ms: 0.430719
+  type: 'test'
+  ...
+# Subtest: T06 FIXTURE: reported and estimated NEVER add together
+ok 4 - T06 FIXTURE: reported and estimated NEVER add together
+  ---
+  duration_ms: 6.875219
+  type: 'test'
+  ...
+# Subtest: T07 FIXTURE: terminal result vocabulary preserves failures and interruptions
+ok 5 - T07 FIXTURE: terminal result vocabulary preserves failures and interruptions
+  ---
+  duration_ms: 0.613806
+  type: 'test'
+  ...
+# Subtest: missing TokenUsage contract never infers numeric fields or totals
+ok 6 - missing TokenUsage contract never infers numeric fields or totals
+  ---
+  duration_ms: 0.223327
+  type: 'test'
+  ...
+# Subtest: attribution reads immutable binding, invalid binding ids fail closed
+ok 7 - attribution reads immutable binding, invalid binding ids fail closed
+  ---
+  duration_ms: 0.51742
+  type: 'test'
+  ...
+# Subtest: fork prefix is not a new execution; source identities are not synthesized
+ok 8 - fork prefix is not a new execution; source identities are not synthesized
+  ---
+  duration_ms: 0.211939
+  type: 'test'
+  ...
+# Subtest: route change stays unavailable instead of attributing to last model
+ok 9 - route change stays unavailable instead of attributing to last model
+  ---
+  duration_ms: 0.330939
+  type: 'test'
+  ...
+# Subtest: no start time never infers wall clock or creates duration
+ok 10 - no start time never infers wall clock or creates duration
+  ---
+  duration_ms: 0.440314
+  type: 'test'
+  ...
+# Subtest: T08 FIXTURE: concurrent replay has one publication, restart still dedups
+ok 11 - T08 FIXTURE: concurrent replay has one publication, restart still dedups
+  ---
+  duration_ms: 5.851376
+  type: 'test'
+  ...
+# Subtest: concurrent different source turns retain both, no lost write
+ok 12 - concurrent different source turns retain both, no lost write
+  ---
+  duration_ms: 0.627386
+  type: 'test'
+  ...
+# Subtest: failed durable write leaves old snapshot and can be retried
+ok 13 - failed durable write leaves old snapshot and can be retried
+  ---
+  duration_ms: 0.580776
+  type: 'test'
+  ...
+# Subtest: immutable input and query results cannot mutate authoritative snapshot
+ok 14 - immutable input and query results cannot mutate authoritative snapshot
+  ---
+  duration_ms: 0.380243
+  type: 'test'
+  ...
+# Subtest: identity conflict refuses rewrite of terminal fact
+ok 15 - identity conflict refuses rewrite of terminal fact
+  ---
+  duration_ms: 0.425692
+  type: 'test'
+  ...
+# Subtest: capacity refusal does not evict dedup history
+ok 16 - capacity refusal does not evict dedup history
+  ---
+  duration_ms: 0.37136
+  type: 'test'
+  ...
+# Subtest: closing denies new writes and new queries
+ok 17 - closing denies new writes and new queries
+  ---
+  duration_ms: 0.335646
+  type: 'test'
+  ...
+# Subtest: filters and stable pagination aggregate all matched rows
+ok 18 - filters and stable pagination aggregate all matched rows
+  ---
+  duration_ms: 0.543539
+  type: 'test'
+  ...
+# Subtest: invalid measurements are not treated as zero; overflow is explicit
+ok 19 - invalid measurements are not treated as zero; overflow is explicit
+  ---
+  duration_ms: 0.137948
+  type: 'test'
+  ...
+# Subtest: corrupt/unknown fields and duplicate stored identities fail closed
+ok 20 - corrupt/unknown fields and duplicate stored identities fail closed
+  ---
+  duration_ms: 0.567335
+  type: 'test'
+  ...
+# Subtest: remote four-state labels remain distinct and prototype keys are refused
+ok 21 - remote four-state labels remain distinct and prototype keys are refused
+  ---
+  duration_ms: 0.121503
+  type: 'test'
+  ...
+# Subtest: T09 FIXTURE ONLY: prompt, paths, files, full result and credentials never enter summary
+ok 22 - T09 FIXTURE ONLY: prompt, paths, files, full result and credentials never enter summary
+  ---
+  duration_ms: 3.590215
+  type: 'test'
+  ...
+# Subtest: metadata guards reject likely secrets, URLs, personal paths and HTML
+ok 23 - metadata guards reject likely secrets, URLs, personal paths and HTML
+  ---
+  duration_ms: 0.208424
+  type: 'test'
+  ...
+# Subtest: provider/model unsafe text is redacted, not truncated into an apparently safe value
+ok 24 - provider/model unsafe text is redacted, not truncated into an apparently safe value
+  ---
+  duration_ms: 0.16558
+  type: 'test'
+  ...
+# Subtest: export allowlist drops future local-only properties and untrusted eventRef
+ok 25 - export allowlist drops future local-only properties and untrusted eventRef
+  ---
+  duration_ms: 0.224238
+  type: 'test'
+  ...
+# Subtest: HTML escapes unsafe content instead of executable markup
+ok 26 - HTML escapes unsafe content instead of executable markup
+  ---
+  duration_ms: 0.541146
+  type: 'test'
+  ...
+# Subtest: T10 SOURCE/SCHEMA: no local economic assertions and reserved attestation fields stay null
+ok 27 - T10 SOURCE/SCHEMA: no local economic assertions and reserved attestation fields stay null
+  ---
+  duration_ms: 0.201113
+  type: 'test'
+  ...
+1..27
+# tests 27
+# suites 0
+# pass 27
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 90.328325

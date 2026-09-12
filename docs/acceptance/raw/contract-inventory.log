@@ -1,0 +1,9 @@
+Only dispatch-supplied public declaration files were searched.
+docs/contracts/host-api/dsh-agent-loop/types/assistant-stream.d.ts:2:import { LlmAttemptId, type ContentBlock, type FinishReason, type ReplayEnvelope, type StreamChunk, type TokenUsage } from '@deepseek-ai/dsh-llm';
+docs/contracts/host-api/dsh-agent-loop/types/assistant-stream.d.ts:47:    get usage(): TokenUsage | undefined;
+docs/contracts/host-api/dsh-session/types/types.d.ts:2:import type { AssistantMessage, AssistantStreamRecord, ToolCallId, LlmCallConfig, LlmCallConfigAdapterDefaults, LlmFailure, SystemMessage, SystemPromptUpdate, TokenUsage, ToolResultMessage, ToolSchema, UserMessage } from '@deepseek-ai/dsh-llm';
+docs/contracts/host-api/dsh-session/types/types.d.ts:315:        usage?: TokenUsage;
+
+Search for declaration definitions:
+docs/contracts/host-api/dsh-agent-loop/types/assistant-stream.d.ts:2:import { LlmAttemptId, type ContentBlock, type FinishReason, type ReplayEnvelope, type StreamChunk, type TokenUsage } from '@deepseek-ai/dsh-llm';
+No definition matches. This does not establish anything about files outside this dispatch.

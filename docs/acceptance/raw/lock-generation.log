@@ -1,0 +1,7 @@
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: '@hanamesh/dsh-activity@0.1.0-rc.1',
+npm warn EBADENGINE   required: { node: '>=24.13.1 <25' },
+npm warn EBADENGINE   current: { node: 'v22.16.0', npm: '10.9.2' }
+npm warn EBADENGINE }
+
+up to date in 157ms

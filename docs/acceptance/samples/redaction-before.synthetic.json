@@ -1,0 +1,62 @@
+{
+  "evidence": "FIXTURE_ONLY_ALL_INPUTS_SYNTHETIC",
+  "input": {
+    "sessionId": "fixture-session-1",
+    "inheritedEventCount": 0,
+    "events": [
+      {
+        "type": "turn/start",
+        "seq": 0,
+        "time": 1000,
+        "data": {
+          "turn": 0
+        }
+      },
+      {
+        "type": "request/context",
+        "seq": 1,
+        "time": 1010,
+        "data": {
+          "provider": "fixture-provider",
+          "model": "fixture-model"
+        }
+      },
+      {
+        "type": "user/message",
+        "seq": 2,
+        "time": 1020,
+        "data": {
+          "turn": 0,
+          "content": "SYNTHETIC_PROMPT_NOT_REAL",
+          "files": [
+            "SYNTHETIC_FILE_NOT_REAL"
+          ]
+        }
+      },
+      {
+        "type": "turn/end",
+        "seq": 3,
+        "time": 1100,
+        "data": {
+          "turn": 0,
+          "reason": {
+            "kind": "error",
+            "error": {
+              "message": "SYNTHETIC_FULL_RESULT_NOT_REAL",
+              "apiKey": "sk-SYNTHETIC_NOT_A_REAL_CREDENTIAL"
+            }
+          }
+        }
+      }
+    ],
+    "binding": {
+      "sessionId": "fixture-session-1",
+      "runtime": "fixture-native",
+      "driverVersion": "0.1.5-alpha.1",
+      "protocolVersion": "fixture-v1",
+      "workspace": "/home/SYNTHETIC_USER/SYNTHETIC_WORKSPACE",
+      "authRef": "SYNTHETIC_AUTH_NOT_REAL"
+    },
+    "sampleKind": "synthetic"
+  }
+}

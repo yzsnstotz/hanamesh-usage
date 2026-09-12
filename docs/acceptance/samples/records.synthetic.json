@@ -1,0 +1,723 @@
+{
+  "evidence": "FIXTURE_ONLY_NORMALIZED_NUMBERS_NOT_DSH_TOKENUSAGE",
+  "query": {
+    "total": 6,
+    "records": [
+      {
+        "schemaVersion": 1,
+        "eventRef": "[\"fixture-estimated\",\"turn/end\",0]",
+        "execution": {
+          "sessionId": "fixture-estimated",
+          "turn": 0
+        },
+        "executor": {
+          "id": {
+            "state": "reported",
+            "value": "fixture-native",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          },
+          "version": {
+            "state": "reported",
+            "value": "0.1.5-alpha.1",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          },
+          "protocolVersion": {
+            "state": "reported",
+            "value": "fixture-v1",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          }
+        },
+        "lineage": {
+          "parentSession": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          },
+          "parentExecution": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          },
+          "rootExecution": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          }
+        },
+        "provider": {
+          "state": "reported",
+          "value": "fixture-provider",
+          "source": "session.request/context",
+          "rule": "verbatim-safe-metadata-v1"
+        },
+        "model": {
+          "state": "reported",
+          "value": "fixture-model",
+          "source": "session.request/context",
+          "rule": "verbatim-safe-metadata-v1"
+        },
+        "time": {
+          "startedAt": {
+            "state": "reported",
+            "value": 1000,
+            "source": "session.turn/start",
+            "rule": "unix-epoch-ms"
+          },
+          "endedAt": {
+            "state": "reported",
+            "value": 1100,
+            "source": "session.turn/end",
+            "rule": "unix-epoch-ms"
+          }
+        },
+        "result": {
+          "state": "reported",
+          "value": "completed",
+          "source": "session.turn/end",
+          "rule": "dsh-terminal-vocabulary-v1"
+        },
+        "terminalReason": "completed",
+        "error": {
+          "state": "unavailable",
+          "value": null,
+          "reason": "not_applicable"
+        },
+        "usage": {
+          "inputTokens": {
+            "state": "estimated",
+            "value": 3,
+            "source": "synthetic.fixture",
+            "rule": "fixture-normalized-tokens-v1"
+          },
+          "outputTokens": {
+            "state": "estimated",
+            "value": 3,
+            "source": "synthetic.fixture",
+            "rule": "fixture-normalized-tokens-v1"
+          },
+          "totalTokens": {
+            "state": "estimated",
+            "value": 3,
+            "source": "synthetic.fixture",
+            "rule": "fixture-normalized-tokens-v1"
+          }
+        },
+        "provenance": {
+          "source": "registry-session-log",
+          "eventType": "turn/end",
+          "terminalSeq": 2,
+          "registryVersion": "0.1.0-rc.2",
+          "dshVersion": "0.1.5-alpha.1",
+          "sampleKind": "synthetic"
+        },
+        "evidenceCommitment": null,
+        "signature": null,
+        "policyVersion": null,
+        "redactionPolicyVersion": "activity-summary-v1"
+      },
+      {
+        "schemaVersion": 1,
+        "eventRef": "[\"fixture-failed\",\"turn/end\",0]",
+        "execution": {
+          "sessionId": "fixture-failed",
+          "turn": 0
+        },
+        "executor": {
+          "id": {
+            "state": "reported",
+            "value": "fixture-native",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          },
+          "version": {
+            "state": "reported",
+            "value": "0.1.5-alpha.1",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          },
+          "protocolVersion": {
+            "state": "reported",
+            "value": "fixture-v1",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          }
+        },
+        "lineage": {
+          "parentSession": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          },
+          "parentExecution": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          },
+          "rootExecution": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          }
+        },
+        "provider": {
+          "state": "reported",
+          "value": "fixture-provider",
+          "source": "session.request/context",
+          "rule": "verbatim-safe-metadata-v1"
+        },
+        "model": {
+          "state": "reported",
+          "value": "fixture-model",
+          "source": "session.request/context",
+          "rule": "verbatim-safe-metadata-v1"
+        },
+        "time": {
+          "startedAt": {
+            "state": "reported",
+            "value": 1000,
+            "source": "session.turn/start",
+            "rule": "unix-epoch-ms"
+          },
+          "endedAt": {
+            "state": "reported",
+            "value": 1100,
+            "source": "session.turn/end",
+            "rule": "unix-epoch-ms"
+          }
+        },
+        "result": {
+          "state": "reported",
+          "value": "failed",
+          "source": "session.turn/end",
+          "rule": "dsh-terminal-vocabulary-v1"
+        },
+        "terminalReason": "error",
+        "error": {
+          "state": "reported",
+          "value": "runtime_error_details_withheld",
+          "source": "session.turn/end",
+          "rule": "error-content-withheld-v1"
+        },
+        "usage": {
+          "inputTokens": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "usage_not_reported"
+          },
+          "outputTokens": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "usage_not_reported"
+          },
+          "totalTokens": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "usage_not_reported"
+          }
+        },
+        "provenance": {
+          "source": "registry-session-log",
+          "eventType": "turn/end",
+          "terminalSeq": 2,
+          "registryVersion": "0.1.0-rc.2",
+          "dshVersion": "0.1.5-alpha.1",
+          "sampleKind": "synthetic"
+        },
+        "evidenceCommitment": null,
+        "signature": null,
+        "policyVersion": null,
+        "redactionPolicyVersion": "activity-summary-v1"
+      },
+      {
+        "schemaVersion": 1,
+        "eventRef": "[\"fixture-interrupted\",\"turn/end\",0]",
+        "execution": {
+          "sessionId": "fixture-interrupted",
+          "turn": 0
+        },
+        "executor": {
+          "id": {
+            "state": "reported",
+            "value": "fixture-native",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          },
+          "version": {
+            "state": "reported",
+            "value": "0.1.5-alpha.1",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          },
+          "protocolVersion": {
+            "state": "reported",
+            "value": "fixture-v1",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          }
+        },
+        "lineage": {
+          "parentSession": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          },
+          "parentExecution": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          },
+          "rootExecution": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          }
+        },
+        "provider": {
+          "state": "reported",
+          "value": "fixture-provider",
+          "source": "session.request/context",
+          "rule": "verbatim-safe-metadata-v1"
+        },
+        "model": {
+          "state": "reported",
+          "value": "fixture-model",
+          "source": "session.request/context",
+          "rule": "verbatim-safe-metadata-v1"
+        },
+        "time": {
+          "startedAt": {
+            "state": "reported",
+            "value": 1000,
+            "source": "session.turn/start",
+            "rule": "unix-epoch-ms"
+          },
+          "endedAt": {
+            "state": "reported",
+            "value": 1100,
+            "source": "session.turn/end",
+            "rule": "unix-epoch-ms"
+          }
+        },
+        "result": {
+          "state": "reported",
+          "value": "interrupted",
+          "source": "session.turn/end",
+          "rule": "dsh-terminal-vocabulary-v1"
+        },
+        "terminalReason": "aborted",
+        "error": {
+          "state": "unavailable",
+          "value": null,
+          "reason": "not_applicable"
+        },
+        "usage": {
+          "inputTokens": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "usage_not_reported"
+          },
+          "outputTokens": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "usage_not_reported"
+          },
+          "totalTokens": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "usage_not_reported"
+          }
+        },
+        "provenance": {
+          "source": "registry-session-log",
+          "eventType": "turn/end",
+          "terminalSeq": 2,
+          "registryVersion": "0.1.0-rc.2",
+          "dshVersion": "0.1.5-alpha.1",
+          "sampleKind": "synthetic"
+        },
+        "evidenceCommitment": null,
+        "signature": null,
+        "policyVersion": null,
+        "redactionPolicyVersion": "activity-summary-v1"
+      },
+      {
+        "schemaVersion": 1,
+        "eventRef": "[\"fixture-reported\",\"turn/end\",0]",
+        "execution": {
+          "sessionId": "fixture-reported",
+          "turn": 0
+        },
+        "executor": {
+          "id": {
+            "state": "reported",
+            "value": "fixture-native",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          },
+          "version": {
+            "state": "reported",
+            "value": "0.1.5-alpha.1",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          },
+          "protocolVersion": {
+            "state": "reported",
+            "value": "fixture-v1",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          }
+        },
+        "lineage": {
+          "parentSession": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          },
+          "parentExecution": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          },
+          "rootExecution": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          }
+        },
+        "provider": {
+          "state": "reported",
+          "value": "fixture-provider",
+          "source": "session.request/context",
+          "rule": "verbatim-safe-metadata-v1"
+        },
+        "model": {
+          "state": "reported",
+          "value": "fixture-model",
+          "source": "session.request/context",
+          "rule": "verbatim-safe-metadata-v1"
+        },
+        "time": {
+          "startedAt": {
+            "state": "reported",
+            "value": 1000,
+            "source": "session.turn/start",
+            "rule": "unix-epoch-ms"
+          },
+          "endedAt": {
+            "state": "reported",
+            "value": 1100,
+            "source": "session.turn/end",
+            "rule": "unix-epoch-ms"
+          }
+        },
+        "result": {
+          "state": "reported",
+          "value": "completed",
+          "source": "session.turn/end",
+          "rule": "dsh-terminal-vocabulary-v1"
+        },
+        "terminalReason": "completed",
+        "error": {
+          "state": "unavailable",
+          "value": null,
+          "reason": "not_applicable"
+        },
+        "usage": {
+          "inputTokens": {
+            "state": "reported",
+            "value": 7,
+            "source": "synthetic.fixture",
+            "rule": "fixture-normalized-tokens-v1"
+          },
+          "outputTokens": {
+            "state": "reported",
+            "value": 7,
+            "source": "synthetic.fixture",
+            "rule": "fixture-normalized-tokens-v1"
+          },
+          "totalTokens": {
+            "state": "reported",
+            "value": 7,
+            "source": "synthetic.fixture",
+            "rule": "fixture-normalized-tokens-v1"
+          }
+        },
+        "provenance": {
+          "source": "registry-session-log",
+          "eventType": "turn/end",
+          "terminalSeq": 2,
+          "registryVersion": "0.1.0-rc.2",
+          "dshVersion": "0.1.5-alpha.1",
+          "sampleKind": "synthetic"
+        },
+        "evidenceCommitment": null,
+        "signature": null,
+        "policyVersion": null,
+        "redactionPolicyVersion": "activity-summary-v1"
+      },
+      {
+        "schemaVersion": 1,
+        "eventRef": "[\"fixture-unknown\",\"turn/end\",0]",
+        "execution": {
+          "sessionId": "fixture-unknown",
+          "turn": 0
+        },
+        "executor": {
+          "id": {
+            "state": "reported",
+            "value": "fixture-native",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          },
+          "version": {
+            "state": "reported",
+            "value": "0.1.5-alpha.1",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          },
+          "protocolVersion": {
+            "state": "reported",
+            "value": "fixture-v1",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          }
+        },
+        "lineage": {
+          "parentSession": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          },
+          "parentExecution": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          },
+          "rootExecution": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          }
+        },
+        "provider": {
+          "state": "unavailable",
+          "value": null,
+          "reason": "route_not_observed"
+        },
+        "model": {
+          "state": "unavailable",
+          "value": null,
+          "reason": "route_not_observed"
+        },
+        "time": {
+          "startedAt": {
+            "state": "reported",
+            "value": 1000,
+            "source": "session.turn/start",
+            "rule": "unix-epoch-ms"
+          },
+          "endedAt": {
+            "state": "reported",
+            "value": 1100,
+            "source": "session.turn/end",
+            "rule": "unix-epoch-ms"
+          }
+        },
+        "result": {
+          "state": "reported",
+          "value": "completed",
+          "source": "session.turn/end",
+          "rule": "dsh-terminal-vocabulary-v1"
+        },
+        "terminalReason": "completed",
+        "error": {
+          "state": "unavailable",
+          "value": null,
+          "reason": "not_applicable"
+        },
+        "usage": {
+          "inputTokens": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "usage_not_reported"
+          },
+          "outputTokens": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "usage_not_reported"
+          },
+          "totalTokens": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "usage_not_reported"
+          }
+        },
+        "provenance": {
+          "source": "registry-session-log",
+          "eventType": "turn/end",
+          "terminalSeq": 1,
+          "registryVersion": "0.1.0-rc.2",
+          "dshVersion": "0.1.5-alpha.1",
+          "sampleKind": "synthetic"
+        },
+        "evidenceCommitment": null,
+        "signature": null,
+        "policyVersion": null,
+        "redactionPolicyVersion": "activity-summary-v1"
+      },
+      {
+        "schemaVersion": 1,
+        "eventRef": "[\"fixture-zero\",\"turn/end\",0]",
+        "execution": {
+          "sessionId": "fixture-zero",
+          "turn": 0
+        },
+        "executor": {
+          "id": {
+            "state": "reported",
+            "value": "fixture-native",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          },
+          "version": {
+            "state": "reported",
+            "value": "0.1.5-alpha.1",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          },
+          "protocolVersion": {
+            "state": "reported",
+            "value": "fixture-v1",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          }
+        },
+        "lineage": {
+          "parentSession": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          },
+          "parentExecution": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          },
+          "rootExecution": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          }
+        },
+        "provider": {
+          "state": "reported",
+          "value": "fixture-provider",
+          "source": "session.request/context",
+          "rule": "verbatim-safe-metadata-v1"
+        },
+        "model": {
+          "state": "reported",
+          "value": "fixture-model",
+          "source": "session.request/context",
+          "rule": "verbatim-safe-metadata-v1"
+        },
+        "time": {
+          "startedAt": {
+            "state": "reported",
+            "value": 1000,
+            "source": "session.turn/start",
+            "rule": "unix-epoch-ms"
+          },
+          "endedAt": {
+            "state": "reported",
+            "value": 1100,
+            "source": "session.turn/end",
+            "rule": "unix-epoch-ms"
+          }
+        },
+        "result": {
+          "state": "reported",
+          "value": "completed",
+          "source": "session.turn/end",
+          "rule": "dsh-terminal-vocabulary-v1"
+        },
+        "terminalReason": "completed",
+        "error": {
+          "state": "unavailable",
+          "value": null,
+          "reason": "not_applicable"
+        },
+        "usage": {
+          "inputTokens": {
+            "state": "reported",
+            "value": 0,
+            "source": "synthetic.fixture",
+            "rule": "fixture-normalized-tokens-v1"
+          },
+          "outputTokens": {
+            "state": "reported",
+            "value": 0,
+            "source": "synthetic.fixture",
+            "rule": "fixture-normalized-tokens-v1"
+          },
+          "totalTokens": {
+            "state": "reported",
+            "value": 0,
+            "source": "synthetic.fixture",
+            "rule": "fixture-normalized-tokens-v1"
+          }
+        },
+        "provenance": {
+          "source": "registry-session-log",
+          "eventType": "turn/end",
+          "terminalSeq": 2,
+          "registryVersion": "0.1.0-rc.2",
+          "dshVersion": "0.1.5-alpha.1",
+          "sampleKind": "synthetic"
+        },
+        "evidenceCommitment": null,
+        "signature": null,
+        "policyVersion": null,
+        "redactionPolicyVersion": "activity-summary-v1"
+      }
+    ],
+    "aggregate": {
+      "inputTokens": {
+        "reported": {
+          "sum": 7,
+          "count": 2
+        },
+        "estimated": {
+          "sum": 3,
+          "count": 1
+        },
+        "unavailable": 3
+      },
+      "outputTokens": {
+        "reported": {
+          "sum": 7,
+          "count": 2
+        },
+        "estimated": {
+          "sum": 3,
+          "count": 1
+        },
+        "unavailable": 3
+      },
+      "totalTokens": {
+        "reported": {
+          "sum": 7,
+          "count": 2
+        },
+        "estimated": {
+          "sum": 3,
+          "count": 1
+        },
+        "unavailable": 3
+      }
+    }
+  }
+}

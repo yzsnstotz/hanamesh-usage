@@ -1,0 +1,12 @@
+import {writeFileSync,mkdirSync} from 'node:fs';import {fileURLToPath} from 'node:url';import {core,session,record,withUsage} from '../tests/fixtures/helpers.mjs';
+process.chdir(fileURLToPath(new URL('../',import.meta.url)));const dir='docs/acceptance/samples';mkdirSync(dir,{recursive:true});
+const input=session({kind:'error'});input.binding.workspace='/home/SYNTHETIC_USER/SYNTHETIC_WORKSPACE';input.binding.authRef='SYNTHETIC_AUTH_NOT_REAL';
+input.events.splice(2,0,{type:'user/message',seq:2,time:1020,data:{turn:0,content:'SYNTHETIC_PROMPT_NOT_REAL',files:['SYNTHETIC_FILE_NOT_REAL']}});input.events.at(-1).seq=3;input.events.at(-1).data.reason.error={message:'SYNTHETIC_FULL_RESULT_NOT_REAL',apiKey:'sk-SYNTHETIC_NOT_A_REAL_CREDENTIAL'};
+const after=core.exportProjection(core.projectTerminal(input,input.events.at(-1)));
+writeFileSync(`${dir}/redaction-before.synthetic.json`,JSON.stringify({evidence:'FIXTURE_ONLY_ALL_INPUTS_SYNTHETIC',input},null,2)+'\n');
+writeFileSync(`${dir}/redaction-after.synthetic.json`,JSON.stringify({evidence:'FIXTURE_ONLY_NOT_REAL_RUNTIME',declaration:after},null,2)+'\n');
+const sample=[record({id:'fixture-unknown',provider:null}),withUsage(record({id:'fixture-zero'}),'reported',0),withUsage(record({id:'fixture-reported'}),'reported',7),withUsage(record({id:'fixture-estimated'}),'estimated',3),record({id:'fixture-failed',kind:'error'}),record({id:'fixture-interrupted',kind:'aborted'})];
+for(const r of sample)core.validateDeclaration(r);const query=core.queryRecords(sample);
+writeFileSync(`${dir}/records.synthetic.json`,JSON.stringify({evidence:'FIXTURE_ONLY_NORMALIZED_NUMBERS_NOT_DSH_TOKENUSAGE',query},null,2)+'\n');
+writeFileSync(`${dir}/activity.synthetic.html`,core.renderActivity(query));
+console.log(JSON.stringify({evidence:'FIXTURE_NOT_SCREENSHOT_NOT_REAL_UI',samples:sample.length,aggregate:query.aggregate.totalTokens,redaction:'SYNTHETIC_BEFORE_AFTER_WRITTEN'}));

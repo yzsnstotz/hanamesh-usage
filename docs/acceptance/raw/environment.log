@@ -1,0 +1,9 @@
+Sat Sep 12 21:40:49 UTC 2026
+Linux 6.18.35 x86_64
+v22.16.0
+10.9.2
+Version 5.8.3
+git version 2.47.3
+ls: cannot access '/home/oai/work/projects/hanamesh/hanamesh-dsh-runtime': No such file or directory
+ls: cannot access '/home/oai/work/Docs/Projects/hanamesh/research/dsh-greenfield-2026-09-09/rt': No such file or directory
+ls: cannot access '/home/oai/work/Docs/Projects/hanamesh/research/dsh-greenfield-2026-09-09/upstream': No such file or directory

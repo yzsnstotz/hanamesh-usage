@@ -1,0 +1,2 @@
+{"node":"v22.16.0","compiler":"Version 5.8.3","offline":false,"platform":"linux","arch":"x64"}
+TARGET_TOOLCHAIN_MISSING: require Node 24.13.1 / pnpm 10.33.0 / TypeScript 5.9.3

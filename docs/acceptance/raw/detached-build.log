@@ -1,0 +1,28 @@
+$ npm ci --offline --ignore-scripts --legacy-peer-deps
+
+up to date in 170ms
+
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: '@hanamesh/dsh-activity@0.1.0-rc.1',
+npm warn EBADENGINE   required: { node: '>=24.13.1 <25' },
+npm warn EBADENGINE   current: { node: 'v22.16.0', npm: '10.9.2' }
+npm warn EBADENGINE }
+
+$ /opt/nvm/versions/node/v22.16.0/bin/node tools/build.mjs --offline
+{"node":"v22.16.0","compiler":"Version 5.8.3","offline":true,"platform":"linux","arch":"x64"}
+OFFLINE_CORE_SEMANTIC_BUILD_COMPLETE; HOST_JS_COPIED_NOT_TYPECHECKED
+
+
+$ /opt/nvm/versions/node/v22.16.0/bin/node tools/check.mjs
+{
+  "consistencySchemaValid": true,
+  "economicFieldMatches": 0,
+  "lockedRegistrySha256": "4da9a0fd4a3534afcb8fc8245eb80158f5c3d0b83e960e14d9672d17671cdbf7",
+  "productionFilesScanned": 13,
+  "siblingSourceImports": 0,
+  "lockScope": "PEER_CONTRACT_ONLY_NOT_FULL_HOST_CLOSURE",
+  "uiKitArtifactAvailable": false
+}
+
+
+DETACHED_CORE_BUILD_COMPLETE: no sibling source, no installed host peers; NOT full target host build.

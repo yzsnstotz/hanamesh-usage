@@ -1,0 +1,20 @@
+{
+  "module": "activity",
+  "groups": [
+    {
+      "name": "活动摘要与原始执行去重身份",
+      "facts": ["summary-record:present", "source-identity:sessionId-turn-end-turn"],
+      "medium": "storage-domain:hanamesh_activity",
+      "why": "同一记录携带稳定身份，single 布局只有一次 global.set 完整镜像发布；计数由镜像派生，绝不第二次写去重表或计数表。"
+    }
+  ],
+  "boundaries": [
+    {
+      "name": "DSH 原始终结日志 → 活动摘要",
+      "sides": ["dsh:session-log", "storage-domain:hanamesh_activity"],
+      "safeDirection": "dsh:session-log",
+      "why": "先等待原 session 的显式持久屏障并复读终结事件，再提交摘要；允许只留下原 session，重启只读重放补记，禁止只有活动摘要却没有原终结证据。"
+    }
+  ],
+  "exempt": false
+}

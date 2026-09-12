@@ -1,0 +1,21 @@
+src/host/index.js(2,30): error TS2307: Cannot find module '@deepseek-ai/dsh-storage-domain' or its corresponding type declarations.
+src/host/index.js(3,39): error TS2307: Cannot find module '@hanamesh/dsh-agent-registry' or its corresponding type declarations.
+src/host/index.js(4,19): error TS2307: Cannot find module 'zod' or its corresponding type declarations.
+src/host/index.js(11,59): error TS2307: Cannot find module 'zod' or its corresponding type declarations.
+src/host/index.js(20,20): error TS2307: Cannot find module '@deepseek-ai/cordis' or its corresponding type declarations.
+src/host/mount.js(6,19): error TS2307: Cannot find module '@deepseek-ai/cordis' or its corresponding type declarations.
+src/host/mount.js(7,19): error TS2307: Cannot find module '@hanamesh/dsh-agent-registry' or its corresponding type declarations.
+src/host/mount.js(13,59): error TS2307: Cannot find module '@deepseek-ai/dsh-session' or its corresponding type declarations.
+src/host/mount.js(26,22): error TS2307: Cannot find module '@deepseek-ai/dsh-session' or its corresponding type declarations.
+src/host/mount.js(32,21): error TS2307: Cannot find module '@deepseek-ai/dsh-session' or its corresponding type declarations.
+src/host/mount.js(33,21): error TS2307: Cannot find module '@deepseek-ai/dsh-session' or its corresponding type declarations.
+src/host/mount.js(43,22): error TS2307: Cannot find module '@deepseek-ai/dsh-session' or its corresponding type declarations.
+src/host/mount.js(60,52): error TS7006: Parameter 'participated' implicitly has an 'any' type.
+src/host/mount.js(68,22): error TS2307: Cannot find module '@deepseek-ai/dsh-session' or its corresponding type declarations.
+src/host/mount.js(92,22): error TS2307: Cannot find module '@deepseek-ai/dsh-session' or its corresponding type declarations.
+src/host/mount.js(105,46): error TS7006: Parameter 'session' implicitly has an 'any' type.
+src/host/mount.js(105,55): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/host/mount.js(106,50): error TS7031: Binding element 'agent' implicitly has an 'any' type.
+src/host/mount.js(140,30): error TS7006: Parameter 'child' implicitly has an 'any' type.
+src/host/transport.js(23,19): error TS2307: Cannot find module '@deepseek-ai/cordis' or its corresponding type declarations.
+src/host/transport.js(31,20): error TS7006: Parameter 'request' implicitly has an 'any' type.

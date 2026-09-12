@@ -1,0 +1,31 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {pathToFileURL} from 'node:url';
+import {resolve} from 'node:path';
+import {core,root,record} from './fixtures/helpers.mjs';
+const {mountTransport}=await import(pathToFileURL(resolve(root,'lib/host/transport.js')).href);
+function fixture({allowExport=false,fail=false}={}){
+  const routes=new Map(),effects=[],api={query:filter=>{if(fail)throw Error('sk-SYNTHETIC_SECRET');return core.queryRecords([record()],filter);},export:filter=>{if(!allowExport)throw new core.ActivityError('EXPORT_DISABLED');return core.queryRecords([record()],filter);},health:()=>({pending:0,recoveryComplete:true,failures:{}})};
+  const ctx={connection:{fetch:{register:r=>{routes.set(r.path,r);return async()=>routes.delete(r.path);}}},effect:fn=>{effects.push(fn());}};
+  mountTransport(ctx,api);
+  return {routes,close:async()=>{for(const fn of effects)await fn();},request:async(path,method='GET')=>{
+    const url=new URL(path,'http://127.0.0.1'),route=routes.get(url.pathname);return await route.fetch(new Request(url,{method}));
+  }};
+}
+test('authenticated exact route registry only; lifecycle removes all routes',async()=>{
+  const f=fixture();assert.equal(f.routes.size,3);for(const r of f.routes.values()){assert(r.path.startsWith('/api/'));assert.equal(r.requestBody,'buffered');}await f.close();assert.equal(f.routes.size,0);
+});
+test('query API uses no-store headers; HTML has distinct unavailable label',async()=>{
+  const f=fixture(),r=await f.request('/api/hanamesh/activity?result=completed&limit=1');assert.equal(r.status,200);assert.equal(r.headers.get('cache-control'),'no-store');assert.equal((await r.json()).total,1);
+  const view=await f.request('/api/hanamesh/activity/view');assert.match(view.headers.get('content-security-policy'),/default-src 'none'/);assert.match(await view.text(),/— unavailable/);await f.close();
+});
+test('unknown, repeated, nonnumeric or out-of-range parameters are rejected',async()=>{
+  const f=fixture();for(const q of ['prompt=x','limit=1&limit=2','limit=1e3','from=NaN','offset=-1','result=success','limit=1001'])assert.equal((await f.request('/api/hanamesh/activity?'+q)).status,400,q);await f.close();
+});
+test('export is POST only and opt-in',async()=>{
+  const f=fixture();assert.equal((await f.request('/api/hanamesh/activity/export')).status,405);assert.equal((await f.request('/api/hanamesh/activity/export','POST')).status,403);await f.close();
+  const g=fixture({allowExport:true}),r=await g.request('/api/hanamesh/activity/export','POST');assert.equal(r.status,200);assert.match(r.headers.get('content-disposition'),/attachment/);await g.close();
+});
+test('transport unexpected errors never serialize original Error',async()=>{
+  const f=fixture({fail:true}),r=await f.request('/api/hanamesh/activity');assert.equal(r.status,503);assert.deepEqual(await r.json(),{error:'ACTIVITY_UNAVAILABLE'});await f.close();
+});

@@ -1,0 +1,9 @@
+# Only this module's row. Registry and host composition are owned by their modules.
+# Apply after the pinned storage-domain and runtime-registry rows.
+- insert:
+    - id: hanamesh-activity
+      name: '@hanamesh/dsh-activity'
+      config:
+        maxRecords: 5000
+        maxPending: 128
+        allowExport: false

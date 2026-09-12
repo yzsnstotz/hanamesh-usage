@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "ES2022", "module": "NodeNext", "moduleResolution": "NodeNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable", "ESNext.Disposable"],
+    "allowJs": true, "checkJs": true, "strict": true,
+    "skipLibCheck": false, "noEmit": true
+  },
+  "include": ["src/host/**/*.js", "src/host/**/*.d.ts"]
+}
