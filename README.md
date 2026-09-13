@@ -1,4 +1,4 @@
-**状态：DELIVERED（等用户验收）— rc.2；真实 Codex runtime 样本与真实宿主重建已取得（`docs/acceptance/AC-13.md` 文末），ACCEPTED 由用户签。**
+**状态：DELIVERED（等用户验收）— rc.3（随 Registry rc.3 重钉；修复「重钉后宿主无法启动」缺陷）；真实 Codex runtime 样本、真实宿主重建、DSH 原生 UI 驱动的三条记录见 `docs/acceptance/AC-13.md` 文末。ACCEPTED 由用户签。**
 
 ## 2026-09-13 本机回收更新
 
@@ -23,7 +23,7 @@
 | TypeScript | 5.9.3 | 5.8.3；核心 strict 语义检查与 emit，未用 noCheck |
 | DSH | 0.1.5-alpha.1 @ `5dda764ed3aa172535a7967b06ff95d9cbfe536a` | 只有附件公开声明，没有可运行宿主或完整类型依赖闭包 |
 | 平台 | macOS arm64 | Linux x64；不能替代目标平台验收 |
-| MOD-06 | `@hanamesh/dsh-agent-registry@0.1.0-rc.2` | 锁定 tarball 与公开声明已读取、核验；未在真实宿主装载 |
+| MOD-06 | `@hanamesh/dsh-agent-registry@0.1.0-rc.3` | 锁定 tarball；rc.3 修复真实宿主外部 runtime 的 agent scope，本模块随之重钉（2026-09-13） |
 | ui-kit | `hanamesh-ui-kit` v0.1.0-rc.3 | STATUS 中已 ACCEPTED，但本次附件没有其 tarball、digest 或公开 API |
 | 浏览器 / 模型执行 | 隔离 web profile / 真实 runtime | 均未运行 |
 

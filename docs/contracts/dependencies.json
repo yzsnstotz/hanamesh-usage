@@ -1,12 +1,12 @@
 {
   "runtimeRegistry": {
     "package": "@hanamesh/dsh-agent-registry",
-    "version": "0.1.0-rc.2",
-    "artifact": "vendor/hanamesh-dsh-agent-registry-0.1.0-rc.2.tgz",
-    "sha256": "4da9a0fd4a3534afcb8fc8245eb80158f5c3d0b83e960e14d9672d17671cdbf7",
-    "dispatchStatus": "ACCEPTED",
-    "dispatchLedgerCommit": "1674d98",
-    "packagingSourceCommit": "8feded5"
+    "version": "0.1.0-rc.3",
+    "artifact": "vendor/hanamesh-dsh-agent-registry-0.1.0-rc.3.tgz",
+    "sha256": "19b38baac0220d8912e0d0714150fce259d9fa8d391c1d536421e6721f8a4e9e",
+    "dispatchStatus": "DELIVERED (rc.3 candidate; rc.2 is the ACCEPTED baseline)",
+    "dispatchLedgerCommit": "pending",
+    "packagingSourceCommit": "uncommitted-at-repin"
   },
   "uiKit": {
     "requiredVersion": "0.1.0-rc.3",

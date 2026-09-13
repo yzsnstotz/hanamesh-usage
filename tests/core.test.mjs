@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { core, session, record, withUsage, MemoryGlobal } from './fixtures/helpers.mjs';
+import { REGISTRY_VERSION, isSnapshot } from '../lib/core/index.js';
 
 test('T03 FIXTURE: complete FR-10 schema, source tuple and pins',()=>{
   const r=record({parentSession:'fixture-parent'}); core.validateDeclaration(r);
@@ -8,7 +9,7 @@ test('T03 FIXTURE: complete FR-10 schema, source tuple and pins',()=>{
   assert.equal(r.lineage.parentSession.value,'fixture-parent');
   assert.equal(r.lineage.parentExecution.state,'unavailable');
   assert.equal(r.lineage.rootExecution.state,'unavailable');
-  assert.equal(r.provenance.registryVersion,'0.1.0-rc.2');
+  assert.equal(r.provenance.registryVersion,REGISTRY_VERSION);
   assert.equal(r.provenance.sampleKind,'synthetic');
   for(const key of ['evidenceCommitment','signature','policyVersion'])assert.equal(r[key],null);
 });
@@ -119,4 +120,12 @@ test('corrupt/unknown fields and duplicate stored identities fail closed',()=>{
 test('remote four-state labels remain distinct and prototype keys are refused',()=>{
   assert.equal(new Set(['unknown','stale','revoked','unreachable'].map(core.remoteLabel)).size,4);
   assert.throws(()=>core.remoteLabel('__proto__'),{code:'INVALID_REMOTE_STATE'});
+});
+
+test('T12 durability: a stored snapshot recorded under an OLDER Registry version still validates (a re-pin must never make the host unbootable on its own data)', () => {
+  const older = JSON.parse(JSON.stringify(record()));
+  older.provenance.registryVersion = '0.1.0-rc.2';
+  assert.equal(isSnapshot({ schemaVersion: 1, records: [older] }), true);
+  const garbage = JSON.parse(JSON.stringify(record())); garbage.provenance.registryVersion = 'not a version';
+  assert.equal(isSnapshot({ schemaVersion: 1, records: [garbage] }), false);
 });

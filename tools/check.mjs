@@ -6,7 +6,7 @@ validateConsistency(JSON.parse(read('consistency.json')));
 assert.equal(digest(deps.runtimeRegistry.artifact),deps.runtimeRegistry.sha256);
 assert.deepEqual(lock.packages[''].peerDependencies,pkg.peerDependencies);
 assert.deepEqual(lock.packages[''].devDependencies,pkg.devDependencies);
-assert.equal(pkg.private,true);assert.equal(pkg.version,'0.1.0-rc.2');assert.equal(pkg.peerDependencies['@hanamesh/dsh-agent-registry'],'0.1.0-rc.2');
+assert.equal(pkg.private,true);assert.equal(pkg.version,'0.1.0-rc.3');assert.equal(pkg.peerDependencies['@hanamesh/dsh-agent-registry'],'0.1.0-rc.3');
 const walk=dir=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(join(dir,e.name)):[join(dir,e.name)]);
 const sources=walk('src').filter(p=>/\.(ts|js)$/.test(p));
 for(const p of sources){

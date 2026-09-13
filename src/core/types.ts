@@ -35,7 +35,8 @@ export interface Declaration {
     source: 'registry-session-log';
     eventType: 'turn/end';
     terminalSeq: number;
-    registryVersion: '0.1.0-rc.2';
+    /** The Registry version this record was observed under (recorded, not asserted). */
+    registryVersion: string;
     dshVersion: '0.1.5-alpha.1';
     sampleKind: 'runtime_observation' | 'synthetic';
   };

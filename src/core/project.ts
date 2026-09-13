@@ -1,4 +1,5 @@
 import type { Declaration, EventObservation, Observation, ResultState, SessionObservation } from './types.js';
+import { DSH_VERSION, REGISTRY_VERSION } from './pins.js';
 import type { TokenUsage } from '@deepseek-ai/dsh-llm';
 import { ActivityError, missing, numberValue, object, sourceId, text } from './privacy.js';
 
@@ -88,7 +89,7 @@ export function projectTerminal(session: SessionObservation, end: EventObservati
     time: { startedAt: start ? numberValue(start.time, 'reported', 'session.turn/start', 'unix-epoch-ms') : missing('not_provided'), endedAt: numberValue(end.time, 'reported', 'session.turn/end', 'unix-epoch-ms') },
     ...terminalResult(data.reason),
     usage,
-    provenance: { source: 'registry-session-log', eventType: 'turn/end', terminalSeq: end.seq, registryVersion: '0.1.0-rc.2', dshVersion: '0.1.5-alpha.1', sampleKind: session.sampleKind },
+    provenance: { source: 'registry-session-log', eventType: 'turn/end', terminalSeq: end.seq, registryVersion: REGISTRY_VERSION, dshVersion: DSH_VERSION, sampleKind: session.sampleKind },
     evidenceCommitment: null, signature: null, policyVersion: null, redactionPolicyVersion: 'activity-summary-v1',
   };
 }
