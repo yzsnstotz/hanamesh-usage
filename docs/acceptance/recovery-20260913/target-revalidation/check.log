@@ -1,0 +1,13 @@
+
+> @hanamesh/dsh-activity@0.1.0-rc.2 check
+> node tools/check.mjs
+
+{
+  "consistencySchemaValid": true,
+  "economicFieldMatches": 0,
+  "lockedRegistrySha256": "4da9a0fd4a3534afcb8fc8245eb80158f5c3d0b83e960e14d9672d17671cdbf7",
+  "productionFilesScanned": 13,
+  "siblingSourceImports": 0,
+  "lockScope": "PINNED_DEV_BUILD_CLOSURE_NOT_FULL_HOST",
+  "uiKitArtifactAvailable": false
+}

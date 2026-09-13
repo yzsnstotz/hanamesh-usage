@@ -54,7 +54,7 @@ export function mountActivity(ctx, registry, domain, config) {
     /** @type {Promise<void> | undefined} */
     let flush;
     for (const end of events) {
-      if (end.type !== 'turn/end' || !session.ownsEvent(end.seq)) continue;
+      if (end.type !== 'turn/end' || !session.isOwnSeq(end.seq)) continue;
       const record = projectTerminal(input, end);
       await commitAfterSource(async () => {
         flush ??= ctx.sessions.flush(session).then(participated => {

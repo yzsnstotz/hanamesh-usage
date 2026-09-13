@@ -6,7 +6,7 @@ const {mountActivity}=await import(pathToFileURL(resolve(root,'lib/host/mount.js
 export async function fixtureHost({live=true,participated=true,persisted=true,bound=true,snapshot,allowExport=false,inheritedEventCount=0,throwRead=false}={}) {
   const input=session({inheritedEventCount}), log=[], handlers=new Map(), g=new MemoryGlobal(snapshot);
   const originalSet=g.set.bind(g);g.set=async next=>{log.push('summary.set');await originalSet(next);};
-  const s={id:input.sessionId,header:{id:input.sessionId},inheritedEventCount, snapshotEvents:()=>structuredClone(input.events),ownsEvent:seq=>seq>=inheritedEventCount};
+  const s={id:input.sessionId,header:{id:input.sessionId},inheritedEventCount, snapshotEvents:()=>structuredClone(input.events),isOwnSeq:seq=>seq>=inheritedEventCount};
   let closes=0,handleCloses=0;
   const ctx={
     on(name,fn){handlers.set(name,fn);return ()=>handlers.delete(name);},

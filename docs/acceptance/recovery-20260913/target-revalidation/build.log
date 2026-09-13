@@ -1,0 +1,6 @@
+
+> @hanamesh/dsh-activity@0.1.0-rc.2 build
+> node tools/build.mjs
+
+{"node":"v24.13.1","compiler":"Version 5.9.3","offline":false,"platform":"darwin","arch":"arm64"}
+TARGET_SEMANTIC_BUILD_COMPLETE

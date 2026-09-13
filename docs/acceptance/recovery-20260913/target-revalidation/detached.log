@@ -1,0 +1,27 @@
+
+> @hanamesh/dsh-activity@0.1.0-rc.2 test:detached
+> node tools/detached.mjs
+
+$ npm ci --offline --ignore-scripts --legacy-peer-deps
+
+added 25 packages in 2s
+
+
+$ /Users/yzliu/.local/share/fnm/node-versions/v24.13.1/installation/bin/node tools/build.mjs --offline
+{"node":"v24.13.1","compiler":"Version 5.9.3","offline":true,"platform":"darwin","arch":"arm64"}
+OFFLINE_CORE_SEMANTIC_BUILD_COMPLETE; HOST_JS_COPIED_NOT_TYPECHECKED
+
+
+$ /Users/yzliu/.local/share/fnm/node-versions/v24.13.1/installation/bin/node tools/check.mjs
+{
+  "consistencySchemaValid": true,
+  "economicFieldMatches": 0,
+  "lockedRegistrySha256": "4da9a0fd4a3534afcb8fc8245eb80158f5c3d0b83e960e14d9672d17671cdbf7",
+  "productionFilesScanned": 13,
+  "siblingSourceImports": 0,
+  "lockScope": "PINNED_DEV_BUILD_CLOSURE_NOT_FULL_HOST",
+  "uiKitArtifactAvailable": false
+}
+
+
+DETACHED_CORE_BUILD_COMPLETE: no sibling source, no installed host peers; NOT full target host build.

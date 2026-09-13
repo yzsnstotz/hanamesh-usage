@@ -44,8 +44,20 @@ test('T07 FIXTURE: terminal result vocabulary preserves failures and interruptio
   for(const kind of ['blocked','max-tokens','future-extension'])assert.equal(record({kind}).result.state,'unavailable');
   assert.equal(record({kind:'error'}).error.value,'runtime_error_details_withheld');
 });
-test('missing TokenUsage contract never infers numeric fields or totals',()=>{
-  const r=record({usage:true});assert.equal(r.usage.totalTokens.state,'unavailable');assert.equal(r.usage.totalTokens.reason,'usage_contract_missing');
+test('malformed TokenUsage is unavailable rather than guessed or zero',()=>{
+  const r=record({usage:true});assert.equal(r.usage.inputTokens.reason,'invalid_value');assert.equal(r.usage.totalTokens.reason,'not_provided');
+});
+test('pinned DSH TokenUsage reports disjoint counters across two assistant messages',()=>{
+  const s=session();const end=s.events.pop();
+  s.events.push({type:'assistant/message',seq:2,time:1030,data:{turn:0,step:0,usage:{inputTokens:2,outputTokens:3,totalTokens:5},message:{content:'SYNTHETIC_SECRET'}}});
+  s.events.push({type:'assistant/message',seq:3,time:1050,data:{turn:0,step:1,usage:{inputTokens:4,outputTokens:3,totalTokens:7},message:{content:'SYNTHETIC_SECRET'}}});
+  end.seq=4;s.events.push(end);
+  const r=core.projectTerminal(s,end);core.validateDeclaration(r);
+  assert.deepEqual([r.usage.inputTokens.value,r.usage.outputTokens.value,r.usage.totalTokens.value],[6,6,12]);
+  assert.equal(r.usage.inputTokens.source,'session.assistant/message');
+  assert.doesNotMatch(JSON.stringify(r),/SYNTHETIC_SECRET/);
+  s.events[3].data.usage.totalTokens=undefined;
+  assert.equal(core.projectTerminal(s,end).usage.totalTokens.state,'unavailable');
 });
 test('attribution reads immutable binding, invalid binding ids fail closed',()=>{
   const s=session();s.binding.sessionId='different';assert.throws(()=>core.projectTerminal(s,s.events.at(-1)),{code:'BINDING_ID_MISMATCH'});

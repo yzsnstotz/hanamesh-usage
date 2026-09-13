@@ -1,4 +1,6 @@
 import type { Filter, QueryResult } from '../core/index.js';
+import type {} from '@deepseek-ai/dsh-session-persistence';
+import type {} from '@deepseek-ai/dsh-client-connection';
 export interface Config { maxRecords?: number; maxPending?: number; allowExport?: boolean }
 export interface ActivityService {
   query(filter?: Filter): QueryResult;

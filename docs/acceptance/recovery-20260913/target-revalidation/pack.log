@@ -1,0 +1,42 @@
+npm notice
+npm notice 📦  @hanamesh/dsh-activity@0.1.0-rc.2
+npm notice Tarball Contents
+npm notice 76B LICENSE
+npm notice 11.0kB README.md
+npm notice 858B consistency.json
+npm notice 221B lib/core/boundary.d.ts
+npm notice 235B lib/core/boundary.js
+npm notice 233B lib/core/index.d.ts
+npm notice 233B lib/core/index.js
+npm notice 1.1kB lib/core/privacy.d.ts
+npm notice 3.7kB lib/core/privacy.js
+npm notice 475B lib/core/project.d.ts
+npm notice 6.0kB lib/core/project.js
+npm notice 505B lib/core/query.d.ts
+npm notice 4.2kB lib/core/query.js
+npm notice 578B lib/core/store.d.ts
+npm notice 2.5kB lib/core/store.js
+npm notice 4.0kB lib/core/types.d.ts
+npm notice 11B lib/core/types.js
+npm notice 296B lib/core/validate.d.ts
+npm notice 4.7kB lib/core/validate.js
+npm notice 272B lib/core/view.d.ts
+npm notice 2.7kB lib/core/view.js
+npm notice 633B lib/host/contracts.d.ts
+npm notice 445B lib/host/index.d.ts
+npm notice 2.0kB lib/host/index.js
+npm notice 7.5kB lib/host/mount.js
+npm notice 2.9kB lib/host/transport.js
+npm notice 3.5kB package.json
+npm notice 316B profile/cordis.patch.yml
+npm notice Tarball Details
+npm notice name: @hanamesh/dsh-activity
+npm notice version: 0.1.0-rc.2
+npm notice filename: hanamesh-dsh-activity-0.1.0-rc.2.tgz
+npm notice package size: 21.2 kB
+npm notice unpacked size: 61.1 kB
+npm notice shasum: 69359127139616f8f2a696063244ae717b6d0d60
+npm notice integrity: sha512-oCxnJBNJFgAjp[...]Ap1hVC27x63Bg==
+npm notice total files: 28
+npm notice
+hanamesh-dsh-activity-0.1.0-rc.2.tgz

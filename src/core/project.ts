@@ -1,4 +1,5 @@
 import type { Declaration, EventObservation, Observation, ResultState, SessionObservation } from './types.js';
+import type { TokenUsage } from '@deepseek-ai/dsh-llm';
 import { ActivityError, missing, numberValue, object, sourceId, text } from './privacy.js';
 
 export function eventReference(sessionId: string, turn: number): string {
@@ -40,6 +41,25 @@ function route(events: readonly EventObservation[], startSeq: number, endSeq: nu
   return { provider: text(context.provider, 'session.request/context'), model: text(context.model, 'session.request/context') };
 }
 
+/** Each assistant/message is one completed provider call in the pinned DSH contract. */
+function tokenUsage(events: readonly EventObservation[], startSeq: number, endSeq: number, turn: number): Declaration['usage'] {
+  const payloads = events.filter(e => e.seq >= startSeq && e.seq <= endSeq && e.type === 'assistant/message'
+    && object(e.data).turn === turn && object(e.data).usage !== undefined).map(e => object(e.data).usage);
+  if (payloads.length === 0) return { inputTokens: missing('usage_not_reported'), outputTokens: missing('usage_not_reported'), totalTokens: missing('usage_not_reported') };
+  const fields = ['inputTokens','outputTokens','totalTokens'] as const satisfies readonly (keyof TokenUsage)[];
+  const sum = (field: typeof fields[number]): Observation<number> => {
+    let total = 0;
+    for (const payload of payloads) {
+      const value = object(payload)[field];
+      if (field === 'totalTokens' && value === undefined) return missing('not_provided');
+      if (typeof value !== 'number' || !Number.isSafeInteger(value) || value < 0 || !Number.isSafeInteger(total + value)) return missing('invalid_value');
+      total += value;
+    }
+    return numberValue(total, 'reported', 'session.assistant/message', 'dsh-token-usage-sum-v1');
+  };
+  return { inputTokens: sum('inputTokens'), outputTokens: sum('outputTokens'), totalTokens: sum('totalTokens') };
+}
+
 export function projectTerminal(session: SessionObservation, end: EventObservation): Declaration {
   const sid = sourceId(session.sessionId);
   if (end.type !== 'turn/end' || !Number.isSafeInteger(end.seq) || end.seq < session.inheritedEventCount) throw new ActivityError('NOT_OWN_TERMINAL');
@@ -51,10 +71,7 @@ export function projectTerminal(session: SessionObservation, end: EventObservati
   const starts = session.events.filter(e => e.type === 'turn/start' && object(e.data).turn === data.turn && e.seq >= session.inheritedEventCount && e.seq < end.seq);
   const start = starts.at(-1);
   const ownedStart = start?.seq ?? session.inheritedEventCount;
-  const usagePresent = session.events.some(e => e.seq >= ownedStart && e.seq <= end.seq && e.type === 'assistant/message' && object(e.data).turn === data.turn && object(e.data).usage !== undefined);
-  // TokenUsage lives in dsh-llm, absent from the dispatch's public declarations.
-  // Do not guess camelCase/snake_case token field names, invent totals or read stream payloads.
-  const usageReason = usagePresent ? 'usage_contract_missing' : 'usage_not_reported';
+  const usage = tokenUsage(session.events, ownedStart, end.seq, data.turn);
   return {
     schemaVersion: 1, eventRef: ref, execution: { sessionId: sid, turn: data.turn },
     executor: {
@@ -70,7 +87,7 @@ export function projectTerminal(session: SessionObservation, end: EventObservati
     ...route(session.events, ownedStart, end.seq),
     time: { startedAt: start ? numberValue(start.time, 'reported', 'session.turn/start', 'unix-epoch-ms') : missing('not_provided'), endedAt: numberValue(end.time, 'reported', 'session.turn/end', 'unix-epoch-ms') },
     ...terminalResult(data.reason),
-    usage: { inputTokens: missing(usageReason), outputTokens: missing(usageReason), totalTokens: missing(usageReason) },
+    usage,
     provenance: { source: 'registry-session-log', eventType: 'turn/end', terminalSeq: end.seq, registryVersion: '0.1.0-rc.2', dshVersion: '0.1.5-alpha.1', sampleKind: session.sampleKind },
     evidenceCommitment: null, signature: null, policyVersion: null, redactionPolicyVersion: 'activity-summary-v1',
   };

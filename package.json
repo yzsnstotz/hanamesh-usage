@@ -1,6 +1,6 @@
 {
   "name": "@hanamesh/dsh-activity",
-  "version": "0.1.0-rc.1",
+  "version": "0.1.0-rc.2",
   "private": true,
   "description": "Local-only, source-attributed activity summaries for pinned HanaMesh DSH",
   "type": "module",
@@ -32,15 +32,15 @@
   "peerDependencies": {
     "@deepseek-ai/cordis": "4.0.2",
     "@deepseek-ai/dsh-agent": "0.1.5-alpha.1",
+    "@deepseek-ai/dsh-attachment": "0.1.5-alpha.1",
+    "@deepseek-ai/dsh-client-connection": "0.1.5-alpha.1",
+    "@deepseek-ai/dsh-llm": "0.1.5-alpha.1",
     "@deepseek-ai/dsh-session": "0.1.5-alpha.1",
     "@deepseek-ai/dsh-session-persistence": "0.1.5-alpha.1",
     "@deepseek-ai/dsh-storage": "0.1.5-alpha.1",
     "@deepseek-ai/dsh-storage-domain": "0.1.5-alpha.1",
-    "@deepseek-ai/dsh-client-connection": "0.1.5-alpha.1",
     "@hanamesh/dsh-agent-registry": "0.1.0-rc.2",
-    "zod": "4.5.4",
-    "@deepseek-ai/dsh-attachment": "0.1.5-alpha.1",
-    "@deepseek-ai/dsh-llm": "0.1.5-alpha.1"
+    "zod": "4.5.4"
   },
   "peerDependenciesMeta": {
     "@deepseek-ai/dsh-client-connection": {
@@ -74,5 +74,23 @@
     "preflight:host": "node tools/preflight.mjs",
     "samples": "node tools/samples.mjs",
     "test:detached": "node tools/detached.mjs"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "4.0.2",
+    "@deepseek-ai/dsh-agent": "0.1.5-alpha.1",
+    "@deepseek-ai/dsh-attachment": "0.1.5-alpha.1",
+    "@deepseek-ai/dsh-client-connection": "0.1.5-alpha.1",
+    "@deepseek-ai/dsh-llm": "0.1.5-alpha.1",
+    "@deepseek-ai/dsh-scope": "0.1.5-alpha.1",
+    "@deepseek-ai/dsh-session": "0.1.5-alpha.1",
+    "@deepseek-ai/dsh-session-persistence": "0.1.5-alpha.1",
+    "@deepseek-ai/dsh-storage": "0.1.5-alpha.1",
+    "@deepseek-ai/dsh-storage-domain": "0.1.5-alpha.1",
+    "@deepseek-ai/dsh-system-prompt": "0.1.5-alpha.1",
+    "@deepseek-ai/schemastery": "3.18.2",
+    "@hanamesh/dsh-agent-registry": "file:vendor/hanamesh-dsh-agent-registry-0.1.0-rc.2.tgz",
+    "@types/node": "24.13.4",
+    "typescript": "5.9.3",
+    "zod": "4.5.4"
   }
 }

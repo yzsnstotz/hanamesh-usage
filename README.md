@@ -1,4 +1,14 @@
-**状态：PARTIAL — 离线候选；未通过真实 DSH 宿主验收。**
+**状态：PARTIAL — rc.2 目标构建通过；真实执行样本与用户验收未完成。**
+
+## 2026-09-13 本机回收更新
+
+本机 macOS arm64、Node 24.13.1、pnpm 10.33.0、TypeScript 5.9.3 下，完整 `npm ci`、目标 `npm run build`、48/48 测试、2/2 断言有效变异、`check` 和 detached 测试全部通过。针对固定 DSH 实际接口，宿主事件归属改用 `session.isOwnSeq`；完整 `dsh-llm.TokenUsage` 公开声明已核对，现在可逐条累计同一 turn 的 `inputTokens`/`outputTokens`/可选 `totalTokens`，缺字段继续保持 unavailable，不会合成数值或复制原消息。精确 DSH 编译闭包已锁入本仓开发依赖。详见 [本机回收记录](docs/acceptance/recovery-20260913/RECHECK.md)。
+
+依然没有经 MOD-06 的真实模型执行、T02 来源样本、T04 真人 UI 对照、T09 真实敏感样本与原生 DSH 持久化强杀；不能签 ACCEPTED。下面 rc.1 文本是远程交付历史快照，其中“缺完整 TokenUsage/目标工具链”的说法已由本次回收更新，不适用于 rc.2。
+
+---
+
+## 原 rc.1 远程交付快照
 
 # HanaMesh activity · 0.1.0-rc.1
 
