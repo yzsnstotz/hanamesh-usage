@@ -1,0 +1,54 @@
+{
+  "evidence": "REAL_HOST_ISOLATED_EMPTY_ROUTE_NOT_T02",
+  "isolatedHome": "/private/tmp/hm-wave2-activity-rc2-direct.bglBlm",
+  "anonymous": 401,
+  "tokenExchange": 200,
+  "activityAPI": 200,
+  "activityJSON": {
+    "total": 0,
+    "records": [],
+    "aggregate": {
+      "inputTokens": {
+        "reported": {
+          "sum": null,
+          "count": 0
+        },
+        "estimated": {
+          "sum": null,
+          "count": 0
+        },
+        "unavailable": 0
+      },
+      "outputTokens": {
+        "reported": {
+          "sum": null,
+          "count": 0
+        },
+        "estimated": {
+          "sum": null,
+          "count": 0
+        },
+        "unavailable": 0
+      },
+      "totalTokens": {
+        "reported": {
+          "sum": null,
+          "count": 0
+        },
+        "estimated": {
+          "sum": null,
+          "count": 0
+        },
+        "unavailable": 0
+      }
+    },
+    "health": {
+      "pending": 0,
+      "recoveryComplete": true,
+      "failures": {}
+    }
+  },
+  "view": 200,
+  "viewBytes": 1764,
+  "exit": 0
+}

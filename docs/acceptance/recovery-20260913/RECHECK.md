@@ -11,5 +11,8 @@
 | `npm test` | exit 0；48/48、无 skip | `target-revalidation/test.log`、`.exit` |
 | `npm run test:mutations` | exit 0；T05 `unavailable→0` 和 X03 反序均由断言杀死 | `target-revalidation/mutations.log`、`.exit` |
 | `npm run check`; `npm run test:detached` | 均 exit 0；后者在无邻仓源码的副本构建/消费 | `target-revalidation/check.log`、`detached.log` 及 `.exit` |
+| 固定 DSH 0.1.5-alpha.1 直接入口，隔离 `DSH_HOME` 安装 Registry rc.2 与 activity rc.2 后以两个公开 patch 启动 | 安装均 exit 0；匿名 API 401、token 换 cookie 200、空活动 API 200、view 200、`health.recoveryComplete=true`、`failures={}`、SIGTERM exit 0 | `target-revalidation/rc2-direct-*.log`, `rc2-real-host.json`；`REAL_HOST_EMPTY_ROUTE`，不是 T02 |
 
 所测 `TokenUsage` 是固定 DSH 类型与合成事件，不是一次真实模型执行；T02 的真实来源、T04 真人 UI 缺值/零值截图、T09 真实敏感输入前后对照仍缺。ui-kit rc.3 的 tgz 已在同一交付树的 workspace/vendor 找到，但未把临时 HTML 冒充正式 UI 集成。T07 真实三终结、T11 断云、T12 原生日志/sidecar 复读、X02/X03 原生介质强杀也未完成。没有调用模型或付费 API。候选包在本地打包，摘要以同目录交付清单为准；用户仍须亲跑并签 AC-13 才能写 ACCEPTED。
+
+第一次新宿主试验误用了桌面 App 生成的 `~/.local/bin/dsh` shim；它覆盖传入的 `DSH_HOME`，该次空列表健康输出有 3 次 `OBSERVATION_FAILED`，原因未继续归咎到具体个人数据。发现后即停止该进程，并把**本次刚创建且仅含两个测试依赖**的 `~/.dsh/profiles/web` 可逆迁至 `/private/tmp/hanamesh-wave2-accidental-personal-web-profile`；个人原有 `desktop` profile、sessions、storages 文件未改。该误用不计最终宿主证据。最终改为直接调用固定 DSH 的 `lib/bin.js`，并确认隔离目录实际生成 `profiles/web`；这一次健康状态无故障。以后不得通过这个 shim 做隔离测试。
