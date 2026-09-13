@@ -1,0 +1,9 @@
+== activity rc.2 on real DSH (profile c01: registry rc.2 + codex rc.3 + activity rc.2); durable sources copied from the real-Codex run, activity snapshot NOT copied ==
+boot: dsh web: http://127.0.0.1:34242/?token=[T]
+anon /api/hanamesh/activity -> 401
+token exchange / -> 303
+auth /api/hanamesh/activity -> 200
+auth /api/hanamesh/activity/view -> 200
+auth POST export (allowExport=false) -> 403
+records: [('act-real-3', 'interrupted', 'codex', '0.1.0-rc.3', 'runtime_observation'), ('act-real-2', 'completed', 'codex', '0.1.0-rc.3', 'runtime_observation'), ('act-real-1', 'completed', 'codex', '0.1.0-rc.3', 'runtime_observation')]
+usage unavailable count: 3

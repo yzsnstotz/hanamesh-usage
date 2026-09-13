@@ -1,0 +1,379 @@
+{
+  "phase": "cold",
+  "sessions": {},
+  "health": {
+    "pending": 0,
+    "recoveryComplete": true,
+    "failures": {}
+  },
+  "query": {
+    "total": 3,
+    "records": [
+      {
+        "schemaVersion": 1,
+        "eventRef": "[\"act-real-3\",\"turn/end\",1]",
+        "execution": {
+          "sessionId": "act-real-3",
+          "turn": 1
+        },
+        "executor": {
+          "id": {
+            "state": "reported",
+            "value": "codex",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          },
+          "version": {
+            "state": "reported",
+            "value": "0.1.0-rc.3",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          },
+          "protocolVersion": {
+            "state": "reported",
+            "value": "codex-app-server/v2",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          }
+        },
+        "lineage": {
+          "parentSession": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          },
+          "parentExecution": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          },
+          "rootExecution": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          }
+        },
+        "provider": {
+          "state": "unavailable",
+          "value": null,
+          "reason": "route_not_observed"
+        },
+        "model": {
+          "state": "unavailable",
+          "value": null,
+          "reason": "route_not_observed"
+        },
+        "time": {
+          "startedAt": {
+            "state": "reported",
+            "value": 1789283974562,
+            "source": "session.turn/start",
+            "rule": "unix-epoch-ms"
+          },
+          "endedAt": {
+            "state": "reported",
+            "value": 1789283980579,
+            "source": "session.turn/end",
+            "rule": "unix-epoch-ms"
+          }
+        },
+        "result": {
+          "state": "reported",
+          "value": "interrupted",
+          "source": "session.turn/end",
+          "rule": "dsh-terminal-vocabulary-v1"
+        },
+        "terminalReason": "aborted",
+        "error": {
+          "state": "unavailable",
+          "value": null,
+          "reason": "not_applicable"
+        },
+        "usage": {
+          "inputTokens": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "usage_not_reported"
+          },
+          "outputTokens": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "usage_not_reported"
+          },
+          "totalTokens": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "usage_not_reported"
+          }
+        },
+        "provenance": {
+          "source": "registry-session-log",
+          "eventType": "turn/end",
+          "terminalSeq": 4,
+          "registryVersion": "0.1.0-rc.2",
+          "dshVersion": "0.1.5-alpha.1",
+          "sampleKind": "runtime_observation"
+        },
+        "evidenceCommitment": null,
+        "signature": null,
+        "policyVersion": null,
+        "redactionPolicyVersion": "activity-summary-v1"
+      },
+      {
+        "schemaVersion": 1,
+        "eventRef": "[\"act-real-2\",\"turn/end\",1]",
+        "execution": {
+          "sessionId": "act-real-2",
+          "turn": 1
+        },
+        "executor": {
+          "id": {
+            "state": "reported",
+            "value": "codex",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          },
+          "version": {
+            "state": "reported",
+            "value": "0.1.0-rc.3",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          },
+          "protocolVersion": {
+            "state": "reported",
+            "value": "codex-app-server/v2",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          }
+        },
+        "lineage": {
+          "parentSession": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          },
+          "parentExecution": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          },
+          "rootExecution": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          }
+        },
+        "provider": {
+          "state": "unavailable",
+          "value": null,
+          "reason": "route_not_observed"
+        },
+        "model": {
+          "state": "unavailable",
+          "value": null,
+          "reason": "route_not_observed"
+        },
+        "time": {
+          "startedAt": {
+            "state": "reported",
+            "value": 1789283961383,
+            "source": "session.turn/start",
+            "rule": "unix-epoch-ms"
+          },
+          "endedAt": {
+            "state": "reported",
+            "value": 1789283974038,
+            "source": "session.turn/end",
+            "rule": "unix-epoch-ms"
+          }
+        },
+        "result": {
+          "state": "reported",
+          "value": "completed",
+          "source": "session.turn/end",
+          "rule": "dsh-terminal-vocabulary-v1"
+        },
+        "terminalReason": "completed",
+        "error": {
+          "state": "unavailable",
+          "value": null,
+          "reason": "not_applicable"
+        },
+        "usage": {
+          "inputTokens": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "usage_not_reported"
+          },
+          "outputTokens": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "usage_not_reported"
+          },
+          "totalTokens": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "usage_not_reported"
+          }
+        },
+        "provenance": {
+          "source": "registry-session-log",
+          "eventType": "turn/end",
+          "terminalSeq": 5,
+          "registryVersion": "0.1.0-rc.2",
+          "dshVersion": "0.1.5-alpha.1",
+          "sampleKind": "runtime_observation"
+        },
+        "evidenceCommitment": null,
+        "signature": null,
+        "policyVersion": null,
+        "redactionPolicyVersion": "activity-summary-v1"
+      },
+      {
+        "schemaVersion": 1,
+        "eventRef": "[\"act-real-1\",\"turn/end\",1]",
+        "execution": {
+          "sessionId": "act-real-1",
+          "turn": 1
+        },
+        "executor": {
+          "id": {
+            "state": "reported",
+            "value": "codex",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          },
+          "version": {
+            "state": "reported",
+            "value": "0.1.0-rc.3",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          },
+          "protocolVersion": {
+            "state": "reported",
+            "value": "codex-app-server/v2",
+            "source": "registry.binding",
+            "rule": "verbatim-safe-metadata-v1"
+          }
+        },
+        "lineage": {
+          "parentSession": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          },
+          "parentExecution": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          },
+          "rootExecution": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "not_applicable"
+          }
+        },
+        "provider": {
+          "state": "unavailable",
+          "value": null,
+          "reason": "route_not_observed"
+        },
+        "model": {
+          "state": "unavailable",
+          "value": null,
+          "reason": "route_not_observed"
+        },
+        "time": {
+          "startedAt": {
+            "state": "reported",
+            "value": 1789283954286,
+            "source": "session.turn/start",
+            "rule": "unix-epoch-ms"
+          },
+          "endedAt": {
+            "state": "reported",
+            "value": 1789283961004,
+            "source": "session.turn/end",
+            "rule": "unix-epoch-ms"
+          }
+        },
+        "result": {
+          "state": "reported",
+          "value": "completed",
+          "source": "session.turn/end",
+          "rule": "dsh-terminal-vocabulary-v1"
+        },
+        "terminalReason": "completed",
+        "error": {
+          "state": "unavailable",
+          "value": null,
+          "reason": "not_applicable"
+        },
+        "usage": {
+          "inputTokens": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "usage_not_reported"
+          },
+          "outputTokens": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "usage_not_reported"
+          },
+          "totalTokens": {
+            "state": "unavailable",
+            "value": null,
+            "reason": "usage_not_reported"
+          }
+        },
+        "provenance": {
+          "source": "registry-session-log",
+          "eventType": "turn/end",
+          "terminalSeq": 5,
+          "registryVersion": "0.1.0-rc.2",
+          "dshVersion": "0.1.5-alpha.1",
+          "sampleKind": "runtime_observation"
+        },
+        "evidenceCommitment": null,
+        "signature": null,
+        "policyVersion": null,
+        "redactionPolicyVersion": "activity-summary-v1"
+      }
+    ],
+    "aggregate": {
+      "inputTokens": {
+        "reported": {
+          "sum": null,
+          "count": 0
+        },
+        "estimated": {
+          "sum": null,
+          "count": 0
+        },
+        "unavailable": 3
+      },
+      "outputTokens": {
+        "reported": {
+          "sum": null,
+          "count": 0
+        },
+        "estimated": {
+          "sum": null,
+          "count": 0
+        },
+        "unavailable": 3
+      },
+      "totalTokens": {
+        "reported": {
+          "sum": null,
+          "count": 0
+        },
+        "estimated": {
+          "sum": null,
+          "count": 0
+        },
+        "unavailable": 3
+      }
+    }
+  }
+}

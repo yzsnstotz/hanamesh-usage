@@ -1,4 +1,4 @@
-**状态：PARTIAL — rc.2 目标构建通过；真实执行样本与用户验收未完成。**
+**状态：DELIVERED（等用户验收）— rc.2；真实 Codex runtime 样本与真实宿主重建已取得（`docs/acceptance/AC-13.md` 文末），ACCEPTED 由用户签。**
 
 ## 2026-09-13 本机回收更新
 
