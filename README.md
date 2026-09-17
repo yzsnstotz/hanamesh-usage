@@ -1,3 +1,5 @@
+> **↗ RENAMED 2026-09-17：原 hanamesh-plugin-activity → hanamesh-usage。Stage 1 的使用记录插件（三级 Usage Evidence 采集/去重/缓冲/签名/上报，随 Core 捆绑安装）。package.json 名与代码改名由路线 L3 完成。PRD v2.0 §4.2。**
+
 **状态：DELIVERED（等用户验收）— rc.3（随 Registry rc.3 重钉；修复「重钉后宿主无法启动」缺陷）；真实 Codex runtime 样本、真实宿主重建、DSH 原生 UI 驱动的三条记录见 `docs/acceptance/AC-13.md` 文末。ACCEPTED 由用户签。**
 
 ## 2026-09-13 本机回收更新
