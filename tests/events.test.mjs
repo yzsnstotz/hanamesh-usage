@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import * as core from '../lib/core/index.js';
 
 test('U05 core exports the usage event contract surface', () => {
-  for (const name of ['canonicalJSON','eventIdForSession','eventIdForLoader','eventIdForSeat','createUsageEvent','validateEvent','wireEvent','EventStore','deriveUsageEvent']) {
+  for (const name of ['canonicalJSON','signingJSON','eventIdForSession','eventIdForLoader','eventIdForSeat','createUsageEvent','validateEvent','wireEvent','EventStore','deriveUsageEvent']) {
     assert.equal(typeof core[name], 'function', name);
   }
 });
@@ -29,6 +29,8 @@ test('U05 canonical JSON sorts the six signed keys and wire event has exactly se
   assert.deepEqual(Object.keys(wire), ['deviceId','hanaRef','action','occurredAt','eventId','nonce','signature']);
   const { signature: _signature, ...signed } = wire;
   assert.equal(core.canonicalJSON(signed), '{"action":"use","deviceId":"device_A","eventId":"018f08f6-2d0c-5b61-8f5f-678f12294e87","hanaRef":"@scope/example-plugin","nonce":"AQIDBAUGBwgJCgsMDQ4PEA","occurredAt":"2026-09-19T00:00:00.000Z"}');
+  // O1 signing input: fixed key order, six fields (hanamesh-server-usage docs/API.md)
+  assert.equal(core.signingJSON(signed), '{"deviceId":"device_A","hanaRef":"@scope/example-plugin","action":"use","occurredAt":"2026-09-19T00:00:00.000Z","eventId":"018f08f6-2d0c-5b61-8f5f-678f12294e87","nonce":"AQIDBAUGBwgJCgsMDQ4PEA"}');
   assert.equal(event.sourceHanaRef, null);
   assert.equal(event.targetRef, null);
 });

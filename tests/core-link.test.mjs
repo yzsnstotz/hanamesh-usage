@@ -24,6 +24,6 @@ test('U11 absent and incompatible core stay optional, while late compatible serv
 test('U12 signed event uses canonical six-key bytes and a 64-byte Ed25519 signature',()=>{
   const {service,publicKey}=standin();const event=core.createUsageEvent({deviceId:'device_FIXTURE',hanaRef:'pkg',action:'use',occurredAt:'2026-09-19T00:00:00.000Z',eventId:core.eventIdForSeat('device_FIXTURE','app-host','use-1'),nonce:'AQIDBAUGBwgJCgsMDQ4PEA',signature:null,source:'seat',sourcePlugin:'app-host',evidenceRef:'use-1'});
   const signed=host.signUsageEvent(service,event);assert.match(signed.signature,/^[A-Za-z0-9_-]+$/);assert.equal(Buffer.from(signed.signature,'base64url').length,64);
-  const wire=core.wireEvent(signed);const {signature,...six}=wire;const bytes=new TextEncoder().encode(core.canonicalJSON(six));assert.equal(edVerify(null,bytes,publicKey,Buffer.from(signature,'base64url')),true);
-  const changed={...six,action:'open'};assert.equal(edVerify(null,new TextEncoder().encode(core.canonicalJSON(changed)),publicKey,Buffer.from(signature,'base64url')),false);
+  const wire=core.wireEvent(signed);const {signature,...six}=wire;const bytes=new TextEncoder().encode(core.signingJSON(six));assert.equal(edVerify(null,bytes,publicKey,Buffer.from(signature,'base64url')),true);
+  const changed={...six,action:'open'};assert.equal(edVerify(null,new TextEncoder().encode(core.signingJSON(changed)),publicKey,Buffer.from(signature,'base64url')),false);
 });

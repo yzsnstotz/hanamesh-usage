@@ -13,7 +13,7 @@ const server=createServer(async(request,response)=>{
   const row={method:request.method,path:url.pathname,body:parsed};if(record)await appendFile(record,JSON.stringify(row)+'\n',{mode:0o600});
   response.setHeader('content-type','application/json');
   if(request.method==='POST'&&url.pathname==='/v1/usage/events'){
-    const events=Array.isArray(parsed?.events)?parsed.events:[];const rejected=[];let accepted=0,duplicates=0;
+    const events=Array.isArray(parsed)?parsed:[];const rejected=[];let accepted=0,duplicates=0;
     for(const event of events){if(event===null||typeof event!=='object'||Object.keys(event).sort().join('|')!==seven){rejected.push({eventId:typeof event?.eventId==='string'?event.eventId:'invalid',code:'USAGE_INPUT_INVALID'});continue;}if(seen.has(event.eventId))duplicates++;else{seen.add(event.eventId);accepted++;}}
     response.end(JSON.stringify({accepted,duplicates,rejected,durability:'committed'}));return;
   }

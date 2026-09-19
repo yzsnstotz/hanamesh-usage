@@ -90,3 +90,12 @@
 - 下一步：完成 Git main/tag/readiness 与 docs `STATUS.md` 登记；随后由用户决定何时用有模型 key 的隔离 profile 补 U25，并在 P1/O1 登记后分别补 REAL_CORE/REAL_SERVER。
 - 什么还没验证：U25 真实模型会话与 `hanamesh_usage` Declaration unit 真实 SIGKILL；三条 boundary 各自的真实 kill；P1 REAL_CORE；O1 REAL_SERVER；非 macOS PLAT。
 - 新阻塞：U25 无隔离模型 key；P1/O1 尚未登记到货；无 `mayn` 执行通道。其余实现与 STANDIN/STUB/REAL_HOST/REAL_BROWSER 门已按证据标签收口。
+
+## rc.5 · O3 阶段 3（S06）真实 O1 宿主门暴露的契约缺口（本机 2026-09-20）
+
+- 判定：rc.4 只对本仓 STUB 服务器验过上报。O3 S06 用真实 `hanamesh-server@0.2.0-rc.2` + 一次性 PG 跑 SI15 时，同意后 153 条待传全部 `UPLOAD_UNAVAILABLE`、sent 0。根因两处，均为本包与 O1 冻结契约（`hanamesh-server-usage/docs/API.md`）不一致：① 上传 body 用 `{events:[…]}` 信封，服务端只收 1–200 项裸数组（400 `USAGE_INPUT_INVALID`）；② 事件签名输入用「键按码点排序」的 canonicalJSON，服务端验签用固定顺序 `JSON.stringify({deviceId,hanaRef,action,occurredAt,eventId,nonce})`。
+- 补齐：`src/core/canonical.ts` 新增 `signingJSON`（固定顺序六键）并用于 `signUsageEvent`；`src/host/upload.js` body 改为裸数组；`test/fixtures/server-stub.mjs` 与 U12/U13 测试改为服务端口径。`canonicalJSON` 保留给本地去重/摘要，不再用于签名。
+- SOURCE：99/99、8/8 `ERR_ASSERTION` 突变、`check` 通过；tgz `hanamesh-usage-0.2.0-rc.5.tgz` SHA-256 `d0e66da926174e5bf8843a850601fdd39225bb69dd9e0da60ef67935ce2575b4`。
+- REAL_SERVER：见 `hanamesh-core/docs/acceptance/suite-o3-20260920/stage3/`（core rc.12 + usage rc.5 复跑 S06）。
+
+rc.5 上限 🧪，不是用户 ACCEPTED。
