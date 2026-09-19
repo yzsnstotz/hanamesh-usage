@@ -1,15 +1,15 @@
 // @ts-check
-import { ActivityError, ActivityStore, commitAfterSource, projectTerminal } from '../core/index.js';
+import { UsageError, UsageStore, commitAfterSource, projectTerminal } from '../core/index.js';
 import { mountTransport } from './transport.js';
 
 /**
  * @param {import('@deepseek-ai/cordis').Context} ctx
- * @param {import('@hanamesh/dsh-agent-registry').HanaMeshAgentRegistry} registry
+ * @param {{readBinding(id: import('@deepseek-ai/dsh-session').SessionId): Promise<import('../core/index.js').BindingObservation | undefined>} | null} registry
  * @param {{global: import('../core/index.js').GlobalPort, close(): Promise<void>}} domain
  * @param {Required<import('./contracts.js').Config>} config
  */
-export function mountActivity(ctx, registry, domain, config) {
-  const store = new ActivityStore(domain.global, config.maxRecords);
+export function mountUsage(ctx, registry, domain, config) {
+  const store = new UsageStore(domain.global, config.maxRecords);
   /** @type {Map<string, {dirty: boolean, session: import('@deepseek-ai/dsh-session').Session}>} */
   const pending = new Map();
   /** @type {Record<string, number>} */
@@ -20,13 +20,13 @@ export function mountActivity(ctx, registry, domain, config) {
   /** Bounded code-only diagnostics: never print raw errors, sessions or payloads. @param {unknown} error */
   const note = (error) => {
     const allowed = ['CAPACITY_REACHED','SOURCE_IDENTITY_CONFLICT','NO_DURABILITY_LISTENER','SOURCE_NOT_DURABLE','QUEUE_FULL','BINDING_ID_MISMATCH','INVALID_SOURCE_ID','INVALID_DECLARATION'];
-    const code = error instanceof ActivityError && allowed.includes(error.code) ? error.code : 'OBSERVATION_FAILED';
+    const code = error instanceof UsageError && allowed.includes(error.code) ? error.code : 'OBSERVATION_FAILED';
     failures[code] = (failures[code] ?? 0) + 1;
   };
   /** @param {import('@deepseek-ai/dsh-session').SessionId} id */
   async function bindingFor(id) {
     // Read-only public contract. Never call create/resume, or register another registry.
-    return await registry.readBinding(id);
+    return registry ? await registry.readBinding(id) : undefined;
   }
   /**
    * @param {import('@deepseek-ai/dsh-session').SessionId} id
@@ -37,14 +37,13 @@ export function mountActivity(ctx, registry, domain, config) {
     try {
       const read = await handle.read(expected.seq, 1);
       const actual = read.events[0];
-      if (!actual || actual.type !== 'turn/end' || actual.seq !== expected.seq || actual.time !== expected.time || actual.data.turn !== expected.data.turn || actual.data.reason.kind !== expected.data.reason.kind) throw new ActivityError('SOURCE_NOT_DURABLE');
+      if (!actual || actual.type !== 'turn/end' || actual.seq !== expected.seq || actual.time !== expected.time || actual.data.turn !== expected.data.turn || actual.data.reason.kind !== expected.data.reason.kind) throw new UsageError('SOURCE_NOT_DURABLE');
     } finally { await handle.close(); }
   }
   /** @param {import('@deepseek-ai/dsh-session').Session} session */
   async function observeLive(session) {
     const events = session.snapshotEvents();
     const binding = await bindingFor(session.id);
-    if (!binding) return; // Do not claim an unowned DSH session is a Registry observation.
     /** @type {import('../core/index.js').SessionObservation} */
     const input = {
       sessionId: session.id, events, inheritedEventCount: session.inheritedEventCount,
@@ -58,7 +57,7 @@ export function mountActivity(ctx, registry, domain, config) {
       const record = projectTerminal(input, end);
       await commitAfterSource(async () => {
         flush ??= ctx.sessions.flush(session).then(participated => {
-          if (!participated) throw new ActivityError('NO_DURABILITY_LISTENER');
+          if (!participated) throw new UsageError('NO_DURABILITY_LISTENER');
         });
         await flush;
         await verifyTerminal(session.id, end);
@@ -70,7 +69,6 @@ export function mountActivity(ctx, registry, domain, config) {
     const live = ctx.sessions.get(id);
     if (live) return await observeLive(live);
     const binding = await bindingFor(id);
-    if (!binding) return;
     const handle = await ctx.sessionPersistence.open(id, 'read');
     try {
       const { events } = await handle.read();
@@ -94,7 +92,7 @@ export function mountActivity(ctx, registry, domain, config) {
     if (closing) return;
     const existing = pending.get(session.id);
     if (existing) { existing.dirty = true; existing.session = session; return; }
-    if (pending.size >= config.maxPending) { note(new ActivityError('QUEUE_FULL')); recoveryComplete = false; return; }
+    if (pending.size >= config.maxPending) { note(new UsageError('QUEUE_FULL')); recoveryComplete = false; return; }
     const item = { dirty: true, session };
     pending.set(session.id, item);
     jobs = jobs.then(async () => {
@@ -109,13 +107,13 @@ export function mountActivity(ctx, registry, domain, config) {
     query: (filter = {}) => store.query(filter),
     /** @param {import('../core/index.js').Filter} [filter] */
     export: (filter = {}) => {
-      if (!config.allowExport) throw new ActivityError('EXPORT_DISABLED');
+      if (!config.allowExport) throw new UsageError('EXPORT_DISABLED');
       return store.export(filter);
     },
     health: () => ({ pending: pending.size, recoveryComplete, failures: { ...failures } }),
     async drain() { await jobs; await store.drain(); },
     async reconcile() {
-      if (closing) throw new ActivityError('STORE_CLOSED');
+      if (closing) throw new UsageError('STORE_CLOSED');
       const run = jobs.then(async () => {
         let complete = true;
         for (const snapshot of await ctx.sessionPersistence.list()) {
@@ -135,7 +133,7 @@ export function mountActivity(ctx, registry, domain, config) {
       await run;
     },
   };
-  ctx.provide('hanameshActivity', api);
+  ctx.provide('hanameshUsage', api);
   // CLI-only hosts still record locally. This child mounts only when Connection exists.
   ctx.inject(['connection'], child => { mountTransport(child, api); });
   const ready = api.reconcile().catch(error => { note(error); recoveryComplete = false; });

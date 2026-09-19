@@ -1,7 +1,7 @@
 import { MemoryGlobal, session, root } from './helpers.mjs';
 import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
-const {mountActivity}=await import(pathToFileURL(resolve(root,'lib/host/mount.js')).href);
+const {mountUsage}=await import(pathToFileURL(resolve(root,'lib/host/mount.js')).href);
 /** Strictly a FIXTURE of the documented calls, not Cordis/Registry/DSH itself. */
 export async function fixtureHost({live=true,participated=true,persisted=true,bound=true,snapshot,allowExport=false,inheritedEventCount=0,throwRead=false}={}) {
   const input=session({inheritedEventCount}), log=[], handlers=new Map(), g=new MemoryGlobal(snapshot);
@@ -21,7 +21,7 @@ export async function fixtureHost({live=true,participated=true,persisted=true,bo
   };
   const registry={readBinding:async()=>bound?input.binding:undefined};
   const domain={global:g,close:async()=>{closes++;}};
-  const mounted=mountActivity(ctx,registry,domain,{maxRecords:5000,maxPending:128,allowExport});
+  const mounted=mountUsage(ctx,registry,domain,{maxRecords:5000,maxPending:128,allowExport});
   await mounted.ready;
   return {...mounted,log,g,input,s,ctx,handlers,get domainCloses(){return closes;},get handleCloses(){return handleCloses;}};
 }

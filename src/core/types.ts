@@ -37,7 +37,7 @@ export interface Declaration {
     terminalSeq: number;
     /** The Registry version this record was observed under (recorded, not asserted). */
     registryVersion: string;
-    dshVersion: '0.1.5-alpha.1';
+    dshVersion: string;
     sampleKind: 'runtime_observation' | 'synthetic';
   };
   /** Reserved for later protocol owners; v1 neither populates nor verifies them. */

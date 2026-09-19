@@ -1,4 +1,6 @@
 # 终结通知不是持久证据：活动摘要必须后于原 session
+
+> 模块现名：`hanamesh-usage`；历史 learning ID 与文件名保留。
 ID: ACTIVITY-001
 模块/标签: MOD-11、activity、durability/privacy
 状态: VERIFIED
@@ -18,7 +20,7 @@ session/event 可在原始终结事件还未持久化时触发。此时提交活
 只观察事件或读取持久层缓存不足以证明落盘。通过 `commitAfterSource` 顺序执行原 session 屏障、复读 terminal、摘要一次完整镜像写入。没有持久监听者或复读不一致就不写摘要；重启从源只读补扫。不要以本模块名义修复源日志或创造 interrupted 终结。
 
 ## 修复／复用办法
-`src/host/mount.js` live/cold 路径共用顺序函数；`src/core/store.ts` 一次 global.set 使摘要与身份同生效；计数派生不另存。域名 `hanamesh_activity`，single 布局。注入 `storageDomain` 服务而不只等待 storage hub，并由插件自己的 effect 关闭返回的 domain。
+`src/host/mount.js` live/cold 路径共用顺序函数；`src/core/store.ts` 一次 global.set 使摘要与身份同生效；计数派生不另存。域名现为 `hanamesh_usage`，single 布局。注入 `storageDomain` 服务而不只等待 storage hub，并由插件自己的 effect 关闭返回的 domain。
 
 原始内容不进入摘要；统一 allowlist 逐字段投影，错误仅固定摘要，导出默认禁用；样本均为 synthetic。来源明确不代表允许公开 session 身份。
 

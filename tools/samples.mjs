@@ -8,5 +8,5 @@ writeFileSync(`${dir}/redaction-after.synthetic.json`,JSON.stringify({evidence:'
 const sample=[record({id:'fixture-unknown',provider:null}),withUsage(record({id:'fixture-zero'}),'reported',0),withUsage(record({id:'fixture-reported'}),'reported',7),withUsage(record({id:'fixture-estimated'}),'estimated',3),record({id:'fixture-failed',kind:'error'}),record({id:'fixture-interrupted',kind:'aborted'})];
 for(const r of sample)core.validateDeclaration(r);const query=core.queryRecords(sample);
 writeFileSync(`${dir}/records.synthetic.json`,JSON.stringify({evidence:'FIXTURE_ONLY_NORMALIZED_NUMBERS_NOT_DSH_TOKENUSAGE',query},null,2)+'\n');
-writeFileSync(`${dir}/activity.synthetic.html`,core.renderActivity(query));
+writeFileSync(`${dir}/usage.synthetic.html`,core.renderUsage(query));
 console.log(JSON.stringify({evidence:'FIXTURE_NOT_SCREENSHOT_NOT_REAL_UI',samples:sample.length,aggregate:query.aggregate.totalTokens,redaction:'SYNTHETIC_BEFORE_AFTER_WRITTEN'}));

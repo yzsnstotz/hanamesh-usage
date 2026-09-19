@@ -4,7 +4,7 @@ export function validateConsistency(v){
   const text=x=>typeof x==='string'&&x.trim().length>0;
   const demand=(ok,msg)=>{if(!ok)throw Error(`INVALID_CONSISTENCY:${msg}`);};
   demand(obj(v),'object');demand(Object.keys(v).every(k=>['module','groups','boundaries','exempt','why'].includes(k)),'unknown-field');
-  demand(v.module==='activity','module');demand(typeof v.exempt==='boolean','exempt');demand(Array.isArray(v.groups)&&Array.isArray(v.boundaries),'arrays');
+  demand(v.module==='hanamesh-usage','module');demand(typeof v.exempt==='boolean','exempt');demand(Array.isArray(v.groups)&&Array.isArray(v.boundaries),'arrays');
   if(v.exempt||v.groups.length===0)demand(text(v.why),'empty-reason');
   if(v.exempt)demand(v.groups.length===0&&v.boundaries.length===0,'exempt-state');
   const names=new Set();

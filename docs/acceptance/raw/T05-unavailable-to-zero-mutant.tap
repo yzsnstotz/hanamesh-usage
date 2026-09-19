@@ -2,9 +2,9 @@ TAP version 13
 # Subtest: T04 FIXTURE: unknown is null with reason, NOT zero
 not ok 1 - T04 FIXTURE: unknown is null with reason, NOT zero
   ---
-  duration_ms: 1.209916
+  duration_ms: 1.28325
   type: 'test'
-  location: '/Users/yzliu/work/projects/hanamesh/hanamesh-plugin-activity/tests/core.test.mjs:15:1'
+  location: '/Users/yzliu/work/projects/hanamesh/.worktrees/p2-usage/tests/core.test.mjs:16:1'
   failureType: 'testCodeFailure'
   error: |-
     Expected values to be strictly equal:
@@ -19,7 +19,7 @@ not ok 1 - T04 FIXTURE: unknown is null with reason, NOT zero
   actual: 'reported'
   operator: 'strictEqual'
   stack: |-
-    TestContext.<anonymous> (file:///Users/yzliu/work/projects/hanamesh/hanamesh-plugin-activity/tests/core.test.mjs:17:10)
+    TestContext.<anonymous> (file:///Users/yzliu/work/projects/hanamesh/.worktrees/p2-usage/tests/core.test.mjs:18:10)
     Test.runInAsyncScope (node:async_hooks:214:14)
     Test.run (node:internal/test_runner/test:1103:25)
     Test.start (node:internal/test_runner/test:1000:17)
@@ -33,4 +33,4 @@ not ok 1 - T04 FIXTURE: unknown is null with reason, NOT zero
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 34.311416
+# duration_ms 33.712792

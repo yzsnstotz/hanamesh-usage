@@ -2,7 +2,7 @@ TAP version 13
 # Subtest: X03 FIXTURE POSIX: SIGKILL between writes leaves source, never source-less summary
 ok 1 - X03 FIXTURE POSIX: SIGKILL between writes leaves source, never source-less summary
   ---
-  duration_ms: 119.590458
+  duration_ms: 117.032958
   type: 'test'
   ...
 # {"evidence":"FIXTURE_POSIX_NOT_DSH","label":"between-first-and-second-durable-side","code":null,"signal":"SIGKILL","sourcePresent":true,"summaryCount":0}
@@ -14,4 +14,4 @@ ok 1 - X03 FIXTURE POSIX: SIGKILL between writes leaves source, never source-les
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 151.292125
+# duration_ms 149.115959

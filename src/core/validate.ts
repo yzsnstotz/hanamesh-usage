@@ -1,8 +1,8 @@
 import type { Declaration, Snapshot } from './types.js';
-import { ActivityError, isObject, safeMetadata, sourceId } from './privacy.js';
+import { UsageError, isObject, safeMetadata, sourceId } from './privacy.js';
 import { eventReference } from './project.js';
 
-function assert(value: unknown): asserts value { if (!value) throw new ActivityError('INVALID_DECLARATION'); }
+function assert(value: unknown): asserts value { if (!value) throw new UsageError('INVALID_DECLARATION'); }
 function keys(value: unknown, names: readonly string[]): asserts value is Record<string, unknown> {
   assert(isObject(value));
   assert(Object.keys(value).sort().join('|') === [...names].sort().join('|'));
@@ -41,7 +41,7 @@ export function validateDeclaration(v: unknown): asserts v is Declaration {
   if (time.startedAt.state !== 'unavailable' && time.endedAt.state !== 'unavailable') assert(time.endedAt.value >= time.startedAt.value);
   keys(v.usage,['inputTokens','outputTokens','totalTokens']); for (const item of Object.values(v.usage)) obs(item,'number');
   keys(v.provenance,['source','eventType','terminalSeq','registryVersion','dshVersion','sampleKind']);
-  assert(v.provenance.source === 'registry-session-log' && v.provenance.eventType === 'turn/end' && typeof v.provenance.registryVersion === 'string' && /^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/.test(v.provenance.registryVersion) && v.provenance.dshVersion === '0.1.5-alpha.1');
+  assert(v.provenance.source === 'registry-session-log' && v.provenance.eventType === 'turn/end' && typeof v.provenance.registryVersion === 'string' && /^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/.test(v.provenance.registryVersion) && typeof v.provenance.dshVersion === 'string' && v.provenance.dshVersion.length > 0);
   assert(typeof v.provenance.terminalSeq === 'number' && Number.isSafeInteger(v.provenance.terminalSeq) && v.provenance.terminalSeq >= 0);
   assert(['runtime_observation','synthetic'].includes(String(v.provenance.sampleKind)));
   assert(v.evidenceCommitment === null && v.signature === null && v.policyVersion === null);

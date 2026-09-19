@@ -1,4 +1,6 @@
 # 缺少 TokenUsage 公开字段时，未知不能伪装成 reported 0
+
+> 模块现名：`hanamesh-usage`；历史 learning ID 与文件名保留。
 ID: ACTIVITY-002
 模块/标签: MOD-11、activity、contracts/missing-values
 状态: OBSERVED

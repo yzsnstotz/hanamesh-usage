@@ -1,11 +1,11 @@
 import type { Declaration, EventObservation, Observation, ResultState, SessionObservation } from './types.js';
 import { DSH_VERSION, REGISTRY_VERSION } from './pins.js';
 import type { TokenUsage } from '@deepseek-ai/dsh-llm';
-import { ActivityError, missing, numberValue, object, sourceId, text } from './privacy.js';
+import { UsageError, missing, numberValue, object, sourceId, text } from './privacy.js';
 
 export function eventReference(sessionId: string, turn: number): string {
   sourceId(sessionId);
-  if (!Number.isSafeInteger(turn) || turn < 0) throw new ActivityError('INVALID_TURN');
+  if (!Number.isSafeInteger(turn) || turn < 0) throw new UsageError('INVALID_TURN');
   return JSON.stringify([sessionId, 'turn/end', turn]);
 }
 /** Vocabulary translation only. Unknown/blocked/ceiling outcomes are NOT successes. */
@@ -63,12 +63,12 @@ function tokenUsage(events: readonly EventObservation[], startSeq: number, endSe
 
 export function projectTerminal(session: SessionObservation, end: EventObservation): Declaration {
   const sid = sourceId(session.sessionId);
-  if (end.type !== 'turn/end' || !Number.isSafeInteger(end.seq) || end.seq < session.inheritedEventCount) throw new ActivityError('NOT_OWN_TERMINAL');
+  if (end.type !== 'turn/end' || !Number.isSafeInteger(end.seq) || end.seq < session.inheritedEventCount) throw new UsageError('NOT_OWN_TERMINAL');
   const data = object(end.data);
-  if (typeof data.turn !== 'number') throw new ActivityError('INVALID_TURN');
+  if (typeof data.turn !== 'number') throw new UsageError('INVALID_TURN');
   const ref = eventReference(sid, data.turn);
   const binding = session.binding;
-  if (binding && binding.sessionId !== sid) throw new ActivityError('BINDING_ID_MISMATCH');
+  if (binding && binding.sessionId !== sid) throw new UsageError('BINDING_ID_MISMATCH');
   const starts = session.events.filter(e => e.type === 'turn/start' && object(e.data).turn === data.turn && e.seq >= session.inheritedEventCount && e.seq < end.seq);
   const start = starts.at(-1);
   const ownedStart = start?.seq ?? session.inheritedEventCount;

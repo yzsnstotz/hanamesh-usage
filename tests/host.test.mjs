@@ -20,8 +20,9 @@ test('cold replay is read-only, flushes source and deduplicates second reconcili
   const h=await fixtureHost({live:false});assert.equal(h.api.query().total,1);assert(h.log.indexOf('cold.flush')<h.log.indexOf('summary.set'));
   await h.api.reconcile();assert.equal(h.api.query().total,1);assert.equal(h.g.writes,1);await h.close();
 });
-test('DSH session without Registry binding is not mislabeled as Registry execution',async()=>{
-  const h=await fixtureHost({bound:false});assert.equal(h.api.query().total,0);assert.equal(h.g.writes,0);await h.close();
+test('U02 DSH session without Registry binding is recorded with honest unavailable executor',async()=>{
+  const h=await fixtureHost({bound:false});assert.equal(h.api.query().total,1);assert.equal(h.g.writes,1);
+  assert.equal(h.api.query().records[0].executor.id.reason,'binding_unavailable');await h.close();
 });
 test('fork inherited end is skipped on both live and cold paths',async()=>{
   for(const live of [true,false]){const h=await fixtureHost({live,inheritedEventCount:3});assert.equal(h.api.query().total,0);await h.close();}

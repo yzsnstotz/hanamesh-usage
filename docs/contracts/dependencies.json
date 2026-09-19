@@ -1,24 +1,12 @@
 {
-  "runtimeRegistry": {
-    "package": "@hanamesh/dsh-agent-registry",
-    "version": "0.1.0-rc.3",
-    "artifact": "vendor/hanamesh-dsh-agent-registry-0.1.0-rc.3.tgz",
-    "sha256": "19b38baac0220d8912e0d0714150fce259d9fa8d391c1d536421e6721f8a4e9e",
-    "dispatchStatus": "DELIVERED (rc.3 candidate; rc.2 is the ACCEPTED baseline)",
-    "dispatchLedgerCommit": "pending",
-    "packagingSourceCommit": "uncommitted-at-repin"
-  },
-  "uiKit": {
-    "requiredVersion": "0.1.0-rc.3",
-    "artifact": null,
+  "hanameshCore": {
+    "protocolVersion": "1",
+    "contract": "docs/contracts/hanamesh-core/contract.d.ts",
     "sha256": null,
-    "module": "hanamesh-ui-kit",
-    "requiredArtifactName": "hanamesh-ui-kit-0.1.0-rc.3.tgz",
-    "packageNameVerified": false
+    "standin": true
   },
   "host": {
     "version": "0.1.5-alpha.1",
     "commit": "5dda764ed3aa172535a7967b06ff95d9cbfe536a"
-  },
-  "archiveSha256": "173dcf7dabd301e1c49783397a6969e302263694999e2692536c9a810061d321"
+  }
 }

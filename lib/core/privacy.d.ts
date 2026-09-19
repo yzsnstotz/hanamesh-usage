@@ -1,5 +1,5 @@
 import type { MissingReason, Observation, ValueSource, Declaration } from './types.js';
-export declare class ActivityError extends Error {
+export declare class UsageError extends Error {
     readonly code: string;
     constructor(code: string);
 }

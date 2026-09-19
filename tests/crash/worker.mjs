@@ -11,18 +11,18 @@ function pause(label){
 }
 if(mode==='group'){
   const global=await FileGlobal.open(summary,stage=>stage===point?pause(stage):Promise.resolve());
-  await new core.ActivityStore(global).put(record());throw Error('INJECTION_WAS_NOT_REACHED');
+  await new core.UsageStore(global).put(record());throw Error('INJECTION_WAS_NOT_REACHED');
 }else if(mode==='boundary'){
   let writes=0;
   const after=async()=>{writes++;if(writes===1)await pause('between-first-and-second-durable-side');};
-  const store=new core.ActivityStore(await FileGlobal.open(summary));
+  const store=new core.UsageStore(await FileGlobal.open(summary));
   await core.commitAfterSource(async()=>{await atomicJson(source,session());await after();},async()=>{await store.put(record());await after();});
   throw Error('INJECTION_WAS_NOT_REACHED');
 }else if(mode==='inspect'){
-  const raw=await readJson(source,null),store=new core.ActivityStore(await FileGlobal.open(summary)),q=store.query();
+  const raw=await readJson(source,null),store=new core.UsageStore(await FileGlobal.open(summary)),q=store.query();
   console.log(JSON.stringify({sourcePresent:raw!==null,summaryCount:q.total,hasIdentity:q.records.every(r=>r.eventRef===core.eventReference(r.execution.sessionId,r.execution.turn)),records:q.records}));
 }else if(mode==='recover'){
-  const input=await readJson(source,null),store=new core.ActivityStore(await FileGlobal.open(summary));
+  const input=await readJson(source,null),store=new core.UsageStore(await FileGlobal.open(summary));
   if(input){const r=core.projectTerminal(input,input.events.at(-1));await store.put(r);await store.put(r);}
   console.log(JSON.stringify({total:store.query().total}));
 }else throw Error('UNKNOWN_MODE');
