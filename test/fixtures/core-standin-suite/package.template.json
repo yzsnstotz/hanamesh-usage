@@ -1,0 +1,16 @@
+{
+  "name": "hanamesh-core-standin-suite",
+  "version": "0.0.1-standin",
+  "description": "P2 duplicate bundle demonstration only",
+  "type": "module",
+  "main": "lib/index.js",
+  "files": ["lib", "profile", "README.md"],
+  "private": true,
+  "dsh": {"bundle": {"patch": "./profile/cordis.patch.yml"}},
+  "dependencies": {"hanamesh-usage": "0.2.0-rc.4"},
+  "bundledDependencies": ["hanamesh-usage"],
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "4.0.2",
+    "@deepseek-ai/dsh-client-connection": "0.1.5-alpha.1"
+  }
+}

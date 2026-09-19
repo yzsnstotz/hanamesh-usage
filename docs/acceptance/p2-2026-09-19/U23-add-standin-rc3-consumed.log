@@ -1,0 +1,36 @@
+Progress: resolved 0, reused 1, downloaded 0, added 0
+ WARN  Issues with peer dependencies found
+.
+├─┬ hanamesh-core-standin 0.0.0-standin
+│ ├── ✕ missing peer @deepseek-ai/cordis@4.0.2
+│ └── ✕ missing peer @deepseek-ai/dsh-client-connection@0.1.5-alpha.1
+└─┬ hanamesh-usage 0.2.0-rc.3
+  ├── ✕ missing peer @deepseek-ai/cordis@4.0.2
+  ├── ✕ missing peer @deepseek-ai/dsh-client-connection@0.1.5-alpha.1
+  ├── ✕ missing peer @deepseek-ai/dsh-agent@0.1.5-alpha.1
+  ├── ✕ missing peer @deepseek-ai/dsh-attachment@0.1.5-alpha.1
+  ├── ✕ missing peer @deepseek-ai/dsh-llm@0.1.5-alpha.1
+  ├── ✕ missing peer @deepseek-ai/dsh-session@0.1.5-alpha.1
+  ├── ✕ missing peer @deepseek-ai/dsh-session-persistence@0.1.5-alpha.1
+  ├── ✕ missing peer @deepseek-ai/dsh-storage@0.1.5-alpha.1
+  ├── ✕ missing peer @deepseek-ai/dsh-storage-domain@0.1.5-alpha.1
+  └── ✕ missing peer zod@4.5.4
+Peer dependencies that should be installed:
+  @deepseek-ai/cordis@4.0.2
+  @deepseek-ai/dsh-agent@0.1.5-alpha.1
+  @deepseek-ai/dsh-attachment@0.1.5-alpha.1
+  @deepseek-ai/dsh-client-connection@0.1.5-alpha.1
+  @deepseek-ai/dsh-llm@0.1.5-alpha.1
+  @deepseek-ai/dsh-session-persistence@0.1.5-alpha.1
+  @deepseek-ai/dsh-session@0.1.5-alpha.1
+  @deepseek-ai/dsh-storage-domain@0.1.5-alpha.1
+  @deepseek-ai/dsh-storage@0.1.5-alpha.1
+  zod@4.5.4
+
+dependencies:
++ hanamesh-core-standin file:/Users/yzliu/work/projects/hanamesh/.worktrees/p2-usage/test/fixtures/core-standin/hanamesh-core-standin-0.0.0-standin.tgz
+
+Packages: +1
++
+Progress: resolved 2, reused 2, downloaded 0, added 1, done
+Done in 207ms using pnpm v10.33.0

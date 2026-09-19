@@ -1,0 +1,6 @@
+- insert:
+    - id: hanamesh-core-standin
+      name: hanamesh-core-standin
+      config:
+        serverOrigin: null
+        initialConsent: withheld

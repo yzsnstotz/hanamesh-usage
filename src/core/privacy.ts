@@ -1,7 +1,7 @@
 import type { MissingReason, Observation, ValueSource, Declaration } from './types.js';
 
-export class ActivityError extends Error {
-  constructor(public readonly code: string) { super(code); this.name = 'ActivityError'; }
+export class UsageError extends Error {
+  constructor(public readonly code: string) { super(code); this.name = 'UsageError'; }
 }
 export function missing<T>(reason: MissingReason): Observation<T> {
   return { state: 'unavailable', value: null, reason };
@@ -15,7 +15,7 @@ export function safeMetadata(value: unknown): value is string {
     && !/^(?:0x)?[0-9a-f]{64}$/i.test(value);
 }
 export function sourceId(value: unknown): string {
-  if (!safeMetadata(value) || value.length > 128 || /[/@+]/.test(value)) throw new ActivityError('INVALID_SOURCE_ID');
+  if (!safeMetadata(value) || value.length > 128 || /[/@+]/.test(value)) throw new UsageError('INVALID_SOURCE_ID');
   return value;
 }
 export function text(value: unknown, source: ValueSource, reason: MissingReason = 'not_provided'): Observation<string> {

@@ -7,7 +7,7 @@ test('T09 FIXTURE ONLY: prompt, paths, files, full result and credentials never 
   s.binding.workspace='/home/SYNTHETIC_PRIVATE_PERSON/work';s.binding.authRef='SYNTHETIC_PRIVATE_AUTH';s.binding.externalSessionId='SYNTHETIC_PRIVATE_THREAD';
   s.events.splice(2,0,{type:'user/message',seq:2,time:1020,data:{turn:0,content:'SYNTHETIC_PRIVATE_PROMPT',attachments:['/home/SYNTHETIC_PRIVATE_FILE']}});
   s.events.at(-1).seq=3;s.events.at(-1).data.reason.error={message:'SYNTHETIC_PRIVATE_RESULT',apiKey:'sk-SYNTHETIC_PRIVATE_KEY'};
-  const r=core.projectTerminal(s,s.events.at(-1)),store=new core.ActivityStore(new MemoryGlobal());await store.put(r);
+  const r=core.projectTerminal(s,s.events.at(-1)),store=new core.UsageStore(new MemoryGlobal());await store.put(r);
   const exported=JSON.stringify(store.export());assert.doesNotMatch(exported,/SYNTHETIC_PRIVATE|SYNTHETIC_ERROR|sk-/);
   assert.doesNotMatch(exported,/"(?:prompt|content|attachments|workspace|authRef|externalSessionId)"/);
   assert.match(exported,/runtime_error_details_withheld/);assert.match(exported,/synthetic/);
@@ -27,7 +27,7 @@ test('export allowlist drops future local-only properties and untrusted eventRef
 test('HTML escapes unsafe content instead of executable markup',()=>{
   assert.equal(core.escapeHtml(`<script>&"'`),'&lt;script&gt;&amp;&quot;&#39;');
   const q=core.queryRecords([record()]);q.records[0].executor.id.value='<img src=x onerror=alert(1)>';
-  const html=core.renderActivity(q);assert.doesNotMatch(html,/<img/);assert.match(html,/&lt;img/);
+  const html=core.renderUsage(q);assert.doesNotMatch(html,/<img/);assert.match(html,/&lt;img/);
 });
 test('T10 SOURCE/SCHEMA: no local economic assertions and reserved attestation fields stay null',()=>{
   const r=record();for(const key of ['VUC','vuc','canonicalVuc','reward','rewards','settlement','settlementAmount','rewardAmount'])assert.equal(Object.hasOwn(r,key),false);

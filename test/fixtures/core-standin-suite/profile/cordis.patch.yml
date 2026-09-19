@@ -1,0 +1,12 @@
+- insert:
+    - id: hanamesh-usage
+      name: hanamesh-usage
+      config:
+        maxRecords: 5000
+        maxPending: 128
+        allowExport: false
+    - id: hanamesh-core-standin
+      name: hanamesh-core-standin-suite
+      config:
+        serverOrigin: null
+        initialConsent: withheld

@@ -1,0 +1,28 @@
+{
+  "evidence": [
+    "REAL_HOST",
+    "SIGKILL"
+  ],
+  "candidate": "0.2.0-rc.4",
+  "signal": "SIGKILL",
+  "oldSize": 31759,
+  "observedSize": 147073,
+  "sha256Before": "3b876305937a5840ec6b26b1ed35cc001644d204b12e7793b9ce2e107680cdd9",
+  "sha256After": "24e20b97a971f9d0d8d28c59c00c5927e6fdcbbc824f6e963963368e0f00a654",
+  "validJson": true,
+  "unit": {
+    "name": "hanamesh_usage_events",
+    "version": 1
+  },
+  "schemaVersion": 1,
+  "eventCount": 152,
+  "inventoryItems": 154,
+  "withdrawal": {
+    "requestedAt": "2026-09-19T06:44:49.972Z",
+    "deviceId": "device_P2_STANDIN",
+    "state": "sent",
+    "attempts": 1,
+    "deletedEvents": 152,
+    "lastError": null
+  }
+}

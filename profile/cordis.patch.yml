@@ -1,8 +1,10 @@
-# Only this module's row. Registry and host composition are owned by their modules.
-# Apply after the pinned storage-domain and runtime-registry rows.
+# hanamesh-usage 自己的 bundle 片段（简报 §A.2 Bundle 规则）：只插本模块一条。
+# 单独 `dsh plugin add hanamesh-usage` 时本文件生效；作为 hanamesh-core 的传递依赖时本文件不被读取，由 core 的 patch（同 id hanamesh-usage）激活。
+# 套件与单包互斥：同一 profile 既装了 core 又显式装了本包 → DSH 报 `duplicate loader entry id: hanamesh-usage` 起不来；恢复 = `dsh plugin remove` 其中一方（README §安装）。
+# 新增 config 键 maxEvents / uploadIntervalMs / uploadBatchSize / inventoryIntervalMs 有默认值，这里不写，让 core patch 与本 patch 保持逐字相同；要改在 profile 用户层覆盖。
 - insert:
-    - id: hanamesh-activity
-      name: '@hanamesh/dsh-activity'
+    - id: hanamesh-usage
+      name: hanamesh-usage
       config:
         maxRecords: 5000
         maxPending: 128

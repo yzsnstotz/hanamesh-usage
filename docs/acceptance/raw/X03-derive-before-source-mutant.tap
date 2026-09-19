@@ -1,0 +1,32 @@
+TAP version 13
+# Subtest: U06 source declaration commits before its derived event
+not ok 1 - U06 source declaration commits before its derived event
+  ---
+  duration_ms: 6.060208
+  type: 'test'
+  location: '/Users/yzliu/work/projects/hanamesh/.worktrees/p2-usage/tests/host.test.mjs:42:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+
+      assert(h.log.indexOf('summary.set')<h.log.lastIndexOf('event.set'))
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///Users/yzliu/work/projects/hanamesh/.worktrees/p2-usage/tests/host.test.mjs:44:3)
+    async Test.run (node:internal/test_runner/test:1110:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 44.967041

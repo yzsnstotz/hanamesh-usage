@@ -1,4 +1,11 @@
 import type { QueryResult } from './types.js';
+import type { UsageEvent } from './events.js';
 export declare function escapeHtml(value: unknown): string;
-/** Accessible, unbranded review view. ui-kit composition remains a separate acceptance gate. */
-export declare function renderActivity(query: QueryResult): string;
+/** Server-rendered, script-free local review view. */
+export declare function renderUsage(query: QueryResult, eventQuery?: {
+    total: number;
+    events: UsageEvent[];
+}, health?: {
+    consent?: unknown;
+    outbox?: unknown;
+}): string;

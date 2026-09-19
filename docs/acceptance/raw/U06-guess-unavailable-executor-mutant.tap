@@ -1,0 +1,74 @@
+TAP version 13
+# Subtest: U06 unavailable executor is skipped instead of guessed
+not ok 1 - U06 unavailable executor is skipped instead of guessed
+  ---
+  duration_ms: 2.442833
+  type: 'test'
+  location: '/Users/yzliu/work/projects/hanamesh/.worktrees/p2-usage/tests/derive.test.mjs:17:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + {
+    +   action: 'use',
+    +   deviceId: 'device_A',
+    +   eventId: '3ced0c46-af91-568a-a250-4a80b6f5cfc3',
+    +   evidenceRef: '["fixture-session-1","turn/end",0]',
+    +   hanaRef: 'guessed-executor',
+    +   nonce: 'AQIDBAUGBwgJCgsMDQ4PEA',
+    +   occurredAt: '1970-01-01T00:00:01.100Z',
+    +   schemaVersion: 1,
+    +   signature: null,
+    +   source: 'session-log',
+    +   sourceHanaRef: null,
+    +   sourcePlugin: null,
+    +   targetRef: null,
+    +   upload: {
+    +     attempts: 0,
+    +     code: null,
+    +     sentAt: null,
+    +     state: 'pending'
+    +   }
+    + }
+    - null
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: ~
+  actual:
+    schemaVersion: 1
+    eventId: '3ced0c46-af91-568a-a250-4a80b6f5cfc3'
+    deviceId: 'device_A'
+    hanaRef: 'guessed-executor'
+    action: 'use'
+    occurredAt: '1970-01-01T00:00:01.100Z'
+    nonce: 'AQIDBAUGBwgJCgsMDQ4PEA'
+    signature: ~
+    source: 'session-log'
+    sourcePlugin: ~
+    evidenceRef: '["fixture-session-1","turn/end",0]'
+    sourceHanaRef: ~
+    targetRef: ~
+    upload:
+      state: 'pending'
+      code: ~
+      attempts: 0
+      sentAt: ~
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/yzliu/work/projects/hanamesh/.worktrees/p2-usage/tests/derive.test.mjs:21:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1103:25)
+    Test.start (node:internal/test_runner/test:1000:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 39.078

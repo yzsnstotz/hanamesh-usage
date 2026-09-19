@@ -1,19 +1,37 @@
 {
-  "module": "activity",
+  "module": "hanamesh-usage",
   "groups": [
     {
       "name": "活动摘要与原始执行去重身份",
       "facts": ["summary-record:present", "source-identity:sessionId-turn-end-turn"],
-      "medium": "storage-domain:hanamesh_activity",
+      "medium": "storage-domain:hanamesh_usage",
       "why": "同一记录携带稳定身份，single 布局只有一次 global.set 完整镜像发布；计数由镜像派生，绝不第二次写去重表或计数表。"
+    },
+    {
+      "name": "使用事件与去重身份同次发布",
+      "facts": ["usage-event:present", "event-identity:eventId-nonce", "inventory.last:present"],
+      "medium": "storage-domain:hanamesh_usage_events",
+      "why": "事件、确定性 eventId、首次生成的 nonce 与 inventory.last 在 single 布局的一次 global.set 中完整发布；重放只返回 duplicate，不替换 nonce。"
     }
   ],
   "boundaries": [
     {
-      "name": "DSH 原始终结日志 → 活动摘要",
-      "sides": ["dsh:session-log", "storage-domain:hanamesh_activity"],
-      "safeDirection": "dsh:session-log",
-      "why": "先等待原 session 的显式持久屏障并复读终结事件，再提交摘要；允许只留下原 session，重启只读重放补记，禁止只有活动摘要却没有原终结证据。"
+      "name": "Declaration 镜像 → 使用事件缓冲",
+      "sides": ["storage-domain:hanamesh_usage", "storage-domain:hanamesh_usage_events"],
+      "safeDirection": "storage-domain:hanamesh_usage",
+      "why": "先提交 Declaration，再派生事件；允许只有 Declaration 并由重扫补派生，禁止存在没有 Declaration 来源的 session-log 事件。"
+    },
+    {
+      "name": "本地事件缓冲 ↔ 远端 usage.events",
+      "sides": ["storage-domain:hanamesh_usage_events", "remote:srv_usage_events"],
+      "safeDirection": "remote:srv_usage_events",
+      "why": "先由远端确认接收，再把本地 pending 标为终态；允许远端已有而本地仍 pending 并通过确定性 eventId 重发成 duplicate，禁止本地 sent 而远端未收。"
+    },
+    {
+      "name": "撤回：本地清空 ↔ 远端删除",
+      "sides": ["storage-domain:hanamesh_usage_events", "remote:device_usage_delete"],
+      "safeDirection": "storage-domain:hanamesh_usage_events",
+      "why": "撤回先以一次本地发布清空事件并持久化 pending 记录，再请求远端删除；失败只在本地已空的安全侧重试。"
     }
   ],
   "exempt": false

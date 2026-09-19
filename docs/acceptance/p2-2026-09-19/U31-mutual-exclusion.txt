@@ -1,0 +1,24 @@
+REAL_HOST · DSH 0.1.5-alpha.1 · hanamesh-usage 0.2.0-rc.4 · isolated HOME
+
+suite artifact: hanamesh-core-standin-suite@0.0.1-standin
+  bundles hanamesh-usage@0.2.0-rc.4 under node_modules
+  manifest contains no file:// or /Users/ dependency path
+
+before remove:
+  hanamesh-usage loader rows: 2
+  hanamesh-core-standin loader rows: 1
+
+expected boot failure:
+  duplicate loader entry id: hanamesh-usage
+
+after `dsh plugin --profile usage remove hanamesh-usage`:
+  direct dependency removed
+  suite transitive usage retained
+  hanamesh-usage loader rows: 1
+  hanamesh-core-standin loader rows: 1
+  boot: PASS
+  health: withheld / core present / inventory loader
+  Declaration count before: 0
+  Declaration count after: 0
+
+The zero count is preserved exactly; U25 is separately BLOCKED because this isolated profile has no model key.

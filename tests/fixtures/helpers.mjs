@@ -1,6 +1,6 @@
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
-export const root = resolve(process.env.ACTIVITY_TEST_ROOT ?? fileURLToPath(new URL('../../', import.meta.url)));
+export const root = resolve(process.env.USAGE_TEST_ROOT ?? fileURLToPath(new URL('../../', import.meta.url)));
 export const core = await import(pathToFileURL(resolve(root, 'lib/core/index.js')).href);
 export function session({id='fixture-session-1',turn=0,kind='completed',provider='fixture-provider',model='fixture-model',usage=false,parentSession, inheritedEventCount=0} = {}) {
   const events = [

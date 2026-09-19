@@ -1,0 +1,27 @@
+{
+  "evidence": ["REAL_HOST", "SIGKILL"],
+  "candidate": "0.2.0-rc.4",
+  "unit": "hanamesh_usage_events",
+  "signal": "SIGKILL",
+  "oldSize": 31759,
+  "observedWriteSize": 147073,
+  "sha256BeforeKill": "3b876305937a5840ec6b26b1ed35cc001644d204b12e7793b9ce2e107680cdd9",
+  "sha256AfterKill": "24e20b97a971f9d0d8d28c59c00c5927e6fdcbbc824f6e963963368e0f00a654",
+  "postKillParse": {
+    "validJson": true,
+    "unitVersion": 1,
+    "eventCount": 152,
+    "inventoryItems": 154,
+    "withdrawalState": "sent"
+  },
+  "restart": {
+    "booted": true,
+    "healthRecoveryComplete": true,
+    "consent": "granted",
+    "core": "present",
+    "inventorySource": "loader",
+    "sent": 152,
+    "pending": 0
+  },
+  "verdict": "new complete image survived and the same isolated HOME restarted successfully"
+}
