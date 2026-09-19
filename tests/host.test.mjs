@@ -5,7 +5,7 @@ import {fixtureHost} from './fixtures/host.mjs';
 test('T12 FIXTURE: live source flush/read must precede sidecar write',async()=>{
   const h=await fixtureHost();assert.equal(h.api.query().total,1);
   assert(h.log.indexOf('source.flush')<h.log.indexOf('summary.set'));assert(h.log.indexOf('source.read')<h.log.indexOf('summary.set'));
-  assert.equal(h.api.health().recoveryComplete,true);await h.close();assert.equal(h.domainCloses,1);assert(h.handleCloses>0);
+  assert.equal(h.api.health().recoveryComplete,true);await h.close();assert.equal(h.domainCloses,2);assert(h.handleCloses>0);
 });
 test('live listener absence never creates a falsely durable summary',async()=>{
   const h=await fixtureHost({participated:false});assert.equal(h.api.query().total,0);assert.equal(h.api.health().recoveryComplete,false);assert(h.api.health().failures.NO_DURABILITY_LISTENER>0);await h.close();
@@ -35,5 +35,20 @@ test('export defaults disabled; enabling local policy exposes only projected rec
   const enabled=await fixtureHost({allowExport:true});assert.equal(enabled.api.export().total,1);assert.doesNotMatch(JSON.stringify(enabled.api.export()),/SYNTHETIC_ERROR/);await enabled.close();
 });
 test('T11 FIXTURE ONLY: no connection/cloud module is required for local service',async()=>{
-  const h=await fixtureHost();assert.equal(h.ctx.connection,undefined);assert.equal(h.api.query().total,1);await h.close();await h.close();assert.equal(h.domainCloses,1);
+  const h=await fixtureHost();assert.equal(h.ctx.connection,undefined);assert.equal(h.api.query().total,1);await h.close();await h.close();assert.equal(h.domainCloses,2);
+});
+
+test('U06 source declaration commits before its derived event',async()=>{
+  const h=await fixtureHost({consent:'granted'});assert.equal(h.api.query().total,1);assert.equal(h.api.events().total,1);
+  assert(h.log.indexOf('summary.set')<h.log.indexOf('event.set'));assert.equal(h.api.events().events[0].action,'use');await h.close();
+});
+
+test('U06 derivation failure is bounded and never rolls back the Declaration',async()=>{
+  const h=await fixtureHost({consent:'granted',deviceId:'bad'});assert.equal(h.api.query().total,1);assert.equal(h.api.events().total,0);
+  assert.equal(h.api.health().failures.DERIVE_FAILED,1);assert.equal(h.api.health().recoveryComplete,true);await h.close();
+});
+
+test('U09 mounted service exposes the record seat while withheld remains event-free',async()=>{
+  const h=await fixtureHost();assert.equal(h.api.events().total,0);
+  assert.deepEqual(await h.api.record({hanaRef:'pkg',action:'open',idempotencyKey:'open-1',sourcePlugin:'app-host'}),{disposition:'withheld'});await h.close();
 });

@@ -8,5 +8,12 @@ writeFileSync(`${dir}/redaction-after.synthetic.json`,JSON.stringify({evidence:'
 const sample=[record({id:'fixture-unknown',provider:null}),withUsage(record({id:'fixture-zero'}),'reported',0),withUsage(record({id:'fixture-reported'}),'reported',7),withUsage(record({id:'fixture-estimated'}),'estimated',3),record({id:'fixture-failed',kind:'error'}),record({id:'fixture-interrupted',kind:'aborted'})];
 for(const r of sample)core.validateDeclaration(r);const query=core.queryRecords(sample);
 writeFileSync(`${dir}/records.synthetic.json`,JSON.stringify({evidence:'FIXTURE_ONLY_NORMALIZED_NUMBERS_NOT_DSH_TOKENUSAGE',query},null,2)+'\n');
-writeFileSync(`${dir}/usage.synthetic.html`,core.renderUsage(query));
-console.log(JSON.stringify({evidence:'FIXTURE_NOT_SCREENSHOT_NOT_REAL_UI',samples:sample.length,aggregate:query.aggregate.totalTokens,redaction:'SYNTHETIC_BEFORE_AFTER_WRITTEN'}));
+const eventContext={deviceId:'device_FIXTURE',consent:'granted',nonce:()=> 'AQIDBAUGBwgJCgsMDQ4PEA'};
+const unavailable=record({id:'fixture-no-executor'});unavailable.executor.id={state:'unavailable',value:null,reason:'binding_unavailable'};
+const timeless=record({id:'fixture-no-time'});timeless.time.endedAt={state:'unavailable',value:null,reason:'not_provided'};timeless.time.startedAt={state:'unavailable',value:null,reason:'not_provided'};
+const derivations=[core.deriveUsageEvent(record({id:'fixture-event'}),eventContext),core.deriveUsageEvent(unavailable,eventContext),core.deriveUsageEvent(timeless,eventContext),core.deriveUsageEvent(record({id:'fixture-withheld'}),{...eventContext,consent:'withheld'}),core.deriveUsageEvent(record({id:'fixture-no-device'}),{...eventContext,deviceId:null})];
+const events=derivations.filter(result=>result.event!==null).map(result=>({local:result.event,wire:core.wireEvent(result.event)}));
+const skipped={executorUnavailable:0,timeUnavailable:0,consentWithheld:0,noDevice:0};for(const result of derivations)if(result.skipped!==null)skipped[result.skipped]++;
+writeFileSync(`${dir}/events.synthetic.json`,JSON.stringify({evidence:'FIXTURE_ONLY_NOT_REAL_RUNTIME',events,skipped},null,2)+'\n');
+writeFileSync(`${dir}/usage.synthetic.html`,core.renderUsage(query,{total:events.length,events:events.map(item=>item.local)},{consent:'granted',outbox:{pending:events.length,sent:0,duplicate:0,rejected:0,lastUploadAt:null}}));
+console.log(JSON.stringify({evidence:'FIXTURE_NOT_SCREENSHOT_NOT_REAL_UI',samples:sample.length,events:events.length,skipped,aggregate:query.aggregate.totalTokens,redaction:'SYNTHETIC_BEFORE_AFTER_WRITTEN'}));

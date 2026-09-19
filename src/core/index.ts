@@ -7,3 +7,8 @@ export * from './query.js';
 export * from './store.js';
 export * from './boundary.js';
 export * from './view.js';
+export * from './canonical.js';
+export * from './identity.js';
+export * from './events.js';
+export * from './event-store.js';
+export * from './derive.js';

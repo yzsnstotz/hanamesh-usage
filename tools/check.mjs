@@ -24,6 +24,6 @@ for(const p of sources){
  assert.doesNotMatch(s,/\bconsole\.(?:log|error|warn)\s*\(/,`boundary ${p}`);
 }
 assert.match(read('src/host/index.js'),/storageDomain/);assert.match(read('src/host/index.js'),/layout:\s*'single'/);
-assert.equal((read('src/core/store.ts').match(/await this\.global\.set\(/g)??[]).length,1);
+for(const store of ['src/core/store.ts','src/core/event-store.ts'])assert.equal((read(store).match(/await this\.global\.set\(/g)??[]).length,1,`${store} must publish each mutation with one global.set site`);
 for(const config of ['tsconfig.core.json','tsconfig.host.json']){const c=JSON.parse(read(config));assert.equal(c.compilerOptions.skipLibCheck,false);assert.equal(c.compilerOptions.strict,true);assert.notEqual(c.compilerOptions.noCheck,true);}
-console.log(JSON.stringify({consistencySchemaValid:true,economicFieldMatches:0,bundleRows:1,productionFilesScanned:sources.length,siblingSourceImports:0,lockScope:'PINNED_DEV_BUILD_CLOSURE_NOT_FULL_HOST'},null,2));
+console.log(JSON.stringify({consistencySchemaValid:true,consistencyGroups:2,consistencyBoundaries:2,economicFieldMatches:0,bundleRows:1,productionFilesScanned:sources.length,siblingSourceImports:0,lockScope:'PINNED_DEV_BUILD_CLOSURE_NOT_FULL_HOST'},null,2));

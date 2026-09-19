@@ -1,4 +1,5 @@
-import type { Filter, QueryResult } from '../core/index.js';
+import type { Filter, QueryResult, UploadState, UsageEvent } from '../core/index.js';
+import type {} from '@deepseek-ai/dsh-agent';
 import type {} from '@deepseek-ai/dsh-session-persistence';
 import type {} from '@deepseek-ai/dsh-client-connection';
 export interface Config {
@@ -13,7 +14,9 @@ export interface Config {
 export interface UsageService {
   query(filter?: Filter): QueryResult;
   export(filter?: Filter): QueryResult;
-  health(): { pending: number; recoveryComplete: boolean; failures: Record<string,number> };
+  events(filter?: {state?: UploadState; limit?: number; after?: string}): {total:number;events:UsageEvent[]};
+  record(input: {hanaRef:string;action:'open'|'use';occurredAt?:string;idempotencyKey:string;sourcePlugin:string}): Promise<{disposition:'recorded'|'duplicate'|'withheld'|'rejected';eventId?:string;code?:string}>;
+  health(): Record<string,unknown>;
   drain(): Promise<void>;
   reconcile(): Promise<void>;
 }

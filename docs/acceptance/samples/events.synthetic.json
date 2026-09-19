@@ -1,0 +1,43 @@
+{
+  "evidence": "FIXTURE_ONLY_NOT_REAL_RUNTIME",
+  "events": [
+    {
+      "local": {
+        "schemaVersion": 1,
+        "eventId": "52df12f1-dfd3-558c-93ba-a4fbfced851f",
+        "deviceId": "device_FIXTURE",
+        "hanaRef": "fixture-native",
+        "action": "use",
+        "occurredAt": "1970-01-01T00:00:01.100Z",
+        "nonce": "AQIDBAUGBwgJCgsMDQ4PEA",
+        "signature": null,
+        "source": "session-log",
+        "sourcePlugin": null,
+        "evidenceRef": "[\"fixture-event\",\"turn/end\",0]",
+        "sourceHanaRef": null,
+        "targetRef": null,
+        "upload": {
+          "state": "pending",
+          "code": null,
+          "attempts": 0,
+          "sentAt": null
+        }
+      },
+      "wire": {
+        "deviceId": "device_FIXTURE",
+        "hanaRef": "fixture-native",
+        "action": "use",
+        "occurredAt": "1970-01-01T00:00:01.100Z",
+        "eventId": "52df12f1-dfd3-558c-93ba-a4fbfced851f",
+        "nonce": "AQIDBAUGBwgJCgsMDQ4PEA",
+        "signature": null
+      }
+    }
+  ],
+  "skipped": {
+    "executorUnavailable": 1,
+    "timeUnavailable": 1,
+    "consentWithheld": 1,
+    "noDevice": 1
+  }
+}

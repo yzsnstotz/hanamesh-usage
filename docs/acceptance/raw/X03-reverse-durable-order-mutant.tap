@@ -2,15 +2,15 @@ TAP version 13
 # Subtest: X03 FIXTURE POSIX: SIGKILL between writes leaves source, never source-less summary
 not ok 1 - X03 FIXTURE POSIX: SIGKILL between writes leaves source, never source-less summary
   ---
-  duration_ms: 59.303959
+  duration_ms: 70.278125
   type: 'test'
   location: '/Users/yzliu/work/projects/hanamesh/.worktrees/p2-usage/tests/crash/boundary.test.mjs:3:1'
   failureType: 'testCodeFailure'
   error: |-
     X03 safe side must contain original source
-    
+
     false !== true
-    
+
   code: 'ERR_ASSERTION'
   name: 'AssertionError'
   expected: true
@@ -23,12 +23,19 @@ not ok 1 - X03 FIXTURE POSIX: SIGKILL between writes leaves source, never source
     async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
   ...
 # {"evidence":"FIXTURE_POSIX_NOT_DSH","label":"between-first-and-second-durable-side","code":null,"signal":"SIGKILL","sourcePresent":false,"summaryCount":1}
-1..1
-# tests 1
+# Subtest: X03 FIXTURE POSIX: SIGKILL between Declaration and event leaves the Declaration safe side
+ok 2 - X03 FIXTURE POSIX: SIGKILL between Declaration and event leaves the Declaration safe side
+  ---
+  duration_ms: 68.5575
+  type: 'test'
+  ...
+# {"evidence":"FIXTURE_POSIX_NOT_DSH","label":"between-declaration-and-event","code":null,"signal":"SIGKILL","summaryCount":1,"eventCount":0}
+1..2
+# tests 2
 # suites 0
-# pass 0
+# pass 1
 # fail 1
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 88.091375
+# duration_ms 168.796792

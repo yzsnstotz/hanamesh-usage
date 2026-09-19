@@ -5,4 +5,5 @@ export type { Config, UsageService } from './contracts.js';
 export declare const name: 'hanamesh-usage';
 export declare const inject: string[];
 export declare const usageDomainSpec: DomainSpec;
+export declare const usageEventsDomainSpec: DomainSpec;
 export declare function apply(ctx: Context, config?: Config): Promise<void>;
