@@ -2,7 +2,7 @@ TAP version 13
 # Subtest: U14 401 and 5xx retain pending events, increment attempts and expose only bounded errors
 not ok 1 - U14 401 and 5xx retain pending events, increment attempts and expose only bounded errors
   ---
-  duration_ms: 10.274958
+  duration_ms: 10.182084
   type: 'test'
   location: '/Users/yzliu/work/projects/hanamesh/.worktrees/p2-usage/tests/upload.test.mjs:27:1'
   failureType: 'testCodeFailure'
@@ -31,4 +31,4 @@ not ok 1 - U14 401 and 5xx retain pending events, increment attempts and expose 
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 46.450167
+# duration_ms 47.2295

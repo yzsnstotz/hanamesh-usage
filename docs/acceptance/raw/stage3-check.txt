@@ -1,0 +1,14 @@
+
+> hanamesh-usage@0.2.0-rc.1 check
+> node tools/check.mjs
+
+{
+  "consistencySchemaValid": true,
+  "consistencyGroups": 2,
+  "consistencyBoundaries": 3,
+  "economicFieldMatches": 0,
+  "bundleRows": 1,
+  "productionFilesScanned": 23,
+  "siblingSourceImports": 0,
+  "lockScope": "PINNED_DEV_BUILD_CLOSURE_NOT_FULL_HOST"
+}

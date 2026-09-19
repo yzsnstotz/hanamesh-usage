@@ -24,6 +24,10 @@
 | U16 | PASS | STUB+FIXTURE | withheld 下连续 5 次触发仍零 POST；忽略同意门 mutation 被 `ERR_ASSERTION` 杀死；loopback smoke withheld 阶段 posts 0。 |
 | U17 | PASS | FIXTURE | health 顶层 10 字段、outbox 8 字段与四类 derive skipped 均按定稿形状出现。 |
 | U18 | PASS | SOURCE+STUB | `src/`/`lib/` 无 legacy `producer`；远端合成 secret 响应不进入存储/health；上线正文每条恰 7 键。 |
+| U19 | PASS | FIXTURE | Loader 首扫 install、稳定重扫零事件、升级 install、移除 uninstall、disabled 变化零事件；坏 entry 单独跳过并记有界码；先 withheld 扫描后授权会补发当前安装且只一次。 |
+| U20 | PARTIAL | SOURCE+FIXTURE | spike 首行结论为 `loader`；钉版宿主候选只投影 Loader，缺版本、未加载依赖、历史和动作事件。隔离 profile 返回形状与 add/remove 行为待阶段 4 REAL_HOST，未冒充已跑。 |
+| U21 | PARTIAL | SOURCE | `inject` 精确加入 `loader`，health 如实给出 loader service/method；真实 profile 首扫须在阶段 4 证明包含 usage、core/standin 与 DSH 内建插件。 |
+| U22 | PARTIAL | SOURCE+FIXTURE | `EventStore.updateInventory()` 在唯一 `global.set` 中同时发布 `inventory.last` 与派生事件，consistency fact 已登记；REAL_HOST SIGKILL 留阶段 4。 |
 
 ## 阶段 0 原始结果摘要
 
@@ -50,9 +54,16 @@
 - loopback `server-stub` + 内存 Ed25519 STANDIN：withheld POST 0；granted 首批 accepted 3 / 每条 7 键；重放 duplicates 3；撤回 DELETE 1；再次撤回仍 DELETE 1。原始五行见 `p2-2026-09-19/stage2-upload-smoke.jsonl`。
 - `npm run check`：contract SHA-256 固定、standin 标记为真、consistency 2 groups / 3 boundaries、`producer` 0、出站 fetch 只在 `src/host/upload.js`。
 
+## 阶段 3 原始结果摘要
+
+- inventory spike 当前结论：`loader`；宿主 `pluginInventory.list()` 只是 Loader 的远程投影，不提供版本、未加载依赖、历史或 install/uninstall 事件；真实返回形状明确留阶段 4。
+- `npm run build && npm test`：目标工具链语义构建通过；阶段接入后 96 tests 全通过（最终阶段 3 衔接数字以 raw 输出为准）。
+- `inventory.last` 与同次扫描派生事件由 `EventStore.updateInventory()` 一次发布；consistency events group 已加入 `inventory.last:present`。
+- 第 8 条 mutation 把 uninstall 的确定性键改成 install 键，专门身份断言必须以 `ERR_ASSERTION` 杀死。
+
 ## 四字段 checkpoint
 
-- 做了什么：阶段 2 完成可选 core 晚绑定、canonical Ed25519 事件签名、64 KiB 批量上报与退避、先本地后远端撤回、完整 health、STUB/STANDIN loopback 流程及 7 条 mutation。
-- 下一步：阶段 3，按 Loader 公共观测面实现已装插件快照与跨扫描 install/uninstall，并固化 inventory spike 结论。
-- 什么还没验证：最终 tgz 的 REAL_HOST bundle 激活；U19–U31；P1/O1 真件联调（当前明确为 STANDIN/STUB）；两个 unit 的 REAL_HOST X02、三条边界的最终 X03；PLAT。
-- 新阻塞：无。阶段 4 的 REAL_CORE/REAL_SERVER 取决于 P1/O1 是否已有登记产物，缺席时按路线用 STANDIN/STUB，不阻断实现。
+- 做了什么：阶段 3 完成 Loader/inspectPackage 清单、跨扫描 install/uninstall、同 unit 快照+事件发布、apply/config-update/interval/授权恢复扫描、inventory health、spike 与第 8 条 mutation。
+- 下一步：阶段 4，在全新隔离 `DSH_HOME` 安装最终 tgz 与 core STANDIN，补 REAL_HOST/REAL_BROWSER/STUB 门、互斥演示、真实 SIGKILL、打包/tag/Git 收口。
+- 什么还没验证：最终 tgz 的 REAL_HOST bundle 激活；U20/U21/U22 的 REAL_HOST 部分与 U23–U31；P1/O1 真件联调（当前明确为 STANDIN/STUB）；两个 unit 的 REAL_HOST X02、三条边界的最终 X03；PLAT。
+- 新阻塞：无。阶段 4 的 REAL_CORE/REAL_SERVER 取决于 P1/O1 是否已有登记产物，缺席时按路线用 STANDIN/STUB，不阻断 STANDIN/STUB 交付。

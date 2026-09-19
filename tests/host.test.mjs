@@ -41,7 +41,7 @@ test('T11 FIXTURE ONLY: no connection/cloud module is required for local service
 
 test('U06 source declaration commits before its derived event',async()=>{
   const h=await fixtureHost({consent:'granted'});assert.equal(h.api.query().total,1);assert.equal(h.api.events().total,1);
-  assert(h.log.indexOf('summary.set')<h.log.indexOf('event.set'));assert.equal(h.api.events().events[0].action,'use');await h.close();
+  assert(h.log.indexOf('summary.set')<h.log.lastIndexOf('event.set'));assert.equal(h.api.events().events[0].action,'use');await h.close();
 });
 
 test('U06 derivation failure is bounded and never rolls back the Declaration',async()=>{

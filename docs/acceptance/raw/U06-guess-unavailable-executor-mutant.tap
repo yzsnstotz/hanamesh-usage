@@ -2,7 +2,7 @@ TAP version 13
 # Subtest: U06 unavailable executor is skipped instead of guessed
 not ok 1 - U06 unavailable executor is skipped instead of guessed
   ---
-  duration_ms: 2.75725
+  duration_ms: 2.712417
   type: 'test'
   location: '/Users/yzliu/work/projects/hanamesh/.worktrees/p2-usage/tests/derive.test.mjs:17:1'
   failureType: 'testCodeFailure'
@@ -71,4 +71,4 @@ not ok 1 - U06 unavailable executor is skipped instead of guessed
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 39.557125
+# duration_ms 37.793375

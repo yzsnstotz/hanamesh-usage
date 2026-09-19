@@ -10,6 +10,7 @@ const cases=[
  {name:'X03-withdraw-remote-first',file:'lib/host/upload.js',from:'if(current===null)await store.withdrawLocal(changedAt,deviceId);',to:'if(current===null){await requestWithdrawal(deviceId);await store.withdrawLocal(changedAt,deviceId);}',test:'tests/withdraw.test.mjs',pattern:'U15 withdrawal clears locally'},
  {name:'U14-unauthorized-marked-sent',file:'lib/host/upload.js',from:"if(response.status===401||response.status===403)return await fail('UPLOAD_UNAUTHORIZED',ids);",to:"if(response.status===401||response.status===403){await store.applyUpload(ids,{accepted:ids.length,duplicates:0,rejected:[],durability:'committed'},iso());return 'uploaded';}",test:'tests/upload.test.mjs',pattern:'U14 401'},
  {name:'U16-ignore-withheld-consent',file:'lib/host/upload.js',from:"if(core.getConsent()!=='granted'){state='stopped';return /** @type {const} */('withheld');}",to:"if(false){state='stopped';return /** @type {const} */('withheld');}",test:'tests/upload.test.mjs',pattern:'U16 withheld'},
+ {name:'U19-uninstall-uses-install-key',file:'lib/host/inventory.js',from:'eventIdForLoader(deviceId,change.action,change.hanaRef,change.version)',to:"eventIdForLoader(deviceId,'install',change.hanaRef,change.version)",test:'tests/inventory.test.mjs',pattern:'U19 uninstall uses'},
 ];
 for(const item of cases){
  const dir=mkdtempSync(join(tmpdir(),'usage-mutant-'));

@@ -9,9 +9,9 @@
     },
     {
       "name": "使用事件与去重身份同次发布",
-      "facts": ["usage-event:present", "event-identity:eventId-nonce"],
+      "facts": ["usage-event:present", "event-identity:eventId-nonce", "inventory.last:present"],
       "medium": "storage-domain:hanamesh_usage_events",
-      "why": "事件、确定性 eventId 与首次生成的 nonce 在 single 布局的一次 global.set 中完整发布；重放只返回 duplicate，不替换 nonce。"
+      "why": "事件、确定性 eventId、首次生成的 nonce 与 inventory.last 在 single 布局的一次 global.set 中完整发布；重放只返回 duplicate，不替换 nonce。"
     }
   ],
   "boundaries": [

@@ -1,0 +1,4 @@
+{"scan":1,"events":[{"action":"install","hanaRef":"a","version":"1.0.0"},{"action":"install","hanaRef":"b","version":"2.0.0"}]}
+{"scan":2,"events":[]}
+{"scan":3,"events":[{"action":"install","hanaRef":"b","version":"2.1.0"},{"action":"uninstall","hanaRef":"a","version":"1.0.0"}]}
+{"scan":4,"events":[],"unreadable":1}

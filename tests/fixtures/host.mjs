@@ -10,6 +10,7 @@ export async function fixtureHost({live=true,participated=true,persisted=true,bo
   const s={id:input.sessionId,header:{id:input.sessionId},inheritedEventCount, snapshotEvents:()=>structuredClone(input.events),isOwnSeq:seq=>seq>=inheritedEventCount};
   let closes=0,handleCloses=0;
   const ctx={
+    loader:{entries:()=>[].values()},
     on(name,fn){handlers.set(name,fn);return ()=>handlers.delete(name);},
     provide(name,value){ctx[name]=value;},
     inject(names,fn){log.push('optional-connection');return ()=>{};},

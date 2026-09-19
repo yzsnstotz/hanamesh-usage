@@ -1,0 +1,6 @@
+
+> hanamesh-usage@0.2.0-rc.1 build:offline
+> node tools/build.mjs --offline
+
+{"node":"v24.13.1","compiler":"Version 5.9.3","offline":true,"platform":"darwin","arch":"arm64"}
+OFFLINE_CORE_SEMANTIC_BUILD_COMPLETE; HOST_JS_COPIED_NOT_TYPECHECKED

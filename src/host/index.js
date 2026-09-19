@@ -7,7 +7,7 @@ import { mountUsage } from './mount.js';
 
 export const name = 'hanamesh-usage';
 // The exact storage-domain service key is supplied by the pinned domain plugin.
-export const inject = ['agents','sessions','sessionPersistence','storage','storageDomain'];
+export const inject = ['agents','sessions','sessionPersistence','storage','storageDomain','loader'];
 /** @type {(check: (input: unknown) => boolean) => import('zod').ZodType<import('../core/index.js').Snapshot>} */
 const snapshotSchema = z.custom;
 /** @type {(check: (input: unknown) => boolean) => import('zod').ZodType<import('../core/index.js').EventSnapshot>} */

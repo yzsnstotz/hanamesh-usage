@@ -48,6 +48,10 @@ export declare class EventStore {
     private commit;
     put(input: UsageEvent): Promise<'inserted' | 'duplicate'>;
     signPending(signer: (event: UsageEvent) => UsageEvent): Promise<number>;
+    updateInventory(scannedAt: string, items: InventoryItem[], inputs: UsageEvent[]): Promise<{
+        inserted: string[];
+        duplicates: number;
+    }>;
     applyUpload(eventIds: string[], result: IngestBatchResult, sentAt: string): Promise<void>;
     markAttempts(eventIds: string[]): Promise<void>;
     withdrawLocal(requestedAt: string, deviceId: string): Promise<void>;
