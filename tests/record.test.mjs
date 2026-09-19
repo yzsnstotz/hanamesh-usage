@@ -22,6 +22,7 @@ test('U09 record seat returns withheld, recorded, duplicate and rejected disposi
     getDeviceId:()=> 'device_A',
     now:()=>Date.parse('2026-09-19T00:00:00.000Z'),
     nonce:()=> 'AQIDBAUGBwgJCgsMDQ4PEA',
+    signEvent:event=>({...event,signature:'c2lnbmF0dXJl'}),
   });
   const input={hanaRef:'@hanamesh/app',action:'open',idempotencyKey:'open-1',sourcePlugin:'@hanamesh/dsh-app-host'};
   assert.deepEqual(await record(input), {disposition:'withheld'});
@@ -35,7 +36,7 @@ test('U09 record seat returns withheld, recorded, duplicate and rejected disposi
 
 test('U09 record seat rejects timestamps outside the 90-day and five-minute window', async () => {
   const store = new core.EventStore(new EventGlobal());
-  const record = host.createRecordSeat({store,getConsent:()=> 'granted',getDeviceId:()=> 'device_A',now:()=>Date.parse('2026-09-19T00:00:00.000Z'),nonce:()=> 'AQIDBAUGBwgJCgsMDQ4PEA'});
+  const record = host.createRecordSeat({store,getConsent:()=> 'granted',getDeviceId:()=> 'device_A',now:()=>Date.parse('2026-09-19T00:00:00.000Z'),nonce:()=> 'AQIDBAUGBwgJCgsMDQ4PEA',signEvent:event=>({...event,signature:'c2lnbmF0dXJl'})});
   const input={hanaRef:'pkg',action:'use',idempotencyKey:'use-1',sourcePlugin:'app-host'};
   assert.equal((await record({...input,occurredAt:'2026-06-01T00:00:00.000Z'})).code,'INVALID_RECORD_INPUT');
   assert.equal((await record({...input,occurredAt:'2026-09-19T00:06:00.000Z'})).code,'INVALID_RECORD_INPUT');

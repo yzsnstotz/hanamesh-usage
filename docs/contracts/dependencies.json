@@ -2,7 +2,7 @@
   "hanameshCore": {
     "protocolVersion": "1",
     "contract": "docs/contracts/hanamesh-core/contract.d.ts",
-    "sha256": null,
+    "sha256": "12312eeed1cdb82dfeeb1cdda27dae081a0099a6e2eecd0ab26ddee1c4e61678",
     "standin": true
   },
   "host": {

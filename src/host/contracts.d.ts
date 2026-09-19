@@ -11,12 +11,26 @@ export interface Config {
   uploadBatchSize?: number;
   inventoryIntervalMs?: number;
 }
+export interface RecordInput { hanaRef:string; action:'open'|'use'; occurredAt?:string; idempotencyKey:string; sourcePlugin:string }
+export interface RecordResult { disposition:'recorded'|'duplicate'|'withheld'|'rejected'; eventId?:string; code?:string }
+export interface HealthSnapshot {
+  pending:number;
+  recoveryComplete:boolean;
+  failures:Record<string,number>;
+  consent:'granted'|'withheld'|'unknown';
+  core:'present'|'absent'|'incompatible';
+  deviceId:string|null;
+  outbox:{state:'idle'|'uploading'|'backoff'|'offline'|'stopped';pending:number;sent:number;duplicate:number;rejected:number;lastUploadAt:string|null;nextAttemptAt:string|null;lastError:string|null};
+  derive:{skipped:{consentWithheld:number;executorUnavailable:number;timeUnavailable:number;noDevice:number}};
+  withdrawal:{requestedAt:string;deviceId:string;state:'pending'|'sent'|'offline';attempts:number;deletedEvents:number|null;lastError:string|null}|null;
+  inventory:{available:boolean;source:'loader'|'plugin-inventory'|'none';lastScanAt:string|null};
+}
 export interface UsageService {
   query(filter?: Filter): QueryResult;
   export(filter?: Filter): QueryResult;
   events(filter?: {state?: UploadState; limit?: number; after?: string}): {total:number;events:UsageEvent[]};
-  record(input: {hanaRef:string;action:'open'|'use';occurredAt?:string;idempotencyKey:string;sourcePlugin:string}): Promise<{disposition:'recorded'|'duplicate'|'withheld'|'rejected';eventId?:string;code?:string}>;
-  health(): Record<string,unknown>;
+  record(input: RecordInput): Promise<RecordResult>;
+  health(): HealthSnapshot;
   drain(): Promise<void>;
   reconcile(): Promise<void>;
 }

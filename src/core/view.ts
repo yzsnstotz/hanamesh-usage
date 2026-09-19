@@ -7,7 +7,7 @@ export function escapeHtml(value: unknown): string {
 }
 
 /** Server-rendered, script-free local review view. */
-export function renderUsage(query: QueryResult, eventQuery: {total:number;events:UsageEvent[]} = {total:0,events:[]}, health: Record<string,unknown> = {}): string {
+export function renderUsage(query: QueryResult, eventQuery: {total:number;events:UsageEvent[]} = {total:0,events:[]}, health: {consent?:unknown;outbox?:unknown} = {}): string {
   const e = escapeHtml;
   const metrics = Object.entries(query.aggregate).map(([name,value]) => `<tr><th scope="row">${e(name)}</th><td>${e(value.reported.sum === null ? '— 无 reported 值' : value.reported.sum)} (${value.reported.count})</td><td>${e(value.estimated.sum === null ? '— 无 estimated 值' : value.estimated.sum)} (${value.estimated.count})</td><td>${value.unavailable}</td></tr>`).join('');
   const rows = query.records.map(r => `<tr><td>${e(r.execution.sessionId)} / turn ${r.execution.turn}</td><td>${e(formatObservation(r.executor.id))}<br>${e(formatObservation(r.executor.version))}</td><td>${e(formatObservation(r.result))}<br>${e(r.terminalReason)}</td><td>${e(formatObservation(r.provider))}<br>${e(formatObservation(r.model))}</td><td>${e(formatObservation(r.usage.totalTokens))}</td><td>${e(r.provenance.sampleKind)}</td></tr>`).join('');

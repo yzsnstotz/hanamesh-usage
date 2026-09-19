@@ -93,3 +93,25 @@ test('U08 EventStore prunes only terminal events older than 90 days', async () =
   assert.equal(await store.put(current), 'inserted');
   assert.deepEqual(store.query().events.map(event => event.eventId), [current.eventId]);
 });
+
+test('U12 EventStore signs all legacy pending events in one publication', async () => {
+  const global=new EventGlobal();const store=new core.EventStore(global);const event=core.createUsageEvent(base());await store.put(event);const before=global.writes;
+  assert.equal(await store.signPending(input=>({...input,signature:'c2lnbmF0dXJl'})),1);assert.equal(global.writes,before+1);assert.equal(store.query().events[0].signature,'c2lnbmF0dXJl');
+  assert.equal(await store.signPending(input=>input),0);assert.equal(global.writes,before+1);
+});
+
+test('U13 EventStore applies accepted, duplicate and rejected batch outcomes atomically', async () => {
+  const global=new EventGlobal();const store=new core.EventStore(global);const events=[];
+  for(const [index,nonce] of ['AQIDBAUGBwgJCgsMDQ4PEA','QkJCQkJCQkJCQkJCQkJCQg','Q0NDQ0NDQ0NDQ0NDQ0NDQw'].entries()){
+    const event=core.createUsageEvent({...base(),eventId:core.eventIdForSeat('device_A','app-host',`batch-${index}`),nonce,signature:'c2lnbmF0dXJl'});events.push(event);await store.put(event);
+  }
+  const before=global.writes;await store.applyUpload(events.map(event=>event.eventId),{accepted:1,duplicates:1,rejected:[{eventId:events[2].eventId,code:'USAGE_INPUT_INVALID'}],durability:'committed'},'2026-09-19T00:01:00.000Z');
+  assert.equal(global.writes,before+1);assert.deepEqual(store.query().events.map(event=>[event.upload.state,event.upload.code,event.upload.attempts]),[['sent',null,1],['duplicate',null,1],['rejected','USAGE_INPUT_INVALID',1]]);
+});
+
+test('U15 EventStore withdrawal clears all events in one publication before remote work', async () => {
+  const global=new EventGlobal();const store=new core.EventStore(global);await store.put(core.createUsageEvent(base()));const before=global.writes;
+  await store.withdrawLocal('2026-09-19T00:02:00.000Z','device_A');assert.equal(global.writes,before+1);assert.equal(store.query().total,0);assert.equal(store.getSnapshot().withdrawal.state,'pending');
+  await store.markWithdrawal({state:'sent',deletedEvents:3,lastError:null});assert.equal(store.getSnapshot().withdrawal.attempts,1);assert.equal(store.getSnapshot().withdrawal.deletedEvents,3);
+  await store.clearWithdrawal();assert.equal(store.getSnapshot().withdrawal,null);
+});

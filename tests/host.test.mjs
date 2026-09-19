@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {fixtureHost} from './fixtures/host.mjs';
+import {core} from './fixtures/helpers.mjs';
 
 test('T12 FIXTURE: live source flush/read must precede sidecar write',async()=>{
   const h=await fixtureHost();assert.equal(h.api.query().total,1);
@@ -51,4 +52,17 @@ test('U06 derivation failure is bounded and never rolls back the Declaration',as
 test('U09 mounted service exposes the record seat while withheld remains event-free',async()=>{
   const h=await fixtureHost();assert.equal(h.api.events().total,0);
   assert.deepEqual(await h.api.record({hanaRef:'pkg',action:'open',idempotencyKey:'open-1',sourcePlugin:'app-host'}),{disposition:'withheld'});await h.close();
+});
+
+test('U11 absent and incompatible core never block local Declaration recording',async()=>{
+  for(const coreStatus of ['absent','incompatible']){const h=await fixtureHost({coreStatus,consent:'granted'});assert.equal(h.api.query().total,1);assert.equal(h.api.events().total,0);const health=h.api.health();assert.equal(health.core,coreStatus);assert.equal(health.consent,'unknown');assert.equal(health.deviceId,null);assert.equal(health.derive.skipped.noDevice,1);await h.close();}
+});
+
+test('U11 late core attachment signs legacy pending events and starts from the current consent',async()=>{
+  const event=core.createUsageEvent({deviceId:'device_A',hanaRef:'pkg',action:'use',occurredAt:'2026-09-19T00:00:00.000Z',eventId:core.eventIdForSeat('device_A','app-host','legacy'),nonce:'AQIDBAUGBwgJCgsMDQ4PEA',signature:null,source:'seat',sourcePlugin:'app-host',evidenceRef:'legacy'});
+  const h=await fixtureHost({coreStatus:'absent',consent:'granted',eventSnapshot:{schemaVersion:1,events:[event],withdrawal:null,inventory:{last:null}}});assert.equal(h.api.events().events[0].signature,null);h.attachCore();await h.api.drain();assert.equal(Buffer.from(h.api.events().events[0].signature,'base64url').length,64);assert.equal(h.api.health().core,'present');assert.equal(h.api.health().consent,'granted');await h.close();
+});
+
+test('U17 health exposes the complete bounded field table',async()=>{
+  const h=await fixtureHost();const health=h.api.health();assert.deepEqual(Object.keys(health),['pending','recoveryComplete','failures','consent','core','deviceId','outbox','derive','withdrawal','inventory']);assert.deepEqual(Object.keys(health.outbox),['state','pending','sent','duplicate','rejected','lastUploadAt','nextAttemptAt','lastError']);assert.deepEqual(Object.keys(health.derive.skipped),['consentWithheld','executorUnavailable','timeUnavailable','noDevice']);await h.close();
 });

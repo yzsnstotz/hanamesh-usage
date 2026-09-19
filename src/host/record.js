@@ -12,9 +12,10 @@ const validHana = value => typeof value === 'string' && value.length <= 128 && h
  *   getDeviceId(): string|null,
  *   now?(): number,
  *   nonce(): string,
+ *   signEvent(event: import('../core/index.js').UsageEvent): import('../core/index.js').UsageEvent,
  * }} options
  */
-export function createRecordSeat({store,getConsent,getDeviceId,now=Date.now,nonce}) {
+export function createRecordSeat({store,getConsent,getDeviceId,now=Date.now,nonce,signEvent}) {
   /** @param {{hanaRef:string,action:'open'|'use',occurredAt?:string,idempotencyKey:string,sourcePlugin:string}} input @returns {Promise<{disposition:'recorded'|'duplicate'|'withheld'|'rejected',eventId?:string,code?:string}>} */
   return async function record(input) {
     if (getConsent() !== 'granted') return { disposition:'withheld' };
@@ -27,7 +28,7 @@ export function createRecordSeat({store,getConsent,getDeviceId,now=Date.now,nonc
       const current=now();const occurredAt=input.occurredAt??new Date(current).toISOString();const time=Date.parse(occurredAt);
       if(!Number.isFinite(time)||new Date(time).toISOString()!==occurredAt||time<current-90*24*60*60*1000||time>current+5*60*1000) throw new UsageError('INVALID_RECORD_INPUT');
       const eventId=eventIdForSeat(deviceId,sourcePlugin,idempotencyKey);
-      const event=createUsageEvent({eventId,deviceId,hanaRef,action,occurredAt,nonce:nonce(),signature:null,source:'seat',sourcePlugin,evidenceRef:idempotencyKey});
+      const event=signEvent(createUsageEvent({eventId,deviceId,hanaRef,action,occurredAt,nonce:nonce(),signature:null,source:'seat',sourcePlugin,evidenceRef:idempotencyKey}));
       const disposition=await store.put(event);
       return { disposition:disposition==='inserted'?'recorded':'duplicate',eventId };
     } catch (error) {

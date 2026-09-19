@@ -1,8 +1,8 @@
 // @ts-check
 import { defineDomain } from '@deepseek-ai/dsh-storage-domain';
-import { randomBytes } from 'node:crypto';
 import { z } from 'zod';
 import { UsageError, isSnapshot, validateEventSnapshot } from '../core/index.js';
+import { createCoreLink } from './core-link.js';
 import { mountUsage } from './mount.js';
 
 export const name = 'hanamesh-usage';
@@ -53,11 +53,12 @@ export async function apply(ctx, config = {}) {
   await ctx.effect(async () => {
     const domain = await ctx.storage.domain.open(usageDomainSpec);
     let eventDomain;
+    const coreLink=createCoreLink(ctx);
     try {
       eventDomain = await ctx.storage.domain.open(usageEventsDomainSpec);
-      const mounted = mountUsage(ctx, registry, domain, eventDomain, resolved, {getConsent:()=> 'withheld',getDeviceId:()=> null,nonce:()=>randomBytes(16).toString('base64url')});
+      const mounted = mountUsage(ctx, registry, domain, eventDomain, resolved, coreLink);
       await mounted.ready;
       return () => mounted.close();
-    } catch (error) { if(eventDomain)await eventDomain.close();await domain.close();throw error; }
+    } catch (error) { coreLink.close();if(eventDomain)await eventDomain.close();await domain.close();throw error; }
   });
 }

@@ -4,15 +4,15 @@ import { eventIdForSession } from './identity.js';
 
 export interface DeriveContext {
   deviceId: string | null;
-  consent: 'granted' | 'withheld';
+  consent: 'granted' | 'withheld' | 'unknown';
   nonce(): string;
 }
 export type DeriveSkip = 'consentWithheld' | 'executorUnavailable' | 'timeUnavailable' | 'noDevice';
 export type DeriveResult = { event: UsageEvent; skipped: null } | { event: null; skipped: DeriveSkip };
 
 export function deriveUsageEvent(input: Declaration, context: DeriveContext): DeriveResult {
-  if (context.consent !== 'granted') return { event:null, skipped:'consentWithheld' };
   if (context.deviceId === null) return { event:null, skipped:'noDevice' };
+  if (context.consent !== 'granted') return { event:null, skipped:'consentWithheld' };
   if (input.executor.id.state !== 'reported') return { event:null, skipped:'executorUnavailable' };
   const observedTime = input.time.endedAt.state === 'reported' ? input.time.endedAt.value
     : input.time.startedAt.state === 'reported' ? input.time.startedAt.value : null;

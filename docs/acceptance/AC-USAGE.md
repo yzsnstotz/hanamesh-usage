@@ -16,6 +16,14 @@
 | U08 | PASS | FIXTURE+SIGKILL | pending 满容量不逐出；只裁剪 sent/duplicate/rejected 且 sentAt 超 90 天；事件与 eventId+nonce 以一次 `global.set` 发布；前后 SIGKILL fixture 只见全旧或全新。 |
 | U09 | PASS | FIXTURE | `record()` 覆盖 withheld/recorded/duplicate/rejected；install 与缺 idempotencyKey 均拒绝；时间窗为过去 90 天至未来 5 分钟。 |
 | U10 | PASS | FIXTURE | 精确 5 路由；`/view` 为无脚本双表服务端 HTML、CSP `default-src 'none'` 且转义；`/events` 逐字段 JSON 投影。 |
+| U11 | PASS | SOURCE+FIXTURE | core 缺席/不兼容时 apply 路径仍记录本地 Declaration，health 如实为 absent/incompatible；`internal/service` 晚上线后补签 pending 并按当前 consent 启动。P1 尚未登记交付，契约副本标 `standin:true`。 |
+| U12 | PASS | FIXTURE+STANDIN | canonical 6 键经 standin Ed25519 签名，64 字节 base64url；公钥验签成功，篡改单键失败；历史空签 pending 一次发布补签。 |
+| U13 | PASS | STUB | accepted/duplicates/rejected 三类原子落为 sent/duplicate/rejected；`pending-host-commit` 也终态；loopback smoke 首批 accepted 3。 |
+| U14 | PASS | STUB+FIXTURE | 401/403 与 5xx 保持 pending、attempts+1、仅有界错误码；64 KiB 超限对半缩批；origin null 零请求；401→sent mutation 被 `ERR_ASSERTION` 杀死。 |
+| U15 | PASS | STUB+FIXTURE | 撤回先一次本地清空再 DELETE；失败可重试，成功后不再发送；offline 只清本地；reverse-order mutation 被 `ERR_ASSERTION` 杀死。最终 REAL_HOST SIGKILL 仍待阶段 4。 |
+| U16 | PASS | STUB+FIXTURE | withheld 下连续 5 次触发仍零 POST；忽略同意门 mutation 被 `ERR_ASSERTION` 杀死；loopback smoke withheld 阶段 posts 0。 |
+| U17 | PASS | FIXTURE | health 顶层 10 字段、outbox 8 字段与四类 derive skipped 均按定稿形状出现。 |
+| U18 | PASS | SOURCE+STUB | `src/`/`lib/` 无 legacy `producer`；远端合成 secret 响应不进入存储/health；上线正文每条恰 7 键。 |
 
 ## 阶段 0 原始结果摘要
 
@@ -35,9 +43,16 @@
 - `node tests/fixtures/seat-smoke.mjs`：依次输出 withheld、recorded、duplicate、rejected(INVALID_RECORD_INPUT)。
 - `npm run check`：consistency 2 groups / 2 boundaries；两个 store 各只有一个 `global.set` 发布点；production files 20；sibling imports 0。
 
+## 阶段 2 原始结果摘要
+
+- `npm run build && npm test`：目标工具链语义构建通过；91 tests，91 pass，0 fail。
+- `npm run test:mutations`：7/7 killed，全部由 `ERR_ASSERTION` 杀死；新增撤回反序、401 错标 sent、withheld 仍上传三条。
+- loopback `server-stub` + 内存 Ed25519 STANDIN：withheld POST 0；granted 首批 accepted 3 / 每条 7 键；重放 duplicates 3；撤回 DELETE 1；再次撤回仍 DELETE 1。原始五行见 `p2-2026-09-19/stage2-upload-smoke.jsonl`。
+- `npm run check`：contract SHA-256 固定、standin 标记为真、consistency 2 groups / 3 boundaries、`producer` 0、出站 fetch 只在 `src/host/upload.js`。
+
 ## 四字段 checkpoint
 
-- 做了什么：阶段 1 完成 6 字段本地事件/7 键 wire、确定性去重、第二 storage unit、Declaration 派生、record 席位、5 路由与双表 `/view`；补齐 2 groups/2 boundaries、四条 mutation 与合成证据。
-- 下一步：阶段 2，接入 duck-typed `hanameshCore` 契约、设备签名、批量上报、撤回和完整 health。
-- 什么还没验证：最终 tgz 的 REAL_HOST bundle 激活；U11–U31；两个 unit 的 REAL_HOST X02、三条边界的最终 X03；PLAT。
+- 做了什么：阶段 2 完成可选 core 晚绑定、canonical Ed25519 事件签名、64 KiB 批量上报与退避、先本地后远端撤回、完整 health、STUB/STANDIN loopback 流程及 7 条 mutation。
+- 下一步：阶段 3，按 Loader 公共观测面实现已装插件快照与跨扫描 install/uninstall，并固化 inventory spike 结论。
+- 什么还没验证：最终 tgz 的 REAL_HOST bundle 激活；U19–U31；P1/O1 真件联调（当前明确为 STANDIN/STUB）；两个 unit 的 REAL_HOST X02、三条边界的最终 X03；PLAT。
 - 新阻塞：无。阶段 4 的 REAL_CORE/REAL_SERVER 取决于 P1/O1 是否已有登记产物，缺席时按路线用 STANDIN/STUB，不阻断实现。

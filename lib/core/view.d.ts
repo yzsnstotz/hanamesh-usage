@@ -5,4 +5,7 @@ export declare function escapeHtml(value: unknown): string;
 export declare function renderUsage(query: QueryResult, eventQuery?: {
     total: number;
     events: UsageEvent[];
-}, health?: Record<string, unknown>): string;
+}, health?: {
+    consent?: unknown;
+    outbox?: unknown;
+}): string;

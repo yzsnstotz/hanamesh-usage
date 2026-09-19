@@ -1,0 +1,5 @@
+{"step":"withheld","posts":0,"consent":"withheld","outbox":{"pending":0}}
+{"step":"granted-upload","posts":1,"accepted":3,"keysPerEvent":7,"outbox":{"sent":3,"pending":0}}
+{"step":"replay","posts":2,"duplicates":3,"localCount":3}
+{"step":"withdraw","deletes":1,"outbox":{"pending":0,"sent":0},"withdrawal":{"state":"sent"}}
+{"step":"withdraw-again-no-resend","deletes":1}
