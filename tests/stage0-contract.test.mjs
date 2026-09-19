@@ -7,7 +7,7 @@ const read = path => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8'
 test('U04 package is the standalone hanamesh-usage DSH bundle', () => {
   const pkg = JSON.parse(read('package.json'));
   assert.equal(pkg.name, 'hanamesh-usage');
-  assert.equal(pkg.version, '0.2.0-rc.1');
+  assert.equal(pkg.version, '0.2.0-rc.4');
   assert.deepEqual(pkg.dsh, { bundle: { patch: './profile/cordis.patch.yml' } });
   assert.equal(pkg.files.includes('profile'), true);
   assert.equal(pkg.dsh.client, undefined);

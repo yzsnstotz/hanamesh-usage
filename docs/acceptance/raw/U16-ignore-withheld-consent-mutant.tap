@@ -2,7 +2,7 @@ TAP version 13
 # Subtest: U16 withheld consent performs zero requests across repeated triggers
 not ok 1 - U16 withheld consent performs zero requests across repeated triggers
   ---
-  duration_ms: 11.837583
+  duration_ms: 11.112875
   type: 'test'
   location: '/Users/yzliu/work/projects/hanamesh/.worktrees/p2-usage/tests/upload.test.mjs:34:1'
   failureType: 'testCodeFailure'
@@ -31,4 +31,4 @@ not ok 1 - U16 withheld consent performs zero requests across repeated triggers
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 55.891666
+# duration_ms 48.863125

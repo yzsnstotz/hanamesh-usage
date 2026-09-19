@@ -4,7 +4,7 @@
 
 ## 范围与判定
 
-本阶段先做静态 SOURCE 调查；隔离真实 DSH profile 的返回形状与 add/remove 重启行为留在阶段 4 同一 REAL_HOST profile 复核。当前不能把静态源码或既有 product-profile 证据写成这次的 REAL_HOST。
+阶段 3 先做静态 SOURCE 调查，阶段 4 已在隔离真实 DSH 0.1.5-alpha.1 profile 复核返回形状与重启行为。SOURCE 与 REAL_HOST 证据分开记录，不以静态源码冒充真实宿主。
 
 选择 `loader`，因为宿主候选 `@deepseek-ai/dsh-host-plugin-inventory` 的 `list()` 本身逐次遍历 `ctx.loader.entries()`，只返回 Loader 条目与 fiber 状态；它不返回包版本、未进入 Loader 的已安装依赖、历史快照或 install/uninstall 事件。因此它没有提供本实现需要且 Loader 不具备的事实。
 
@@ -68,7 +68,7 @@ interface PluginInventoryEntry {
 | 候选服务键/方法/返回类型 | PASS | SOURCE，`pluginInventory.list()` |
 | 是否优于 Loader | NO | SOURCE：仍读 Loader、无版本/未加载依赖/安装历史/动作事件 |
 | 本实现 Loader 扫描与跨启动比较 | PASS | FIXTURE，`tests/inventory.test.mjs` 与 `inventory-smoke.mjs` |
-| 本次隔离 DSH 返回形状 | NOT_RUN | 阶段 4 REAL_HOST |
-| `dsh plugin add/remove` 时宿主是否运行、重启后事件 | NOT_RUN | 阶段 4 REAL_HOST |
+| 本次隔离 DSH 返回形状 | PASS | REAL_HOST：`pluginInventory.list()` 返回顶层 `agentPresets/entries`；159 个 entry 的键为 `enabled/entryId/fiberPhase/moduleName`，见 `p2-2026-09-19/U20-inventory-probe.json` |
+| `dsh plugin add/remove` 与重启比对 | PASS | REAL_HOST：最终 rc.4 的 bundle add/启动、rc.4 自包含 suite remove 恢复均通过；稳定重启事件身份/nonce/状态摘要不变，见 `U23-*`、`U28-*`、`U31-mutual-exclusion.txt` |
 
 本结论不修改或 patch DSH 上游。

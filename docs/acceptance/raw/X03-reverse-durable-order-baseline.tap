@@ -2,14 +2,14 @@ TAP version 13
 # Subtest: X03 FIXTURE POSIX: SIGKILL between writes leaves source, never source-less summary
 ok 1 - X03 FIXTURE POSIX: SIGKILL between writes leaves source, never source-less summary
   ---
-  duration_ms: 129.265166
+  duration_ms: 135.952208
   type: 'test'
   ...
 # {"evidence":"FIXTURE_POSIX_NOT_DSH","label":"between-first-and-second-durable-side","code":null,"signal":"SIGKILL","sourcePresent":true,"summaryCount":0}
 # Subtest: X03 FIXTURE POSIX: SIGKILL between Declaration and event leaves the Declaration safe side
 ok 2 - X03 FIXTURE POSIX: SIGKILL between Declaration and event leaves the Declaration safe side
   ---
-  duration_ms: 67.986291
+  duration_ms: 69.237542
   type: 'test'
   ...
 # {"evidence":"FIXTURE_POSIX_NOT_DSH","label":"between-declaration-and-event","code":null,"signal":"SIGKILL","summaryCount":1,"eventCount":0}
@@ -21,4 +21,4 @@ ok 2 - X03 FIXTURE POSIX: SIGKILL between Declaration and event leaves the Decla
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 227.650375
+# duration_ms 236.551792

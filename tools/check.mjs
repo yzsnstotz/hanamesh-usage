@@ -5,7 +5,7 @@ const pkg=JSON.parse(read('package.json')),lock=JSON.parse(read('package-lock.js
 validateConsistency(JSON.parse(read('consistency.json')));
 assert.deepEqual(lock.packages[''].peerDependencies,pkg.peerDependencies);
 assert.deepEqual(lock.packages[''].devDependencies,pkg.devDependencies);
-assert.equal(pkg.name,'hanamesh-usage');assert.equal(pkg.version,'0.2.0-rc.1');assert.equal(pkg.private,undefined);assert.equal(pkg.license,'MIT');
+assert.equal(pkg.name,'hanamesh-usage');assert.equal(pkg.version,'0.2.0-rc.4');assert.equal(pkg.private,undefined);assert.equal(pkg.license,'MIT');
 assert.deepEqual(pkg.dependencies??{},{});assert.equal(Object.keys(pkg.peerDependencies).filter(name=>name.startsWith('@hanamesh/')||name.startsWith('hanamesh-')).length,0);
 assert.equal(pkg.dsh?.bundle?.patch,'./profile/cordis.patch.yml');assert.equal(pkg.dsh?.client,undefined);assert(pkg.files.includes('profile'));assert(existsSync(pkg.dsh.bundle.patch));
 const dependencies=JSON.parse(read('docs/contracts/dependencies.json')),coreContract=read(dependencies.hanameshCore.contract);assert.equal(createHash('sha256').update(coreContract).digest('hex'),dependencies.hanameshCore.sha256);assert.equal(dependencies.hanameshCore.standin,true);

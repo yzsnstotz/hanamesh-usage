@@ -1,6 +1,6 @@
-# hanamesh-usage · 0.2.0-rc.1
+# hanamesh-usage · 0.2.0-rc.4
 
-> 状态：P2 实施中，尚未达到 DELIVERED，更不是 ACCEPTED。目标宿主为 DSH `0.1.5-alpha.1`。收录不代表审核或推荐。
+> 版本 `0.2.0-rc.4`；交付上限为 🧪 DELIVERED，只有用户可签 ACCEPTED。固定宿主 DSH `0.1.5-alpha.1`。本版提供改名后的用量声明、7 字段设备签名事件、上报/撤回和 Loader 库存发现；本包是 DSH bundle，`dsh plugin add` 即激活。P1/O1 未登记时真实门分别使用 STANDIN/STUB；inventory 结论为 `loader`。收录不代表审核或推荐。
 
 `hanamesh-usage` 保留本机 `Declaration` 三态使用摘要，并提供同意门、设备签名、事件缓冲与服务器上报。生产路径只保存结构化最小信息，不保存 prompt、对话、文件、完整结果、私有路径或凭据。
 
@@ -17,9 +17,11 @@
 - 已装套件（core），再显式 `add hanamesh-usage` → 同样 `duplicate loader entry id: hanamesh-usage`。撤销这次 `add`（`remove hanamesh-usage`）即恢复；套件里的 usage 不受影响。
 - 这是 DSH 的既定行为（重复 loader id 让整个 profile 起不来），本插件不做静默去重；失败是响亮的，不会出现两份采集。
 
-**依赖：** 设备身份与同意开关来自 `hanamesh-core`（可选）。core 缺席时插件保留本机摘要，但不创建或上报设备事件；`/api/hanamesh/usage/health` 会如实显示 core 状态。
+**依赖：** 设备身份与同意开关来自 `hanamesh-core`（可选）。core 缺席时本插件只在本机记录、不上报，`/api/hanamesh/usage/health` 显示 `core: 'absent'`。
 
-**从 rc.3（旧 activity 包）升级：** storage-domain 由 `hanamesh_activity` 改为 `hanamesh_usage`，旧记录不迁入、不删除；需要保留请先在 rc.3 上 `POST /api/hanamesh/activity/export` 导出。
+**从 rc.3（`@hanamesh/dsh-activity`）升级：** storage-domain 由 `hanamesh_activity` 改为 `hanamesh_usage`，旧记录不迁入、不删除；需要保留请先在 rc.3 上 `POST /api/hanamesh/activity/export` 导出。
+
+首次 Loader 扫描会把当前已装插件记为 `install`，`occurredAt` 使用扫描时刻；这是 Adoption 弱证据。宿主没有更强的实时 install/uninstall 事件，本版只做跨启动快照比较。
 
 ## 本地接口
 

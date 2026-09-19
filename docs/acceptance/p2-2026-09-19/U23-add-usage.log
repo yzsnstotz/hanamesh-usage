@@ -1,0 +1,31 @@
+Progress: resolved 0, reused 1, downloaded 0, added 0
+ WARN  Issues with peer dependencies found
+.
+└─┬ hanamesh-usage 0.2.0-rc.4
+  ├── ✕ missing peer @deepseek-ai/cordis@4.0.2
+  ├── ✕ missing peer @deepseek-ai/dsh-agent@0.1.5-alpha.1
+  ├── ✕ missing peer @deepseek-ai/dsh-attachment@0.1.5-alpha.1
+  ├── ✕ missing peer @deepseek-ai/dsh-llm@0.1.5-alpha.1
+  ├── ✕ missing peer @deepseek-ai/dsh-session@0.1.5-alpha.1
+  ├── ✕ missing peer @deepseek-ai/dsh-session-persistence@0.1.5-alpha.1
+  ├── ✕ missing peer @deepseek-ai/dsh-storage@0.1.5-alpha.1
+  ├── ✕ missing peer @deepseek-ai/dsh-storage-domain@0.1.5-alpha.1
+  └── ✕ missing peer zod@4.5.4
+Peer dependencies that should be installed:
+  @deepseek-ai/cordis@4.0.2
+  @deepseek-ai/dsh-agent@0.1.5-alpha.1
+  @deepseek-ai/dsh-attachment@0.1.5-alpha.1
+  @deepseek-ai/dsh-llm@0.1.5-alpha.1
+  @deepseek-ai/dsh-session-persistence@0.1.5-alpha.1
+  @deepseek-ai/dsh-session@0.1.5-alpha.1
+  @deepseek-ai/dsh-storage-domain@0.1.5-alpha.1
+  @deepseek-ai/dsh-storage@0.1.5-alpha.1
+  zod@4.5.4
+
+dependencies:
++ hanamesh-usage file:/Users/yzliu/work/projects/hanamesh/.worktrees/p2-usage/artifacts/hanamesh-usage-0.2.0-rc.4.tgz
+
+Packages: +1
++
+Progress: resolved 1, reused 1, downloaded 0, added 1, done
+Done in 183ms using pnpm v10.33.0

@@ -13,7 +13,7 @@ function standin(){
 test('U11 core link module is present',()=>assert.equal(typeof host?.createCoreLink,'function'));
 
 test('U11 absent and incompatible core stay optional, while late compatible service attaches',()=>{
-  const handlers=new Map();const ctx={on(name,fn){handlers.set(name,fn);return()=>handlers.delete(name);}};
+  const handlers=new Map();const ctx={get:()=>undefined,on(name,fn){handlers.set(name,fn);return()=>handlers.delete(name);}};
   const link=host.createCoreLink(ctx);assert.equal(link.status(),'absent');assert.equal(link.get(),null);
   handlers.get('internal/service')('hanameshCore',{protocolVersion:'2'});assert.equal(link.status(),'incompatible');
   const updates=[];const stop=link.onChange(status=>updates.push(status));const {service}=standin();handlers.get('internal/service')('hanameshCore',service);

@@ -1,0 +1,12 @@
+
+> hanamesh-usage@0.2.0-rc.4 test:mutations
+> node tools/mutations.mjs
+
+{"mutation":"T05-unavailable-to-zero","baselineExit":0,"mutantExit":1,"killedBy":"ERR_ASSERTION","evidence":"FIXTURE","site":"lib/core/privacy.js"}
+{"mutation":"X03-reverse-durable-order","baselineExit":0,"mutantExit":1,"killedBy":"ERR_ASSERTION","evidence":"FIXTURE","site":"lib/core/boundary.js"}
+{"mutation":"U06-guess-unavailable-executor","baselineExit":0,"mutantExit":1,"killedBy":"ERR_ASSERTION","evidence":"FIXTURE","site":"lib/core/derive.js"}
+{"mutation":"X03-derive-before-source","baselineExit":0,"mutantExit":1,"killedBy":"ERR_ASSERTION","evidence":"FIXTURE","site":"lib/host/mount.js"}
+{"mutation":"X03-withdraw-remote-first","baselineExit":0,"mutantExit":1,"killedBy":"ERR_ASSERTION","evidence":"FIXTURE","site":"lib/host/upload.js"}
+{"mutation":"U14-unauthorized-marked-sent","baselineExit":0,"mutantExit":1,"killedBy":"ERR_ASSERTION","evidence":"FIXTURE","site":"lib/host/upload.js"}
+{"mutation":"U16-ignore-withheld-consent","baselineExit":0,"mutantExit":1,"killedBy":"ERR_ASSERTION","evidence":"FIXTURE","site":"lib/host/upload.js"}
+{"mutation":"U19-uninstall-uses-install-key","baselineExit":0,"mutantExit":1,"killedBy":"ERR_ASSERTION","evidence":"FIXTURE","site":"lib/host/inventory.js"}

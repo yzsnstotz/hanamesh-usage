@@ -2,7 +2,7 @@ TAP version 13
 # Subtest: U15 withdrawal clears locally before DELETE and success is never resent
 ok 1 - U15 withdrawal clears locally before DELETE and success is never resent
   ---
-  duration_ms: 9.87375
+  duration_ms: 10.429958
   type: 'test'
   ...
 1..1
@@ -13,4 +13,4 @@ ok 1 - U15 withdrawal clears locally before DELETE and success is never resent
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 48.031708
+# duration_ms 47.929083

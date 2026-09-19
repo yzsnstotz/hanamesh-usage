@@ -1,0 +1,28 @@
+
+> hanamesh-usage@0.2.0-rc.4 test:detached
+> node tools/detached.mjs
+
+$ npm ci --offline --ignore-scripts --legacy-peer-deps
+
+added 24 packages in 461ms
+
+
+$ /Users/yzliu/.local/share/fnm/node-versions/v24.13.1/installation/bin/node tools/build.mjs --offline
+{"node":"v24.13.1","compiler":"Version 5.9.3","offline":true,"platform":"darwin","arch":"arm64"}
+OFFLINE_CORE_SEMANTIC_BUILD_COMPLETE; HOST_JS_COPIED_NOT_TYPECHECKED
+
+
+$ /Users/yzliu/.local/share/fnm/node-versions/v24.13.1/installation/bin/node tools/check.mjs
+{
+  "consistencySchemaValid": true,
+  "consistencyGroups": 2,
+  "consistencyBoundaries": 3,
+  "economicFieldMatches": 0,
+  "bundleRows": 1,
+  "productionFilesScanned": 23,
+  "siblingSourceImports": 0,
+  "lockScope": "PINNED_DEV_BUILD_CLOSURE_NOT_FULL_HOST"
+}
+
+
+DETACHED_CORE_BUILD_COMPLETE: no sibling source, no installed host peers; NOT full target host build.

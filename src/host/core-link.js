@@ -25,8 +25,10 @@ export function duckCore(value) {
 
 /** @param {import('@deepseek-ai/cordis').Context} ctx */
 export function createCoreLink(ctx) {
-  const current=/** @type {{hanameshCore?:unknown}} */ (/** @type {unknown} */ (ctx));
-  let linked=duckCore(current.hanameshCore);
+  // Optional Cordis services must be read through get(). Accessing an undeclared
+  // ctx property is a runtime error even when the service is intentionally absent.
+  const current=typeof ctx.get==='function'?ctx.get('hanameshCore'):undefined;
+  let linked=duckCore(current);
   /** @type {Set<(status:'absent'|'incompatible'|'present',core:import('../../docs/contracts/hanamesh-core/contract.js').HanaMeshCoreContract|null)=>void>} */
   const listeners=new Set();
   const stopService=ctx.on('internal/service',(name,value)=>{

@@ -1,0 +1,77 @@
+{
+  "candidate": {
+    "version": "0.2.0-rc.4",
+    "artifact": "artifacts/hanamesh-usage-0.2.0-rc.4.tgz",
+    "sha256": "f8488b0797165b70cabf7542b4bb97b217bd547a62efbcf4e1499e0820d107a1",
+    "retiredCandidates": {
+      "rc1": "consumed then retired under H-03 after a real-host optional-service access defect",
+      "rc2": "consumed then retired under H-03 after exact README install wording was corrected",
+      "rc3": "consumed then retired under H-03 after stable inventory rescan was found to resurrect terminal events past retention"
+    },
+    "rc4Reinstall": "PASS in a new isolated HOME; health withheld/present/loader",
+    "byteIdenticalRepackAfterFinalVerification": true
+  },
+  "environment": {
+    "dsh": "0.1.5-alpha.1",
+    "node": "24.13.1",
+    "core": "STANDIN",
+    "server": "STUB",
+    "browser": "Codex in-app Browser for this session",
+    "realCore": "NOT_RUN: P1 not registered as delivered",
+    "realServer": "NOT_RUN: O1 event API not registered as delivered",
+    "platformMayn": "NOT_RUN"
+  },
+  "u23": {
+    "usageBundleAdd": "PASS",
+    "coreStandinBundleAdd": "PASS",
+    "declaresNoBundleWarning": false,
+    "dumpConfig": {"hanameshUsage": 1, "hanameshCoreStandin": 1}
+  },
+  "u24": {
+    "health": {"pending": 0, "recoveryComplete": true, "consent": "withheld", "core": "present", "inventorySource": "loader"}
+  },
+  "u25": {
+    "status": "BLOCKED",
+    "reason": "isolated profile has no model key; no real session or Declaration was fabricated"
+  },
+  "u26": {"waitedAtLeastMs": 10000, "usagePosts": 0, "events": 0},
+  "u27": {
+    "usagePosts": 1,
+    "eventsUploaded": 152,
+    "actions": ["install"],
+    "keysPerEvent": 7,
+    "keys": ["action", "deviceId", "eventId", "hanaRef", "nonce", "occurredAt", "signature"],
+    "containsAbsoluteUserPath": false,
+    "containsSkPrefix": false,
+    "promptContent": false,
+    "note": "Two legal package identities contain the word prompt; no prompt body or free-text field exists and every event has exactly the seven allowed keys."
+  },
+  "u28": {
+    "before": {"eventCount": 152, "identityStateDigest": "108be29f2d2b6e000929bec3188f9fc67f2f9f52aee2a8d6c62cb774f3dc0758"},
+    "afterRestart": {"eventCount": 152, "identityStateDigest": "108be29f2d2b6e000929bec3188f9fc67f2f9f52aee2a8d6c62cb774f3dc0758"},
+    "verdict": "stable count, event ids, nonces, and states; no restart inflation"
+  },
+  "u29": {
+    "deleteRequests": 1,
+    "deletePath": "/v1/usage/me/devices/device_P2_STANDIN/events",
+    "pending": 0,
+    "withdrawalState": "sent",
+    "deletedEvents": 152
+  },
+  "u30": {
+    "browser": "REAL_BROWSER: session-scoped Codex in-app Browser",
+    "screenshot": "U30-view-session-browser.png",
+    "declarationTableVisible": true,
+    "reportingTableVisible": true,
+    "storageUnits": {"hanamesh_usage_events": "present", "hanamesh_usage": "absent because U25 is blocked"},
+    "protectedPort3080": "pre-existing listener PID 1851 remained outside test scope",
+    "personalDsh": "nested profiles, storages, credentials and settings mtimes remained old; root directory mtime drifted during parallel sessions, so strict root-mtime assertion is not claimed"
+  },
+  "inventory": {
+    "items": 153,
+    "usagePresent": true,
+    "coreStandinPresent": true,
+    "deepseekPackages": 151,
+    "boundedUnreadableEntries": 4
+  }
+}

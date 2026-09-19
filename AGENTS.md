@@ -1,6 +1,6 @@
 # hanamesh-usage 开发边界
 
-这是独立模块 `hanamesh-usage`，当前派发 P2，候选 0.2.0-rc.1。以 docs 仓 `plans/routes/2026-09-18-P2-usage.md` 为唯一 brief；别把离线证据、STUB/STANDIN 或候选 tag 当作真实宿主验收。共享 STATUS 只能由回收方登记。
+这是独立模块 `hanamesh-usage`，当前派发 P2，候选 0.2.0-rc.4（rc.1–rc.3 均在被真实宿主消费后按 H-03 作废：可选服务访问、README 逐字、库存终态裁剪）。以 docs 仓 `plans/routes/2026-09-18-P2-usage.md` 为唯一 brief；别把离线证据、STUB/STANDIN 或候选 tag 当作真实宿主验收。共享 STATUS 只能由回收方登记。
 
 仅修改本仓。DSH 产品 pin 为 0.1.5-alpha.1 @ 5dda764ed3aa172535a7967b06ff95d9cbfe536a；目标 Node24.13.1/pnpm10.33.0/TS5.9.3，不为本地工具降级目标。真实依赖只消费锁定产物，不 workspace-link 邻仓。Registry 实例、session、授权、安装状态继续由既有宿主所有。
 
