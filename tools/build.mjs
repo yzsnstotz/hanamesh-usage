@@ -3,7 +3,7 @@ process.chdir(fileURLToPath(new URL('../', import.meta.url)));
 import { spawnSync } from 'node:child_process';
 import { mkdirSync, copyFileSync, readdirSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { installedPeer } from './pins.mjs';
+import { installedPeer, satisfies } from './pins.mjs';
 const offline = process.argv.includes('--offline');
 const require = createRequire(import.meta.url);
 const tsc = spawnSync('tsc',['--version'],{encoding:'utf8'});
@@ -17,7 +17,7 @@ if (!offline) {
   for (const [name,version] of Object.entries(pkg.peerDependencies)) {
     try {
       const resolved = installedPeer(name);
-      if (resolved.version !== version) throw new Error('version');
+      if (!satisfies(resolved.version, version)) throw new Error('version');
     } catch { console.error(`PINNED_PEER_MISSING_OR_MISMATCHED: ${name}@${version}`); process.exit(2); }
   }
 }

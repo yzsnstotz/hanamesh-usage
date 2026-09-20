@@ -1,6 +1,6 @@
-# hanamesh-usage · 0.2.0-rc.4
+# hanamesh-usage · 0.2.0-rc.6
 
-> 版本 `0.2.0-rc.4`；交付上限为 🧪 DELIVERED，只有用户可签 ACCEPTED。固定宿主 DSH `0.1.5-alpha.1`。本版提供改名后的用量声明、7 字段设备签名事件、上报/撤回和 Loader 库存发现；本包是 DSH bundle，`dsh plugin add` 即激活。P1/O1 未登记时真实门分别使用 STANDIN/STUB；inventory 结论为 `loader`。收录不代表审核或推荐。
+> 版本 `0.2.0-rc.6`；交付上限为 🧪 DELIVERED，只有用户可签 ACCEPTED。**已实测内核：0.1.5-alpha.1、0.1.5-rc.2**；rc.6 把 `peerDependencies` 里的 `@deepseek-ai/dsh-*` 从精确钉 `0.1.5-alpha.1` 改为已实测范围 `>=0.1.5-alpha.1 <0.2.0`（`@deepseek-ai/cordis` `>=4.0.2 <5`），代码不变；rc.5 对齐 O1 冻结的上报契约。构建/离线闭包仍钉 DSH `0.1.5-alpha.1`（`devDependencies`/`overrides`）。本版提供改名后的用量声明、7 字段设备签名事件、上报/撤回和 Loader 库存发现；本包是 DSH bundle，`dsh plugin add` 即激活。P1/O1 未登记时真实门分别使用 STANDIN/STUB；inventory 结论为 `loader`。收录不代表审核或推荐。
 
 `hanamesh-usage` 保留本机 `Declaration` 三态使用摘要，并提供同意门、设备签名、事件缓冲与服务器上报。生产路径只保存结构化最小信息，不保存 prompt、对话、文件、完整结果、私有路径或凭据。
 

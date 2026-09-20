@@ -1,6 +1,6 @@
 {
   "name": "hanamesh-usage",
-  "version": "0.2.0-rc.5",
+  "version": "0.2.0-rc.6",
   "description": "Consent-gated, device-signed HanaMesh usage events for DSH",
   "type": "module",
   "main": "lib/host/index.js",
@@ -38,15 +38,15 @@
   },
   "packageManager": "pnpm@10.33.0",
   "peerDependencies": {
-    "@deepseek-ai/cordis": "4.0.2",
-    "@deepseek-ai/dsh-agent": "0.1.5-alpha.1",
-    "@deepseek-ai/dsh-attachment": "0.1.5-alpha.1",
-    "@deepseek-ai/dsh-client-connection": "0.1.5-alpha.1",
-    "@deepseek-ai/dsh-llm": "0.1.5-alpha.1",
-    "@deepseek-ai/dsh-session": "0.1.5-alpha.1",
-    "@deepseek-ai/dsh-session-persistence": "0.1.5-alpha.1",
-    "@deepseek-ai/dsh-storage": "0.1.5-alpha.1",
-    "@deepseek-ai/dsh-storage-domain": "0.1.5-alpha.1",
+    "@deepseek-ai/cordis": ">=4.0.2 <5",
+    "@deepseek-ai/dsh-agent": ">=0.1.5-alpha.1 <0.2.0",
+    "@deepseek-ai/dsh-attachment": ">=0.1.5-alpha.1 <0.2.0",
+    "@deepseek-ai/dsh-client-connection": ">=0.1.5-alpha.1 <0.2.0",
+    "@deepseek-ai/dsh-llm": ">=0.1.5-alpha.1 <0.2.0",
+    "@deepseek-ai/dsh-session": ">=0.1.5-alpha.1 <0.2.0",
+    "@deepseek-ai/dsh-session-persistence": ">=0.1.5-alpha.1 <0.2.0",
+    "@deepseek-ai/dsh-storage": ">=0.1.5-alpha.1 <0.2.0",
+    "@deepseek-ai/dsh-storage-domain": ">=0.1.5-alpha.1 <0.2.0",
     "zod": "4.5.4"
   },
   "peerDependenciesMeta": {
