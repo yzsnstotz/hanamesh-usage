@@ -117,3 +117,57 @@ test('U15 EventStore withdrawal clears all events in one publication before remo
   await store.markWithdrawal({state:'sent',deletedEvents:3,lastError:null});assert.equal(store.getSnapshot().withdrawal.attempts,1);assert.equal(store.getSnapshot().withdrawal.deletedEvents,3);
   await store.clearWithdrawal();assert.equal(store.getSnapshot().withdrawal,null);
 });
+
+// rc.7 · T6 归因字段与使用回执
+const attributed = () => ({ ...base(), sourceHanaRef:'@hanamesh/recommender', targetRef:'vibe-trading', receipt:{ providerId:'deepseek', model:'deepseek-chat', count:12 } });
+
+test('T6 attribution fields default to null and legacy events without a receipt key still validate', () => {
+  const event = core.createUsageEvent(base());
+  assert.deepEqual([event.sourceHanaRef, event.targetRef, event.receipt], [null, null, null]);
+  const { receipt: _omitted, ...legacy } = event;
+  assert.doesNotThrow(() => core.validateEvent(legacy));
+  assert.equal(core.exportEventProjection(legacy).receipt, null);
+  assert.deepEqual(Object.keys(core.wireEvent(legacy)), ['deviceId','hanaRef','action','occurredAt','eventId','nonce','signature']);
+});
+
+test('T6 wire event carries the optional keys only when set; the six-key signing input is unchanged', () => {
+  const event = core.createUsageEvent(attributed());
+  const wire = core.wireEvent(event);
+  assert.deepEqual(Object.keys(wire), ['deviceId','hanaRef','action','occurredAt','eventId','nonce','signature','sourceHanaRef','targetRef','receipt']);
+  assert.deepEqual(wire.receipt, { providerId:'deepseek', model:'deepseek-chat', count:12 });
+  assert.equal(wire.sourceHanaRef, '@hanamesh/recommender'); assert.equal(wire.targetRef, 'vibe-trading');
+  const { signature: _s, sourceHanaRef: _a, targetRef: _b, receipt: _c, ...signed } = wire;
+  assert.equal(core.signingJSON(signed), core.signingJSON(core.wireEvent(core.createUsageEvent(base()))));
+  assert.deepEqual(core.exportEventProjection(event), event);
+});
+
+test('T6 receipt is bounded, content-free and only rides on use events', () => {
+  assert.throws(() => core.createUsageEvent({ ...attributed(), action:'open' }), { code:'INVALID_USAGE_EVENT' });
+  for (const receipt of [{ providerId:'deepseek', model:null }, { providerId:'deepseek', model:null, count:0 }, { providerId:'deepseek', model:null, count:1.5 },
+    { providerId:'sk-live', model:null, count:1 }, { providerId:'deepseek', model:'prompt text here', count:1 }, { providerId:'deepseek', model:'x', count:1, prompt:'hi' }, 'deepseek'])
+    assert.throws(() => core.createUsageEvent({ ...attributed(), receipt }), { code:'INVALID_USAGE_EVENT' }, JSON.stringify(receipt));
+  assert.equal(core.createUsageEvent({ ...attributed(), receipt:{ providerId:'coding-oauth-gateway', model:'openai/gpt-4o', count:1 } }).receipt.model, 'openai/gpt-4o');
+  assert.equal(core.createUsageEvent({ ...attributed(), receipt:{ providerId:'anthropic', model:null, count:3 } }).receipt.model, null);
+  for (const targetRef of ['/Users/x', 'a b', 'sk-abc', 'x'.repeat(161)]) assert.throws(() => core.createUsageEvent({ ...base(), targetRef }), { code:'INVALID_USAGE_EVENT' }, targetRef);
+  for (const sourceHanaRef of ['owner/repo', 'ghp_x', '@Bad/Name!']) assert.throws(() => core.createUsageEvent({ ...base(), sourceHanaRef }), { code:'INVALID_USAGE_EVENT' }, sourceHanaRef);
+});
+
+test('T6 EventStore dedup identity includes attribution and receipt', async () => {
+  const store = new core.EventStore(new EventGlobal(), 10);
+  const event = core.createUsageEvent(attributed());
+  assert.equal(await store.put(event), 'inserted');
+  assert.equal(await store.put({ ...event, nonce:'QkJCQkJCQkJCQkJCQkJCQg' }), 'duplicate');
+  await assert.rejects(store.put({ ...event, receipt:{ ...event.receipt, count:13 } }), { code:'EVENT_IDENTITY_CONFLICT' });
+  await assert.rejects(store.put({ ...event, targetRef:'other-app' }), { code:'EVENT_IDENTITY_CONFLICT' });
+  await assert.rejects(store.put({ ...event, sourceHanaRef:null }), { code:'EVENT_IDENTITY_CONFLICT' });
+  assert.deepEqual(store.query().events[0].receipt, { providerId:'deepseek', model:'deepseek-chat', count:12 });
+});
+
+test('T6 legacy snapshot without receipt keys loads and later events coexist', async () => {
+  const legacy = core.createUsageEvent(base()); delete legacy.receipt;
+  const store = new core.EventStore(new EventGlobal({ schemaVersion:1, events:[legacy], withdrawal:null, inventory:{ last:null } }), 10);
+  assert.equal(store.query().total, 1);
+  const next = core.createUsageEvent({ ...attributed(), eventId:core.eventIdForSeat('device_A','app-host','next'), nonce:'QkJCQkJCQkJCQkJCQkJCQg' });
+  assert.equal(await store.put(next), 'inserted');
+  assert.deepEqual(store.query().events.map(e => e.receipt ?? null), [null, next.receipt]);
+});

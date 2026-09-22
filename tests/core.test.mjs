@@ -137,3 +137,14 @@ test('U03 durability: a stored snapshot recorded under another non-empty DSH ver
   const empty = JSON.parse(JSON.stringify(record())); empty.provenance.dshVersion = '';
   assert.equal(isSnapshot({ schemaVersion: 1, records: [empty] }), false);
 });
+
+test('T6 EventStore dedup identity includes attribution and receipt (root-aware copy for mutation)', async () => {
+  class EventGlobal { constructor() { this.snapshot={schemaVersion:1,events:[],withdrawal:null,inventory:{last:null}}; } get() { return this.snapshot; } async set(next) { this.snapshot=structuredClone(next); } }
+  const store = new core.EventStore(new EventGlobal(), 10);
+  const event = core.createUsageEvent({ deviceId:'device_A', hanaRef:'@scope/example-plugin', action:'use', occurredAt:'2026-09-19T00:00:00.000Z', eventId:'018f08f6-2d0c-5b61-8f5f-678f12294e87', nonce:'AQIDBAUGBwgJCgsMDQ4PEA', signature:null, source:'seat', sourcePlugin:'app-host', evidenceRef:'use:1', sourceHanaRef:'@hanamesh/recommender', targetRef:'vibe-trading', receipt:{ providerId:'deepseek', model:'deepseek-chat', count:12 } });
+  assert.equal(await store.put(event), 'inserted');
+  assert.equal(await store.put({ ...event, nonce:'QkJCQkJCQkJCQkJCQkJCQg' }), 'duplicate');
+  await assert.rejects(store.put({ ...event, receipt:{ ...event.receipt, count:13 } }), { code:'EVENT_IDENTITY_CONFLICT' });
+  await assert.rejects(store.put({ ...event, targetRef:'other-app' }), { code:'EVENT_IDENTITY_CONFLICT' });
+  await assert.rejects(store.put({ ...event, sourceHanaRef:null }), { code:'EVENT_IDENTITY_CONFLICT' });
+});

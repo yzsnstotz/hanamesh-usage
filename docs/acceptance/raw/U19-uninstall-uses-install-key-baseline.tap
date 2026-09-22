@@ -2,7 +2,7 @@ TAP version 13
 # Subtest: U19 uninstall uses the uninstall identity key
 ok 1 - U19 uninstall uses the uninstall identity key
   ---
-  duration_ms: 2.149958
+  duration_ms: 2.070416
   type: 'test'
   ...
 1..1
@@ -13,4 +13,4 @@ ok 1 - U19 uninstall uses the uninstall identity key
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 35.731958
+# duration_ms 36.639834

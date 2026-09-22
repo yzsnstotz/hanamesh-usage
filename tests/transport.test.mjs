@@ -19,7 +19,7 @@ test('authenticated exact route registry only; lifecycle removes all routes',asy
 test('query API uses no-store headers; HTML has distinct unavailable label',async()=>{
   const f=fixture(),r=await f.request('/api/hanamesh/usage?result=completed&limit=1');assert.equal(r.status,200);assert.equal(r.headers.get('cache-control'),'no-store');assert.equal((await r.json()).total,1);
   const view=await f.request('/api/hanamesh/usage/view');assert.match(view.headers.get('content-security-policy'),/default-src 'none'/);const html=await view.text();assert.match(html,/— unavailable/);assert.match(html,/上报状态/);assert.doesNotMatch(html,/<script/i);
-  const events=await f.request('/api/hanamesh/usage/events?state=pending&limit=5');const eventBody=await events.json();assert.equal(eventBody.events[0].hanaRef,'pkg');assert.equal(Object.keys(eventBody.events[0]).length,14);
+  const events=await f.request('/api/hanamesh/usage/events?state=pending&limit=5');const eventBody=await events.json();assert.equal(eventBody.events[0].hanaRef,'pkg');assert.equal(Object.keys(eventBody.events[0]).length,15);assert.deepEqual([eventBody.events[0].sourceHanaRef,eventBody.events[0].targetRef,eventBody.events[0].receipt],[null,null,null]);
   const health=await f.request('/api/hanamesh/usage/health');assert.equal((await health.json()).consent,'withheld');await f.close();
 });
 test('unknown, repeated, nonnumeric or out-of-range parameters are rejected',async()=>{

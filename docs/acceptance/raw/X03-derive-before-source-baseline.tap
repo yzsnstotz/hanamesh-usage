@@ -2,7 +2,7 @@ TAP version 13
 # Subtest: U06 source declaration commits before its derived event
 ok 1 - U06 source declaration commits before its derived event
   ---
-  duration_ms: 3.715125
+  duration_ms: 3.89775
   type: 'test'
   ...
 1..1
@@ -13,4 +13,4 @@ ok 1 - U06 source declaration commits before its derived event
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 37.536917
+# duration_ms 39.528167

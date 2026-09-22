@@ -32,3 +32,14 @@ test('U14 64KiB limit halves a large batch and offline origin sends nothing',asy
   const offline=await fixture({origin:null});assert.equal(await offline.reporter.runOnce(),'offline');assert.equal(offline.requests.length,0);assert.equal(offline.reporter.health().state,'offline');
 });
 test('U16 withheld consent performs zero requests across repeated triggers',async()=>{const f=await fixture({consent:'withheld'});for(let i=0;i<5;i++)assert.equal(await f.reporter.runOnce(),'withheld');assert.equal(f.requests.length,0);});
+
+test('T6 attributed events upload the optional keys verbatim while plain events keep seven keys',async()=>{
+  const f=await fixture({count:1,respond:async()=>new Response(JSON.stringify({accepted:2,duplicates:0,rejected:[],durability:'committed'}),{status:200})});
+  const attributed=core.createUsageEvent({deviceId:'device_FIXTURE',hanaRef:'@hanamesh/app-vibe',action:'use',occurredAt:'2026-09-19T00:00:00.000Z',eventId:core.eventIdForSeat('device_FIXTURE','app-host','use:vibe:2026091900'),nonce:nonce(9),signature:Buffer.alloc(64,9).toString('base64url'),source:'seat',sourcePlugin:'app-host',evidenceRef:'use:vibe:2026091900',targetRef:'vibe',receipt:{providerId:'deepseek',model:'deepseek-chat',count:4}});
+  await f.store.put(attributed);
+  assert.equal(await f.reporter.runOnce(),'uploaded');const body=JSON.parse(f.requests[0].options.body);assert.equal(body.length,2);
+  assert.deepEqual(Object.keys(body[0]),['deviceId','hanaRef','action','occurredAt','eventId','nonce','signature']);
+  assert.deepEqual(Object.keys(body[1]),['deviceId','hanaRef','action','occurredAt','eventId','nonce','signature','targetRef','receipt']);
+  assert.deepEqual(body[1].receipt,{providerId:'deepseek',model:'deepseek-chat',count:4});assert.equal(body[1].targetRef,'vibe');assert.equal('sourceHanaRef' in body[1],false);
+  assert.deepEqual(f.store.query().events.map(event=>event.upload.state),['sent','sent']);
+});

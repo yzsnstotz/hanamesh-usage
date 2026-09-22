@@ -1,0 +1,44 @@
+file:///Users/yzliu/work/projects/hanamesh/hanamesh-dsh-runtime/runtime/node_modules/@deepseek-ai/dsh-app-boot/lib/index.js:1545
+		throw new Error(`${binName}: ${stage}: ${detail}${stack}`, { cause });
+		      ^
+
+Error: dsh: plugin tree failed to load: failed to apply loader entry include (cordis:include): failed to apply loader entry webserver (@deepseek-ai/dsh-host-webserver): listen EADDRINUSE: address already in use 127.0.0.1:35635
+Error: listen EADDRINUSE: address already in use 127.0.0.1:35635
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at node:net:2206:7
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21)
+    at boot (file:///Users/yzliu/work/projects/hanamesh/hanamesh-dsh-runtime/runtime/node_modules/@deepseek-ai/dsh-app-boot/lib/index.js:1545:9)
+    at async runProfile (file:///Users/yzliu/work/projects/hanamesh/hanamesh-dsh-runtime/runtime/node_modules/@deepseek-ai/dsh/lib/profile-boot-Dk-7KqJc.js:311:14)
+    at async runCli (file:///Users/yzliu/work/projects/hanamesh/hanamesh-dsh-runtime/runtime/node_modules/@deepseek-ai/dsh/lib/bin.js:146:4)
+    at async file:///Users/yzliu/work/projects/hanamesh/hanamesh-dsh-runtime/runtime/node_modules/@deepseek-ai/dsh/lib/bin.js:168:23 {
+  [cause]: Error: failed to apply loader entry include (cordis:include): failed to apply loader entry webserver (@deepseek-ai/dsh-host-webserver): listen EADDRINUSE: address already in use 127.0.0.1:35635
+      at updateError (file:///Users/yzliu/work/projects/hanamesh/hanamesh-dsh-runtime/runtime/node_modules/@deepseek-ai/cordis-plugin-loader/lib/index.js:309:9)
+      at Entry._init (file:///Users/yzliu/work/projects/hanamesh/hanamesh-dsh-runtime/runtime/node_modules/@deepseek-ai/cordis-plugin-loader/lib/index.js:529:10)
+      at async Entry.init (file:///Users/yzliu/work/projects/hanamesh/hanamesh-dsh-runtime/runtime/node_modules/@deepseek-ai/cordis-plugin-loader/lib/index.js:505:4)
+      at async Entry.update (file:///Users/yzliu/work/projects/hanamesh/hanamesh-dsh-runtime/runtime/node_modules/@deepseek-ai/cordis-plugin-loader/lib/index.js:426:37)
+      at async EntryGroup.create (file:///Users/yzliu/work/projects/hanamesh/hanamesh-dsh-runtime/runtime/node_modules/@deepseek-ai/cordis-plugin-loader/lib/index.js:65:4)
+      at async Proxy.create (file:///Users/yzliu/work/projects/hanamesh/hanamesh-dsh-runtime/runtime/node_modules/@deepseek-ai/cordis-plugin-loader/lib/index.js:227:14)
+      at async mountRootInclude (file:///Users/yzliu/work/projects/hanamesh/hanamesh-dsh-runtime/runtime/node_modules/@deepseek-ai/dsh-app-boot/lib/index.js:1343:20)
+      at async boot (file:///Users/yzliu/work/projects/hanamesh/hanamesh-dsh-runtime/runtime/node_modules/@deepseek-ai/dsh-app-boot/lib/index.js:1534:3)
+      at async runProfile (file:///Users/yzliu/work/projects/hanamesh/hanamesh-dsh-runtime/runtime/node_modules/@deepseek-ai/dsh/lib/profile-boot-Dk-7KqJc.js:311:14)
+      at async runCli (file:///Users/yzliu/work/projects/hanamesh/hanamesh-dsh-runtime/runtime/node_modules/@deepseek-ai/dsh/lib/bin.js:146:4) {
+    [cause]: Error: failed to apply loader entry webserver (@deepseek-ai/dsh-host-webserver): listen EADDRINUSE: address already in use 127.0.0.1:35635
+        at updateError (file:///Users/yzliu/work/projects/hanamesh/hanamesh-dsh-runtime/runtime/node_modules/@deepseek-ai/cordis-plugin-loader/lib/index.js:309:9)
+        at file://<scratch>/home/profiles/usage/#include {
+      [cause]: Error: listen EADDRINUSE: address already in use 127.0.0.1:35635
+          at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+          at listenInCluster (node:net:1997:12)
+          at node:net:2206:7
+          at process.processTicksAndRejections (node:internal/process/task_queues:89:21) {
+        code: 'EADDRINUSE',
+        errno: -48,
+        syscall: 'listen',
+        address: '127.0.0.1',
+        port: 35635
+      }
+    }
+  }
+}
+
+Node.js v24.13.1

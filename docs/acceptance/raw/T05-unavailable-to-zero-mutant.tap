@@ -2,7 +2,7 @@ TAP version 13
 # Subtest: T04 FIXTURE: unknown is null with reason, NOT zero
 not ok 1 - T04 FIXTURE: unknown is null with reason, NOT zero
   ---
-  duration_ms: 1.142709
+  duration_ms: 1.184041
   type: 'test'
   location: '/Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/core.test.mjs:16:1'
   failureType: 'testCodeFailure'
@@ -33,4 +33,4 @@ not ok 1 - T04 FIXTURE: unknown is null with reason, NOT zero
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 35.354625
+# duration_ms 38.870167

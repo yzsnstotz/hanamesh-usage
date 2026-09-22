@@ -1,0 +1,59 @@
+TAP version 13
+# Subtest: T6 attributed events upload the optional keys verbatim while plain events keep seven keys
+not ok 1 - T6 attributed events upload the optional keys verbatim while plain events keep seven keys
+  ---
+  duration_ms: 10.180916
+  type: 'test'
+  location: '/Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/upload.test.mjs:36:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+
+      [
+        'deviceId',
+        'hanaRef',
+        'action',
+        'occurredAt',
+    ...
+        'targetRef',
+    -   'receipt'
+      ]
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'deviceId'
+    1: 'hanaRef'
+    2: 'action'
+    3: 'occurredAt'
+    4: 'eventId'
+    5: 'nonce'
+    6: 'signature'
+    7: 'targetRef'
+    8: 'receipt'
+  actual:
+    0: 'deviceId'
+    1: 'hanaRef'
+    2: 'action'
+    3: 'occurredAt'
+    4: 'eventId'
+    5: 'nonce'
+    6: 'signature'
+    7: 'targetRef'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/upload.test.mjs:42:10)
+    async Test.run (node:internal/test_runner/test:1110:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 46.219792

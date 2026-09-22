@@ -8,7 +8,7 @@
 
 - `query(filter)` / `export(filter)`：读取本地 `Declaration`；export 默认关闭。
 - `events({state?,limit?,after?})`：读取本机事件缓冲。
-- `record({hanaRef,action,occurredAt?,idempotencyKey,sourcePlugin})`：只接受 `open` / `use`，返回 `recorded | duplicate | withheld | rejected`。
+- `record({hanaRef,action,occurredAt?,idempotencyKey,sourcePlugin,sourceHanaRef?,targetRef?,receipt?})`：只接受 `open` / `use`，返回 `recorded | duplicate | withheld | rejected`。rc.7：`sourceHanaRef` 是来源 Hana（npm 包名规则同 `hanaRef`）；`targetRef` 是目标应用 / 会话引用（`^[A-Za-z0-9][A-Za-z0-9_.:-]{0,159}$`）；`receipt` 是 `{providerId, model, count}`，只允许配 `action:'use'`，`providerId` ≤64、`model` 为 null 或 ≤128 的 `[A-Za-z0-9][A-Za-z0-9_.:/@+-]*`、`count` 为 1..2147483647 的整数。三者缺省 null。同一 `idempotencyKey` 带不同归因/回执 → `rejected` + `EVENT_IDENTITY_CONFLICT`。
 - `health()`：返回本文下方的有界健康快照。
 - `drain()` / `reconcile()`：测试、回收和关闭屏障。
 
@@ -28,15 +28,23 @@
 
 ## 事件模型
 
-本地 `UsageEvent` 保存确定性 `eventId`、首次生成后不再替换的 16 字节 base64url `nonce`、来源和上报状态。`sourceHanaRef` / `targetRef` 当前恒为 `null`。它们以及 `source`、`sourcePlugin`、`evidenceRef`、`upload` 都不会上线。
+本地 `UsageEvent` 保存确定性 `eventId`、首次生成后不再替换的 16 字节 base64url `nonce`、来源和上报状态。rc.7 起 `sourceHanaRef` / `targetRef` 是可选归因（缺省 `null`），`use` 事件可带 `receipt: {providerId, model|null, count}`（rc.6 及更早的本地事件没有 `receipt` 键，读取时视为 null，不迁移、不改写）。`source`、`sourcePlugin`、`evidenceRef`、`upload` 不会上线。
 
-上线每条恰 7 键：
+本地事件 JSON 形状（rc.7）：
 
-```text
-deviceId, hanaRef, action, occurredAt, eventId, nonce, signature
+```json
+{"schemaVersion":1,"eventId":"<uuid v5>","deviceId":"…","hanaRef":"@hanamesh/app-vibe","action":"use","occurredAt":"2026-09-22T10:00:01.000Z","nonce":"<16B base64url>","signature":"<64B base64url>|null",
+ "sourceHanaRef":null,"targetRef":"vibe","receipt":{"providerId":"deepseek","model":"deepseek-chat","count":12},
+ "source":"seat","sourcePlugin":"@hanamesh/dsh-app-host","evidenceRef":"use:vibe:2026092210","upload":{"state":"pending","code":null,"attempts":0,"sentAt":null}}
 ```
 
-设备签名覆盖前 6 键（不含 `signature`）：键按 Unicode 码点升序、无空白，以 `JSON.stringify` 编码字符串，再由 `hanameshCore.sign()` 生成 64 字节 Ed25519 签名并编码为 base64url。
+上线每条必含 7 键，三个可选键只在非 null 时出现：
+
+```text
+deviceId, hanaRef, action, occurredAt, eventId, nonce, signature [, sourceHanaRef] [, targetRef] [, receipt]
+```
+
+设备签名覆盖固定顺序的 6 键 `{deviceId,hanaRef,action,occurredAt,eventId,nonce}`（O1 冻结契约；不含 `signature`，也不含三个可选键），以 `JSON.stringify` 编码，再由 `hanameshCore.sign()` 生成 64 字节 Ed25519 签名并编码为 base64url。服务端把可选键纳入内容 digest：同 `eventId` 改可选键是 `USAGE_EVENT_CONFLICT`。本地去重身份同样包含它们。
 
 ## 上报时序
 
@@ -44,7 +52,7 @@ deviceId, hanaRef, action, occurredAt, eventId, nonce, signature
 2. `Declaration` 以 `hanamesh_usage` 的一次 `global.set` 发布。
 3. 仅当 core 在场、同意为 `granted`、设备 id 可用且 executor 为 `reported` 时，派生并签名事件；事件与 eventId/nonce 以 `hanamesh_usage_events` 的一次 `global.set` 发布。
 4. 上报器只取已签名的 `pending`，每批不超过 `uploadBatchSize`、200 条和 64 KiB；超限对半缩批。
-5. `POST {serverOrigin}/v1/usage/events`，body 为 `{events:[<7-key event>]}`；请求四个设备鉴权头来自 `hanameshCore.signRequest`，并发送精确 `Origin`。
+5. `POST {serverOrigin}/v1/usage/events`，body 为 1–200 项裸数组（每项 7 必备键 + 最多 3 个可选键）；请求四个设备鉴权头来自 `hanameshCore.signRequest`，并发送精确 `Origin`。
 6. 2xx 的 `accepted`、`duplicates` 与 `rejected[{eventId,code}]` 转为本地终态；`pending-host-commit` 也视为远端已接收。401/403、5xx 与网络错误保持 pending、增加 attempts 并进入 1/2/4/8/15 分钟退避。
 
 O1 当前用计数返回 `accepted` / `duplicates`，没有逐条成功 id；客户端按请求顺序把未 rejected 的前 `accepted` 条记为 sent、其余记为 duplicate。P1/O1 真件联调时若契约补充逐条 id，只在上报适配层调整。

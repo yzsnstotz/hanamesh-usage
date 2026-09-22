@@ -1,6 +1,6 @@
 {
   "name": "hanamesh-usage",
-  "version": "0.2.0-rc.6",
+  "version": "0.2.0-rc.7",
   "description": "Consent-gated, device-signed HanaMesh usage events for DSH",
   "type": "module",
   "main": "lib/host/index.js",

@@ -99,3 +99,11 @@
 - REAL_SERVER：见 `hanamesh-core/docs/acceptance/suite-o3-20260920/stage3/`（core rc.12 + usage rc.5 复跑 S06）。
 
 rc.5 上限 🧪，不是用户 ACCEPTED。
+
+## rc.7 · T6 归因字段与使用回执（本机 2026-09-22）
+
+- 变更：`UsageEvent.sourceHanaRef` / `targetRef` 由恒 null 改为可选归因（缺省 null）；`use` 事件新增可选 `receipt {providerId, model|null, count}`（不记内容）。本地账本、`wireEvent`（只在非 null 时带键）、去重身份（同 eventId 不同归因/回执 → `EVENT_IDENTITY_CONFLICT`）、`/api/hanamesh/usage/events` 投影与 `/view` 表格均带上；六键签名与 O1 上报契约不变。`record` 席位接受三键，`receipt` 只配 `use`。rc.6 及更早本地事件没有 `receipt` 键，读取视为 null，不迁移不改写。
+- SOURCE：目标工具链 Node 24.13.1 / pnpm 10.33.0 / TS 5.9.3 `npm run build` 通过；`npm test` 107/107（新增 T6 × 7：字段缺省与旧事件、wire 可选键与签名不变、回执边界、去重身份、旧快照加载、席位接受/拒绝、上报带键）；`npm run test:mutations` 10/10 `ERR_ASSERTION`（新增 `T6-receipt-dropped-from-wire`、`T6-receipt-ignored-by-dedup-identity`）；`npm run check` 通过；`npm run test:detached` 通过。原始输出 `docs/acceptance/raw/T6-*.tap`。
+- REAL_HOST + STANDIN（`docs/acceptance/t6-2026-09-22/`）：全新隔离 `HOME=DSH_HOME=/private/tmp/hm-t6-<随机>/home`（`env -i` 同一行显式），dsh-runtime 0.1.5-alpha.1 `--from-default-profile web` 建 profile，`dsh plugin add` 依次装 `hanamesh-usage-0.2.0-rc.7.tgz`（sha256 `ced64f4634a7261bd4cacd823efafc1f14d1fd1fbc1408406a8435535f9038bd`）、core STANDIN、以及只为本门写的 `hanamesh-t6-seat-driver` STANDIN（把 JSON body 原样投给 `ctx.hanameshUsage.record`，源码 `seat-driver-standin.js`），随机非 3080 端口真实启动。结果：withheld → `withheld`；granted 后带 `targetRef` + `receipt` 的 `use` → `recorded`；同输入重投 → `duplicate`；改 `count` 重投 → `rejected EVENT_IDENTITY_CONFLICT`；`open` 带 receipt → `INVALID_RECORD_INPUT`；`open` 带 `sourceHanaRef` → `recorded`。`/events` 与磁盘 `storages/hanamesh_usage_events.json` 中 3 条席位事件都带新字段且已签名；153 条 Loader install 事件 `receipt: null`。SIGTERM 后把磁盘账本 153 条 Loader 事件的 `receipt` 键删掉（还原 rc.6 形状）再启动：正常加载，156 条全在、`recoveryComplete: true`、席位事件字段不变。结束后端口释放、无残留进程。
+- NOT_RUN：REAL_SERVER（rc.4 server-usage 收新字段）由派发 session 端到端复验（Vibe 经网关 → 服务端回执可查）；REAL_CORE 仍是 STANDIN。
+- 上限 🧪 DELIVERED；不是用户 ACCEPTED。

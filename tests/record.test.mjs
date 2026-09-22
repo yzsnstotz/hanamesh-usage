@@ -41,3 +41,22 @@ test('U09 record seat rejects timestamps outside the 90-day and five-minute wind
   assert.equal((await record({...input,occurredAt:'2026-06-01T00:00:00.000Z'})).code,'INVALID_RECORD_INPUT');
   assert.equal((await record({...input,occurredAt:'2026-09-19T00:06:00.000Z'})).code,'INVALID_RECORD_INPUT');
 });
+
+test('T6 record seat accepts sourceHanaRef, targetRef and a use receipt; rejects receipts on open and bad shapes', async () => {
+  const store = new core.EventStore(new EventGlobal());
+  const record = host.createRecordSeat({store,getConsent:()=> 'granted',getDeviceId:()=> 'device_A',now:()=>Date.parse('2026-09-19T00:00:00.000Z'),nonce:()=> 'AQIDBAUGBwgJCgsMDQ4PEA',signEvent:event=>({...event,signature:'c2lnbmF0dXJl'})});
+  const use={hanaRef:'@hanamesh/app-vibe',action:'use',idempotencyKey:'use:vibe:2026091900',sourcePlugin:'@hanamesh/dsh-app-host',targetRef:'vibe',receipt:{providerId:'deepseek',model:'deepseek-chat',count:7}};
+  const recorded=await record(use);assert.equal(recorded.disposition,'recorded');
+  const stored=store.query().events[0];
+  assert.deepEqual([stored.sourceHanaRef,stored.targetRef,stored.receipt],[null,'vibe',{providerId:'deepseek',model:'deepseek-chat',count:7}]);
+  assert.equal(stored.eventId,core.eventIdForSeat('device_A','@hanamesh/dsh-app-host','use:vibe:2026091900'));
+  assert.deepEqual(await record(use),{disposition:'duplicate',eventId:recorded.eventId});
+  assert.deepEqual(await record({...use,receipt:{...use.receipt,count:8}}),{disposition:'rejected',code:'EVENT_IDENTITY_CONFLICT'});
+  assert.deepEqual(await record({...use,action:'open',idempotencyKey:'open:vibe:1'}),{disposition:'rejected',code:'INVALID_RECORD_INPUT'});
+  assert.deepEqual(await record({...use,idempotencyKey:'k2',receipt:{providerId:'deepseek',model:'deepseek-chat'}}),{disposition:'rejected',code:'INVALID_RECORD_INPUT'});
+  assert.deepEqual(await record({...use,idempotencyKey:'k3',targetRef:'/Users/x'}),{disposition:'rejected',code:'INVALID_RECORD_INPUT'});
+  assert.deepEqual(await record({...use,idempotencyKey:'k4',sourceHanaRef:'owner/repo'}),{disposition:'rejected',code:'INVALID_RECORD_INPUT'});
+  // Explicit nulls and a source Hana are fine; the event still signs over the six keys only.
+  const open=await record({hanaRef:'@hanamesh/app-vibe',action:'open',idempotencyKey:'open:vibe:1',sourcePlugin:'@hanamesh/dsh-app-host',sourceHanaRef:'@hanamesh/recommender',targetRef:null,receipt:null});
+  assert.equal(open.disposition,'recorded');const openEvent=store.query().events[1];assert.equal(openEvent.sourceHanaRef,'@hanamesh/recommender');assert.equal(openEvent.receipt,null);assert.equal(openEvent.signature,'c2lnbmF0dXJl');
+});

@@ -2,7 +2,7 @@ TAP version 13
 # Subtest: U14 401 and 5xx retain pending events, increment attempts and expose only bounded errors
 ok 1 - U14 401 and 5xx retain pending events, increment attempts and expose only bounded errors
   ---
-  duration_ms: 10.048833
+  duration_ms: 9.838167
   type: 'test'
   ...
 1..1
@@ -13,4 +13,4 @@ ok 1 - U14 401 and 5xx retain pending events, increment attempts and expose only
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 43.764208
+# duration_ms 43.677042

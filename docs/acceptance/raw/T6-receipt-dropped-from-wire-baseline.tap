@@ -1,0 +1,16 @@
+TAP version 13
+# Subtest: T6 attributed events upload the optional keys verbatim while plain events keep seven keys
+ok 1 - T6 attributed events upload the optional keys verbatim while plain events keep seven keys
+  ---
+  duration_ms: 9.375584
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 43.553917
