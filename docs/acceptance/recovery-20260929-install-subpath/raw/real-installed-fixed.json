@@ -1,0 +1,1 @@
+{"evidence":"REAL_INSTALLED_PACKAGE_METADATA_READ_ONLY","module":"@hanamesh/app-vibe-trading/dsh","root":{"kind":"present","name":"@hanamesh/app-vibe-trading","version":"0.1.0-rc.27"},"subpath":{"kind":"present","name":"@hanamesh/app-vibe-trading","version":"0.1.0-rc.27"},"invalid":{"kind":"unreadable"}}

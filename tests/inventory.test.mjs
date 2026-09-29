@@ -1,7 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {pathToFileURL} from 'node:url';
-import {resolve} from 'node:path';
+import {resolve,join} from 'node:path';
+import {mkdtemp,mkdir,writeFile,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
 import {root} from './fixtures/helpers.mjs';
 const core=await import(pathToFileURL(resolve(root,'lib/core/index.js')).href);let host=null;try{host=await import(pathToFileURL(resolve(root,'lib/host/inventory.js')).href);}catch{}
 
@@ -38,4 +40,43 @@ test('U19 uninstall uses the uninstall identity key',async()=>{
   const store=new core.EventStore(global),ctx={loader:{entries:()=>[].values()},on:()=>()=>{}},service={getConsent:()=> 'granted',getDeviceId:()=> 'device_FIXTURE',sign:()=>Buffer.alloc(64)};
   const inventory=host.createInventory({ctx,store,link:{get:()=>service},inventoryIntervalMs:300000,now:()=>Date.parse('2026-09-19T00:00:00.000Z')});
   await inventory.scan();const [event]=store.getSnapshot().events;assert.equal(event.eventId,core.eventIdForLoader('device_FIXTURE','uninstall','a','1.0.0'));await inventory.close();
+});
+
+async function subpathFixture(run){
+  const dir=await mkdtemp(join(tmpdir(),'usage-inventory-subpath-'));
+  try{
+    const packageDir=join(dir,'node_modules/@hanamesh/app-vibe-trading');await mkdir(packageDir,{recursive:true});
+    await writeFile(join(packageDir,'package.json'),JSON.stringify({name:'@hanamesh/app-vibe-trading',version:'0.1.0-rc.27',type:'module',exports:{'./dsh':'./dsh.js','./package.json':'./package.json'}}));
+    await writeFile(join(packageDir,'dsh.js'),"throw new Error('INSPECTOR_MUST_NOT_EXECUTE_PLUGIN');");
+    await run(pathToFileURL(join(dir,'profile.js')).href);
+  }finally{await rm(dir,{recursive:true,force:true});}
+}
+test('U19 exported module subpath resolves actual package metadata without executing plugin',async()=>subpathFixture(async baseUrl=>{
+  assert.deepEqual(await host.inspectPackage('@hanamesh/app-vibe-trading/dsh',baseUrl),{kind:'present',name:'@hanamesh/app-vibe-trading',version:'0.1.0-rc.27'});
+  assert.deepEqual(await host.inspectPackage('@hanamesh/app-vibe-trading/not-exported',baseUrl),{kind:'unreadable'});
+  for(const bad of ['@hanamesh/app-vibe-trading/../dsh','@hanamesh/app-vibe-trading/./dsh','@hanamesh/app-vibe-trading//dsh','@hanamesh/app-vibe-trading/%2e%2e/dsh','@hanamesh/app-vibe-trading/dsh?x','@hanamesh/app-vibe-trading/dsh#x','https://example/dsh','file:///tmp/dsh','../dsh','/tmp/dsh','@hanamesh/app-vibe-trading/\\dsh'])assert.deepEqual(await host.inspectPackage(bad,baseUrl),{kind:'unreadable'},bad);
+}));
+test('U19 subpath inventory uses actual package identity and deduplicates across root and subpath entries',async()=>subpathFixture(async baseUrl=>{
+  const global=new Global(),store=new core.EventStore(global);let entries=[entry('vibe','@hanamesh/app-vibe-trading/dsh',{baseUrl})];
+  const ctx={loader:{entries:()=>entries.values()},on:()=>()=>{}},service={getConsent:()=> 'granted',getDeviceId:()=> 'device_FIXTURE',sign:()=>Buffer.alloc(64)};
+  const inventory=host.createInventory({ctx,store,link:{get:()=>service},inventoryIntervalMs:300000,now:()=>Date.parse('2026-09-29T00:00:00.000Z')});
+  try{
+    const result=await inventory.scan();assert.equal(result.unreadable,0);assert.deepEqual(result.events,[{action:'install',hanaRef:'@hanamesh/app-vibe-trading',version:'0.1.0-rc.27'}]);
+    assert.equal(store.getSnapshot().events[0].eventId,core.eventIdForLoader('device_FIXTURE','install','@hanamesh/app-vibe-trading','0.1.0-rc.27'));
+    entries=[entry('metadata','@hanamesh/app-vibe-trading',{baseUrl})];assert.deepEqual((await inventory.scan()).events,[]);
+    entries=[];assert.deepEqual((await inventory.scan()).events,[{action:'uninstall',hanaRef:'@hanamesh/app-vibe-trading',version:'0.1.0-rc.27'}]);
+  }finally{await inventory.close();}
+}));
+
+test('U19 subpath fallback finds package metadata when package.json is not exported',async()=>{
+  const dir=await mkdtemp(join(tmpdir(),'usage-inventory-fallback-'));
+  try{
+    const packageDir=join(dir,'node_modules/plain-hana');await mkdir(join(packageDir,'lib'),{recursive:true});
+    await writeFile(join(packageDir,'package.json'),JSON.stringify({name:'plain-hana',version:'1.2.3',exports:{'./lib/dsh':'./lib/dsh.js'}}));
+    await writeFile(join(packageDir,'lib/dsh.js'),"throw new Error('INSPECTOR_MUST_NOT_EXECUTE_PLUGIN');");
+    const baseUrl=pathToFileURL(join(dir,'profile.js')).href;
+    assert.deepEqual(await host.inspectPackage('plain-hana/lib/dsh',baseUrl),{kind:'present',name:'plain-hana',version:'1.2.3'});
+    await writeFile(join(packageDir,'package.json'),JSON.stringify({name:'other-package',version:'1.2.3',exports:{'./lib/dsh':'./lib/dsh.js'}}));
+    assert.deepEqual(await host.inspectPackage('plain-hana/lib/dsh',baseUrl),{kind:'unreadable'});
+  }finally{await rm(dir,{recursive:true,force:true});}
 });

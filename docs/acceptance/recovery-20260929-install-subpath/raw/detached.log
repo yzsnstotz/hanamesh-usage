@@ -1,0 +1,37 @@
+
+> hanamesh-usage@0.2.0-rc.9 test:detached
+> node tools/detached.mjs
+
+$ npm ci --offline --ignore-scripts --legacy-peer-deps
+
+npm error code ENOTCACHED
+npm error request to https://registry.npmjs.org/zod/-/zod-4.5.4.tgz failed: cache mode is 'only-if-cached' but no cached response is available.
+npm error Log files were not written due to an error writing to the directory: /Volumes/clawso-build/.npm-cache/_logs
+npm error You can rerun the command with `--loglevel=verbose` to see the logs in your terminal
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+1 !== 0
+
+    at file:///Users/yzliu/work/projects/hanamesh/_deliveries/product-flow-20260929/branches/consent-points/worktree/tools/detached.mjs:7:240
+    at ModuleJob.run (node:internal/modules/esm/module_job:430:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:661:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.13.1
+npm notice
+npm notice New minor version of npm available! 11.8.0 -> 11.20.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.20.0
+npm notice To update run: npm install -g npm@11.20.0
+npm notice

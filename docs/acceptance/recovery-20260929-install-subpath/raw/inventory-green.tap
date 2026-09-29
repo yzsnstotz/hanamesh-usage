@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: U19 inventory module is present
+ok 1 - U19 inventory module is present
+  ---
+  duration_ms: 0.308458
+  type: 'test'
+  ...
+# Subtest: U19 first scan installs all, stable/disabled scans add none, upgrade and removal are distinct
+ok 2 - U19 first scan installs all, stable/disabled scans add none, upgrade and removal are distinct
+  ---
+  duration_ms: 9.036
+  type: 'test'
+  ...
+# Subtest: U19 unreadable entries are isolated and withheld consent updates snapshot without events
+ok 3 - U19 unreadable entries are isolated and withheld consent updates snapshot without events
+  ---
+  duration_ms: 0.17525
+  type: 'test'
+  ...
+# Subtest: U19 granting consent after a withheld first scan emits the current installs once
+ok 4 - U19 granting consent after a withheld first scan emits the current installs once
+  ---
+  duration_ms: 0.70425
+  type: 'test'
+  ...
+# Subtest: U08 stable inventory rescan does not resurrect a terminal install past retention
+ok 5 - U08 stable inventory rescan does not resurrect a terminal install past retention
+  ---
+  duration_ms: 0.279542
+  type: 'test'
+  ...
+# Subtest: U19 uninstall uses the uninstall identity key
+ok 6 - U19 uninstall uses the uninstall identity key
+  ---
+  duration_ms: 0.239542
+  type: 'test'
+  ...
+# Subtest: U19 exported module subpath resolves actual package metadata without executing plugin
+ok 7 - U19 exported module subpath resolves actual package metadata without executing plugin
+  ---
+  duration_ms: 7.801041
+  type: 'test'
+  ...
+# Subtest: U19 subpath inventory uses actual package identity and deduplicates across root and subpath entries
+ok 8 - U19 subpath inventory uses actual package identity and deduplicates across root and subpath entries
+  ---
+  duration_ms: 2.311958
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 65.020625
