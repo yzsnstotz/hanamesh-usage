@@ -1,0 +1,22 @@
+{
+  "checkedAtUTC": "2026-09-29T07:59:33.250151+00:00",
+  "repository": "yzsnstotz/hanamesh-usage",
+  "fetchURL": "https://github.com/yzsnstotz/hanamesh-usage.git",
+  "pushURL": "https://github.com/yzsnstotz/hanamesh-usage.git",
+  "githubAPI": {
+    "private": false,
+    "visibility": "public",
+    "default_branch": "main"
+  },
+  "remoteHead": "7b2e79c20b2ff6594f8b88ebd3dc047fbab1dd6d",
+  "remoteMain": "7b2e79c20b2ff6594f8b88ebd3dc047fbab1dd6d",
+  "remoteCandidateBranch": null,
+  "localCandidateBranch": "codex/usage-withdrawal-retry",
+  "localCandidateCodeCommit": "9279b8834768248a0b4baf79610a096499abf195",
+  "localStatusBeforeCloseoutReport": "clean",
+  "decision": "PUBLIC_ORIGIN_PUSH_BLOCKED",
+  "pushAttempted": false,
+  "visibilityChanged": false,
+  "releaseTagCreated": false,
+  "publishAttempted": false
+}
