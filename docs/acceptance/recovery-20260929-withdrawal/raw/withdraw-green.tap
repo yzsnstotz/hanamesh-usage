@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: U15 withdrawal clears locally before DELETE and success is never resent
+ok 1 - U15 withdrawal clears locally before DELETE and success is never resent
+  ---
+  duration_ms: 3.78375
+  type: 'test'
+  ...
+# Subtest: U15 failed withdrawal retries, then stops after the first success
+ok 2 - U15 failed withdrawal retries, then stops after the first success
+  ---
+  duration_ms: 0.510417
+  type: 'test'
+  ...
+# Subtest: U15 offline withdrawal only clears local state
+ok 3 - U15 offline withdrawal only clears local state
+  ---
+  duration_ms: 0.21675
+  type: 'test'
+  ...
+# Subtest: U15 mounted restart restores a persisted pending deletion while consent stays withheld
+ok 4 - U15 mounted restart restores a persisted pending deletion while consent stays withheld
+  ---
+  duration_ms: 15.982375
+  type: 'test'
+  ...
+# Subtest: U15 regrant preserves a failed pending deletion until the remote delete succeeds
+ok 5 - U15 regrant preserves a failed pending deletion until the remote delete succeeds
+  ---
+  duration_ms: 0.451167
+  type: 'test'
+  ...
+# Subtest: U15 missing origin after a failed remote delete cannot downgrade its durable obligation to offline
+ok 6 - U15 missing origin after a failed remote delete cannot downgrade its durable obligation to offline
+  ---
+  duration_ms: 0.241292
+  type: 'test'
+  ...
+# Subtest: U15 failed regrant blocks new uploads; successful retry resumes them with granted consent
+ok 7 - U15 failed regrant blocks new uploads; successful retry resumes them with granted consent
+  ---
+  duration_ms: 0.574
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 74.574667

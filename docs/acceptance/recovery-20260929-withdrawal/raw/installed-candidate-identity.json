@@ -1,0 +1,228 @@
+{
+  "packageVersion": "0.2.0-rc.8",
+  "tgzSha256": "81a3b325265b235bad8558cd683bd555f2fe7b2ca2a69ccf113ad5d56a729a8d",
+  "files": 44,
+  "allMatch": true,
+  "rows": [
+    {
+      "path": "LICENSE",
+      "sha256": "cd29e05178eecb3207c494901de7d41785a7b31216e94ab37f3e104e93f3f3b1",
+      "match": true
+    },
+    {
+      "path": "lib/core/boundary.js",
+      "sha256": "aad8c707cea28f9ee0fa1ba87dd8a7e23e473835d23ed0d68ec443618d94ee0c",
+      "match": true
+    },
+    {
+      "path": "lib/core/canonical.js",
+      "sha256": "b12a56259a5f7a82380cdef90ba3518b912a2e6c2da1cd5c144bb10f7def91a7",
+      "match": true
+    },
+    {
+      "path": "lib/host/core-link.js",
+      "sha256": "b3c79b553695c5bfe4c62c7aa0677d9fa7e6e8810c3baca309a82e6bd726afb7",
+      "match": true
+    },
+    {
+      "path": "lib/core/derive.js",
+      "sha256": "517b09baf14dae44d75c0daf8e13d80c0461da824fa9f1313f49f7d457debd3b",
+      "match": true
+    },
+    {
+      "path": "lib/core/event-store.js",
+      "sha256": "a6c19f5830fe8b7b1aa434f8019cee19051a5639598c7827a2cb3c1ee8faa571",
+      "match": true
+    },
+    {
+      "path": "lib/core/events.js",
+      "sha256": "622aac62ff4a2d73bf8b9768ac6f3225ef258cb265efb60e45f726c6d12a7eda",
+      "match": true
+    },
+    {
+      "path": "lib/core/identity.js",
+      "sha256": "4456bdc492864f7c83695cee27ec5747f81b07cfd4aae9ff2cf201d485fa92bd",
+      "match": true
+    },
+    {
+      "path": "lib/core/index.js",
+      "sha256": "60cb43c6fbfacb66c559c9f9b20e2be78fd096b64c1198892baadfb84070e6a9",
+      "match": true
+    },
+    {
+      "path": "lib/host/index.js",
+      "sha256": "1733d03c4a8499cbea49a23166adaac6efcdadcdc01f69a214ef19c1c55095ec",
+      "match": true
+    },
+    {
+      "path": "lib/host/inventory.js",
+      "sha256": "e472d9ecc2ebd57c1ebf227491fe151466eabb92be2ad136aedb291dabfb30f2",
+      "match": true
+    },
+    {
+      "path": "lib/host/mount.js",
+      "sha256": "2bb9aa3cda82472d254ed8927b843c05c78887b91093cc50583339fd5baa9635",
+      "match": true
+    },
+    {
+      "path": "lib/core/pins.js",
+      "sha256": "a0a6740c961c98fc4032b03306ebcf8b7986d8766f090902b702122d9fe16545",
+      "match": true
+    },
+    {
+      "path": "lib/core/privacy.js",
+      "sha256": "627a23aa2383a31f7f446cc11d60c58ad0eeebff8f28561a0059cc400a61f48e",
+      "match": true
+    },
+    {
+      "path": "lib/core/project.js",
+      "sha256": "8dab8ddb98c0a481e94c4526eb90ac78d1d46da6a0d272724725bd62bf308a17",
+      "match": true
+    },
+    {
+      "path": "lib/core/query.js",
+      "sha256": "20d5a1e0d90ddc9fc2efa587d980042f5a0823d39971cdb1236ea62f75c17b54",
+      "match": true
+    },
+    {
+      "path": "lib/host/record.js",
+      "sha256": "412bd33620d5f101526434a1d07af7c20eca27923a9b581fea3d9cfee79669dc",
+      "match": true
+    },
+    {
+      "path": "lib/core/store.js",
+      "sha256": "73d260d4b6f329b20dee558d9ec64ee0c99d213226dec600569189d2a9b9e661",
+      "match": true
+    },
+    {
+      "path": "lib/host/transport.js",
+      "sha256": "c051fd0c7e9a70adf01413af9d0ff948b172d981b30a2b22d2f5befc66474888",
+      "match": true
+    },
+    {
+      "path": "lib/core/types.js",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "match": true
+    },
+    {
+      "path": "lib/host/upload.js",
+      "sha256": "873c5fbbc04900ea008a5f001634ad7edd22f447eb9fcbfeaa6db59403cfa528",
+      "match": true
+    },
+    {
+      "path": "lib/core/validate.js",
+      "sha256": "1d14117c80034f24158131306eb4a967870bc841a54b948bc62674fd14e03c46",
+      "match": true
+    },
+    {
+      "path": "lib/core/view.js",
+      "sha256": "14a8e517fe119ce78019f2c28ba443dfc8343c82e0edfe1fe96af1d1fa7e8f59",
+      "match": true
+    },
+    {
+      "path": "consistency.json",
+      "sha256": "0dd4724186b30722ea55bcba1dbc8b582535cf3c5a27bb3ade458aa3ddb6bdc5",
+      "match": true
+    },
+    {
+      "path": "package.json",
+      "sha256": "9f41e71a7957841da8130b9b2e35af57d1059cb1b8b275e070861ac95d7cc1fa",
+      "match": true
+    },
+    {
+      "path": "README.md",
+      "sha256": "5f78d2291900cab65e5243ea5ca1e4049c16a9fbab459cf357e1027f67fab822",
+      "match": true
+    },
+    {
+      "path": "lib/core/boundary.d.ts",
+      "sha256": "8dfd202f8aca3db4f93e0931fd73fff29fc5e35eef5c4e9fa6b9ffe0cda4cbf4",
+      "match": true
+    },
+    {
+      "path": "lib/core/canonical.d.ts",
+      "sha256": "6c681a2fd375d36823cb3ec8c3ab8558e421ce2e67fffff19da525f68d99f364",
+      "match": true
+    },
+    {
+      "path": "lib/host/contracts.d.ts",
+      "sha256": "583ce4c8a87dd14b7efec0c0dc36166ecb8bbaa76f04f120521c5b3ff99c79c0",
+      "match": true
+    },
+    {
+      "path": "lib/core/derive.d.ts",
+      "sha256": "48cc7bce98bae9f02f44bf91ccb32211625733900155e31d3baf8a9562f35251",
+      "match": true
+    },
+    {
+      "path": "lib/core/event-store.d.ts",
+      "sha256": "93f5d775258493ed928b0ddd18edb66c5e186bda4c597dc1a2d4d1a6f95d0bad",
+      "match": true
+    },
+    {
+      "path": "lib/core/events.d.ts",
+      "sha256": "eb0ea609ff8d074afe665ddc4c4cc21eaf53721c295fbc8848d187403ce8e041",
+      "match": true
+    },
+    {
+      "path": "lib/core/identity.d.ts",
+      "sha256": "93874421cee7cd3a4a54de454b6c5d0652f901263ff4cfa68f67863d71f26bdb",
+      "match": true
+    },
+    {
+      "path": "lib/core/index.d.ts",
+      "sha256": "60cb43c6fbfacb66c559c9f9b20e2be78fd096b64c1198892baadfb84070e6a9",
+      "match": true
+    },
+    {
+      "path": "lib/host/index.d.ts",
+      "sha256": "2100d44ada2e061600b3a2ea02a96c2e58893e5de125da52dab806887b568de1",
+      "match": true
+    },
+    {
+      "path": "lib/core/pins.d.ts",
+      "sha256": "e5bc62720a646de6da6bbf7e0a84c2bafdc5e003a046295fec79d6bf99f123c1",
+      "match": true
+    },
+    {
+      "path": "lib/core/privacy.d.ts",
+      "sha256": "61fa8b3e11a7a1789beb6b1dfbcb78aab083a4f8c4112d6a94c40d0e5c500710",
+      "match": true
+    },
+    {
+      "path": "lib/core/project.d.ts",
+      "sha256": "c5086dac12d1f8281cc73cc24daef4c7e239f4a04089da1af6e9bee112ad2e23",
+      "match": true
+    },
+    {
+      "path": "lib/core/query.d.ts",
+      "sha256": "b475592fb8f689bbe7875a387d347cb37fedb2e5253665f053834f9d404cdb29",
+      "match": true
+    },
+    {
+      "path": "lib/core/store.d.ts",
+      "sha256": "bf92cba134b6ea67e0db01a3a8b6a8f5d34daba9507d1138ea9ef85b86290b7b",
+      "match": true
+    },
+    {
+      "path": "lib/core/types.d.ts",
+      "sha256": "e360fc9a35bb9b0de1267bb9692e5073b04e7b1c1ec5fd7b2f8d51df15cfbc69",
+      "match": true
+    },
+    {
+      "path": "lib/core/validate.d.ts",
+      "sha256": "0c5e3e26ddbe146e984b75cd5829d9b1c4c84785b1063979949c7582b47c8355",
+      "match": true
+    },
+    {
+      "path": "lib/core/view.d.ts",
+      "sha256": "75086d5f669d6dac26f93c72859771040b58a79c9b99dcb3924dc6c24f33d8ff",
+      "match": true
+    },
+    {
+      "path": "profile/cordis.patch.yml",
+      "sha256": "a557a89580f49c537cb84cc4798590dd400dfeea4f32dcefabe6499d8f33554b",
+      "match": true
+    }
+  ]
+}

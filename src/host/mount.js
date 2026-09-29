@@ -134,7 +134,13 @@ export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink)
     stopConsent?.();stopConsent=null;
     if(status!=='present'||core===null){reporter.stop();return;}
     stopConsent=core.onConsentChange((state,changedAt)=>{let deviceId=null;try{deviceId=core.getDeviceId();}catch{}jobs=jobs.then(async()=>{if(state==='withheld')await reporter.withdraw(changedAt,deviceId);else {await eventStore.signPending(event=>signUsageEvent(core,event));try{await inventory.scan();}catch{note(new UsageError('INVENTORY_FAILED'));}await reporter.grant();}}).catch(error=>note(error));});
-    jobs=jobs.then(async()=>{await eventStore.signPending(event=>signUsageEvent(core,event));reporter.start();}).catch(error=>note(error));
+    jobs=jobs.then(async()=>{
+      await eventStore.signPending(event=>signUsageEvent(core,event));
+      // Timers do not survive the host process. Restore the durable deletion
+      // before considering uploads, including when consent remains withheld.
+      if(eventStore.getSnapshot().withdrawal?.state==='pending')await reporter.retryWithdrawal();
+      else reporter.start();
+    }).catch(error=>note(error));
   };
   const stopCore=coreLink.onChange(attachCore);attachCore(coreLink.status(),coreLink.get());
   const api = {
@@ -187,7 +193,7 @@ export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink)
       if (closing) return;
       closing = true;
       stopEvent(); stopCreated();stopCore();stopConsent?.();reporter.stop();coreLink.close();
-      try { await jobs; await inventory.close(); await reporter.drain(); await store.close(); await eventStore.drain(); }
+      try { await jobs; await inventory.close(); await reporter.drain();reporter.stop();await store.close(); await eventStore.drain(); }
       finally { await Promise.all([domain.close(),eventDomain.close()]); }
     },
   };

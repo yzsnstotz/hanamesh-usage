@@ -44,6 +44,8 @@ export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize
   /** @param {string} code @param {string[]} ids */
   async function fail(code,ids){await store.markAttempts(ids);lastError=code;backoff();return /** @type {const} */('backoff');}
   async function runOnceRaw(){
+    // A new consent grant cannot overtake an earlier device-wide deletion.
+    if(store.getSnapshot().withdrawal?.state==='pending'){state='backoff';return /** @type {const} */('backoff');}
     const core=link.get();if(core===null){state='stopped';return /** @type {const} */('stopped');}
     if(core.getConsent()!=='granted'){state='stopped';return /** @type {const} */('withheld');}
     const origin=core.getServerOrigin();if(origin===null){state='offline';return /** @type {const} */('offline');}
@@ -79,22 +81,38 @@ export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize
       return {state:/** @type {const} */('sent'),deletedEvents:Number(body.deletedEvents),lastError:null};
     }catch{return {state:/** @type {const} */('pending'),deletedEvents:null,lastError:'WITHDRAW_UNAVAILABLE'};}
   }
-  async function retryWithdrawal(){
+  async function retryWithdrawalRaw(){
     const withdrawal=store.getSnapshot().withdrawal;if(withdrawal===null)return /** @type {const} */('idle');
     if(withdrawal.state==='sent')return /** @type {const} */('sent');
     if(withdrawal.state==='offline')return /** @type {const} */('offline');
-    const result=await requestWithdrawal(withdrawal.deviceId);await store.markWithdrawal(result);
-    if(result.state==='sent'){clearTimer();state='stopped';lastError=null;return /** @type {const} */('sent');}
-    if(result.state==='offline'){clearTimer();state='offline';lastError=result.lastError;return /** @type {const} */('offline');}
+    const response=await requestWithdrawal(withdrawal.deviceId);
+    // A previously queued remote delete stays pending when its core/origin is
+    // temporarily unavailable. Only an initially local-only withdrawal is offline.
+    const result=response.state==='offline'?{state:/** @type {const} */('pending'),deletedEvents:null,lastError:'WITHDRAW_UNAVAILABLE'}:response;
+    await store.markWithdrawal(result);
+    if(result.state==='sent'){
+      clearTimer();state='stopped';nextAttemptAt=null;lastError=null;
+      // Consent may have been granted during the outage. Only the successful
+      // old DELETE releases that barrier, then the newly buffered events upload.
+      if(link.get()?.getConsent()==='granted'){await store.clearWithdrawal();start();}
+      return /** @type {const} */('sent');
+    }
     lastError='WITHDRAW_UNAVAILABLE';backoff(true);return /** @type {const} */('backoff');
   }
+  function retryWithdrawal(){const run=tail.then(retryWithdrawalRaw);tail=run.then(()=>{},()=>{});return run;}
   /** @param {string} [changedAt] @param {string|null} [deviceIdOverride] */
   async function withdraw(changedAt=iso(),deviceIdOverride=null){
     stop();await tail;const current=store.getSnapshot().withdrawal;if(current?.state==='sent')return /** @type {const} */('sent');if(current?.state==='offline')return /** @type {const} */('offline');
     const core=link.get();const deviceId=deviceIdOverride??core?.getDeviceId();if(!deviceId){state='offline';return /** @type {const} */('offline');}
-    if(current===null)await store.withdrawLocal(changedAt,deviceId);
+    if(current===null){
+      await store.withdrawLocal(changedAt,deviceId);
+      if(core===null||core.getServerOrigin()===null){await store.markWithdrawal({state:'offline',deletedEvents:null,lastError:core===null?'CORE_UNAVAILABLE':null});state='offline';return /** @type {const} */('offline');}
+    }
     return await retryWithdrawal();
   }
-  async function grant(){await store.clearWithdrawal();start();}
+  async function grant(){
+    if(store.getSnapshot().withdrawal?.state==='pending'&&await retryWithdrawal()!=='sent')return;
+    await store.clearWithdrawal();start();
+  }
   return {start,stop,runOnce,withdraw,retryWithdrawal,grant,drain:()=>tail,health:()=>({state,...counts(),lastUploadAt,nextAttemptAt,lastError})};
 }

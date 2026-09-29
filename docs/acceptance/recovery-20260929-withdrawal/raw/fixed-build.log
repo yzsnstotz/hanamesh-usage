@@ -1,0 +1,6 @@
+
+> hanamesh-usage@0.2.0-rc.8 build
+> node tools/build.mjs
+
+{"node":"v24.13.1","compiler":"Version 5.9.3","offline":false,"platform":"darwin","arch":"arm64"}
+TARGET_SEMANTIC_BUILD_COMPLETE
