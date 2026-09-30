@@ -48,6 +48,9 @@ export declare class EventStore {
     private commit;
     put(input: UsageEvent): Promise<'inserted' | 'duplicate'>;
     signPending(signer: (event: UsageEvent) => UsageEvent): Promise<number>;
+    /** Recover only the known O1 nonce-prefix rejection. Keep the original event ID,
+     * attribution, time and attempt count; never replay another rejection or device. */
+    repairRejectedNonces(deviceId: string, nonce: () => string, signer: (event: UsageEvent) => UsageEvent): Promise<number>;
     updateInventory(scannedAt: string, items: InventoryItem[], inputs: UsageEvent[]): Promise<{
         inserted: string[];
         duplicates: number;

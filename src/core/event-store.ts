@@ -88,6 +88,25 @@ export class EventStore {
     });
     this.tail=run.catch(()=>{});return run.then(()=>count);
   }
+  /** Recover only the known O1 nonce-prefix rejection. Keep the original event ID,
+   * attribution, time and attempt count; never replay another rejection or device. */
+  repairRejectedNonces(deviceId: string, nonce: () => string, signer: (event: UsageEvent) => UsageEvent): Promise<number> {
+    let count=0;
+    const run=this.tail.then(async()=>{
+      const events=this.snapshot.events.map(event=>{
+        if(event.deviceId!==deviceId||event.upload.state!=='rejected'||event.upload.code!=='USAGE_INPUT_INVALID'||!/^[\-_]/.test(event.nonce))return structuredClone(event);
+        const replacement=nonce();
+        if(!/^[A-Za-z0-9]/.test(replacement)||replacement===event.nonce)throw new UsageError('INVALID_USAGE_EVENT');
+        const candidate:UsageEvent={...structuredClone(event),nonce:replacement,signature:null,upload:{state:'pending',code:null,attempts:event.upload.attempts,sentAt:null}};
+        validateEvent(candidate);
+        const signed=signer(structuredClone(candidate));validateEvent(signed);
+        if(signed.eventId!==event.eventId||identity(signed)!==identity(event)||signed.nonce!==candidate.nonce||signed.signature===null||JSON.stringify(signed.upload)!==JSON.stringify(candidate.upload))throw new UsageError('CORE_SIGNATURE_INVALID');
+        count++;return structuredClone(signed);
+      });
+      if(count>0)await this.commit({...structuredClone(this.snapshot),events});
+    });
+    this.tail=run.catch(()=>{});return run.then(()=>count);
+  }
   updateInventory(scannedAt:string,items:InventoryItem[],inputs:UsageEvent[]):Promise<{inserted:string[];duplicates:number}>{
     const inserted:string[]=[];let duplicates=0;
     const run=this.tail.then(async()=>{

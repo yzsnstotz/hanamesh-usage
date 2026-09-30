@@ -111,6 +111,41 @@ test('U13 EventStore applies accepted, duplicate and rejected batch outcomes ato
   assert.equal(global.writes,before+1);assert.deepEqual(store.query().events.map(event=>[event.upload.state,event.upload.code,event.upload.attempts]),[['sent',null,1],['duplicate',null,1],['rejected','USAGE_INPUT_INVALID',1]]);
 });
 
+test('P01 repairs only a server-rejected incompatible nonce while preserving event identity and attempt history', async () => {
+  const global=new EventGlobal();const store=new core.EventStore(global);
+  const bad=Buffer.alloc(16,0xfb).toString('base64url');
+  const rejected=core.createUsageEvent({...base(),action:'install',source:'loader',evidenceRef:'pkg@1.0.0',nonce:bad,signature:'c2lnbmF0dXJl'});
+  const other=core.createUsageEvent({...base(),eventId:core.eventIdForSeat('device_A','app-host','other'),signature:'c2lnbmF0dXJl'});
+  await store.put(rejected);await store.put(other);
+  await store.applyUpload([rejected.eventId,other.eventId],{accepted:1,duplicates:0,rejected:[{eventId:rejected.eventId,code:'USAGE_INPUT_INVALID'}],durability:'committed'},'2026-09-19T00:01:00.000Z');
+  const before=global.writes;
+  assert.equal(await store.repairRejectedNonces('device_A',()=>Buffer.alloc(16,1).toString('base64url'),event=>({...event,signature:'cmVzaWduZWQ'})),1);
+  assert.equal(global.writes,before+1);
+  const [fixed,untouched]=store.query().events;
+  assert.deepEqual([fixed.eventId,fixed.deviceId,fixed.hanaRef,fixed.action,fixed.occurredAt,fixed.source,fixed.evidenceRef],[rejected.eventId,rejected.deviceId,rejected.hanaRef,rejected.action,rejected.occurredAt,rejected.source,rejected.evidenceRef]);
+  assert.deepEqual(fixed.upload,{state:'pending',code:null,attempts:1,sentAt:null});
+  assert.equal(fixed.signature,'cmVzaWduZWQ');
+  assert.match(fixed.nonce,/^[A-Za-z0-9]/);
+  assert.equal(untouched.upload.state,'sent');
+  assert.equal(await store.repairRejectedNonces('device_A',()=>Buffer.alloc(16,2).toString('base64url'),event=>event),0);
+});
+
+test('P01 does not retry a different validation error, foreign device or server-compatible nonce', async () => {
+  const global=new EventGlobal();const store=new core.EventStore(global);
+  const bad=Buffer.alloc(16,0xfb).toString('base64url');
+  const events=[
+    core.createUsageEvent({...base(),nonce:bad,signature:'c2lnbmF0dXJl'}),
+    core.createUsageEvent({...base(),eventId:core.eventIdForSeat('device_A','app-host','valid'),signature:'c2lnbmF0dXJl'}),
+    core.createUsageEvent({...base(),eventId:core.eventIdForSeat('device_A','app-host','foreign'),deviceId:'device_B',nonce:bad,signature:'c2lnbmF0dXJl'})
+  ];
+  for(const event of events)await store.put(event);
+  await store.applyUpload(events.map(event=>event.eventId),{accepted:0,duplicates:0,rejected:events.map((event,index)=>({eventId:event.eventId,code:index===0?'OTHER_ERROR':'USAGE_INPUT_INVALID'})),durability:'committed'},'2026-09-19T00:01:00.000Z');
+  const before=global.writes;
+  assert.equal(await store.repairRejectedNonces('device_A',()=>Buffer.alloc(16,1).toString('base64url'),event=>event),0);
+  assert.equal(global.writes,before);
+  assert.deepEqual(store.query().events.map(event=>event.upload.state),['rejected','rejected','rejected']);
+});
+
 test('U15 EventStore withdrawal clears all events in one publication before remote work', async () => {
   const global=new EventGlobal();const store=new core.EventStore(global);await store.put(core.createUsageEvent(base()));const before=global.writes;
   await store.withdrawLocal('2026-09-19T00:02:00.000Z','device_A');assert.equal(global.writes,before+1);assert.equal(store.query().total,0);assert.equal(store.getSnapshot().withdrawal.state,'pending');

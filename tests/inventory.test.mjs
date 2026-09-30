@@ -17,6 +17,11 @@ function fixture({consent='granted'}={}){
 }
 
 test('U19 inventory module is present',()=>assert.equal(typeof host?.createInventory,'function'));
+test('P01 nonce generator retries server-incompatible base64url prefixes',async()=>{
+  const nonce=await import(pathToFileURL(resolve(root,'lib/host/nonce.js')).href);
+  const bytes=[Buffer.alloc(16,0xfb),Buffer.alloc(16,0xff),Buffer.alloc(16,1)];
+  assert.equal(nonce.createUsageNonce(()=>bytes.shift()),Buffer.alloc(16,1).toString('base64url'));
+});
 test('U19 first scan installs all, stable/disabled scans add none, upgrade and removal are distinct',async()=>{
   const f=fixture();let result=await f.inventory.scan();assert.deepEqual(result.events.map(event=>[event.action,event.hanaRef,event.version]),[['install','a','1.0.0'],['install','b','2.0.0']]);assert.equal(f.global.writes,1);
   result=await f.inventory.scan();assert.deepEqual(result.events,[]);assert.equal(result.duplicates,2);
