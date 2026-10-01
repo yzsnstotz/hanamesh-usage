@@ -1,0 +1,58 @@
+{
+  "gate": "P04-USAGE-01",
+  "evidence": [
+    "REAL_HOST",
+    "REAL_DB",
+    "STANDIN_CORE_SIGNER",
+    "STANDIN_DSH_CONTEXT"
+  ],
+  "dbName": "hm_usage_accept_p04_v4",
+  "checks": [
+    {
+      "id": "DB_INIT",
+      "status": "PASS",
+      "postgresVersion": "17.6",
+      "runtimeDdlDenied": true
+    },
+    {
+      "id": "INITIAL_UPLOAD",
+      "status": "PASS",
+      "eventId": "2bb8f4ac-7ec0-4a6f-b599-778e0440f84e",
+      "rawRows": 1,
+      "localState": "sent"
+    },
+    {
+      "id": "EVENT_ID_REPLAY",
+      "status": "PASS",
+      "eventId": "2bb8f4ac-7ec0-4a6f-b599-778e0440f84e",
+      "rawRows": 1,
+      "localState": "duplicate"
+    },
+    {
+      "id": "OFFLINE_WITHDRAW",
+      "status": "PASS",
+      "localRows": 0,
+      "remoteRows": 1,
+      "withdrawalState": "pending",
+      "deleteAttempts": 1
+    },
+    {
+      "id": "COLD_RETRY",
+      "status": "PASS",
+      "localRows": 0,
+      "remoteRows": 0,
+      "withdrawalRows": 1,
+      "withdrawalState": "sent",
+      "offlineDeleteAttempts": 1,
+      "serverDeleteCount": 1
+    },
+    {
+      "id": "COLD_OFF_REOPEN",
+      "status": "PASS",
+      "consent": "withheld",
+      "serverPostDelta": 0,
+      "remoteRows": 0
+    }
+  ],
+  "ok": true
+}

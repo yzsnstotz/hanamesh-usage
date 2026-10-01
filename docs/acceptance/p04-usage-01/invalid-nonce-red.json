@@ -1,0 +1,24 @@
+{
+  "gate": "P04-USAGE-01",
+  "evidence": [
+    "REAL_HOST",
+    "REAL_DB",
+    "STANDIN_CORE_SIGNER",
+    "STANDIN_DSH_CONTEXT"
+  ],
+  "dbName": "hm_usage_accept_p04_v3",
+  "checks": [
+    {
+      "id": "DB_INIT",
+      "status": "PASS",
+      "postgresVersion": "17.6",
+      "runtimeDdlDenied": true
+    }
+  ],
+  "ok": false,
+  "failure": {
+    "name": "AssertionError",
+    "code": "ERR_ASSERTION",
+    "message": "Expected values to be strictly equal:\n\n0 !== 1\n"
+  }
+}
