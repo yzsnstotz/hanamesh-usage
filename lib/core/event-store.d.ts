@@ -51,6 +51,11 @@ export declare class EventStore {
     /** Recover only the known O1 nonce-prefix rejection. Keep the original event ID,
      * attribution, time and attempt count; never replay another rejection or device. */
     repairRejectedNonces(deviceId: string, nonce: () => string, signer: (event: UsageEvent) => UsageEvent): Promise<number>;
+    /** Operator-only primitive for a historical server rejection caused by a
+     * base64url device ID beginning with `_` or `-`. The caller must prove the
+     * deployed Host separately before invoking this method. No runtime lifecycle
+     * hook calls it. Original signed event bytes and attribution stay unchanged. */
+    recoverRejectedDeviceId(deviceId: string, verifySignature: (event: UsageEvent) => boolean): Promise<number>;
     updateInventory(scannedAt: string, items: InventoryItem[], inputs: UsageEvent[]): Promise<{
         inserted: string[];
         duplicates: number;

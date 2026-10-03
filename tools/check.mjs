@@ -5,7 +5,7 @@ const pkg=JSON.parse(read('package.json')),lock=JSON.parse(read('package-lock.js
 validateConsistency(JSON.parse(read('consistency.json')));
 assert.deepEqual(lock.packages[''].peerDependencies,pkg.peerDependencies);
 assert.deepEqual(lock.packages[''].devDependencies,pkg.devDependencies);
-assert.equal(pkg.name,'hanamesh-usage');assert.equal(pkg.version,'0.2.0-rc.10');assert.equal(pkg.private,undefined);assert.equal(pkg.license,'MIT');
+assert.equal(pkg.name,'hanamesh-usage');assert.equal(pkg.version,'0.2.0-rc.11');assert.equal(pkg.private,undefined);assert.equal(pkg.license,'MIT');
 assert.deepEqual(pkg.dependencies??{},{});assert.equal(Object.keys(pkg.peerDependencies).filter(name=>name.startsWith('@hanamesh/')||name.startsWith('hanamesh-')).length,0);
 assert.equal(pkg.dsh?.bundle?.patch,'./profile/cordis.patch.yml');assert.equal(pkg.dsh?.client,undefined);assert(pkg.files.includes('profile'));assert(existsSync(pkg.dsh.bundle.patch));
 const dependencies=JSON.parse(read('docs/contracts/dependencies.json')),coreContract=read(dependencies.hanameshCore.contract);assert.equal(createHash('sha256').update(coreContract).digest('hex'),dependencies.hanameshCore.sha256);assert.equal(dependencies.hanameshCore.standin,true);
@@ -22,6 +22,9 @@ for(const p of sources){
  assert.doesNotMatch(s,forbiddenSibling,`sibling import ${p}`);
  if(p.endsWith('src/host/upload.js')){
    assert.match(s,/getServerOrigin/);assert.match(s,/new URL\(/);
+ }else if(p.endsWith('src/host/offline-recovery.js')){
+   assert.equal((s.match(/\bfetch\s*\(/g)??[]).length,1,'offline operator CLI has exactly one outbound request site');
+   assert.match(s,/fetch\(url,\{method:'GET',redirect:'error'/,'offline probe is GET without redirects');
  }else assert.doesNotMatch(s,/\bfetch\s*\(/,`outbound fetch ${p}`);
  assert.doesNotMatch(s,/\bconsole\.(?:log|error|warn)\s*\(/,`boundary ${p}`);
 }

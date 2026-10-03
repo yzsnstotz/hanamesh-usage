@@ -107,6 +107,31 @@ export class EventStore {
     });
     this.tail=run.catch(()=>{});return run.then(()=>count);
   }
+  /** Operator-only primitive for a historical server rejection caused by a
+   * base64url device ID beginning with `_` or `-`. The caller must prove the
+   * deployed Host separately before invoking this method. No runtime lifecycle
+   * hook calls it. Original signed event bytes and attribution stay unchanged. */
+  recoverRejectedDeviceId(deviceId: string, verifySignature: (event: UsageEvent) => boolean): Promise<number> {
+    let count=0;
+    const run=this.tail.then(async()=>{
+      const raw=Buffer.from(deviceId,'base64url');
+      if(!/^[_-][A-Za-z0-9_-]{42}$/.test(deviceId)||raw.length!==32||raw.toString('base64url')!==deviceId||typeof verifySignature!=='function')throw new UsageError('INVALID_RECOVERY_REQUEST');
+      if(this.snapshot.withdrawal!==null)throw new UsageError('RECOVERY_WITHDRAWN');
+      const now=this.now();
+      if(!Number.isFinite(now))throw new UsageError('INVALID_RECOVERY_REQUEST');
+      const events=this.snapshot.events.map(event=>{
+        if(event.deviceId!==deviceId||event.upload.state!=='rejected'||event.upload.code!=='USAGE_INPUT_INVALID')return structuredClone(event);
+        const time=Date.parse(event.occurredAt);
+        if(time<now-retentionMs||time>now+300000)return structuredClone(event);
+        if(!/^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$/.test(event.nonce)||/^(?:sk-|sk_|bearer[.:-]|ghp_|github_pat_|xox[baprs]-)/i.test(event.nonce))return structuredClone(event);
+        if(event.signature===null||!(/^[A-Za-z0-9_-]{85}[AQgw]$/.test(event.signature))||Buffer.from(event.signature,'base64url').length!==64||verifySignature(structuredClone(event))!==true)return structuredClone(event);
+        count++;
+        return {...structuredClone(event),upload:{state:'pending' as const,code:null,attempts:event.upload.attempts,sentAt:null}};
+      });
+      if(count>0)await this.commit({...structuredClone(this.snapshot),events});
+    });
+    this.tail=run.catch(()=>{});return run.then(()=>count);
+  }
   updateInventory(scannedAt:string,items:InventoryItem[],inputs:UsageEvent[]):Promise<{inserted:string[];duplicates:number}>{
     const inserted:string[]=[];let duplicates=0;
     const run=this.tail.then(async()=>{
