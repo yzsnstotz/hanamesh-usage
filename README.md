@@ -1,6 +1,6 @@
-# hanamesh-usage · 0.2.0-rc.7
+# hanamesh-usage · 0.2.0-rc.8
 
-> 版本 `0.2.0-rc.7`；交付上限为 🧪 DELIVERED，只有用户可签 ACCEPTED。**已实测内核：0.1.5-alpha.1、0.1.5-rc.2**；rc.7（T6）启用事件的两个归因可选字段 `sourceHanaRef` / `targetRef`，并给 `use` 事件加可选 `receipt {providerId, model|null, count}`（使用回执，不记内容）：本地账本、上报、去重身份、`/events`、`/view` 都带上；缺省为 null，rc.6 及更早的本地事件原样可读；`record` 席位接受这三个键（供 app-host 等投递），六键签名不变。rc.6 把 `peerDependencies` 里的 `@deepseek-ai/dsh-*` 从精确钉 `0.1.5-alpha.1` 改为已实测范围 `>=0.1.5-alpha.1 <0.2.0`（`@deepseek-ai/cordis` `>=4.0.2 <5`），代码不变；rc.5 对齐 O1 冻结的上报契约。构建/离线闭包仍钉 DSH `0.1.5-alpha.1`（`devDependencies`/`overrides`）。本版提供改名后的用量声明、7 字段设备签名事件、上报/撤回和 Loader 库存发现；本包是 DSH bundle，`dsh plugin add` 即激活。P1/O1 未登记时真实门分别使用 STANDIN/STUB；inventory 结论为 `loader`。收录不代表审核或推荐。
+> rc.8 对齐官方 `@deepseek-ai/dsh@0.2.0-rc.2` 与 Cordis `4.0.4` 的公开 peer 闭包。沿用 rc.7 的事件字段、签名和存储格式；新宿主的 `agent/created` 回调按公开类型返回 `undefined`。本卡的公开安装与真实运行时结果见 BlueMap `NPM-USAGE-01/REPORT.md`；组件门不等于产品 ACCEPTED。
 
 `hanamesh-usage` 保留本机 `Declaration` 三态使用摘要，并提供同意门、设备签名、事件缓冲与服务器上报。生产路径只保存结构化最小信息，不保存 prompt、对话、文件、完整结果、私有路径或凭据。
 
@@ -10,12 +10,7 @@
 
     dsh plugin --profile <p> add hanamesh-usage
 
-装完即激活，不需要手写 `cordis.patch.yml`。它是 **HanaMesh 套件**的一员：装 `hanamesh-core` 会一次带上本包与 `@hanamesh/dsh-app-host`，由 core 的 patch 统一激活。
-
-**套件与单包互斥（双向）：**
-- 已单独装过本包，再装 `hanamesh-core` → DSH 启动失败：`duplicate loader entry id: hanamesh-usage`。先 `dsh plugin --profile <p> remove hanamesh-usage`，再装 core；本机记录（storage-domain `hanamesh_usage`）不会丢，同一 profile 里重新激活后仍在。
-- 已装套件（core），再显式 `add hanamesh-usage` → 同样 `duplicate loader entry id: hanamesh-usage`。撤销这次 `add`（`remove hanamesh-usage`）即恢复；套件里的 usage 不受影响。
-- 这是 DSH 的既定行为（重复 loader id 让整个 profile 起不来），本插件不做静默去重；失败是响亮的，不会出现两份采集。
+装完即激活，不需要手写 `cordis.patch.yml`。`hanamesh-core` 与本包各只插入自己的 Loader 条目；新客户端负责分别安装三插件。本包不从 Core 传递安装，也不导入其他 HanaMesh 插件。
 
 **依赖：** 设备身份与同意开关来自 `hanamesh-core`（可选）。core 缺席时本插件只在本机记录、不上报，`/api/hanamesh/usage/health` 显示 `core: 'absent'`。
 
@@ -45,7 +40,9 @@
 目标工具链：Node `24.13.1`、pnpm `10.33.0`、TypeScript `5.9.3`。仓内使用 npm lockfile；依赖安装前用独立 `npm_config_cache`。
 
 ```sh
-npm run build:offline
+export npm_config_cache=$(mktemp -d)
+npm ci
+npm run build
 npm test
 npm run test:mutations
 npm run check

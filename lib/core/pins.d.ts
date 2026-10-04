@@ -11,4 +11,4 @@
 export declare const REGISTRY_VERSION = "0.1.0-rc.3";
 /** Fixed UUID namespace for deterministic HanaMesh usage event identities. */
 export declare const NS_USAGE = "6aa7b4d1-88f5-4f96-89e2-cf5ffca77c2d";
-export declare const DSH_VERSION = "0.1.5-alpha.1";
+export declare const DSH_VERSION = "0.2.0-rc.2";
