@@ -39,6 +39,8 @@ export type WireUsageEvent = Pick<UsageEvent, 'deviceId' | 'hanaRef' | 'action' 
 };
 export declare function validTargetRef(value: unknown): value is string;
 export declare function validReceipt(value: unknown): value is UsageReceipt;
+/** A Loader row must be safe for both the signed event and its local evidence reference. */
+export declare function validLoaderReference(hanaRef: unknown, version: unknown): boolean;
 export declare function validateEvent(input: unknown): asserts input is UsageEvent;
 export type CreateUsageEventInput = Omit<UsageEvent, 'schemaVersion' | 'sourceHanaRef' | 'targetRef' | 'receipt' | 'upload'> & {
     sourceHanaRef?: string | null;

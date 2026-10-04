@@ -65,6 +65,10 @@ function validEvidence(value: unknown): value is string {
   return typeof value === 'string' && value.length > 0 && value.length <= 160 && !/[\u0000-\u001f]/.test(value)
     && !/(?:sk-|ghp_|github_pat_|xox[baprs]-|bearer|private.?key|password|secret|api.?key|https?:|file:|\/Users\/|\/home\/|\/mnt\/)/i.test(value);
 }
+/** A Loader row must be safe for both the signed event and its local evidence reference. */
+export function validLoaderReference(hanaRef: unknown, version: unknown): boolean {
+  return validHanaRef(hanaRef) && typeof version === 'string' && validEvidence(`${hanaRef}@${version}`);
+}
 function invalid(): never { throw new UsageError('INVALID_USAGE_EVENT'); }
 
 export function validateEvent(input: unknown): asserts input is UsageEvent {

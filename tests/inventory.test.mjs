@@ -24,6 +24,30 @@ test('U19 first scan installs all, stable/disabled scans add none, upgrade and r
 test('U19 unreadable entries are isolated and withheld consent updates snapshot without events',async()=>{
   const f=fixture({consent:'withheld'});f.setEntries([entry('a','a'),entry('bad','bad')]);const result=await f.inventory.scan();assert.deepEqual(result.events,[]);assert.equal(result.unreadable,1);assert.deepEqual(f.unreadable,['INVENTORY_ENTRY_UNREADABLE']);assert.deepEqual(f.store.getSnapshot().inventory.last.items.map(item=>item.hanaRef),['a']);await f.inventory.close();
 });
+test('official api-key package name cannot abort consented inventory events',async()=>{
+  const f=fixture();
+  const name='@deepseek-ai/dsh-llm-deepseek-api-key';
+  f.versions.set(name,'0.2.0-rc.2');
+  f.setEntries([entry('a','a'),entry('official',name),entry('b','b')]);
+  const first=await f.inventory.scan();
+  assert.deepEqual(first.events.map(event=>event.hanaRef),['a','b']);
+  assert.equal(first.unreadable,1);
+  assert.deepEqual(f.store.getSnapshot().inventory.last.items.map(item=>item.hanaRef),['a','b']);
+  const again=await f.inventory.scan();
+  assert.deepEqual(again.events,[]);
+  assert.equal(f.store.query().total,2);
+  await f.inventory.close();
+});
+test('a pre-consent snapshot with an unsafe official name cannot abort later grant',async()=>{
+  const global=new Global();
+  global.snapshot.inventory.last={scannedAt:'2026-09-19T00:00:00.000Z',items:[{hanaRef:'@deepseek-ai/dsh-llm-deepseek-api-key',version:'0.2.0-rc.2',entryId:'official',disabled:false}]};
+  const store=new core.EventStore(global),ctx={loader:{entries:()=>[entry('a','a'),entry('b','b')].values()},on:()=>()=>{}},service={getConsent:()=> 'granted',getDeviceId:()=> 'device_FIXTURE',sign:()=>Buffer.alloc(64)};
+  const inventory=host.createInventory({ctx,store,link:{get:()=>service},inventoryIntervalMs:300000,inspector:async name=>({kind:'present',name,version:name==='a'?'1.0.0':'2.0.0'}),now:()=>Date.parse('2026-09-19T00:00:00.000Z')});
+  const result=await inventory.scan();
+  assert.deepEqual(result.events.map(event=>[event.action,event.hanaRef]),[['install','a'],['install','b']]);
+  assert.deepEqual(store.getSnapshot().inventory.last.items.map(item=>item.hanaRef),['a','b']);
+  await inventory.close();
+});
 test('U19 granting consent after a withheld first scan emits the current installs once',async()=>{const f=fixture({consent:'withheld'});assert.deepEqual((await f.inventory.scan()).events,[]);f.setConsent('granted');assert.equal((await f.inventory.scan()).events.length,2);assert.deepEqual((await f.inventory.scan()).events,[]);await f.inventory.close();});
 test('U08 stable inventory rescan does not resurrect a terminal install past retention',async()=>{
   const eventId=core.eventIdForLoader('device_FIXTURE','install','a','1.0.0');
