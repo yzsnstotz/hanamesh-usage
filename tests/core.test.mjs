@@ -3,6 +3,18 @@ import assert from 'node:assert/strict';
 import { core, session, record, withUsage, MemoryGlobal } from './fixtures/helpers.mjs';
 import { REGISTRY_VERSION, isSnapshot } from '../lib/core/index.js';
 
+test('event nonce encodes 16 random bytes with a server-safe first character',()=>{
+  const serverToken=/^[A-Za-z0-9][A-Za-z0-9_.:-]*$/;
+  for(const first of [0xfb,0xff]){
+    const bytes=Buffer.alloc(16,first),raw=bytes.toString('base64url');
+    assert.doesNotMatch(raw,serverToken,'raw base64url can start with a rejected character');
+    const nonce=core.eventNonceFromBytes(bytes);
+    assert.match(nonce,serverToken);
+    assert.equal(nonce.length,23);
+    assert.deepEqual(Buffer.from(nonce.slice(1),'base64url'),bytes);
+  }
+});
+
 test('T03 FIXTURE: complete FR-10 schema, source tuple and pins',()=>{
   const r=record({parentSession:'fixture-parent'}); core.validateDeclaration(r);
   assert.equal(r.eventRef,JSON.stringify(['fixture-session-1','turn/end',0]));

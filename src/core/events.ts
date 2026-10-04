@@ -57,9 +57,19 @@ function validIso(value: unknown): value is string {
   return Number.isFinite(time) && new Date(time).toISOString() === value;
 }
 function validNonce(value: unknown): value is string {
-  if (typeof value !== 'string' || !base64url.test(value)) return false;
-  const bytes = Buffer.from(value, 'base64url');
-  return bytes.length === 16 && bytes.toString('base64url') === value;
+  if (typeof value !== 'string') return false;
+  // Old snapshots contain the bare 22-character form. New events prefix one
+  // letter because the server's nonce token requires an alphanumeric first byte.
+  const encoded = value.length === 23 && value.startsWith('n') ? value.slice(1) : value;
+  if (encoded.length !== 22 || !base64url.test(encoded)) return false;
+  const bytes = Buffer.from(encoded, 'base64url');
+  return bytes.length === 16 && bytes.toString('base64url') === encoded;
+}
+
+/** Preserve all 128 random bits while satisfying the server token grammar. */
+export function eventNonceFromBytes(bytes: Uint8Array): string {
+  if (!(bytes instanceof Uint8Array) || bytes.length !== 16) invalid();
+  return `n${Buffer.from(bytes).toString('base64url')}`;
 }
 function validEvidence(value: unknown): value is string {
   return typeof value === 'string' && value.length > 0 && value.length <= 160 && !/[\u0000-\u001f]/.test(value)

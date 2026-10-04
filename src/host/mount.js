@@ -1,6 +1,6 @@
 // @ts-check
 import { randomBytes } from 'node:crypto';
-import { UsageError, UsageStore, EventStore, commitAfterSource, deriveUsageEvent, projectTerminal } from '../core/index.js';
+import { UsageError, UsageStore, EventStore, commitAfterSource, deriveUsageEvent, eventNonceFromBytes, projectTerminal } from '../core/index.js';
 import { signUsageEvent } from './core-link.js';
 import { mountTransport } from './transport.js';
 import { createRecordSeat } from './record.js';
@@ -26,7 +26,7 @@ export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink)
   let closing = false;
   let recoveryComplete = false;
   let jobs = Promise.resolve();
-  const nonce=()=>randomBytes(16).toString('base64url');
+  const nonce=()=>eventNonceFromBytes(randomBytes(16));
   const coreState=()=>{
     const core=coreLink.get();if(core===null)return {core:null,deviceId:null,consent:/** @type {const} */('unknown')};
     try{return {core,deviceId:core.getDeviceId(),consent:core.getConsent()};}catch{return {core:null,deviceId:null,consent:/** @type {const} */('unknown')};}
