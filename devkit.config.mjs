@@ -1,0 +1,15 @@
+import {fileURLToPath} from 'node:url';
+import {resolve,join} from 'node:path';
+import {mkdirSync} from 'node:fs';
+import {validateUsage} from './tools/usage-policy.mjs';
+import {mutationCases,validateMutationEvidence} from './tools/usage-mutations.mjs';
+import {validateHostPreflight} from './tools/usage-host-preflight.mjs';
+import {packConfig} from './tools/usage-pack.mjs';
+export const root=fileURLToPath(new URL('./',import.meta.url));
+export const toolchainConfig={root,pins:{node:'24.13.1',pnpm:'10.33.0',typescript:'5.9.3'}};
+export const preflightConfig={root,validate:validateUsage};
+export const evidenceDir=resolve(process.env.USAGE_MUTATION_EVIDENCE??join(root,'artifacts/mutations'));
+export const mutationConfig={root,cases:mutationCases.map(item=>({...item,tests:[...(item.pattern?[`--test-name-pattern=${item.pattern}`]:[]),item.test]})),baselineTests:[...new Set(mutationCases.map(item=>item.test))],nodeArgs:['--import','data:text/javascript,process.env.USAGE_TEST_ROOT=process.cwd()'],evidenceDir,temporaryRoot:resolve(process.env.USAGE_TEMP_ROOT??join(root,'.tmp'))};
+mkdirSync(mutationConfig.temporaryRoot,{recursive:true});
+export {validateMutationEvidence,validateHostPreflight,packConfig};
+export default {'check-toolchain':toolchainConfig,preflight:preflightConfig,mutations:mutationConfig,'verify-pack':packConfig};

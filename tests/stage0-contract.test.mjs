@@ -7,7 +7,7 @@ const read = path => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8'
 test('U04 package is the standalone hanamesh-usage DSH bundle', () => {
   const pkg = JSON.parse(read('package.json'));
   assert.equal(pkg.name, 'hanamesh-usage');
-  assert.equal(pkg.version, '0.2.0-rc.10');
+  assert.equal(pkg.version, '0.2.0-rc.11');
   for (const [name, version] of Object.entries(pkg.peerDependencies)) {
     if (name.startsWith('@deepseek-ai/dsh-')) assert.equal(version, '0.2.0-rc.2', name);
   }
@@ -19,9 +19,12 @@ test('U04 package is the standalone hanamesh-usage DSH bundle', () => {
   assert.equal(pkg.files.includes('profile'), true);
   assert.equal(pkg.dsh.client, undefined);
   assert.deepEqual(pkg.dependencies ?? {}, {});
+  assert.equal(pkg.peerDependencies['@hanamesh/devkit'],'0.1.0-rc.1');
+  assert.deepEqual(pkg.peerDependenciesMeta['@hanamesh/devkit'],{optional:true});
+  assert.equal(pkg.devDependencies['@hanamesh/devkit'],'file:vendor/hanamesh-devkit-0.1.0-rc.1.tgz');
   assert.deepEqual(
     Object.keys(pkg.peerDependencies).filter(name => name.startsWith('@hanamesh/') || name.startsWith('hanamesh-')),
-    [],
+    ['@hanamesh/devkit'],
   );
 });
 

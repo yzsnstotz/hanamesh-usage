@@ -1,0 +1,828 @@
+{
+  "definition": "Tooling/(src+scripts+tools+root configuration), package-lock included; tests separate; no global claim",
+  "baseline": {
+    "src": {
+      "files": 23,
+      "bytes": 99816,
+      "lines": 1474,
+      "members": [
+        {
+          "path": "src/core/boundary.ts",
+          "bytes": 292,
+          "lines": 8
+        },
+        {
+          "path": "src/core/canonical.ts",
+          "bytes": 1020,
+          "lines": 17
+        },
+        {
+          "path": "src/core/derive.ts",
+          "bytes": 1566,
+          "lines": 35
+        },
+        {
+          "path": "src/core/event-store.ts",
+          "bytes": 12005,
+          "lines": 151
+        },
+        {
+          "path": "src/core/events.ts",
+          "bytes": 9246,
+          "lines": 143
+        },
+        {
+          "path": "src/core/identity.ts",
+          "bytes": 1216,
+          "lines": 26
+        },
+        {
+          "path": "src/core/index.ts",
+          "bytes": 415,
+          "lines": 14
+        },
+        {
+          "path": "src/core/pins.ts",
+          "bytes": 785,
+          "lines": 14
+        },
+        {
+          "path": "src/core/privacy.ts",
+          "bytes": 3934,
+          "lines": 58
+        },
+        {
+          "path": "src/core/project.ts",
+          "bytes": 6368,
+          "lines": 95
+        },
+        {
+          "path": "src/core/query.ts",
+          "bytes": 4047,
+          "lines": 60
+        },
+        {
+          "path": "src/core/store.ts",
+          "bytes": 2462,
+          "lines": 45
+        },
+        {
+          "path": "src/core/types.ts",
+          "bytes": 3773,
+          "lines": 84
+        },
+        {
+          "path": "src/core/validate.ts",
+          "bytes": 4899,
+          "lines": 58
+        },
+        {
+          "path": "src/core/view.ts",
+          "bytes": 4056,
+          "lines": 18
+        },
+        {
+          "path": "src/host/contracts.d.ts",
+          "bytes": 2216,
+          "lines": 38
+        },
+        {
+          "path": "src/host/core-link.js",
+          "bytes": 3526,
+          "lines": 58
+        },
+        {
+          "path": "src/host/index.js",
+          "bytes": 3705,
+          "lines": 64
+        },
+        {
+          "path": "src/host/inventory.js",
+          "bytes": 6979,
+          "lines": 75
+        },
+        {
+          "path": "src/host/mount.js",
+          "bytes": 12175,
+          "lines": 194
+        },
+        {
+          "path": "src/host/record.js",
+          "bytes": 3480,
+          "lines": 44
+        },
+        {
+          "path": "src/host/transport.js",
+          "bytes": 4339,
+          "lines": 75
+        },
+        {
+          "path": "src/host/upload.js",
+          "bytes": 7312,
+          "lines": 100
+        }
+      ]
+    },
+    "tools_scripts_root_config": {
+      "files": 18,
+      "bytes": 45644,
+      "lines": 769,
+      "members": [
+        {
+          "path": ".gitignore",
+          "bytes": 40,
+          "lines": 4
+        },
+        {
+          "path": ".npmrc",
+          "bytes": 65,
+          "lines": 4
+        },
+        {
+          "path": "consistency.json",
+          "bytes": 2055,
+          "lines": 38
+        },
+        {
+          "path": "package-lock.json",
+          "bytes": 14460,
+          "lines": 364
+        },
+        {
+          "path": "package.json",
+          "bytes": 3354,
+          "lines": 102
+        },
+        {
+          "path": "scripts/p2/boot.sh",
+          "bytes": 1167,
+          "lines": 29
+        },
+        {
+          "path": "scripts/p2/fresh-home.sh",
+          "bytes": 594,
+          "lines": 12
+        },
+        {
+          "path": "scripts/p2/pack-standins.mjs",
+          "bytes": 2151,
+          "lines": 18
+        },
+        {
+          "path": "tools/build.mjs",
+          "bytes": 1917,
+          "lines": 33
+        },
+        {
+          "path": "tools/check.mjs",
+          "bytes": 3637,
+          "lines": 31
+        },
+        {
+          "path": "tools/consistency-schema.mjs",
+          "bytes": 1586,
+          "lines": 13
+        },
+        {
+          "path": "tools/detached.mjs",
+          "bytes": 1243,
+          "lines": 10
+        },
+        {
+          "path": "tools/mutations.mjs",
+          "bytes": 5798,
+          "lines": 32
+        },
+        {
+          "path": "tools/pins.mjs",
+          "bytes": 1906,
+          "lines": 19
+        },
+        {
+          "path": "tools/preflight.mjs",
+          "bytes": 1563,
+          "lines": 10
+        },
+        {
+          "path": "tools/samples.mjs",
+          "bytes": 3342,
+          "lines": 19
+        },
+        {
+          "path": "tsconfig.core.json",
+          "bytes": 437,
+          "lines": 22
+        },
+        {
+          "path": "tsconfig.host.json",
+          "bytes": 329,
+          "lines": 9
+        }
+      ]
+    },
+    "tests": {
+      "files": 33,
+      "bytes": 98298,
+      "lines": 1153,
+      "members": [
+        {
+          "path": "test/fixtures/core-standin-suite/README.md",
+          "bytes": 112,
+          "lines": 3
+        },
+        {
+          "path": "test/fixtures/core-standin-suite/lib/index.js",
+          "bytes": 67,
+          "lines": 1
+        },
+        {
+          "path": "test/fixtures/core-standin-suite/package.template.json",
+          "bytes": 524,
+          "lines": 16
+        },
+        {
+          "path": "test/fixtures/core-standin-suite/profile/cordis.patch.yml",
+          "bytes": 298,
+          "lines": 12
+        },
+        {
+          "path": "test/fixtures/core-standin/README.md",
+          "bytes": 164,
+          "lines": 3
+        },
+        {
+          "path": "test/fixtures/core-standin/lib/index.js",
+          "bytes": 2788,
+          "lines": 40
+        },
+        {
+          "path": "test/fixtures/core-standin/package.json",
+          "bytes": 417,
+          "lines": 14
+        },
+        {
+          "path": "test/fixtures/core-standin/profile/cordis.patch.yml",
+          "bytes": 150,
+          "lines": 6
+        },
+        {
+          "path": "test/fixtures/server-stub.mjs",
+          "bytes": 2359,
+          "lines": 25
+        },
+        {
+          "path": "tests/consistency.test.mjs",
+          "bytes": 1051,
+          "lines": 9
+        },
+        {
+          "path": "tests/core-link.test.mjs",
+          "bytes": 2656,
+          "lines": 29
+        },
+        {
+          "path": "tests/core.test.mjs",
+          "bytes": 12558,
+          "lines": 162
+        },
+        {
+          "path": "tests/crash/boundary.test.mjs",
+          "bytes": 1540,
+          "lines": 18
+        },
+        {
+          "path": "tests/crash/group.test.mjs",
+          "bytes": 1626,
+          "lines": 16
+        },
+        {
+          "path": "tests/crash/harness.mjs",
+          "bytes": 1433,
+          "lines": 23
+        },
+        {
+          "path": "tests/crash/medium.mjs",
+          "bytes": 1184,
+          "lines": 17
+        },
+        {
+          "path": "tests/crash/worker.mjs",
+          "bytes": 2993,
+          "lines": 39
+        },
+        {
+          "path": "tests/derive.test.mjs",
+          "bytes": 2098,
+          "lines": 40
+        },
+        {
+          "path": "tests/events.test.mjs",
+          "bytes": 12240,
+          "lines": 173
+        },
+        {
+          "path": "tests/fixtures/helpers.mjs",
+          "bytes": 1861,
+          "lines": 24
+        },
+        {
+          "path": "tests/fixtures/host.mjs",
+          "bytes": 4035,
+          "lines": 32
+        },
+        {
+          "path": "tests/fixtures/inventory-smoke.mjs",
+          "bytes": 1907,
+          "lines": 15
+        },
+        {
+          "path": "tests/fixtures/seat-smoke.mjs",
+          "bytes": 1343,
+          "lines": 23
+        },
+        {
+          "path": "tests/fixtures/upload-smoke.mjs",
+          "bytes": 3528,
+          "lines": 18
+        },
+        {
+          "path": "tests/host.test.mjs",
+          "bytes": 6242,
+          "lines": 68
+        },
+        {
+          "path": "tests/inventory.test.mjs",
+          "bytes": 7336,
+          "lines": 65
+        },
+        {
+          "path": "tests/privacy.test.mjs",
+          "bytes": 3075,
+          "lines": 35
+        },
+        {
+          "path": "tests/record.test.mjs",
+          "bytes": 4761,
+          "lines": 62
+        },
+        {
+          "path": "tests/stage0-contract.test.mjs",
+          "bytes": 2398,
+          "lines": 48
+        },
+        {
+          "path": "tests/stage4-contract.test.mjs",
+          "bytes": 2311,
+          "lines": 20
+        },
+        {
+          "path": "tests/transport.test.mjs",
+          "bytes": 3883,
+          "lines": 34
+        },
+        {
+          "path": "tests/upload.test.mjs",
+          "bytes": 6218,
+          "lines": 45
+        },
+        {
+          "path": "tests/withdraw.test.mjs",
+          "bytes": 3142,
+          "lines": 18
+        }
+      ]
+    },
+    "tooling_bytes_share": 0.31379073284751824,
+    "tooling_lines_share": 0.34284440481497996
+  },
+  "new": {
+    "src": {
+      "files": 23,
+      "bytes": 99816,
+      "lines": 1474,
+      "members": [
+        {
+          "path": "src/core/boundary.ts",
+          "bytes": 292,
+          "lines": 8
+        },
+        {
+          "path": "src/core/canonical.ts",
+          "bytes": 1020,
+          "lines": 17
+        },
+        {
+          "path": "src/core/derive.ts",
+          "bytes": 1566,
+          "lines": 35
+        },
+        {
+          "path": "src/core/event-store.ts",
+          "bytes": 12005,
+          "lines": 151
+        },
+        {
+          "path": "src/core/events.ts",
+          "bytes": 9246,
+          "lines": 143
+        },
+        {
+          "path": "src/core/identity.ts",
+          "bytes": 1216,
+          "lines": 26
+        },
+        {
+          "path": "src/core/index.ts",
+          "bytes": 415,
+          "lines": 14
+        },
+        {
+          "path": "src/core/pins.ts",
+          "bytes": 785,
+          "lines": 14
+        },
+        {
+          "path": "src/core/privacy.ts",
+          "bytes": 3934,
+          "lines": 58
+        },
+        {
+          "path": "src/core/project.ts",
+          "bytes": 6368,
+          "lines": 95
+        },
+        {
+          "path": "src/core/query.ts",
+          "bytes": 4047,
+          "lines": 60
+        },
+        {
+          "path": "src/core/store.ts",
+          "bytes": 2462,
+          "lines": 45
+        },
+        {
+          "path": "src/core/types.ts",
+          "bytes": 3773,
+          "lines": 84
+        },
+        {
+          "path": "src/core/validate.ts",
+          "bytes": 4899,
+          "lines": 58
+        },
+        {
+          "path": "src/core/view.ts",
+          "bytes": 4056,
+          "lines": 18
+        },
+        {
+          "path": "src/host/contracts.d.ts",
+          "bytes": 2216,
+          "lines": 38
+        },
+        {
+          "path": "src/host/core-link.js",
+          "bytes": 3526,
+          "lines": 58
+        },
+        {
+          "path": "src/host/index.js",
+          "bytes": 3705,
+          "lines": 64
+        },
+        {
+          "path": "src/host/inventory.js",
+          "bytes": 6979,
+          "lines": 75
+        },
+        {
+          "path": "src/host/mount.js",
+          "bytes": 12175,
+          "lines": 194
+        },
+        {
+          "path": "src/host/record.js",
+          "bytes": 3480,
+          "lines": 44
+        },
+        {
+          "path": "src/host/transport.js",
+          "bytes": 4339,
+          "lines": 75
+        },
+        {
+          "path": "src/host/upload.js",
+          "bytes": 7312,
+          "lines": 100
+        }
+      ]
+    },
+    "tools_scripts_root_config": {
+      "files": 25,
+      "bytes": 50161,
+      "lines": 859,
+      "members": [
+        {
+          "path": ".gitignore",
+          "bytes": 40,
+          "lines": 4
+        },
+        {
+          "path": ".npmrc",
+          "bytes": 65,
+          "lines": 4
+        },
+        {
+          "path": "consistency.json",
+          "bytes": 2055,
+          "lines": 38
+        },
+        {
+          "path": "package-lock.json",
+          "bytes": 15071,
+          "lines": 382
+        },
+        {
+          "path": "package.json",
+          "bytes": 3677,
+          "lines": 110
+        },
+        {
+          "path": "scripts/p2/boot.sh",
+          "bytes": 1167,
+          "lines": 29
+        },
+        {
+          "path": "scripts/p2/fresh-home.sh",
+          "bytes": 594,
+          "lines": 12
+        },
+        {
+          "path": "scripts/p2/pack-standins.mjs",
+          "bytes": 2151,
+          "lines": 18
+        },
+        {
+          "path": "tools/build.mjs",
+          "bytes": 1747,
+          "lines": 32
+        },
+        {
+          "path": "tools/check.mjs",
+          "bytes": 132,
+          "lines": 3
+        },
+        {
+          "path": "tools/consistency-schema.mjs",
+          "bytes": 1586,
+          "lines": 13
+        },
+        {
+          "path": "tools/detached.mjs",
+          "bytes": 1243,
+          "lines": 10
+        },
+        {
+          "path": "tools/mutations.mjs",
+          "bytes": 212,
+          "lines": 4
+        },
+        {
+          "path": "tools/pins.mjs",
+          "bytes": 1906,
+          "lines": 19
+        },
+        {
+          "path": "tools/preflight.mjs",
+          "bytes": 275,
+          "lines": 5
+        },
+        {
+          "path": "tools/samples.mjs",
+          "bytes": 3342,
+          "lines": 19
+        },
+        {
+          "path": "tsconfig.core.json",
+          "bytes": 437,
+          "lines": 22
+        },
+        {
+          "path": "tsconfig.host.json",
+          "bytes": 329,
+          "lines": 9
+        },
+        {
+          "path": "devkit.config.mjs",
+          "bytes": 1344,
+          "lines": 15
+        },
+        {
+          "path": "tools/check-toolchain.mjs",
+          "bytes": 136,
+          "lines": 3
+        },
+        {
+          "path": "tools/usage-host-preflight.mjs",
+          "bytes": 1576,
+          "lines": 16
+        },
+        {
+          "path": "tools/usage-mutations.mjs",
+          "bytes": 4217,
+          "lines": 22
+        },
+        {
+          "path": "tools/usage-pack.mjs",
+          "bytes": 2629,
+          "lines": 34
+        },
+        {
+          "path": "tools/usage-policy.mjs",
+          "bytes": 4106,
+          "lines": 33
+        },
+        {
+          "path": "tools/verify-pack.mjs",
+          "bytes": 124,
+          "lines": 3
+        }
+      ]
+    },
+    "tests": {
+      "files": 33,
+      "bytes": 98571,
+      "lines": 1156,
+      "members": [
+        {
+          "path": "test/fixtures/core-standin-suite/README.md",
+          "bytes": 112,
+          "lines": 3
+        },
+        {
+          "path": "test/fixtures/core-standin-suite/lib/index.js",
+          "bytes": 67,
+          "lines": 1
+        },
+        {
+          "path": "test/fixtures/core-standin-suite/package.template.json",
+          "bytes": 524,
+          "lines": 16
+        },
+        {
+          "path": "test/fixtures/core-standin-suite/profile/cordis.patch.yml",
+          "bytes": 298,
+          "lines": 12
+        },
+        {
+          "path": "test/fixtures/core-standin/README.md",
+          "bytes": 164,
+          "lines": 3
+        },
+        {
+          "path": "test/fixtures/core-standin/lib/index.js",
+          "bytes": 2788,
+          "lines": 40
+        },
+        {
+          "path": "test/fixtures/core-standin/package.json",
+          "bytes": 417,
+          "lines": 14
+        },
+        {
+          "path": "test/fixtures/core-standin/profile/cordis.patch.yml",
+          "bytes": 150,
+          "lines": 6
+        },
+        {
+          "path": "test/fixtures/server-stub.mjs",
+          "bytes": 2359,
+          "lines": 25
+        },
+        {
+          "path": "tests/consistency.test.mjs",
+          "bytes": 1051,
+          "lines": 9
+        },
+        {
+          "path": "tests/core-link.test.mjs",
+          "bytes": 2656,
+          "lines": 29
+        },
+        {
+          "path": "tests/core.test.mjs",
+          "bytes": 12558,
+          "lines": 162
+        },
+        {
+          "path": "tests/crash/boundary.test.mjs",
+          "bytes": 1540,
+          "lines": 18
+        },
+        {
+          "path": "tests/crash/group.test.mjs",
+          "bytes": 1626,
+          "lines": 16
+        },
+        {
+          "path": "tests/crash/harness.mjs",
+          "bytes": 1433,
+          "lines": 23
+        },
+        {
+          "path": "tests/crash/medium.mjs",
+          "bytes": 1184,
+          "lines": 17
+        },
+        {
+          "path": "tests/crash/worker.mjs",
+          "bytes": 2993,
+          "lines": 39
+        },
+        {
+          "path": "tests/derive.test.mjs",
+          "bytes": 2098,
+          "lines": 40
+        },
+        {
+          "path": "tests/events.test.mjs",
+          "bytes": 12240,
+          "lines": 173
+        },
+        {
+          "path": "tests/fixtures/helpers.mjs",
+          "bytes": 1861,
+          "lines": 24
+        },
+        {
+          "path": "tests/fixtures/host.mjs",
+          "bytes": 4035,
+          "lines": 32
+        },
+        {
+          "path": "tests/fixtures/inventory-smoke.mjs",
+          "bytes": 1907,
+          "lines": 15
+        },
+        {
+          "path": "tests/fixtures/seat-smoke.mjs",
+          "bytes": 1343,
+          "lines": 23
+        },
+        {
+          "path": "tests/fixtures/upload-smoke.mjs",
+          "bytes": 3528,
+          "lines": 18
+        },
+        {
+          "path": "tests/host.test.mjs",
+          "bytes": 6242,
+          "lines": 68
+        },
+        {
+          "path": "tests/inventory.test.mjs",
+          "bytes": 7336,
+          "lines": 65
+        },
+        {
+          "path": "tests/privacy.test.mjs",
+          "bytes": 3075,
+          "lines": 35
+        },
+        {
+          "path": "tests/record.test.mjs",
+          "bytes": 4761,
+          "lines": 62
+        },
+        {
+          "path": "tests/stage0-contract.test.mjs",
+          "bytes": 2671,
+          "lines": 51
+        },
+        {
+          "path": "tests/stage4-contract.test.mjs",
+          "bytes": 2311,
+          "lines": 20
+        },
+        {
+          "path": "tests/transport.test.mjs",
+          "bytes": 3883,
+          "lines": 34
+        },
+        {
+          "path": "tests/upload.test.mjs",
+          "bytes": 6218,
+          "lines": 45
+        },
+        {
+          "path": "tests/withdraw.test.mjs",
+          "bytes": 3142,
+          "lines": 18
+        }
+      ]
+    },
+    "tooling_bytes_share": 0.3344579502190336,
+    "tooling_lines_share": 0.3681954564937848
+  }
+}

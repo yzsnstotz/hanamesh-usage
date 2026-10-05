@@ -1,4 +1,6 @@
-# hanamesh-usage · 0.2.0-rc.10
+# hanamesh-usage · 0.2.0-rc.11
+
+> rc.11 仅迁移开发工具至精确 vendor 的 `@hanamesh/devkit@0.1.0-rc.1`，运行时源码与行为保持。开发命令：`npm run check:toolchain`、`npm run check`、`npm run test:mutations`、`npm run pack`、`npm run verify:pack`；devkit 为可选 peer，仅开发安装使用。
 
 > rc.10 对齐官方 `@deepseek-ai/dsh@0.2.0-rc.2` 与 Cordis `4.0.4` 的公开 peer 闭包。沿用 rc.7 的事件字段、签名和存储格式；新宿主的 `agent/created` 回调按公开类型返回 `undefined`。rc.9 跳过官方 Loader 中不可安全记录的条目；rc.10 将 16 字节随机事件 nonce 加上字母前缀，使其满足服务端 token 首字符规则并保留 128 位随机熵。本卡的公开安装与真实运行时结果见 BlueMap `NPM-USAGE-01/REPORT.md`；组件门不等于产品 ACCEPTED。
 

@@ -1,0 +1,77 @@
+{
+  "baseline": {
+    "exitCode": 0
+  },
+  "results": [
+    {
+      "id": "T05-unavailable-to-zero",
+      "baselineExit": 0,
+      "mutantExit": 1,
+      "detected": true,
+      "assertionFailure": true
+    },
+    {
+      "id": "X03-reverse-durable-order",
+      "baselineExit": 0,
+      "mutantExit": 1,
+      "detected": true,
+      "assertionFailure": true
+    },
+    {
+      "id": "U06-guess-unavailable-executor",
+      "baselineExit": 0,
+      "mutantExit": 1,
+      "detected": true,
+      "assertionFailure": true
+    },
+    {
+      "id": "X03-derive-before-source",
+      "baselineExit": 0,
+      "mutantExit": 1,
+      "detected": true,
+      "assertionFailure": true
+    },
+    {
+      "id": "X03-withdraw-remote-first",
+      "baselineExit": 0,
+      "mutantExit": 1,
+      "detected": true,
+      "assertionFailure": true
+    },
+    {
+      "id": "U14-unauthorized-marked-sent",
+      "baselineExit": 0,
+      "mutantExit": 1,
+      "detected": true,
+      "assertionFailure": true
+    },
+    {
+      "id": "U16-ignore-withheld-consent",
+      "baselineExit": 0,
+      "mutantExit": 1,
+      "detected": true,
+      "assertionFailure": true
+    },
+    {
+      "id": "T6-receipt-dropped-from-wire",
+      "baselineExit": 0,
+      "mutantExit": 1,
+      "detected": true,
+      "assertionFailure": true
+    },
+    {
+      "id": "T6-receipt-ignored-by-dedup-identity",
+      "baselineExit": 0,
+      "mutantExit": 1,
+      "detected": true,
+      "assertionFailure": true
+    },
+    {
+      "id": "U19-uninstall-uses-install-key",
+      "baselineExit": 0,
+      "mutantExit": 1,
+      "detected": true,
+      "assertionFailure": true
+    }
+  ]
+}

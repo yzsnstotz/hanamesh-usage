@@ -1,6 +1,6 @@
 {
   "name": "hanamesh-usage",
-  "version": "0.2.0-rc.10",
+  "version": "0.2.0-rc.11",
   "description": "Consent-gated, device-signed HanaMesh usage events for DSH",
   "type": "module",
   "main": "lib/host/index.js",
@@ -47,10 +47,14 @@
     "@deepseek-ai/dsh-session-persistence": "0.2.0-rc.2",
     "@deepseek-ai/dsh-storage": "0.2.0-rc.2",
     "@deepseek-ai/dsh-storage-domain": "0.2.0-rc.2",
-    "zod": "4.5.4"
+    "zod": "4.5.4",
+    "@hanamesh/devkit": "0.1.0-rc.1"
   },
   "peerDependenciesMeta": {
     "@deepseek-ai/dsh-client-connection": {
+      "optional": true
+    },
+    "@hanamesh/devkit": {
       "optional": true
     }
   },
@@ -80,7 +84,10 @@
     "check": "node tools/check.mjs",
     "preflight:host": "node tools/preflight.mjs",
     "samples": "node tools/samples.mjs",
-    "test:detached": "node tools/detached.mjs"
+    "test:detached": "node tools/detached.mjs",
+    "check:toolchain": "node tools/check-toolchain.mjs",
+    "pack": "npm pack --pack-destination artifacts",
+    "verify:pack": "node tools/verify-pack.mjs"
   },
   "devDependencies": {
     "@deepseek-ai/cordis": "4.0.4",
@@ -97,6 +104,7 @@
     "@deepseek-ai/schemastery": "3.18.4",
     "@types/node": "24.13.4",
     "typescript": "5.9.3",
-    "zod": "4.5.4"
+    "zod": "4.5.4",
+    "@hanamesh/devkit": "file:vendor/hanamesh-devkit-0.1.0-rc.1.tgz"
   }
 }

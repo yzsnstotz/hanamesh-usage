@@ -4,15 +4,14 @@ import { spawnSync } from 'node:child_process';
 import { mkdirSync, copyFileSync, readdirSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { installedPeer, satisfies } from './pins.mjs';
+import {checkToolchain} from '@hanamesh/devkit';
+import {toolchainConfig} from '../devkit.config.mjs';
 const offline = process.argv.includes('--offline');
 const require = createRequire(import.meta.url);
 const tsc = spawnSync('tsc',['--version'],{encoding:'utf8'});
 console.log(JSON.stringify({node:process.version, compiler:tsc.stdout.trim(), offline, platform:process.platform, arch:process.arch}));
 if (!offline) {
-  const pnpm = spawnSync('pnpm',['--version'],{encoding:'utf8'});
-  if (process.version !== 'v24.13.1' || tsc.stdout.trim() !== 'Version 5.9.3' || pnpm.stdout?.trim() !== '10.33.0') {
-    console.error('TARGET_TOOLCHAIN_MISSING: require Node 24.13.1 / pnpm 10.33.0 / TypeScript 5.9.3'); process.exit(2);
-  }
+  checkToolchain(toolchainConfig);
   const pkg = require('../package.json');
   for (const [name,version] of Object.entries(pkg.peerDependencies)) {
     try {
