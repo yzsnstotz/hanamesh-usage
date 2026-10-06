@@ -2,7 +2,7 @@
 """Run the Usage component gate with a fresh DSH_HOME and no inherited credentials.
 
 Arguments: desktop source checkout, run directory, ordinary sample tgz, Node binary,
-optionally the private Usage candidate tgz (installed via the ordinary bundle path).
+optionally the private Usage candidate tgz and ordinary page sample tgz.
 The Desktop source checkout supplies the frozen public runtime; it is never modified.
 """
 import hashlib
@@ -18,11 +18,12 @@ from datetime import datetime, timezone
 
 desktop, run, sample, node = [Path(p).resolve() for p in sys.argv[1:5]]
 candidate = Path(sys.argv[5]).resolve() if len(sys.argv) > 5 else None
+page_sample = Path(sys.argv[6]).resolve() if len(sys.argv) > 6 else None
 usage = Path(__file__).resolve().parent.parent
 assert run.is_relative_to(Path.home() / '.cache/hanamesh-runs/NPM-USAGE-01')
 assert sample.is_file() and node.is_file()
 stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
-evidence = run.parent / '_evidence/command-consumer' / stamp
+evidence = run.parent / '_evidence' / ('page-consumer' if page_sample else 'command-consumer') / stamp
 evidence.mkdir(parents=True, exist_ok=False)
 home = run / 'dsh-home'
 if home.exists():
@@ -52,6 +53,10 @@ def execute(name, command, cwd):
         print(output[-4000:])
         raise SystemExit(result.returncode)
 execute('install', [node, desktop/'apps/cli/lib/bin.js', 'plugin', '--profile', 'web', 'add', sample], desktop)
+if page_sample:
+    assert page_sample.is_file()
+    env['USAGE_GATE_PAGE_SAMPLE'] = str(page_sample)
+    execute('install-page-sample', [node, desktop/'apps/cli/lib/bin.js', 'plugin', '--profile', 'web', 'add', page_sample], desktop)
 if candidate:
     assert candidate.is_file()
     env['USAGE_GATE_CANDIDATE'] = str(candidate)

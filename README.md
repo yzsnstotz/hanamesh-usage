@@ -1,4 +1,6 @@
-# hanamesh-usage · 0.2.0-rc.12
+# hanamesh-usage · 0.2.0-rc.13
+
+> rc.13 消费公开 `client-page/opened` 并映射 open：核 canonical package、当前 Plugin Inventory 的启用/active 状态，以及 profile-installed、enabled、removable bundle 的实际所属 row；缺少这些公开服务或身份不一致时不采集。以 Host operationId 幂等，内置平台页及平台代生成的配置页不算普通插件。沿用 rc.12 succeeded→use；页面内按钮不自动算 use。组件与正式 GUI/真实 Core 服务端产品门分别记录。
 
 > rc.12 在 Host 订阅公开 `commands/operation`：仅把 `succeeded` 映射为 `use`，经真实 Loader entry、owning base URL 与 `pluginPackages.packageOf()` 核 canonical manifest；以 commandId + phase 去重。`entered` 不证明 GUI open，因此不会生成 open。此为私有候选，真实 GUI、生产服务组合和 open 生命周期仍需独立门。没有新增依赖或浏览器写接口。
 
