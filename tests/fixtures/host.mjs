@@ -3,14 +3,15 @@ import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
 const {mountUsage}=await import(pathToFileURL(resolve(root,'lib/host/mount.js')).href);
 /** Strictly a FIXTURE of the documented calls, not Cordis/Registry/DSH itself. */
-export async function fixtureHost({live=true,participated=true,persisted=true,bound=true,snapshot,eventSnapshot,allowExport=false,inheritedEventCount=0,throwRead=false,consent='withheld',deviceId='device_A',coreStatus='present'}={}) {
+export async function fixtureHost({live=true,participated=true,persisted=true,bound=true,snapshot,eventSnapshot,allowExport=false,inheritedEventCount=0,throwRead=false,consent='withheld',deviceId='device_A',coreStatus='present',loaderEntries=[],packageOf}={}) {
   const input=session({inheritedEventCount}), log=[], handlers=new Map(), g=new MemoryGlobal(snapshot),eg=new MemoryGlobal(eventSnapshot??{schemaVersion:1,events:[],withdrawal:null,inventory:{last:null}});
   const originalSet=g.set.bind(g);g.set=async next=>{log.push('summary.set');await originalSet(next);};
   const originalEventSet=eg.set.bind(eg);eg.set=async next=>{log.push('event.set');await originalEventSet(next);};
   const s={id:input.sessionId,header:{id:input.sessionId},inheritedEventCount, snapshotEvents:()=>structuredClone(input.events),isOwnSeq:seq=>seq>=inheritedEventCount};
   let closes=0,handleCloses=0;
   const ctx={
-    loader:{entries:()=>[].values()},
+    loader:{entries:()=>loaderEntries.values()},
+    get(name){return name==='pluginPackages'&&packageOf?{packageOf}:undefined;},
     on(name,fn){handlers.set(name,fn);return ()=>handlers.delete(name);},
     provide(name,value){ctx[name]=value;},
     inject(names,fn){log.push('optional-connection');return ()=>{};},

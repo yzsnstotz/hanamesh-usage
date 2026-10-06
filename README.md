@@ -1,4 +1,6 @@
-# hanamesh-usage · 0.2.0-rc.10
+# hanamesh-usage · 0.2.0-rc.12
+
+> rc.12 在 Host 订阅公开 `commands/operation`：仅把 `succeeded` 映射为 `use`，经真实 Loader entry、owning base URL 与 `pluginPackages.packageOf()` 核 canonical manifest；以 commandId + phase 去重。`entered` 不证明 GUI open，因此不会生成 open。此为私有候选，真实 GUI、生产服务组合和 open 生命周期仍需独立门。没有新增依赖或浏览器写接口。
 
 > rc.10 对齐官方 `@deepseek-ai/dsh@0.2.0-rc.2` 与 Cordis `4.0.4` 的公开 peer 闭包。沿用 rc.7 的事件字段、签名和存储格式；新宿主的 `agent/created` 回调按公开类型返回 `undefined`。rc.9 跳过官方 Loader 中不可安全记录的条目；rc.10 将 16 字节随机事件 nonce 加上字母前缀，使其满足服务端 token 首字符规则并保留 128 位随机熵。本卡的公开安装与真实运行时结果见 BlueMap `NPM-USAGE-01/REPORT.md`；组件门不等于产品 ACCEPTED。
 

@@ -6,6 +6,7 @@ import { mountTransport } from './transport.js';
 import { createRecordSeat } from './record.js';
 import { createUsageReporter } from './upload.js';
 import { createInventory } from './inventory.js';
+import { commandPackage } from './command-source.js';
 
 /**
  * @param {import('@deepseek-ai/cordis').Context} ctx
@@ -126,6 +127,18 @@ export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink)
   const stopEvent = ctx.on('session/event', (session, event) => { if (event.type === 'turn/end') schedule(session); });
   const stopCreated = ctx.on('agent/created', ({ agent }) => { schedule(agent.session); return undefined; });
   const record=createRecordSeat({store:eventStore,getConsent:()=>{const value=coreState().consent;return value==='granted'?'granted':'withheld';},getDeviceId:()=>coreState().deviceId,nonce,signEvent:event=>{const core=coreLink.get();if(core===null)throw new UsageError('CORE_UNAVAILABLE');return signUsageEvent(core,event);}});
+  // A command success is a Host-observed operation, never a browser claim or a GUI-open assertion.
+  const onCommand=/** @type {(name:string,listener:(fact:unknown)=>void)=>()=>void} */(ctx.on.bind(ctx));
+  const stopCommand=onCommand('commands/operation',fact=>{
+    if(closing||coreState().consent!=='granted'||fact===null||typeof fact!=='object'||Array.isArray(fact))return;
+    const item=/** @type {{phase?:unknown,commandId?:unknown,source?:unknown,occurredAt?:unknown}} */(fact);
+    if(item.phase!=='succeeded'||typeof item.commandId!=='string'||typeof item.occurredAt!=='number'||!Number.isSafeInteger(item.occurredAt))return;
+    const hanaRef=commandPackage(ctx,item.source);if(hanaRef===null)return;
+    const observedAt=new Date(item.occurredAt);if(!Number.isFinite(observedAt.getTime()))return;
+    const occurredAt=observedAt.toISOString();
+    const idempotencyKey=`command:${item.commandId}:succeeded`;
+    jobs=jobs.then(async()=>{const result=await record({hanaRef,action:'use',occurredAt,idempotencyKey,sourcePlugin:hanaRef});if(result.disposition==='rejected')note(new UsageError(result.code??'RECORD_FAILED'));}).catch(note);
+  });
   const reporter=createUsageReporter({store:eventStore,link:coreLink,uploadIntervalMs:config.uploadIntervalMs,uploadBatchSize:config.uploadBatchSize});
   const inventory=createInventory({ctx,store:eventStore,link:coreLink,inventoryIntervalMs:config.inventoryIntervalMs,note:code=>note(new UsageError(code))});
   /** @type {(()=>void)|null} */let stopConsent=null;
@@ -186,7 +199,7 @@ export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink)
     async close() {
       if (closing) return;
       closing = true;
-      stopEvent(); stopCreated();stopCore();stopConsent?.();reporter.stop();coreLink.close();
+      stopEvent(); stopCreated();stopCommand();stopCore();stopConsent?.();reporter.stop();coreLink.close();
       try { await jobs; await inventory.close(); await reporter.drain(); await store.close(); await eventStore.drain(); }
       finally { await Promise.all([domain.close(),eventDomain.close()]); }
     },
