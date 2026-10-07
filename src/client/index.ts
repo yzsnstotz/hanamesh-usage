@@ -39,7 +39,7 @@ export function UsagePanel() {
   return h('section',{'aria-label':'Usage 开发小面板'},
     h('h2',null,'Usage 开发小面板'),
     h('button',{type:'button',disabled:state.loading,onClick:()=>setRevision(value=>value+1)},state.loading?'读取中…':'刷新本机记录'),
-    state.error?h('p',{role:'alert'},'本机记录读取失败 · USAGE_PANEL_UNAVAILABLE；没有新采集或上报。'):null,
+    state.error?h('p',{role:'alert'},'本机记录读取失败 · USAGE_PANEL_UNAVAILABLE；刷新只读，不触发新的采集或上报。'):null,
     state.html===null?null:h('iframe',{title:'本机 Usage 事件、签名与上报状态',srcDoc:state.html,sandbox:'',style:{width:'100%',height:650,border:0}}),
   );
 }

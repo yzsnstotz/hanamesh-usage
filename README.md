@@ -1,4 +1,4 @@
-# hanamesh-usage · 0.2.0-rc.14
+# hanamesh-usage · 0.2.0-rc.15
 
 > rc.13 消费公开 `client-page/opened` 并映射 open：核 canonical package、当前 Plugin Inventory 的启用/active 状态，以及 profile-installed、enabled、removable bundle 的实际所属 row；缺少这些公开服务或身份不一致时不采集。以 Host operationId 幂等，内置平台页及平台代生成的配置页不算普通插件。沿用 rc.12 succeeded→use；页面内按钮不自动算 use。组件与正式 GUI/真实 Core 服务端产品门分别记录。
 
@@ -55,7 +55,7 @@ npm run test:detached
 
 真实门必须使用全新隔离的 `DSH_HOME` 与随机端口；不得触碰 `~/.dsh` 或 `3080`。STUB/STANDIN 证据不能替代 REAL_SERVER/REAL_CORE。
 
-## rc.14 · Usage 开发小面板
+## rc.15 · Usage 开发小面板
 
 正常安装本 bundle 后，自己的 `./client` 通过公开 `settings.section` 注册
 「Usage 开发小面板」。入口：HanaMesh.app → Settings → Usage 开发小面板。
