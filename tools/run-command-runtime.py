@@ -20,10 +20,10 @@ desktop, run, sample, node = [Path(p).resolve() for p in sys.argv[1:5]]
 candidate = Path(sys.argv[5]).resolve() if len(sys.argv) > 5 else None
 page_sample = Path(sys.argv[6]).resolve() if len(sys.argv) > 6 else None
 usage = Path(__file__).resolve().parent.parent
-assert run.is_relative_to(Path.home() / '.cache/hanamesh-runs/NPM-USAGE-01')
+assert any(run.is_relative_to(Path.home() / '.cache/hanamesh-runs' / card) for card in ['NPM-USAGE-01','P04-USAGE-PANEL-01'])
 assert sample.is_file() and node.is_file()
 stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
-evidence = run.parent / '_evidence' / ('page-consumer' if page_sample else 'command-consumer') / stamp
+evidence = run.parent / '_evidence' / ('panel-component' if run.is_relative_to(Path.home()/'.cache/hanamesh-runs/P04-USAGE-PANEL-01') else 'page-consumer' if page_sample else 'command-consumer') / stamp
 evidence.mkdir(parents=True, exist_ok=False)
 home = run / 'dsh-home'
 if home.exists():

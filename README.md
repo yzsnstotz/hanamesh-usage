@@ -1,4 +1,4 @@
-# hanamesh-usage · 0.2.0-rc.13
+# hanamesh-usage · 0.2.0-rc.14
 
 > rc.13 消费公开 `client-page/opened` 并映射 open：核 canonical package、当前 Plugin Inventory 的启用/active 状态，以及 profile-installed、enabled、removable bundle 的实际所属 row；缺少这些公开服务或身份不一致时不采集。以 Host operationId 幂等，内置平台页及平台代生成的配置页不算普通插件。沿用 rc.12 succeeded→use；页面内按钮不自动算 use。组件与正式 GUI/真实 Core 服务端产品门分别记录。
 
@@ -54,3 +54,27 @@ npm run test:detached
 ```
 
 真实门必须使用全新隔离的 `DSH_HOME` 与随机端口；不得触碰 `~/.dsh` 或 `3080`。STUB/STANDIN 证据不能替代 REAL_SERVER/REAL_CORE。
+
+## rc.14 · Usage 开发小面板
+
+正常安装本 bundle 后，自己的 `./client` 通过公开 `settings.section` 注册
+「Usage 开发小面板」。入口：HanaMesh.app → Settings → Usage 开发小面板。
+刷新只 GET 本包认证路由 `/api/hanamesh/usage/panel/view`；HTML 在无脚本、
+无表单的 sandbox iframe 中显示。读取失败显示有界错误，不创建事件。
+公开 `/api/hanamesh/usage/panel` 返回相同最小投影。
+
+面板仅显示 Core 当前设备的事件，主体缺失或不匹配显示未知；设备缺失不显示
+其他设备的缓存。事件保留插件、动作、ISO 时间和原 owning 来源/事实引用。
+签名由当前设备公钥进行 Ed25519 校验，成功、无效、未知分别展示；上报沿用
+真实 EventStore 状态，与签名独立。面板不输出 nonce 或原始签名。
+
+默认不注入测试身份或接收端。显式 `panelTestSupply: {identity:true,receiver:true}`
+只声明界面的测试供给标识，不修改任何身份、同意、签名、采集或上传行为。
+两个标识只能是布尔值，字段缺失/未知字段均报 INVALID_CONFIG。
+未标为测试的供给仍显示「真实性未知」，不冒充已验证的生产门。
+
+构建复用已锁定 TypeScript 生成公开 lazy-CJS 客户端格式；React 从平台静态
+module table 获取同一实例，`react@18.3.1` / `@types/react@18.3.1` 仅开发期
+类型与组件测试使用，无新增生产 dependency、私有 peer/vendor 或新 bundler。
+原 rc.13 的 page→open、成功 command→use、同意与原子幂等逻辑保持。
+正式 Desktop 新安装、可见首步截图与 owner ACCEPTED 分别等待产品门证据。

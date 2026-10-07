@@ -8,6 +8,7 @@ import { createUsageReporter } from './upload.js';
 import { createInventory } from './inventory.js';
 import { commandPackage } from './command-source.js';
 import { pagePackage } from './page-source.js';
+import { projectUsagePanel } from './panel.js';
 
 /**
  * @param {import('@deepseek-ai/cordis').Context} ctx
@@ -177,6 +178,7 @@ export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink)
     /** @param {{state?: import('../core/index.js').UploadState, limit?: number, after?: string}} [filter] */
     events: (filter = {}) => eventStore.query(filter),
     record,
+    panel: () => projectUsagePanel(api.health(),eventStore.getSnapshot().events,coreLink.get(),config.panelTestSupply),
     health: () => {
       const current=coreState(),outbox=reporter.health();
       return { pending: pending.size, recoveryComplete, failures: { ...failures }, consent:current.consent, core:coreLink.status(), deviceId:current.deviceId, outbox, derive:{skipped:{...skipped}}, withdrawal:eventStore.getSnapshot().withdrawal, inventory:inventory.health() };

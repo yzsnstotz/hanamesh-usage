@@ -50,7 +50,7 @@ const core={protocolVersion:'1',getDeviceId:()=>deviceId,getPublicKey:()=>public
   getServerOrigin:()=>origin,getSession:()=>({protocolVersion:'1',deviceId,registration:'registered',principalId:null,bound:null,serverReachable:true,checkedAt:new Date().toISOString(),reason:'COMPONENT_FIXTURE'}),
   async signRequest({method,path,body}){const timestamp=String(Math.floor(Date.now()/1000)),nonce=randomBytes(16).toString('base64url');const data=`${method}\n${path}\n${timestamp}\n${nonce}\n${createHash('sha256').update(body??Buffer.alloc(0)).digest('hex')}`;return {'x-hm-device-id':deviceId,'x-hm-timestamp':timestamp,'x-hm-nonce':nonce,'x-hm-signature':sign(null,Buffer.from(data),privateKey).toString('base64url')};},
 };
-const patch=join(run,'command.patch.json');await writeFile(patch,JSON.stringify([{id:'update-notifier',config:{initialDelay:3600000,interval:3600000}}]));
+const patch=join(run,'command.patch.json');await writeFile(patch,JSON.stringify([{id:'update-notifier',config:{initialDelay:3600000,interval:3600000}},...(process.env.USAGE_GATE_CANDIDATE?[{id:'hanamesh-usage',config:{uploadIntervalMs:5000,panelTestSupply:{identity:true,receiver:true}}}]:[])]));
 let app,fork;
 const result={scope:'REAL_USAGE_COMPONENT_HOST',fixtures:['Core consent/device signer','HTTP server with Ed25519 request/event verification and in-memory readback'],formalGUI:'NOT_RUN',productionServer:'NOT_RUN',modelRequests:0};
 try{
@@ -61,10 +61,12 @@ try{
   if(process.env.USAGE_GATE_CANDIDATE){
     const loaded=[...ctx.loader.entries()].find(e=>e.options.name==='hanamesh-usage');assert(loaded?.fiber);
     const pkg=ctx.get('pluginPackages').packageOf('hanamesh-usage',loaded.parent.tree.ctx.baseUrl);
-    assert.equal(pkg.version,'0.2.0-rc.13');
+    assert.equal(pkg.version,JSON.parse(await readFile(new URL('../package.json',import.meta.url),'utf8')).version);
     result.candidate={version:pkg.version,sha256:createHash('sha256').update(await readFile(process.env.USAGE_GATE_CANDIDATE)).digest('hex'),installation:'PUBLIC_CLI_PLUGIN_ADD_BUNDLE'};
-  }else{fork=ctx.plugin(usage,{uploadIntervalMs:5000});await fork;}
+  }else{fork=ctx.plugin(usage,{uploadIntervalMs:5000,panelTestSupply:{identity:true,receiver:true}});await fork;}
   const api=ctx.get('hanameshUsage');assert(api);await api.drain();
+  const graphRow=ctx.clientModules.graph().entries.find(row=>row.id==='hanamesh-usage');assert(graphRow);assert(graphRow.external.includes('react'));
+  result.panelClient={scope:'REAL_HOST_PUBLIC_CLIENT_GRAPH_NOT_RENDERER',id:graphRow.id,inject:graphRow.inject,external:graphRow.external};
   const entry=[...ctx.loader.entries()].find(e=>e.options.name==='dsh-update-notifier');assert(entry?.fiber);
   const owner=ctx.get('pluginPackages').packageOf(entry.options.name,entry.parent.tree.ctx.baseUrl);
   result.owner={entryId:entry.id,moduleName:entry.options.name,packageName:owner.name,version:owner.version};
@@ -91,6 +93,7 @@ try{
   const facts=[];ctx.on('commands/operation',fact=>facts.push(fact));
   async function execute(){const value=await ctx.typertGateway.invoke({namespace:'commands',method:'execute',args:{agentId:session.sessionId,line:'/check-updates',submittedAttachments:[]}});assert.equal(value.result.kind,'success');await api.drain();return value;}
   await execute();assert.equal(api.events().total,0);result.beforeConsent=api.events().total;
+  assert.equal(api.panel().total,0);assert.deepEqual(api.panel().testSupply,{identity:true,receiver:true});
   consent='granted';for(const fn of listeners)fn(consent,new Date().toISOString());await api.drain();
   const beforeFailure=api.events({limit:200});rejectSigning=true;
   await execute();assert.deepEqual(api.events({limit:200}),beforeFailure);rejectSigning=false;
@@ -121,6 +124,14 @@ try{
   assert(rows.has(use[0].eventId));assert.equal(api.events({limit:200}).events.find(e=>e.eventId===use[0].eventId).upload.state,'sent');
   result.signedUse=rows.get(use[0].eventId);result.uploadReadback={serverRows:rows.size,localSent:api.health().outbox.sent};
   if(pageSource){for(const event of result.pageEvents.events){assert(rows.has(event.eventId));assert.equal(api.events({limit:200}).events.find(e=>e.eventId===event.eventId).upload.state,'sent');}result.openUploadReadback=2;}
+  const panel=api.panel();assert.equal(panel.events.filter(event=>event.action==='use').length,1);assert(panel.events.every(event=>event.signature.state==='success'));assert(panel.events.every(event=>event.upload.state==='sent'));
+  assert.deepEqual(api.panel(),panel);result.panelReadback={scope:'REAL_INSTALLED_HOST_PANEL_PROJECTION_NO_GUI',...panel};
+  const panelRequest=new Request(`http://127.0.0.1:${result.hostPort}/api/hanamesh/usage/panel/view`);
+  const panelResponse=await ctx.connection.createSharedFetchHandler('/api').fetch(panelRequest);assert.equal(panelResponse.status,200);const html=await panelResponse.text();
+  assert(html.includes('测试身份 / 合成签名供给')&&html.includes('测试接收端 / 非生产上报')&&html.includes('command:'));
+  assert(!/<script/i.test(html));assert(!html.includes(use[0].signature));await writeFile(join(evidence,'panel.html'),html);
+  const unauth=await fetch(panelRequest.url);assert.equal(unauth.status,401);
+  result.panelTransport={scope:'REAL_CONNECTION_EXACT_ROUTE_ALREADY_AUTHENTICATED_DISPATCH_NOT_BROWSER',authenticatedDispatch:panelResponse.status,unauthenticatedHTTP:unauth.status,htmlSha256:createHash('sha256').update(html).digest('hex'),scriptFree:true};
   consent='withheld';for(const fn of listeners)fn(consent,new Date().toISOString());await api.drain();
   assert.equal(rows.size,0);assert.equal(api.events().total,0);assert.equal(api.health().withdrawal.state,'sent');
   await execute();assert.equal(api.events().total,0);assert.equal(rows.size,0);

@@ -35,10 +35,14 @@ export async function apply(ctx, config = {}) {
     uploadIntervalMs: config.uploadIntervalMs ?? 60000,
     uploadBatchSize: config.uploadBatchSize ?? 200,
     inventoryIntervalMs: config.inventoryIntervalMs ?? 300000,
+    panelTestSupply: config.panelTestSupply === undefined ? {identity:false,receiver:false} : config.panelTestSupply,
   };
   /** @param {unknown} value @param {number} min @param {number} max */
   const integer = (value, min, max) => typeof value === 'number' && Number.isSafeInteger(value) && value >= min && value <= max;
-  if (Object.keys(config).some(k => !['maxRecords','maxPending','allowExport','maxEvents','uploadIntervalMs','uploadBatchSize','inventoryIntervalMs'].includes(k))
+  const supply=resolved.panelTestSupply;
+  if (Object.keys(config).some(k => !['maxRecords','maxPending','allowExport','maxEvents','uploadIntervalMs','uploadBatchSize','inventoryIntervalMs','panelTestSupply'].includes(k))
+    || supply===null || typeof supply!=='object' || Array.isArray(supply)
+    || Object.keys(supply).sort().join('|')!=='identity|receiver' || typeof supply.identity!=='boolean' || typeof supply.receiver!=='boolean'
     || typeof resolved.allowExport !== 'boolean'
     || !integer(resolved.maxRecords, 1, 100000)
     || !integer(resolved.maxPending, 1, 10000)
