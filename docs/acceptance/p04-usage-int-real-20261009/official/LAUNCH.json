@@ -1,0 +1,12 @@
+{
+  "run": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-99f45855-26b9-4442-b66f-def549b4a2b2",
+  "dshPort": 55128,
+  "origin": "http://127.0.0.1:55128",
+  "observerPort": 55132,
+  "hostOrigin": "http://127.0.0.1:54399",
+  "Core": "NORMAL_INSTALLED_REAL_PROVIDER",
+  "Usage": "NORMAL_INSTALLED",
+  "FakeChain": "TEST_FAKE",
+  "Semantic": "TEST_STUB",
+  "firstStepUI": "NOT_RUN"
+}

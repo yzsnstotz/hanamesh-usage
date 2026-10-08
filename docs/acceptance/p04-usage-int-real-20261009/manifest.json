@@ -1,0 +1,330 @@
+[
+  {
+    "path": "official/evidence/plugin-sample-install.log",
+    "sha256": "552bd40e94240118e92c36a5c2c497432c7e4827747caa2e74aa63ecf9058474"
+  },
+  {
+    "path": "official/evidence/host-start-ipv4.json",
+    "sha256": "1d3ca40e90bb9d094b39322c2bc751fbd8aab1ac405da828f71be92bbc98487a"
+  },
+  {
+    "path": "official/evidence/host-start.log",
+    "sha256": "ac0c2d6a682863353e94ce6d52c04a36094ed71800916e1e43bd378d64f7d0c5"
+  },
+  {
+    "path": "official/evidence/plugins-installed-bytes.json",
+    "sha256": "703d5bfcac554c53da78c03344207b0f500427692b45396d0bf2998e2f6f7f5a"
+  },
+  {
+    "path": "official/evidence/before-ui.json",
+    "sha256": "245a76e303fed92e87aa13669d2d4a6db802a58fcfc4aecc53b63ee8e77f10f1"
+  },
+  {
+    "path": "official/evidence/host-pg-up.log",
+    "sha256": "effdfb56ea643d0d1dab1267833a420ff305120bace82827aee2154c5cb5732f"
+  },
+  {
+    "path": "official/evidence/host-pg-up.json",
+    "sha256": "8edddda1e5e80ebff96df82eb65ac68da2bda8f30652a32fe1ac77cd543395d6"
+  },
+  {
+    "path": "official/evidence/plugin-setup.json",
+    "sha256": "6042b1afba4f27e654902a8457e25430841da76af6061425d9bc27598cd2a8eb"
+  },
+  {
+    "path": "official/evidence/pg-install-readback.json",
+    "sha256": "986c34568fe22785de5ef3d6fcde6d869b092663759e263052a3e4f3277964c7"
+  },
+  {
+    "path": "official/evidence/host-install-frozen.json",
+    "sha256": "5e15d477718176ff10ec888c1fad2c6fe2860f43f09055ee87847a1e3eb1e197"
+  },
+  {
+    "path": "official/evidence/host-installed-byte-peers-v2.json",
+    "sha256": "cb0c4cb62b56bb3e4d39f9a3950cd8ef2236ca78b99e9302c939e4e815f3d439"
+  },
+  {
+    "path": "official/evidence/host-status.log",
+    "sha256": "f7e724b41070e2aecb024ed833069a1877e80140d5100680f1360b7e7ee0ceb2"
+  },
+  {
+    "path": "official/evidence/host-bind-correction.json",
+    "sha256": "6181b229943f30007a19377f942bcb052b21881fcab12df3ec5e9addb2e29ae5"
+  },
+  {
+    "path": "official/evidence/host-start-ipv4.log",
+    "sha256": "423425ed3ac43adee4650fbccf009ae1547e27bb05a9a3343d7e6389f5ae3c89"
+  },
+  {
+    "path": "official/evidence/host-source-lock.json",
+    "sha256": "8c025dc07c5930f459a39c0d498ef9fe9c08755e3b586db47b6961d847387e0b"
+  },
+  {
+    "path": "official/evidence/after-ui-command-state.json",
+    "sha256": "b2bf1b79b68b83da2b443c44ca169021e263bc1dca45ee1d8b15153dffac6a60"
+  },
+  {
+    "path": "official/evidence/after-ui-command-remote.json",
+    "sha256": "7743e72ddc037e24564007b98cd8c69a48a241bd8d9683933d4823053ca006e0"
+  },
+  {
+    "path": "official/evidence/host-pg-up-colima.json",
+    "sha256": "658d9da5255ffc3b0ebf5a1282f5a592899474781f05665a0ffd1b76dcf97f90"
+  },
+  {
+    "path": "official/evidence/plugin-install.json",
+    "sha256": "24dada2f58921c628c0c5b61d8a410f9569d69dc0028c1e046af256d0a0408f5"
+  },
+  {
+    "path": "official/evidence/host-install-frozen.log",
+    "sha256": "7072be35cd84a8b4951581bd28c720a36cf9724cd937c2bcac045da2d8e39fb1"
+  },
+  {
+    "path": "official/evidence/host-start.json",
+    "sha256": "1d3ca40e90bb9d094b39322c2bc751fbd8aab1ac405da828f71be92bbc98487a"
+  },
+  {
+    "path": "official/evidence/runtime-install.log",
+    "sha256": "5fb667df2d92b0acb4739212dfb8fba428e4d67f3ba8ed71737e505b34bcb995"
+  },
+  {
+    "path": "official/evidence/sample.json",
+    "sha256": "61fec814d798b316f1343d841238f459fab9a0f7d386d5adbb0e45e1eba9f41b"
+  },
+  {
+    "path": "official/evidence/host-install.json",
+    "sha256": "c53763edbd3bb37464e081b9643c44d9f8a1fd806fb6fc841a1613a0f6581692"
+  },
+  {
+    "path": "official/evidence/host-pg-up-colima.log",
+    "sha256": "7e5d7fee597ebe197447dc8100759c0fb1c32f4935c3c4fdd6770818de3b77c9"
+  },
+  {
+    "path": "official/evidence/remote-install-readback.json",
+    "sha256": "0880233b9d6093f192659dc22a01eadab718bcc301aad586bd2898420b1e86cd"
+  },
+  {
+    "path": "official/evidence/host-install.log",
+    "sha256": "c3befb994ad272d877f70e9c49fd4ce04d0f8cc9f9b788c9df91eb5ef1f4b5c7"
+  },
+  {
+    "path": "official/evidence/host-status.json",
+    "sha256": "7ad1483e6912ff4ff139226e54aa95478f51e43d23175025ecb950f801865ab3"
+  },
+  {
+    "path": "official/evidence/host-installed-byte-peers.json",
+    "sha256": "b1bcf50918c22c0494e1f01da36dccdbc9ad369f431019c2e10e1ee5674d7ccf"
+  },
+  {
+    "path": "official/evidence/runtime-install.json",
+    "sha256": "8d69cf59e1419dfe5e63b33dc305a351b824c41ad8a33c6c201e1b7a2aaba69d"
+  },
+  {
+    "path": "official/evidence/pg-install-readback.log",
+    "sha256": "85220862ee289a6069caaab7cecf95c7e0cee62f9c706b0c4f034900c3e159e8"
+  },
+  {
+    "path": "official/evidence/plugin-usage-install.log",
+    "sha256": "f5c4812635085f7d3788213da723d6b37d6b8d342fee3c69c00a68dfb6bb4a06"
+  },
+  {
+    "path": "official/evidence/plugin-setup.log",
+    "sha256": "2a5664333de423ae02b8f38ff025ae91f26fd49448ab2e1403f7065a15d016c7"
+  },
+  {
+    "path": "official/evidence/ordinary-native-command-lifecycle.json",
+    "sha256": "800c9cfe0e02de63b4ec0c017009b9a21df083e6f490fe011336404e6a622775"
+  },
+  {
+    "path": "official/evidence/plugin-core-install.log",
+    "sha256": "32c03382e292d2deb261385292f13628811b294c6d422d2a50edb2192d73d85e"
+  },
+  {
+    "path": "official/evidence/resumed-state.json",
+    "sha256": "b0fd787a5f2bd91fd64f3d748417623c912280f245d5624f42d706bf2fd1f9ad"
+  },
+  {
+    "path": "official/browser/02-consent-on.ax.txt",
+    "sha256": "71fcb0bc0f5f93de2fee6f0bdde505c66729346183a4e72adf1e0447522a074b"
+  },
+  {
+    "path": "official/browser/03-command-submitted.ax.txt",
+    "sha256": "6897c40bea4e3d93a9d412660923043269e834b389da5e3626b4ea776b184292"
+  },
+  {
+    "path": "official/browser/01-core-first-step.ax.txt",
+    "sha256": "20bda03bc5cb416c1f38faa213b102f9945f44500a1a8321a299d406f970d668"
+  },
+  {
+    "path": "official/browser/04-usage-install-received.ax.txt",
+    "sha256": "8e04bf5e06189b544235034c0d3bf8eeb247ab131e29e60fed51673f3258c638"
+  },
+  {
+    "path": "official/browser/03-command-submitted.png",
+    "sha256": "320ae63f372646f9fdd5b526ffd8d6cd42125cdcaffe958a573b24e1a28f0e55"
+  },
+  {
+    "path": "official/browser/02-consent-on.png",
+    "sha256": "49886fd656990cf97b4ccd5a2cbe92323dd3b410e211be071df8740d3e7ae104"
+  },
+  {
+    "path": "official/browser/01-core-first-step.png",
+    "sha256": "7c1f05bbdd4cb37a92c3b496b5f478841ab60015a6145d353f1cf46a6568bc00"
+  },
+  {
+    "path": "official/browser/04-usage-install-received.png",
+    "sha256": "4b1eae56ad8222d73f0358ffc49593cc610a90692d3c3ec69942ae9d763af961"
+  },
+  {
+    "path": "official/INPUTS.json",
+    "sha256": "76cd2d26562316417ce8d659c009cfc8e41075e9160831274f2026ca5be3e760"
+  },
+  {
+    "path": "official/LAUNCH.json",
+    "sha256": "66be3d4112d1af6978226ae4fc50fa698410c3c8623c67722fb7785ddc6154c6"
+  },
+  {
+    "path": "official/final.patch.json",
+    "sha256": "4557052542b9f69e97005197c1ce0ffab65bbba8d59c0df8c24338995c873bc6"
+  },
+  {
+    "path": "client-fork/evidence/after-withdraw-state.json",
+    "sha256": "a010e1ceb1a599a94d6204ff36cab40d2868d517d3d40ea169b8702867aaff3f"
+  },
+  {
+    "path": "client-fork/evidence/after-withdraw-other-remote.json",
+    "sha256": "7df2418070bd86e9ccc913e8abbb298582886181cdd7954118df2d2b6b5d99a9"
+  },
+  {
+    "path": "client-fork/evidence/plugin-sample-install.log",
+    "sha256": "09bcf602b4d142a4f8b2316bdc9c380330634469ff2d54e614492de630e2232e"
+  },
+  {
+    "path": "client-fork/evidence/actual-runtime-resolution.json",
+    "sha256": "9a544299aa3c847f28ccc93e01983ce5801a129c800a537b814966a722cbc366"
+  },
+  {
+    "path": "client-fork/evidence/runtime-source-receipt.json",
+    "sha256": "552831f0578a8a0c3dd08b944919336bc6d4f6d867caab275e843a07b620bb57"
+  },
+  {
+    "path": "client-fork/evidence/fork-plugin-install.json",
+    "sha256": "4699f7a0e651ef0e9c4e673b83fbd0081fccd8ca9f6ac5b639ca66e1e299d361"
+  },
+  {
+    "path": "client-fork/evidence/before-withdraw-pg.json",
+    "sha256": "4e18393642963562e48ca4d0f8a3ba13553edd2ff26550d3d46bea861015a1e5"
+  },
+  {
+    "path": "client-fork/evidence/resolution.log",
+    "sha256": "49f32807e7170847a8c860b9b11ce1d5485f32125a51fb79f6d410b734405de9"
+  },
+  {
+    "path": "client-fork/evidence/before-withdraw-remote.json",
+    "sha256": "cc891e32fc346ee6f4d8f76118582caa387e746ad9305df94014698eb43586fb"
+  },
+  {
+    "path": "client-fork/evidence/fork-plugin-install.log",
+    "sha256": "2a5664333de423ae02b8f38ff025ae91f26fd49448ab2e1403f7065a15d016c7"
+  },
+  {
+    "path": "client-fork/evidence/resolution.json",
+    "sha256": "5a78251bd2a6a272eaca03125c52f572ba0d7a3b234711807a18c3cdf6ee6c5c"
+  },
+  {
+    "path": "client-fork/evidence/plugin-install.json",
+    "sha256": "409b9da066afb9d1072eb501d9c608c9cc61eca76deeef4205bff9b60a2cd3df"
+  },
+  {
+    "path": "client-fork/evidence/after-withdraw-remote.json",
+    "sha256": "25e5e51c775eb73a7cc22b63fdd10ae5846ed4f6bc79d107f3b9b111660e859f"
+  },
+  {
+    "path": "client-fork/evidence/after-withdraw-pg.json",
+    "sha256": "986c34568fe22785de5ef3d6fcde6d869b092663759e263052a3e4f3277964c7"
+  },
+  {
+    "path": "client-fork/evidence/before-withdraw-consistency.json",
+    "sha256": "3c1220d40de6a9354297fe86de58754c3d5ca0b6cd23ed5def690882978d76ca"
+  },
+  {
+    "path": "client-fork/evidence/before-withdraw-state.json",
+    "sha256": "ad556747e27532d6d597cad4d0d772fabf9f9127f9c7d6145fbc2f31a57f26c6"
+  },
+  {
+    "path": "client-fork/evidence/after-command-state.json",
+    "sha256": "c044872dc6d235e7769e775c11133177d85887b6f61a060904d37a1b035e09ca"
+  },
+  {
+    "path": "client-fork/evidence/plugin-usage-install.log",
+    "sha256": "6749970d1a91b4ec77c724d9d84ffc5ed563ef72db30fd27ac1102d6bbd39bc6"
+  },
+  {
+    "path": "client-fork/evidence/ordinary-native-command-lifecycle.json",
+    "sha256": "3174ef5e0f0bc4bb5c1df7f08d14b8c1d5f3153a8d7ca9ad70d74eacd871204d"
+  },
+  {
+    "path": "client-fork/evidence/withdrawal-consistency.json",
+    "sha256": "31e18ceaac81ff0b9ba49dc47f95f3decdac6a9b2848e9779c3de152a7d310be"
+  },
+  {
+    "path": "client-fork/evidence/before-withdraw-consistency-v2.json",
+    "sha256": "5b9402bdb170381c8259c8054332bbfb1f8ebe0e629500a2ca866666ff3c61bf"
+  },
+  {
+    "path": "client-fork/evidence/plugin-core-install.log",
+    "sha256": "40d3cd6ce0fa18669810e70306445948b4a5e879f3456c8d69a82f344f961754"
+  },
+  {
+    "path": "client-fork/browser/02-consent-on.ax.txt",
+    "sha256": "49162fe831a049881bee26ba1478237a116b465c8391d9f13f50aba220c2154b"
+  },
+  {
+    "path": "client-fork/browser/01-core-first-step.ax.txt",
+    "sha256": "e20bb5cacaabd7f9ee8dbbe3382e16e258953cac45fd261773b2a368e3b0dbe3"
+  },
+  {
+    "path": "client-fork/browser/03-core-installed-readback.png",
+    "sha256": "a4a366286507f9ed82a7bb0a1f3e8dfb9e740f7799968595301eab7a3d59c478"
+  },
+  {
+    "path": "client-fork/browser/05-usage-withdrawn.ax.txt",
+    "sha256": "68b304fd4b2256ef2211b59bb178c21f929eeecb37a6e329f58e7af0acbba06f"
+  },
+  {
+    "path": "client-fork/browser/04-core-withdrawn.png",
+    "sha256": "485c64a800df78d066228de11de1133611d8010a0228589d4bd26fd2a34cd4e9"
+  },
+  {
+    "path": "client-fork/browser/02-consent-on.png",
+    "sha256": "41dccdf584ead0a95d8fbac63a3c8590095a979b5d445d90b7e857f71eba8cc5"
+  },
+  {
+    "path": "client-fork/browser/04-core-withdrawn.ax.txt",
+    "sha256": "f5f11dd1fac3f738e4ac203aeb360eeb4e575de8ae9c5c43b2c17bbb0bfa6850"
+  },
+  {
+    "path": "client-fork/browser/01-core-first-step.png",
+    "sha256": "6bbbfe64125ef20a9a6b717eb0f6f3d2977e4894cb6b789ff128538b551e6bf7"
+  },
+  {
+    "path": "client-fork/browser/05-usage-withdrawn.png",
+    "sha256": "7489fffee489b3355541e5ca19c1ad8bc36d85ab5934747a593372196f5d8e3b"
+  },
+  {
+    "path": "client-fork/browser/03-core-installed-readback.ax.txt",
+    "sha256": "5d62a7a0a2e83e7ad0e1f2f97f73568530b6e987f88f74bcda0ae75b91396057"
+  },
+  {
+    "path": "client-fork/INPUTS.json",
+    "sha256": "6797ff39f71a0b19453254e2686e80b9a3498b3553bad916494deb6605a3ca38"
+  },
+  {
+    "path": "client-fork/LAUNCH.json",
+    "sha256": "9fc4ab5d2575f2de2e4771ba0aa4c20ae8832038d38cc3d8adbb77482221f236"
+  },
+  {
+    "path": "client-fork/final.patch.json",
+    "sha256": "4557052542b9f69e97005197c1ce0ffab65bbba8d59c0df8c24338995c873bc6"
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "comparison": "WIRE_DATE_MILLISECOND_GRANULARITY; raw PG received_at retains microseconds",
+  "localTotal": 178,
+  "remoteTotal": 178,
+  "PGSelf": 178,
+  "exactSetEqual": true,
+  "fieldMismatch": [],
+  "signatureSuccess": 178,
+  "uploadedSent": 178,
+  "actions": [
+    "install"
+  ],
+  "modelRequests": 0
+}

@@ -1,0 +1,91 @@
+{
+  "coreSession": {
+    "protocolVersion": "1",
+    "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+    "registration": "registered",
+    "principalId": "7c857b07-2e22-47f5-8aa8-0cb326de0307",
+    "bound": false,
+    "serverReachable": true,
+    "checkedAt": "2026-10-08T22:05:41.283Z",
+    "reason": null
+  },
+  "consent": "withheld",
+  "usageHealth": {
+    "pending": 0,
+    "recoveryComplete": true,
+    "failures": {
+      "INVENTORY_ENTRY_UNREADABLE": 21
+    },
+    "consent": "withheld",
+    "core": "present",
+    "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+    "outbox": {
+      "state": "stopped",
+      "pending": 0,
+      "sent": 0,
+      "duplicate": 0,
+      "rejected": 0,
+      "lastUploadAt": "2026-10-08T22:06:14.949Z",
+      "nextAttemptAt": null,
+      "lastError": null
+    },
+    "derive": {
+      "skipped": {
+        "consentWithheld": 0,
+        "executorUnavailable": 0,
+        "timeUnavailable": 0,
+        "noDevice": 0
+      }
+    },
+    "withdrawal": {
+      "requestedAt": "2026-10-08T22:11:44.135Z",
+      "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+      "state": "sent",
+      "attempts": 1,
+      "deletedEvents": 178,
+      "lastError": null
+    },
+    "inventory": {
+      "available": true,
+      "source": "loader",
+      "lastScanAt": "2026-10-08T22:10:41.303Z",
+      "detail": {
+        "package": "@deepseek-ai/cordis",
+        "serviceKey": "loader",
+        "methods": [
+          "entries"
+        ]
+      }
+    }
+  },
+  "panel": {
+    "subject": {
+      "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+      "principalId": "7c857b07-2e22-47f5-8aa8-0cb326de0307",
+      "reason": null
+    },
+    "testSupply": {
+      "identity": false,
+      "receiver": false
+    },
+    "consent": "withheld",
+    "core": "present",
+    "total": 0,
+    "outbox": {
+      "state": "stopped",
+      "pending": 0,
+      "sent": 0,
+      "duplicate": 0,
+      "rejected": 0,
+      "lastUploadAt": "2026-10-08T22:06:14.949Z",
+      "nextAttemptAt": null,
+      "lastError": null
+    },
+    "failures": {
+      "INVENTORY_ENTRY_UNREADABLE": 21
+    },
+    "events": []
+  },
+  "modelRequests": 0,
+  "facts": []
+}

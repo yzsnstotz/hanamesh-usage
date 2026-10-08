@@ -1,0 +1,29 @@
+{
+  "INSTALL_ANCHOR": "/Users/yzliu/work/projects/hanamesh/hanamesh-desktop/apps/cli/package.json",
+  "selected": [
+    {
+      "name": "@deepseek-ai/dsh-app-boot",
+      "packageDir": "/Users/yzliu/work/projects/hanamesh/hanamesh-desktop/apps/cli/node_modules/@deepseek-ai/dsh-app-boot",
+      "version": "0.2.0-rc.2",
+      "declarer": "/Users/yzliu/work/projects/hanamesh/hanamesh-desktop/apps/cli/package.json",
+      "scope": "installation",
+      "hasOperation": false
+    },
+    {
+      "name": "@deepseek-ai/dsh-base",
+      "packageDir": "/Users/yzliu/work/projects/hanamesh/hanamesh-desktop/apps/cli/node_modules/@deepseek-ai/dsh-base",
+      "version": "0.2.0-rc.2",
+      "declarer": "/Users/yzliu/work/projects/hanamesh/hanamesh-desktop/apps/cli/package.json",
+      "scope": "installation",
+      "hasOperation": false
+    },
+    {
+      "name": "@deepseek-ai/dsh-commands",
+      "packageDir": "/Users/yzliu/work/projects/hanamesh/hanamesh-desktop/packages/bundle/base/node_modules/@deepseek-ai/dsh-commands",
+      "version": "0.2.0-rc.2",
+      "declarer": "/Users/yzliu/work/projects/hanamesh/hanamesh-desktop/packages/bundle/base/package.json",
+      "scope": "installation",
+      "hasOperation": true
+    }
+  ]
+}

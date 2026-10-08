@@ -1,0 +1,46 @@
+Progress: resolved 0, reused 1, downloaded 0, added 0
+ WARN  Issues with peer dependencies found
+.
+├─┬ dsh-update-notifier 0.2.1
+│ └── ✕ missing peer @deepseek-ai/dsh-llm@"*"
+├─┬ hanamesh-usage 0.2.0-rc.17
+│ ├── ✕ missing peer @deepseek-ai/dsh-llm@0.2.0-rc.2
+│ ├── ✕ missing peer @deepseek-ai/cordis@4.0.4
+│ ├── ✕ missing peer @deepseek-ai/dsh-client-connection@0.2.0-rc.2
+│ ├── ✕ missing peer @deepseek-ai/dsh-storage-domain@0.2.0-rc.2
+│ ├── ✕ missing peer zod@4.5.4
+│ ├── ✕ missing peer @deepseek-ai/dsh-agent@0.2.0-rc.2
+│ ├── ✕ missing peer @deepseek-ai/dsh-attachment@0.2.0-rc.2
+│ ├── ✕ missing peer @deepseek-ai/dsh-session@0.2.0-rc.2
+│ ├── ✕ missing peer @deepseek-ai/dsh-session-persistence@0.2.0-rc.2
+│ └── ✕ missing peer @deepseek-ai/dsh-storage@0.2.0-rc.2
+└─┬ hanamesh-core 0.2.0-rc.56
+  ├── ✕ missing peer @deepseek-ai/cordis@4.0.4
+  ├── ✕ missing peer @deepseek-ai/dsh-client-connection@0.2.0-rc.2
+  ├── ✕ missing peer @deepseek-ai/dsh-storage-domain@0.2.0-rc.2
+  ├── ✕ missing peer @deepseek-ai/dsh-client-ui-settings@0.2.0-rc.2
+  ├── ✕ missing peer @deepseek-ai/dsh-client-ui-sidebar@0.2.0-rc.2
+  ├── ✕ missing peer react@18.3.1
+  └── ✕ missing peer zod@4.5.4
+Peer dependencies that should be installed:
+  @deepseek-ai/cordis@4.0.4
+  @deepseek-ai/dsh-agent@0.2.0-rc.2
+  @deepseek-ai/dsh-attachment@0.2.0-rc.2
+  @deepseek-ai/dsh-client-connection@0.2.0-rc.2
+  @deepseek-ai/dsh-client-ui-settings@0.2.0-rc.2
+  @deepseek-ai/dsh-client-ui-sidebar@0.2.0-rc.2
+  @deepseek-ai/dsh-llm@0.2.0-rc.2
+  @deepseek-ai/dsh-session-persistence@0.2.0-rc.2
+  @deepseek-ai/dsh-session@0.2.0-rc.2
+  @deepseek-ai/dsh-storage-domain@0.2.0-rc.2
+  @deepseek-ai/dsh-storage@0.2.0-rc.2
+  react@18.3.1
+  zod@4.5.4
+
+dependencies:
++ dsh-update-notifier file:/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-99f45855-26b9-4442-b66f-def549b4a2b2/supply/dsh-update-notifier-0.2.1.tgz
+
+Packages: +1
++
+Progress: resolved 3, reused 2, downloaded 1, added 1, done
+Done in 166ms using pnpm v10.33.0

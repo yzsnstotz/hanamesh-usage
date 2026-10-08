@@ -1,0 +1,131 @@
+{
+  "vendorCount": 11,
+  "results": [
+    {
+      "name": "@hanamesh/server-chain",
+      "version": "0.1.0-rc.11",
+      "sha256": "61298a9f4416d784f9386791a2239388a8658843a3eb9e27e120d662e20fac78",
+      "files": 26,
+      "mismatches": [],
+      "realPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-99f45855-26b9-4442-b66f-def549b4a2b2/host/hanamesh-server/node_modules/.pnpm/@hanamesh+server-chain@file+vendor+hanamesh-server-chain-0.1.0-rc.11.tgz_typescript@5.9.3_zod@4.6.5/node_modules/@hanamesh/server-chain"
+    },
+    {
+      "name": "@hanamesh/server-claim",
+      "version": "0.1.0-rc.12",
+      "sha256": "c073e0d183351ed7f2aa4fbdc0ec427adb9adab60e04b6541e3863c0fac08691",
+      "files": 60,
+      "mismatches": [],
+      "realPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-99f45855-26b9-4442-b66f-def549b4a2b2/host/hanamesh-server/node_modules/.pnpm/@hanamesh+server-claim@file+vendor+hanamesh-server-claim-0.1.0-rc.12.tgz_@hanamesh+serv_7f1d1d122e838e7193b237e8601aad06/node_modules/@hanamesh/server-claim"
+    },
+    {
+      "name": "@hanamesh/server-custody",
+      "version": "0.1.0-rc.21",
+      "sha256": "75d39b92c2fbd46095784cd07af5f1215586d14016278fe3d5d21bf74c630cff",
+      "files": 277,
+      "mismatches": [],
+      "realPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-99f45855-26b9-4442-b66f-def549b4a2b2/host/hanamesh-server/node_modules/.pnpm/@hanamesh+server-custody@file+vendor+hanamesh-server-custody-0.1.0-rc.21.tgz_@hanamesh+_d0c8a54bfd97ce099dfac53064008d32/node_modules/@hanamesh/server-custody"
+    },
+    {
+      "name": "@hanamesh/server-identity",
+      "version": "0.2.0-rc.11",
+      "sha256": "b27181d59e912959db22a7941e74542c575c07883c0c5ba7bbc8a19d23edecb1",
+      "files": 87,
+      "mismatches": [],
+      "realPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-99f45855-26b9-4442-b66f-def549b4a2b2/host/hanamesh-server/node_modules/.pnpm/@hanamesh+server-identity@file+vendor+hanamesh-server-identity-0.2.0-rc.11.tgz_@better-_edf9013d49b865b79c208dc90c81de0a/node_modules/@hanamesh/server-identity"
+    },
+    {
+      "name": "@hanamesh/server-indexer",
+      "version": "0.1.0-rc.17",
+      "sha256": "fcb04ac73207bb9d69c5dc9d3cf31783aa86d9f9a0459713623be457b10156a4",
+      "files": 36,
+      "mismatches": [],
+      "realPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-99f45855-26b9-4442-b66f-def549b4a2b2/host/hanamesh-server/node_modules/.pnpm/@hanamesh+server-indexer@file+vendor+hanamesh-server-indexer-0.1.0-rc.17.tgz_@hanamesh+_43fa625ec757adc5eeedf439a802b7e3/node_modules/@hanamesh/server-indexer"
+    },
+    {
+      "name": "@hanamesh/server-probe-module",
+      "version": "0.1.0",
+      "sha256": "69188c8bbe9ad426a4a1213751f003204e24d801b468daf4a106aacdf206e81e",
+      "files": 4,
+      "mismatches": [],
+      "realPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-99f45855-26b9-4442-b66f-def549b4a2b2/host/hanamesh-server/node_modules/.pnpm/@hanamesh+server-probe-module@file+vendor+hanamesh-server-probe-module-0.1.0.tgz_fastify@5.12.3/node_modules/@hanamesh/server-probe-module"
+    },
+    {
+      "name": "@hanamesh/server-provider-registry",
+      "version": "0.1.0-rc.4",
+      "sha256": "70b3941875747eb9b8cb0df56abe98c1e292fa33e700c9c6403f38adb7492b23",
+      "files": 45,
+      "mismatches": [],
+      "realPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-99f45855-26b9-4442-b66f-def549b4a2b2/host/hanamesh-server/node_modules/.pnpm/@hanamesh+server-provider-registry@file+vendor+hanamesh-server-provider-registry-0.1.0-_f1f753a3b516fc4f85d8b8dc8084d0d9/node_modules/@hanamesh/server-provider-registry"
+    },
+    {
+      "name": "@hanamesh/server-registry",
+      "version": "0.1.0-rc.12",
+      "sha256": "90710c8e572358f3acaa56b3cdfd6774c620be0e62ec4a2974bd6315d4e91720",
+      "files": 35,
+      "mismatches": [],
+      "realPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-99f45855-26b9-4442-b66f-def549b4a2b2/host/hanamesh-server/node_modules/.pnpm/@hanamesh+server-registry@file+vendor+hanamesh-server-registry-0.1.0-rc.12.tgz_@hanames_73e412357cc24db07bc852e2bd5c98f2/node_modules/@hanamesh/server-registry"
+    },
+    {
+      "name": "@hanamesh/server-revenue-router",
+      "version": "0.1.0-rc.4",
+      "sha256": "1f621dfd16a3fdb23d37caf7731108177c8213f5420a0d1421f3e953db4912d0",
+      "files": 53,
+      "mismatches": [],
+      "realPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-99f45855-26b9-4442-b66f-def549b4a2b2/host/hanamesh-server/node_modules/.pnpm/@hanamesh+server-revenue-router@file+vendor+hanamesh-server-revenue-router-0.1.0-rc.4.t_169e85e52a93071e74b3636150931ca7/node_modules/@hanamesh/server-revenue-router"
+    },
+    {
+      "name": "@hanamesh/server-semantic",
+      "version": "0.1.0-rc.3",
+      "sha256": "17a708e49bf1912e3a9863ffb57761547056ac24bdfc1d4f314cbe1abb498d50",
+      "files": 40,
+      "mismatches": [],
+      "realPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-99f45855-26b9-4442-b66f-def549b4a2b2/host/hanamesh-server/node_modules/.pnpm/@hanamesh+server-semantic@file+vendor+hanamesh-server-semantic-0.1.0-rc.3.tgz_fastify@5.12.3_pg@8.23.0/node_modules/@hanamesh/server-semantic"
+    },
+    {
+      "name": "@hanamesh/server-usage",
+      "version": "0.2.0-rc.14",
+      "sha256": "7f5d019c7e765c19965216f3cf69b12da37859ebe5168b1f2cf27ad154948287",
+      "files": 56,
+      "mismatches": [],
+      "realPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-99f45855-26b9-4442-b66f-def549b4a2b2/host/hanamesh-server/node_modules/.pnpm/@hanamesh+server-usage@file+vendor+hanamesh-server-usage-0.2.0-rc.14.tgz_@hanamesh+serv_e9a6ef7ec5a0f0b9dde782c23c2ef20b/node_modules/@hanamesh/server-usage"
+    }
+  ],
+  "unmet": [],
+  "identityPhysicalPaths": [
+    "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-99f45855-26b9-4442-b66f-def549b4a2b2/host/hanamesh-server/node_modules/.pnpm/@hanamesh+server-identity@file+vendor+hanamesh-server-identity-0.2.0-rc.11.tgz_@better-_edf9013d49b865b79c208dc90c81de0a/node_modules/@hanamesh/server-identity"
+  ],
+  "normalInstalled": true,
+  "optionalAbsent": [
+    {
+      "consumer": "@hanamesh/server-claim",
+      "peer": "@hanamesh/devkit",
+      "optional": true
+    },
+    {
+      "consumer": "@hanamesh/server-custody",
+      "peer": "@hanamesh/devkit",
+      "optional": true
+    },
+    {
+      "consumer": "@hanamesh/server-identity",
+      "peer": "@hanamesh/devkit",
+      "optional": true
+    },
+    {
+      "consumer": "@hanamesh/server-indexer",
+      "peer": "@hanamesh/devkit",
+      "optional": true
+    },
+    {
+      "consumer": "@hanamesh/server-registry",
+      "peer": "@hanamesh/devkit",
+      "optional": true
+    },
+    {
+      "consumer": "@hanamesh/server-usage",
+      "peer": "@hanamesh/devkit",
+      "optional": true
+    }
+  ],
+  "correction": "Initial local checker treated absent optional devkit as required; original receipt retained."
+}

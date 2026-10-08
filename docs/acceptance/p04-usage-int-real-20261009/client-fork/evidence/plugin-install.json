@@ -1,0 +1,44 @@
+[
+  {
+    "name": "core",
+    "argv": [
+      "/Users/yzliu/work/projects/hanamesh/hanamesh-desktop/apps/cli/lib/bin.js",
+      "plugin",
+      "--profile",
+      "web",
+      "add",
+      "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-10514290-7b05-4d9e-96ff-00b81062f6fd/supply/hanamesh-core-0.2.0-rc.56.tgz",
+      "--registry=https://registry.npmjs.org/"
+    ],
+    "exitCode": 0,
+    "sha256": "7342a2ab95b78a83d74a4c927039b4998f0dd76f3c7e8ed9b09c31700e642e28"
+  },
+  {
+    "name": "usage",
+    "argv": [
+      "/Users/yzliu/work/projects/hanamesh/hanamesh-desktop/apps/cli/lib/bin.js",
+      "plugin",
+      "--profile",
+      "web",
+      "add",
+      "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-10514290-7b05-4d9e-96ff-00b81062f6fd/supply/hanamesh-usage-0.2.0-rc.17.tgz",
+      "--registry=https://registry.npmjs.org/"
+    ],
+    "exitCode": 0,
+    "sha256": "063ae9b40a183de1ece5086300fe01fdbd29d9b478148e8053fb7c59b5c962b9"
+  },
+  {
+    "name": "sample",
+    "argv": [
+      "/Users/yzliu/work/projects/hanamesh/hanamesh-desktop/apps/cli/lib/bin.js",
+      "plugin",
+      "--profile",
+      "web",
+      "add",
+      "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-10514290-7b05-4d9e-96ff-00b81062f6fd/supply/dsh-update-notifier-0.2.1.tgz",
+      "--registry=https://registry.npmjs.org/"
+    ],
+    "exitCode": 0,
+    "sha256": "00b40831eceb86e0b105d502a5ce4bfe72246543fab53f372612ad9d4e6c3448"
+  }
+]

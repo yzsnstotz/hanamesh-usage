@@ -1,0 +1,25 @@
+[
+  {
+    "type": "command/run",
+    "seq": 3,
+    "time": 1791496603364,
+    "data": {
+      "commandId": "cmd-19cade99-1",
+      "name": "check-updates",
+      "args": "",
+      "source": {
+        "kind": "user"
+      }
+    }
+  },
+  {
+    "type": "command/done",
+    "seq": 4,
+    "time": 1791496605536,
+    "data": {
+      "commandId": "cmd-19cade99-1",
+      "kind": "success",
+      "text": "no updates (3 plugins checked)"
+    }
+  }
+]
