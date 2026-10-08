@@ -1,0 +1,9 @@
+{
+  "before": 359,
+  "postBoundary": 359,
+  "final": 359,
+  "allRowsUnchangedAcrossBoundary": true,
+  "otherBaseline": 178,
+  "otherExactRowsUnchanged": true,
+  "mainTotal": 181
+}

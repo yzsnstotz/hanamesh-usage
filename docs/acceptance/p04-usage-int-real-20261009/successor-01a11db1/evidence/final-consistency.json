@@ -1,0 +1,27 @@
+{
+  "local": 181,
+  "remote": 181,
+  "PG": 181,
+  "setsEqual": true,
+  "fieldMismatch": [],
+  "signatureSuccess": 181,
+  "outbox": {
+    "state": "idle",
+    "pending": 0,
+    "sent": 180,
+    "duplicate": 1,
+    "rejected": 0,
+    "lastUploadAt": null,
+    "nextAttemptAt": null,
+    "lastError": null
+  },
+  "actions": {
+    "install": 178,
+    "open": 1,
+    "use": 2,
+    "uninstall": 0
+  },
+  "bound": false,
+  "modelRequests": 0,
+  "consent": "granted"
+}

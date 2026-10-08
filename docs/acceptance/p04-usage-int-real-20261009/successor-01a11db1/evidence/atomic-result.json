@@ -1,0 +1,26 @@
+{
+  "commandId": "cmd-bed28d52-3",
+  "eventId": "31db923e-d0fe-5200-9c77-43c29333a38e",
+  "firstRealSignedPendingUse": true,
+  "firstAbsentBefore": true,
+  "firstAbsentAfter": false,
+  "allRowsUnchanged": false,
+  "response": {
+    "supply": "NEGATIVE_REQUEST_ONLY_NOT_ORDINARY_ACTION",
+    "server": {
+      "httpStatus": 200,
+      "body": {
+        "accepted": 1,
+        "duplicates": 0,
+        "rejected": [
+          {
+            "eventId": "31db923e-d0fe-5200-9c77-43c29333a38e",
+            "code": "USAGE_INPUT_INVALID"
+          }
+        ],
+        "durability": "committed"
+      }
+    }
+  },
+  "noTimerOrProviderChanges": true
+}

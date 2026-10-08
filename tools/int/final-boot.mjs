@@ -39,11 +39,18 @@ const operations={
  },
  remote:()=>usage.remote(),
  async replay(){if(!lastFact)throw Error('NO_REAL_UI_COMMAND_FACT');await usage.drain();const before=usage.panel().total;ctx.emit('commands/operation',lastFact);await usage.drain();const event=usage.events({limit:1000}).events.find(e=>e.evidenceRef===`command:${lastFact.commandId}:succeeded`);if(!event)throw Error('ORDINARY_EVENT_MISSING');return {commandId:lastFact.commandId,localBefore:before,localAfter:usage.panel().total,server:await signedPost([wireEvent(event)])};},
- async rejectBatch(){await usage.drain();const event=usage.events({limit:1000}).events.find(e=>e.evidenceRef===`command:${lastFact?.commandId}:succeeded`);if(!event)throw Error('ORDINARY_EVENT_MISSING');return {supply:'NEGATIVE_REQUEST_ONLY_NOT_ORDINARY_ACTION',server:await signedPost([wireEvent(event),{...wireEvent(event),deviceId:'device_INVALID_STUB'}])};}
+ async deviceBoundary(){
+  const other='GlddWEuTPx1eM81_a8pYNt9byskcX8KoM4GEG0sf2Cg';
+  const path=`/v1/usage/me/devices/${other}/events`;
+  const result={observerOnly:true,targetDevice:other};
+  for(const method of ['GET','DELETE']){const headers=await core.signRequest({method,path,body:null});const response=await fetch(hostOrigin+path+(method==='GET'?`?from=${new Date(Date.now()-86400000).toISOString()}&to=${new Date().toISOString()}&limit=200`:''),{method,headers:{...headers,origin:hostOrigin}});result[method]={httpStatus:response.status,body:await response.json()};}
+  return result;
+ },
+ async rejectBatch(){await usage.drain();const event=usage.events({limit:1000}).events.find(e=>e.evidenceRef===`command:${lastFact?.commandId}:succeeded`);if(!event)throw Error('ORDINARY_EVENT_MISSING');return {supply:'NEGATIVE_REQUEST_ONLY_REAL_PENDING_EVENT_THEN_BAD_SIGNATURE',server:await signedPost([wireEvent(event),{...wireEvent(event),signature:(wireEvent(event).signature[0]==='A'?'B':'A')+wireEvent(event).signature.slice(1)}])};}
 };
 const observer=createServer(async(req,res)=>{
  const method=req.method;const name=new URL(req.url,'http://127.0.0.1').pathname.slice(1);
- if(req.headers.origin||!['GET','POST'].includes(method)||!Object.hasOwn(operations,name)||((name==='replay'||name==='rejectBatch')&&method!=='POST')){res.writeHead(403);res.end();return;}
+ if(req.headers.origin||!['GET','POST'].includes(method)||!Object.hasOwn(operations,name)||((name==='replay'||name==='rejectBatch'||name==='deviceBoundary')&&method!=='POST')){res.writeHead(403);res.end();return;}
  try{const value=await operations[name]();res.writeHead(200,{'content-type':'application/json','cache-control':'no-store'});res.end(JSON.stringify(value));}
  catch(error){res.writeHead(500,{'content-type':'application/json'});res.end(JSON.stringify({error:error.message}));}
 });
