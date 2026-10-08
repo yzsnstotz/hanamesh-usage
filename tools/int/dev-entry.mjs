@@ -21,6 +21,9 @@ assert(run.endsWith('/hanamesh-runs/P04-USAGE-INT-01') && process.env.DSH_HOME =
 const HOST_ORIGIN = 'http://127.0.0.1:48670';
 const UI_PORT = 48671;
 const UI_ORIGINS = [`http://127.0.0.1:${UI_PORT}`, `http://localhost:${UI_PORT}`];
+// Loopback names only: a DNS-rebinding page reaches the loopback socket with its own Host, so every request
+// (page, static assets, API) must name this entry exactly. Origin is checked separately for writes.
+const UI_HOSTS = [`127.0.0.1:${UI_PORT}`, `localhost:${UI_PORT}`, `[::1]:${UI_PORT}`];
 const OTHER_HANA = '@hanamesh-dev/p04-int-other-subject';
 const here = fileURLToPath(new URL('./', import.meta.url));
 const {signingJSON, wireEvent} = await import(pathToFileURL(join(here, '../../lib/core/index.js')).href);
@@ -190,6 +193,9 @@ const routes = {'GET /api/state': 'state', 'POST /api/consent': 'consent', 'POST
 let serial = Promise.resolve();
 async function handle(req, res) {
   const headers = {'cache-control': 'no-store', 'x-content-type-options': 'nosniff', 'x-frame-options': 'DENY', 'referrer-policy': 'no-referrer'};
+  if (!UI_HOSTS.includes(String(req.headers.host).toLowerCase())) {
+    res.writeHead(421, {...headers, 'content-type': 'application/json'}); res.end('{"error":"HOST_NOT_ALLOWED"}'); return;
+  }
   const url = new URL(req.url, 'http://127.0.0.1');
   if (req.method === 'GET' && page[url.pathname]) {
     res.writeHead(200, {...headers, 'content-type': page[url.pathname][0], 'content-security-policy': "default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"});
