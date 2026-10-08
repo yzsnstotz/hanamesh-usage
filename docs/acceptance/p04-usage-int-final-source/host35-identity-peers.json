@@ -1,0 +1,32 @@
+[
+  {
+    "name": "@hanamesh/server-claim",
+    "version": "0.1.0-rc.11",
+    "identityPeer": "0.2.0-rc.7"
+  },
+  {
+    "name": "@hanamesh/server-custody",
+    "version": "0.1.0-rc.20",
+    "identityPeer": "0.2.0-rc.7"
+  },
+  {
+    "name": "@hanamesh/server-provider-registry",
+    "version": "0.1.0-rc.3",
+    "identityPeer": "0.2.0-rc.7"
+  },
+  {
+    "name": "@hanamesh/server-registry",
+    "version": "0.1.0-rc.11",
+    "identityPeer": "0.2.0-rc.7"
+  },
+  {
+    "name": "@hanamesh/server-revenue-router",
+    "version": "0.1.0-rc.3",
+    "identityPeer": "0.2.0-rc.7"
+  },
+  {
+    "name": "@hanamesh/server-usage",
+    "version": "0.2.0-rc.12",
+    "identityPeer": "0.2.0-rc.7"
+  }
+]

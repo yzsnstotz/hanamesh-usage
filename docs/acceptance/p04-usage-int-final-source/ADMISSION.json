@@ -1,0 +1,13 @@
+{
+  "card": "P04-USAGE-INT-01",
+  "worker": "01a11b0f-f39b-7133-98d3-efc4ab6f1fee",
+  "time": "2026-10-08T10:30:40.741079+00:00",
+  "cwd": "/Users/yzliu/work/projects/hanamesh",
+  "crossCwd": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/final-01a11b0f/admission/PROBE.txt",
+  "writeReadMatch": true,
+  "sha256": "a9284d0b99b0c254f863fe072964ad5f6101342dc686a158d821e2cab0604f56",
+  "approvalPolicy": "never",
+  "observedApprovalPrompt": false,
+  "sourceWriteOrigin": "hanamesh-usage",
+  "probeOnly": true
+}

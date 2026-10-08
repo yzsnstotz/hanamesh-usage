@@ -1,0 +1,13 @@
+{
+  "scope": "dependency installation probe; not a runtime",
+  "time": "2026-10-08T10:40:23.222315+00:00",
+  "pid": 53079,
+  "observedExit": 1,
+  "observedError": "ERR_PNPM_PEER_DEP_ISSUES",
+  "identityPeerRequired": "0.2.0-rc.7",
+  "identityInstalled": "0.2.0-rc.10",
+  "additionalFreshResolutionIssue": "@better-auth/utils 0.4.2 required, found 0.5.0",
+  "observation": "Install finished between the second unchanged observation and attempted SIGTERM; kill returned no such process, so no process was terminated. No retry, no override, no disabled strict peer check.",
+  "source": "peer-probe.log",
+  "identitySupply": "file:../supply/identity10: unchanged export from v0.2.0-rc.10; not published tgz receipt"
+}
