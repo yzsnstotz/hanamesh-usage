@@ -12,7 +12,7 @@ let consent='withheld';
 const record=createRecordSeat({
   store:new core.EventStore(new MemoryEventGlobal()),
   getConsent:()=>consent,
-  getDeviceId:()=> 'device_FIXTURE',
+  getDeviceId:()=> 'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk',
   now:()=>Date.parse('2026-09-19T00:00:00.000Z'),
   nonce:()=> 'AQIDBAUGBwgJCgsMDQ4PEA',
   signEvent:event=>({...event,signature:'c2lnbmF0dXJl'}),

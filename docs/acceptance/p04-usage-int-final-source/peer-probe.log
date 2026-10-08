@@ -144,5 +144,3 @@ Progress: resolved 103, reused 1, downloaded 102, added 105, done
 hint: To disable failing on peer dependency issues, add the following to pnpm-workspace.yaml in your project root:
 
   strictPeerDependencies: false
-
-

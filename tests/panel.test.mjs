@@ -8,7 +8,7 @@ import {apply as applyUsage} from '../lib/host/index.js';
 
 const { privateKey, publicKey } = generateKeyPairSync('ed25519');
 const key = publicKey.export({format:'der', type:'spki'}).subarray(-32).toString('base64url');
-function event(deviceId='device_A', signature='valid') {
+function event(deviceId='If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', signature='valid') {
   const value=core.createUsageEvent({deviceId,hanaRef:'ordinary-plugin',action:'use',occurredAt:'2026-10-07T00:00:00.000Z',eventId:core.eventIdForSeat(deviceId,'ordinary-plugin','command:one:succeeded'),nonce:'AQIDBAUGBwgJCgsMDQ4PEA',signature:null,source:'seat',sourcePlugin:'ordinary-plugin',evidenceRef:'command:one:succeeded'});
   value.signature=signature==='missing'?null:signature==='valid'?sign(null,Buffer.from(core.signingJSON(value)),privateKey).toString('base64url'):Buffer.alloc(64).toString('base64url');
   return value;
@@ -19,7 +19,7 @@ test('panel reads only the current device and distinguishes cryptographic validi
   try {
     assert.equal(typeof h.api.panel,'function','read-only development panel is missing');
     const writes=h.eg.writes,p=h.api.panel();
-    assert.equal(p.total,1);assert.equal(p.events.length,1);assert.equal(p.subject.deviceId,'device_A');assert.equal(p.subject.principalId,null);
+    assert.equal(p.total,1);assert.equal(p.events.length,1);assert.equal(p.subject.deviceId,'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk');assert.equal(p.subject.principalId,null);
     assert.deepEqual(p.testSupply,{identity:true,receiver:true});
     assert.equal(p.events[0].signature.state,'success');assert.equal(p.events[0].upload.state,'sent');
     assert.equal(p.outbox.pending,0);assert.equal(p.outbox.sent,1);
@@ -29,7 +29,7 @@ test('panel reads only the current device and distinguishes cryptographic validi
   } finally {await h.close();}
 });
 test('panel reports invalid signatures and missing identity as failure and unknown',async()=>{
-  const bad=event('device_A','invalid');bad.upload={state:'rejected',code:'EVENT_REJECTED',attempts:1,sentAt:'2026-10-07T00:01:00.000Z'};
+  const bad=event('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk','invalid');bad.upload={state:'rejected',code:'EVENT_REJECTED',attempts:1,sentAt:'2026-10-07T00:01:00.000Z'};
   const h=await fixtureHost({publicKey:key,eventSnapshot:{schemaVersion:1,events:[bad],withdrawal:null,inventory:{last:null}}});
   try {assert.equal(typeof h.api.panel,'function');const p=h.api.panel();assert.equal(p.events[0].signature.state,'failure');assert.equal(p.events[0].upload.state,'rejected');assert.deepEqual(p.testSupply,{identity:false,receiver:false});} finally {await h.close();}
   const absent=await fixtureHost({coreStatus:'absent',eventSnapshot:{schemaVersion:1,events:[event()],withdrawal:null,inventory:{last:null}}});

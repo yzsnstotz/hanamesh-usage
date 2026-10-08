@@ -11,7 +11,7 @@ const from = (root, file) => import(pathToFileURL(join(root, file)).href);
 const packageOf = async root => JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
 const [corePin, coreRuntime, serverPin, usagePin] = await Promise.all([core55,core56,serverUsage,usage].map(packageOf));
 if (corePin.version !== '0.2.0-rc.55' || coreRuntime.version !== '0.2.0-rc.56'
-    || serverPin.version !== '0.2.0-rc.13' || usagePin.version !== '0.2.0-rc.16') throw new Error('PIN_MISMATCH');
+    || serverPin.version !== '0.2.0-rc.13' || usagePin.version !== '0.2.0-rc.17') throw new Error('PIN_MISMATCH');
 const [{runCoreConsumerSuite, runCoreProviderSuite}, {SessionController}, {INITIAL_CORE_SNAPSHOT},
   conformance, events, {duckCore, signUsageEvent}] = await Promise.all([
     from(core55,'lib/contract-suite.js'), from(core56,'lib/controller.js'), from(core56,'lib/contracts.js'),
@@ -26,7 +26,7 @@ const controller = await SessionController.create({serverOrigin:null,websiteOrig
   read:()=>state, publish:async next=>{state=next;}, close:async()=>undefined});
 let report;
 try {
-  const coreConsumer = await runCoreConsumerSuite({label:'Usage rc16 actual duckCore',accept:duckCore});
+  const coreConsumer = await runCoreConsumerSuite({label:'Usage rc17 actual duckCore',accept:duckCore});
   const coreProvider = await runCoreProviderSuite({label:'Core rc56 actual SessionController.service; in-memory/offline',
     service:controller.service,setConsent:consent=>controller.setConsent(consent)});
   const localInput = overrides => ({deviceId:controller.service.getDeviceId(),hanaRef:'p04-contract-probe',action:'use',

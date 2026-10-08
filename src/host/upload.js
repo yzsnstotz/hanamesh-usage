@@ -49,9 +49,13 @@ export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize
     const origin=core.getServerOrigin();if(origin===null){state='offline';return /** @type {const} */('offline');}
     let batch=store.query({state:'pending',limit:uploadBatchSize}).events.filter(event=>event.signature!==null);
     if(batch.length===0){state='idle';lastError=null;nextAttemptAt=null;return /** @type {const} */('idle');}
+    let wire;
+    // Admit the entire candidate batch before signing a request or sending any
+    // row. A local-only stub must remain pending with a visible local error.
+    try{wire=batch.map(wireEvent);}catch{stop();lastError='UPLOAD_EVENT_INVALID';return /** @type {const} */('stopped');}
     let json='';
     // O1 `POST /v1/usage/events` body is a bare 1–200 item array (hanamesh-server-usage docs/API.md), not an {events:[…]} envelope.
-    while(batch.length>0){json=JSON.stringify(batch.map(wireEvent));if(Buffer.byteLength(json)<=maxBodyBytes)break;batch=batch.slice(0,Math.max(1,Math.floor(batch.length/2)));if(batch.length===1&&Buffer.byteLength(JSON.stringify(batch.map(wireEvent)))>maxBodyBytes)throw new UsageError('UPLOAD_BATCH_TOO_LARGE');}
+    while(batch.length>0){json=JSON.stringify(wire);if(Buffer.byteLength(json)<=maxBodyBytes)break;batch=batch.slice(0,Math.max(1,Math.floor(batch.length/2)));wire=wire.slice(0,batch.length);if(batch.length===1&&Buffer.byteLength(JSON.stringify(wire))>maxBodyBytes)throw new UsageError('UPLOAD_BATCH_TOO_LARGE');}
     const ids=batch.map(event=>event.eventId),body=new TextEncoder().encode(json),url=new URL(EVENT_PATH,origin);state='uploading';
     let response;
     try{

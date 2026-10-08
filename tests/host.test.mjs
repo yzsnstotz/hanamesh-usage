@@ -59,7 +59,7 @@ test('U11 absent and incompatible core never block local Declaration recording',
 });
 
 test('U11 late core attachment signs legacy pending events and starts from the current consent',async()=>{
-  const event=core.createUsageEvent({deviceId:'device_A',hanaRef:'pkg',action:'use',occurredAt:'2026-09-19T00:00:00.000Z',eventId:core.eventIdForSeat('device_A','app-host','legacy'),nonce:'AQIDBAUGBwgJCgsMDQ4PEA',signature:null,source:'seat',sourcePlugin:'app-host',evidenceRef:'legacy'});
+  const event=core.createUsageEvent({deviceId:'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk',hanaRef:'pkg',action:'use',occurredAt:'2026-09-19T00:00:00.000Z',eventId:core.eventIdForSeat('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk','app-host','legacy'),nonce:'AQIDBAUGBwgJCgsMDQ4PEA',signature:null,source:'seat',sourcePlugin:'app-host',evidenceRef:'legacy'});
   const h=await fixtureHost({coreStatus:'absent',consent:'granted',eventSnapshot:{schemaVersion:1,events:[event],withdrawal:null,inventory:{last:null}}});assert.equal(h.api.events().events[0].signature,null);h.attachCore();await h.api.drain();assert.equal(Buffer.from(h.api.events().events[0].signature,'base64url').length,64);assert.equal(h.api.health().core,'present');assert.equal(h.api.health().consent,'granted');await h.close();
 });
 

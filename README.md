@@ -1,4 +1,4 @@
-# hanamesh-usage · 0.2.0-rc.16
+# hanamesh-usage · 0.2.0-rc.17
 
 > rc.13 消费公开 `client-page/opened` 并映射 open：核 canonical package、当前 Plugin Inventory 的启用/active 状态，以及 profile-installed、enabled、removable bundle 的实际所属 row；缺少这些公开服务或身份不一致时不采集。以 Host operationId 幂等，内置平台页及平台代生成的配置页不算普通插件。沿用 rc.12 succeeded→use；页面内按钮不自动算 use。组件与正式 GUI/真实 Core 服务端产品门分别记录。
 
@@ -93,3 +93,7 @@ module table 获取同一实例，`react@18.3.1` / `@types/react@18.3.1` 仅开�
 类型与组件测试使用，无新增生产 dependency、私有 peer/vendor 或新 bundler。
 原 rc.13 的 page→open、成功 command→use、同意与原子幂等逻辑保持。
 正式 Desktop 新安装、可见首步截图与 owner ACCEPTED 分别等待产品门证据。
+
+## rc.17 · 发布源事件边界
+
+事件 nonce 按 ServerUsage rc13 的 Token 合约校验，不把本插件的 16 字节随机数编码当成协议。自产 nonce 仍由原生成器保留 128 位随机性。`wireEvent` 仅接受 43 字符的 Identity 设备 ID，短 ID 的离线本地样本不能签名或进入上报批次。未新增依赖、未修改签名六字段、同意、队列或撤回逻辑。
