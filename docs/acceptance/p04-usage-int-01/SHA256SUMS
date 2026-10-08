@@ -9,6 +9,13 @@ d2854fa741f26d6788f86d23cbb1140f2e907003d498a230863b64081f1658ca  ./engineering/
 18dfd2ab8bbe58c10852f49820624bf044d469240d7999a96ce20ee16ba8b2ad  ./entry/step1-127.png
 7d730c50a4d85abeb3a96c314293126d36f2c40cbd217d5ee0eb2ce654daacce  ./entry/step1-localhost-tail.json
 18dfd2ab8bbe58c10852f49820624bf044d469240d7999a96ce20ee16ba8b2ad  ./entry/step1-localhost-tail.png
+197bdde09547b49dc55c681ebed32889891da17fbc1fd9b4abe571d68cc6c652  ./rework/extra.txt
+2ccbe791297fffc2f0909a1c037263fa96437880030685853fef293abbacfbfc  ./rework/green-after-restart.tsv
+d6be52e0643e250d5faac8b7674936a29d2237f6279a42bb109c1fb043e20f51  ./rework/inventory-diag.json
+45d00335f0acc3c6dcf5a298cfb4b670c66f115a5e83c03f2d14fae0af82e87a  ./rework/inventory-diag.mjs.txt
+9b888ad6a0504b42baa816f7e6d6b3ed1e084d656d175572f0716aca3a53916b  ./rework/red-before-restart.tsv
+18dfd2ab8bbe58c10852f49820624bf044d469240d7999a96ce20ee16ba8b2ad  ./rework/step1-127.png
+18dfd2ab8bbe58c10852f49820624bf044d469240d7999a96ce20ee16ba8b2ad  ./rework/step1-localhost-tail.png
 546dfbc7d5147a45e627480acdf385b862b621fb12179313e5198ec837835353  ./walk/00-open.png
 89ce7f75eadaacf0d74aa384f2262a7e7bae71d00170efec58f6fe231e9c66e2  ./walk/03-remote.png
 2f871a0f8d7deb71fa4db6ceb0161b93cd67bb091262028e4900cba108a15cd1  ./walk/04-replay.png

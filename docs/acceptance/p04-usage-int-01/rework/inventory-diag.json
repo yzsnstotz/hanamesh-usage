@@ -1,0 +1,1767 @@
+{
+ "scope": "READ_ONLY_COPY_OF_CARD_DSH_HOME",
+ "summary": {
+  "present": 181,
+  "unreadable": 7,
+  "groupSkipped": 0
+ },
+ "unreadable": [
+  {
+   "kind": "unreadable",
+   "reason": "NAME_NOT_PACKAGE",
+   "id": "include",
+   "name": "cordis:include",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": null
+  },
+  {
+   "kind": "unreadable",
+   "reason": "NAME_NOT_PACKAGE",
+   "id": "include:tool-plugin-manager",
+   "name": "@deepseek-ai/dsh-plugin-manager/tools",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": null
+  },
+  {
+   "kind": "unreadable",
+   "reason": "NAME_NOT_PACKAGE",
+   "id": "include:tool-subagent-list-agents",
+   "name": "@deepseek-ai/dsh-tool-subagent-control/list-agents",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": null
+  },
+  {
+   "kind": "unreadable",
+   "reason": "LOADER_REFERENCE_INVALID",
+   "id": "include:llm-deepseek",
+   "name": "@deepseek-ai/dsh-llm-deepseek-api-key",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "unreadable",
+   "reason": "NAME_NOT_PACKAGE",
+   "id": "include:subagent-model-selection-settings",
+   "name": "@deepseek-ai/dsh-tool-subagent/model-selection-settings",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": null
+  },
+  {
+   "kind": "unreadable",
+   "reason": "NAME_NOT_PACKAGE",
+   "id": "include:cordis-inspect-providers",
+   "name": "@deepseek-ai/dsh-tool-cordis/host",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": null
+  },
+  {
+   "kind": "unreadable",
+   "reason": "NAME_NOT_PACKAGE",
+   "id": "include:web-startup",
+   "name": "@deepseek-ai/dsh-web-app/startup",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": null
+  }
+ ],
+ "rows": [
+  {
+   "kind": "unreadable",
+   "reason": "NAME_NOT_PACKAGE",
+   "id": "include",
+   "name": "cordis:include",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": null
+  },
+  {
+   "kind": "unreadable",
+   "reason": "NAME_NOT_PACKAGE",
+   "id": "include:tool-plugin-manager",
+   "name": "@deepseek-ai/dsh-plugin-manager/tools",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": null
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:plugin-manager",
+   "name": "@deepseek-ai/dsh-plugin-manager",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:timer",
+   "name": "@deepseek-ai/cordis-plugin-timer",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "1.1.6"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:hmr",
+   "name": "@deepseek-ai/dsh-hmr",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:llm",
+   "name": "@deepseek-ai/dsh-llm",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:deepseek-llm-api-extensions",
+   "name": "@deepseek-ai/dsh-deepseek-llm-api-extensions",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:session",
+   "name": "@deepseek-ai/dsh-session",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:session-log-deepseek",
+   "name": "@deepseek-ai/dsh-session-log-deepseek",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:typert",
+   "name": "@deepseek-ai/dsh-typert-registry",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:typert-loader",
+   "name": "@deepseek-ai/dsh-typert-loader",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:typert-gateway",
+   "name": "@deepseek-ai/dsh-api-gateway",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:session-title",
+   "name": "@deepseek-ai/dsh-session-title",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:session-title-llm",
+   "name": "@deepseek-ai/dsh-session-title-first-prompt-llm",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:user-questions",
+   "name": "@deepseek-ai/dsh-user-questions",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:agent",
+   "name": "@deepseek-ai/dsh-agent",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:plugin-package-inventory-deepseek",
+   "name": "@deepseek-ai/dsh-plugin-package-inventory-deepseek",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:agent-default-model",
+   "name": "@deepseek-ai/dsh-agent-default-model",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:jobs",
+   "name": "@deepseek-ai/dsh-jobs-local",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:llm-retry",
+   "name": "@deepseek-ai/dsh-llm-retry",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:config-editor",
+   "name": "@deepseek-ai/dsh-config-editor",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:settings",
+   "name": "@deepseek-ai/dsh-settings",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:authorization",
+   "name": "@deepseek-ai/dsh-authorization",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:deepseek-account",
+   "name": "@deepseek-ai/dsh-deepseek-account-platform",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:credentials",
+   "name": "@deepseek-ai/dsh-credentials-local",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:llm-pi-ai",
+   "name": "@deepseek-ai/dsh-llm-pi-ai",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:session-persistence-jsonl",
+   "name": "@deepseek-ai/dsh-session-persistence-jsonl",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:attachment-local",
+   "name": "@deepseek-ai/dsh-attachment-local",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:session-query-sqlite",
+   "name": "@deepseek-ai/dsh-session-query-sqlite",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:session-projection",
+   "name": "@deepseek-ai/dsh-session-projection",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:storage",
+   "name": "@deepseek-ai/dsh-storage",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:storage-json",
+   "name": "@deepseek-ai/dsh-storage-json",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:storage-domain",
+   "name": "@deepseek-ai/dsh-storage-domain",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:session-projection-cache",
+   "name": "@deepseek-ai/dsh-session-projection-cache",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:otel",
+   "name": "@deepseek-ai/dsh-otel",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:session-telemetry-otel",
+   "name": "@deepseek-ai/dsh-session-telemetry-otel",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:subprocess",
+   "name": "@deepseek-ai/dsh-subprocess-local",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:sandbox",
+   "name": "@deepseek-ai/dsh-sandbox-local",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:sandbox-policy",
+   "name": "@deepseek-ai/dsh-sandbox-policy",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:bash-sandbox",
+   "name": "@deepseek-ai/dsh-bash-sandbox",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:pwsh-sandbox",
+   "name": "@deepseek-ai/dsh-pwsh-sandbox",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:approval",
+   "name": "@deepseek-ai/dsh-user-approval",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:permission",
+   "name": "@deepseek-ai/dsh-permission-presets",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:shell-env",
+   "name": "@deepseek-ai/dsh-shell-env",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:tool-bash",
+   "name": "@deepseek-ai/dsh-tool-bash",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:tool-pwsh",
+   "name": "@deepseek-ai/dsh-tool-pwsh",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:tool-jobs",
+   "name": "@deepseek-ai/dsh-tool-jobs",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:fs-observation-policy",
+   "name": "@deepseek-ai/dsh-fs-observation-policy",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:tool-fs",
+   "name": "@deepseek-ai/dsh-tool-fs",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:tool-fs-search",
+   "name": "@deepseek-ai/dsh-tool-fs-search",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:agent-instructions",
+   "name": "@deepseek-ai/dsh-agent-instructions",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:skill",
+   "name": "@deepseek-ai/dsh-skill",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:skill-filesystem",
+   "name": "@deepseek-ai/dsh-skill-filesystem",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:skill-badge",
+   "name": "@deepseek-ai/dsh-skill-badge",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:tool-skill",
+   "name": "@deepseek-ai/dsh-tool-skill",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:commands",
+   "name": "@deepseek-ai/dsh-commands",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:command-feedback",
+   "name": "@deepseek-ai/dsh-command-feedback",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:goal",
+   "name": "@deepseek-ai/dsh-goal",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:goal-round-driver",
+   "name": "@deepseek-ai/dsh-goal-round-driver",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:command-goal",
+   "name": "@deepseek-ai/dsh-command-goal",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:plan-mode",
+   "name": "@deepseek-ai/dsh-plan-mode",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:token-meter",
+   "name": "@deepseek-ai/dsh-token-meter",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:compaction-basic",
+   "name": "@deepseek-ai/dsh-compaction-basic",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:command-compact",
+   "name": "@deepseek-ai/dsh-command-compact",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:subagent",
+   "name": "@deepseek-ai/dsh-subagent",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:subagent-spawn-in-process",
+   "name": "@deepseek-ai/dsh-subagent-spawn-in-process",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:subagent-fork-in-process",
+   "name": "@deepseek-ai/dsh-subagent-fork-in-process",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:tool-subagent-control",
+   "name": "@deepseek-ai/dsh-tool-subagent-control",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "unreadable",
+   "reason": "NAME_NOT_PACKAGE",
+   "id": "include:tool-subagent-list-agents",
+   "name": "@deepseek-ai/dsh-tool-subagent-control/list-agents",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": null
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:tool-subagent",
+   "name": "@deepseek-ai/dsh-tool-subagent",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:tool-subagent-fork",
+   "name": "@deepseek-ai/dsh-tool-subagent",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ptc-runtime",
+   "name": "@deepseek-ai/dsh-ptc-runtime-node",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:workflow-ptc",
+   "name": "@deepseek-ai/dsh-workflow-ptc",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:tool-workflow",
+   "name": "@deepseek-ai/dsh-tool-workflow",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:timeout-policy",
+   "name": "@deepseek-ai/dsh-tool-call-timeout-policy",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:spill-local",
+   "name": "@deepseek-ai/dsh-spill-local",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:spill-policy",
+   "name": "@deepseek-ai/dsh-spill-policy",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:session-checkpoint-policy",
+   "name": "@deepseek-ai/dsh-session-checkpoint-policy",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:tool-result-pruner",
+   "name": "@deepseek-ai/dsh-compaction-tool-result-pruner",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:image-offload",
+   "name": "@deepseek-ai/dsh-compaction-image-offload",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:tool-todo",
+   "name": "@deepseek-ai/dsh-tool-todo",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:tool-goal",
+   "name": "@deepseek-ai/dsh-tool-goal",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:tool-ralph",
+   "name": "@deepseek-ai/dsh-tool-ralph",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:repeat-tool-reminder",
+   "name": "@deepseek-ai/dsh-repeat-tool-reminder",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:web",
+   "name": "@deepseek-ai/dsh-web",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:web-search-deepseek",
+   "name": "@deepseek-ai/dsh-web-search-deepseek",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:web-fetch-http",
+   "name": "@deepseek-ai/dsh-web-fetch-http",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:tool-web",
+   "name": "@deepseek-ai/dsh-tool-web",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:mcp-resources",
+   "name": "@deepseek-ai/dsh-mcp-resources",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:tools",
+   "name": "@deepseek-ai/dsh-tools",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:system-prompt",
+   "name": "@deepseek-ai/dsh-system-prompt",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:agent-loop",
+   "name": "@deepseek-ai/dsh-agent-loop",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:fs-sandbox",
+   "name": "@deepseek-ai/dsh-fs-sandbox",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "unreadable",
+   "reason": "LOADER_REFERENCE_INVALID",
+   "id": "include:llm-deepseek",
+   "name": "@deepseek-ai/dsh-llm-deepseek-api-key",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:llm-deepseek-account",
+   "name": "@deepseek-ai/dsh-llm-deepseek-account",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:desktop-product-telemetry",
+   "name": "@deepseek-ai/dsh-host-product-telemetry-otel",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:product-analytics",
+   "name": "@deepseek-ai/dsh-client-product-analytics",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "unreadable",
+   "reason": "NAME_NOT_PACKAGE",
+   "id": "include:subagent-model-selection-settings",
+   "name": "@deepseek-ai/dsh-tool-subagent/model-selection-settings",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": null
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:message-feedback",
+   "name": "@deepseek-ai/dsh-message-feedback",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:session-log-download",
+   "name": "@deepseek-ai/dsh-session-log-export",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:open-in-app",
+   "name": "@deepseek-ai/dsh-host-open-in-app",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-open-in-app",
+   "name": "@deepseek-ai/dsh-client-ui-open-in-app",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:workspace",
+   "name": "@deepseek-ai/dsh-workspace",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:session-reference",
+   "name": "@deepseek-ai/dsh-session-reference",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:file-reference-local",
+   "name": "@deepseek-ai/dsh-file-reference-local",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:session-stats",
+   "name": "@deepseek-ai/dsh-session-stats",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:session-turn-outline",
+   "name": "@deepseek-ai/dsh-session-turn-outline",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:directory-picker",
+   "name": "@deepseek-ai/dsh-host-directory-picker-auto",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:plugin-inventory",
+   "name": "@deepseek-ai/dsh-host-plugin-inventory",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:session-controller",
+   "name": "@deepseek-ai/dsh-api-session-controller",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:job-controller",
+   "name": "@deepseek-ai/dsh-api-job-controller",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:terminal-controller",
+   "name": "@deepseek-ai/dsh-api-terminal-controller",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:workspace-files",
+   "name": "@deepseek-ai/dsh-api-workspace-files",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-settings-account",
+   "name": "@deepseek-ai/dsh-client-ui-settings-account",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:account-controller",
+   "name": "@deepseek-ai/dsh-api-account-controller",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:settings-controller",
+   "name": "@deepseek-ai/dsh-api-settings-controller",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:workspace-controller",
+   "name": "@deepseek-ai/dsh-api-workspace-controller",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:cordis-host-runner",
+   "name": "@deepseek-ai/dsh-cordis-host-runner",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "unreadable",
+   "reason": "NAME_NOT_PACKAGE",
+   "id": "include:cordis-inspect-providers",
+   "name": "@deepseek-ai/dsh-tool-cordis/host",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": null
+  },
+  {
+   "kind": "unreadable",
+   "reason": "NAME_NOT_PACKAGE",
+   "id": "include:web-startup",
+   "name": "@deepseek-ai/dsh-web-app/startup",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": null
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:webserver",
+   "name": "@deepseek-ai/dsh-host-webserver",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:web-runtime",
+   "name": "@deepseek-ai/dsh-web-app",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:client-hmr",
+   "name": "@deepseek-ai/dsh-client-hmr",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:modules",
+   "name": "@deepseek-ai/dsh-client-modules",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:connection",
+   "name": "@deepseek-ai/dsh-client-connection",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:file-upload",
+   "name": "@deepseek-ai/dsh-client-file-upload",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:api-remotes",
+   "name": "@deepseek-ai/dsh-api-remotes",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:cordis-client-runner",
+   "name": "@deepseek-ai/dsh-cordis-client-runner",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-theme",
+   "name": "@deepseek-ai/dsh-client-ui-theme",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:locale",
+   "name": "@deepseek-ai/dsh-client-locale",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:shortcuts",
+   "name": "@deepseek-ai/dsh-client-shortcuts",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-shortcuts",
+   "name": "@deepseek-ai/dsh-client-ui-shortcuts",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-layout",
+   "name": "@deepseek-ai/dsh-client-ui-layout",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-renderer",
+   "name": "@deepseek-ai/dsh-client-ui-renderer",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-session",
+   "name": "@deepseek-ai/dsh-client-ui-session",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:resources",
+   "name": "@deepseek-ai/dsh-client-resources",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-sidebar",
+   "name": "@deepseek-ai/dsh-client-ui-sidebar",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-sidebar-right",
+   "name": "@deepseek-ai/dsh-client-ui-sidebar-right",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:office-to-pdf",
+   "name": "@deepseek-ai/dsh-office-to-pdf",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-sidebar-documentpreview",
+   "name": "@deepseek-ai/dsh-client-ui-sidebar-documentpreview",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-sidebar-browser",
+   "name": "@deepseek-ai/dsh-client-ui-sidebar-browser",
+   "disabled": true,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-sidebar-terminal",
+   "name": "@deepseek-ai/dsh-client-ui-sidebar-terminal",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-sidebar-files",
+   "name": "@deepseek-ai/dsh-client-ui-sidebar-files",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-settings",
+   "name": "@deepseek-ai/dsh-client-ui-settings",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-settings-general",
+   "name": "@deepseek-ai/dsh-client-ui-settings-general",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-settings-models",
+   "name": "@deepseek-ai/dsh-client-ui-settings-models",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-plugin-manager",
+   "name": "@deepseek-ai/dsh-client-ui-plugin-manager",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-settings-plugin-inventory",
+   "name": "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-conversation",
+   "name": "@deepseek-ai/dsh-client-ui-conversation",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-approval",
+   "name": "@deepseek-ai/dsh-client-ui-approval",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-chat",
+   "name": "@deepseek-ai/dsh-client-ui-chat",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-brand-official",
+   "name": "@deepseek-ai/dsh-client-ui-brand-official",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-attachment",
+   "name": "@deepseek-ai/dsh-client-ui-attachment",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-tool",
+   "name": "@deepseek-ai/dsh-client-ui-tool",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-cordis",
+   "name": "@deepseek-ai/dsh-client-ui-cordis",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-deliverables",
+   "name": "@deepseek-ai/dsh-client-ui-deliverables",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:workspace-changes",
+   "name": "@deepseek-ai/dsh-workspace-changes",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-workspace",
+   "name": "@deepseek-ai/dsh-client-ui-workspace",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-workflow-run",
+   "name": "@deepseek-ai/dsh-client-ui-workflow-run",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-input-trigger",
+   "name": "@deepseek-ai/dsh-client-ui-input-trigger",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-commands",
+   "name": "@deepseek-ai/dsh-client-ui-commands",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-skill",
+   "name": "@deepseek-ai/dsh-client-ui-skill",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-subagent",
+   "name": "@deepseek-ai/dsh-client-ui-subagent",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-reference",
+   "name": "@deepseek-ai/dsh-client-ui-reference",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-jobs",
+   "name": "@deepseek-ai/dsh-client-ui-jobs",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-goal",
+   "name": "@deepseek-ai/dsh-client-ui-goal",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-message-feedback",
+   "name": "@deepseek-ai/dsh-client-ui-message-feedback",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-model-selection",
+   "name": "@deepseek-ai/dsh-client-ui-model-selection",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-permission",
+   "name": "@deepseek-ai/dsh-client-ui-permission-presets",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-agent-preset",
+   "name": "@deepseek-ai/dsh-client-ui-agent-preset",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-settings-session-log",
+   "name": "@deepseek-ai/dsh-client-ui-settings-session-log",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-settings-plugins",
+   "name": "@deepseek-ai/dsh-client-ui-settings-plugins",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-settings-shell",
+   "name": "@deepseek-ai/dsh-client-ui-settings-shell",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-settings-agent-loop",
+   "name": "@deepseek-ai/dsh-client-ui-settings-agent-loop",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-settings-subagent",
+   "name": "@deepseek-ai/dsh-client-ui-settings-subagent",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-settings-web-search",
+   "name": "@deepseek-ai/dsh-client-ui-settings-web-search",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-plan",
+   "name": "@deepseek-ai/dsh-client-ui-plan",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-user-questions",
+   "name": "@deepseek-ai/dsh-client-ui-user-questions",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:ui-trajectory",
+   "name": "@deepseek-ai/dsh-client-ui-trajectory",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:agent-preset-registry",
+   "name": "@deepseek-ai/dsh-agent-preset-registry",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:preset-standard",
+   "name": "@deepseek-ai/dsh-agent-preset",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:preset-ptc",
+   "name": "@deepseek-ai/dsh-agent-preset",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:preset-minimal",
+   "name": "@deepseek-ai/dsh-agent-preset",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:preset-cordis",
+   "name": "@deepseek-ai/dsh-agent-preset",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:update-notifier",
+   "name": "dsh-update-notifier",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.1"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "include:hanamesh-usage",
+   "name": "hanamesh-usage",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.16"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "2e711370",
+   "name": "@deepseek-ai/dsh-host-directory-picker-native",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  },
+  {
+   "kind": "present",
+   "reason": null,
+   "id": "744f81d5",
+   "name": "@deepseek-ai/dsh-client-ui-directory-picker-native",
+   "disabled": false,
+   "baseUrl": "file:///~/.cache/hanamesh-runs/P04-USAGE-INT-01/diag/dsh-home/profiles/web/",
+   "version": "0.2.0-rc.2"
+  }
+ ]
+}
