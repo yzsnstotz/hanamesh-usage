@@ -1,0 +1,10 @@
+{
+  "method": "GET",
+  "url": "http://127.0.0.1:53307/health",
+  "status": 200,
+  "body": {
+    "status": "ok",
+    "instance": "p04-hook-fault-59afe8edd30f787f"
+  },
+  "readOnly": true
+}

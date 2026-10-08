@@ -1,0 +1,20 @@
+{
+  "originalPG359RowsExactlyEqual": true,
+  "originalMain181": 181,
+  "originalOther178": 178,
+  "testControlStateExactlyEqual": true,
+  "controlState": {
+    "label": "TEST ONLY · P04 usage hook fault supply · not a production Host",
+    "hostUrl": "http://127.0.0.1:53307",
+    "armed": false,
+    "armedAt": "2026-10-08T23:40:35.199Z",
+    "batchesSeen": 3,
+    "failuresFired": 1,
+    "lastFiredAt": "2026-10-08T23:40:35.208Z"
+  },
+  "armingCalls": 0,
+  "newCoreRegistrations": 0,
+  "eventsWritten": 0,
+  "CUACalls": 0,
+  "oldRuntimeConfigChanges": 0
+}

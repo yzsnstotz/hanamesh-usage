@@ -1,0 +1,103 @@
+{
+  "at": "2026-10-08T23:46:35.492890+00:00",
+  "run": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/host37-prep-3f4f03b6-5e2b-4f69-8461-dbbc5c38bd5c",
+  "origin": "hanamesh-usage composition consumer only",
+  "hostPin": {
+    "tag": "v0.2.0-rc.37",
+    "tagObject": "0fac79bb8fec9a3297beae8f50accf98d0c802f2",
+    "target": "6248733df26c39710d49e74c9c4b375276907f63",
+    "sourceCommit": "f877facec77d2506419b9292ba0244aaacd3ebc7",
+    "mainBefore": "878a43193170ab43ad5f88d1dccd4c21cc69f30d",
+    "mainAfter": "6248733df26c39710d49e74c9c4b375276907f63",
+    "mainPush": "ordinary atomic fast-forward with the tag; no force",
+    "tgzPathInTag": "artifacts/hanamesh-server-0.2.0-rc.37.tgz",
+    "runCopy": "/Users/yzliu/.cache/hanamesh-runs/P04-HOST-IDENTITY10-USAGE14-SUPPLY-01/5fefaad7-c0f6-49fc-8960-eeba144e0908/candidate/hanamesh-server-0.2.0-rc.37.tgz",
+    "sha256": "bbd943d092fb7210e6ae62cee2131920a19efdb07a612221c6af053f95e84409",
+    "bytes": 1470677,
+    "entries": 300,
+    "freshCloneSameBytes": true,
+    "rc4Unchanged": {
+      "provider-registry": "70b3941875747eb9b8cb0df56abe98c1e292fa33e700c9c6403f38adb7492b23",
+      "revenue-router": "1f621dfd16a3fdb23d37caf7731108177c8213f5420a0d1421f3e953db4912d0"
+    },
+    "peersUnchanged": "same 11 exact peer tgz bytes as rc.36 (formal Identity11/Registry12/Claim12/Custody21/Usage14/Indexer17, chain/semantic/probe)"
+  },
+  "tagObjectReadback": "0fac79bb8fec9a3297beae8f50accf98d0c802f2",
+  "targetReadback": "6248733df26c39710d49e74c9c4b375276907f63",
+  "tagTGZHashMatches": true,
+  "vendorUnchanged": [
+    {
+      "name": "hanamesh-server-chain-0.1.0-rc.11.tgz",
+      "sha256": "61298a9f4416d784f9386791a2239388a8658843a3eb9e27e120d662e20fac78",
+      "sameAsPreserved36Vendor": true
+    },
+    {
+      "name": "hanamesh-server-claim-0.1.0-rc.12.tgz",
+      "sha256": "c073e0d183351ed7f2aa4fbdc0ec427adb9adab60e04b6541e3863c0fac08691",
+      "sameAsPreserved36Vendor": true
+    },
+    {
+      "name": "hanamesh-server-custody-0.1.0-rc.21.tgz",
+      "sha256": "75d39b92c2fbd46095784cd07af5f1215586d14016278fe3d5d21bf74c630cff",
+      "sameAsPreserved36Vendor": true
+    },
+    {
+      "name": "hanamesh-server-identity-0.2.0-rc.11.tgz",
+      "sha256": "b27181d59e912959db22a7941e74542c575c07883c0c5ba7bbc8a19d23edecb1",
+      "sameAsPreserved36Vendor": true
+    },
+    {
+      "name": "hanamesh-server-indexer-0.1.0-rc.17.tgz",
+      "sha256": "fcb04ac73207bb9d69c5dc9d3cf31783aa86d9f9a0459713623be457b10156a4",
+      "sameAsPreserved36Vendor": true
+    },
+    {
+      "name": "hanamesh-server-probe-module-0.1.0.tgz",
+      "sha256": "69188c8bbe9ad426a4a1213751f003204e24d801b468daf4a106aacdf206e81e",
+      "sameAsPreserved36Vendor": true
+    },
+    {
+      "name": "hanamesh-server-provider-registry-0.1.0-rc.4.tgz",
+      "sha256": "70b3941875747eb9b8cb0df56abe98c1e292fa33e700c9c6403f38adb7492b23",
+      "sameAsPreserved36Vendor": true
+    },
+    {
+      "name": "hanamesh-server-registry-0.1.0-rc.12.tgz",
+      "sha256": "90710c8e572358f3acaa56b3cdfd6774c620be0e62ec4a2974bd6315d4e91720",
+      "sameAsPreserved36Vendor": true
+    },
+    {
+      "name": "hanamesh-server-revenue-router-0.1.0-rc.4.tgz",
+      "sha256": "1f621dfd16a3fdb23d37caf7731108177c8213f5420a0d1421f3e953db4912d0",
+      "sameAsPreserved36Vendor": true
+    },
+    {
+      "name": "hanamesh-server-semantic-0.1.0-rc.3.tgz",
+      "sha256": "17a708e49bf1912e3a9863ffb57761547056ac24bdfc1d4f314cbe1abb498d50",
+      "sameAsPreserved36Vendor": true
+    },
+    {
+      "name": "hanamesh-server-usage-0.2.0-rc.14.tgz",
+      "sha256": "7f5d019c7e765c19965216f3cf69b12da37859ebe5168b1f2cf27ad154948287",
+      "sameAsPreserved36Vendor": true
+    }
+  ],
+  "rc37PayloadDifferencesVsPreserved36": [
+    "dist/app.js",
+    "package.json",
+    "scripts/p04-usage-hook-fault-fixture-gate.mjs",
+    "scripts/p04-usage-hook-fault-supply.mjs",
+    "dist/app.d.ts"
+  ],
+  "consumerManifestSHA": "7fc6f0abd033682963a42d69cd983b452dbabf6cfddadec3f4c8878cf9d451a2",
+  "consumerLockSHA": "cc83253d8e0b6d5cb7fe9e2df70e4bf367c4e9aae001c6ef0d8b3ae07c77ccaf",
+  "existing56000Backend": "kept Host36/54399; no profile/device/serverOrigin mutation",
+  "planned503Endpoint": "http://127.0.0.1:53307",
+  "control": "http://127.0.0.1:53309",
+  "realCore503": "NOT_RUN; no new native fact available",
+  "platform": "CUA header-policy blocker preserved; no retry",
+  "twoQuestions": {
+    "repo": "hanamesh-usage evidence/composition consumer",
+    "dependencies": "no new product dependency; reuse delivered Host consumer exact peer closure"
+  }
+}

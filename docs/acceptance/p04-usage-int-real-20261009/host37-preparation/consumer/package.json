@@ -1,0 +1,27 @@
+{
+  "name": "host37-installed-consumer",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.33.0",
+  "dependencies": {
+    "hanamesh-server": "file:vendor/hanamesh-server-0.2.0-rc.37.tgz",
+    "@hanamesh/server-chain": "file:vendor/hanamesh-server-chain-0.1.0-rc.11.tgz",
+    "@hanamesh/server-claim": "file:vendor/hanamesh-server-claim-0.1.0-rc.12.tgz",
+    "@hanamesh/server-custody": "file:vendor/hanamesh-server-custody-0.1.0-rc.21.tgz",
+    "@hanamesh/server-identity": "file:vendor/hanamesh-server-identity-0.2.0-rc.11.tgz",
+    "@hanamesh/server-indexer": "file:vendor/hanamesh-server-indexer-0.1.0-rc.17.tgz",
+    "@hanamesh/server-probe-module": "file:vendor/hanamesh-server-probe-module-0.1.0.tgz",
+    "@hanamesh/server-provider-registry": "file:vendor/hanamesh-server-provider-registry-0.1.0-rc.4.tgz",
+    "@hanamesh/server-registry": "file:vendor/hanamesh-server-registry-0.1.0-rc.12.tgz",
+    "@hanamesh/server-revenue-router": "file:vendor/hanamesh-server-revenue-router-0.1.0-rc.4.tgz",
+    "@hanamesh/server-semantic": "file:vendor/hanamesh-server-semantic-0.1.0-rc.3.tgz",
+    "@hanamesh/server-usage": "file:vendor/hanamesh-server-usage-0.2.0-rc.14.tgz",
+    "fastify": "5.12.3",
+    "pg": "8.23.0"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "@types/node": "24.13.4",
+    "@types/pg": "8.23.1"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "/Users/yzliu/.local/share/fnm/node-versions/v24.13.1/installation/bin/node",
+    "node_modules/typescript/bin/tsc",
+    "--strict",
+    "--noEmit",
+    "--skipLibCheck",
+    "false",
+    "--module",
+    "NodeNext",
+    "--moduleResolution",
+    "NodeNext",
+    "--target",
+    "ES2024",
+    "--exactOptionalPropertyTypes",
+    "--noUncheckedIndexedAccess",
+    "host37-usage-hook-fixture.mts"
+  ],
+  "cwd": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/host37-prep-3f4f03b6-5e2b-4f69-8461-dbbc5c38bd5c/consumer",
+  "exitCode": 0,
+  "scope": "new rc37 installed BuildOptions/UsageHookFixture/createUsageHookFixture; includes 2 type negative cases",
+  "notProductOrRealDB": true
+}
