@@ -1,0 +1,27 @@
+{
+ "step02LocalCount": 178,
+ "step03RemoteCount": 178,
+ "sameEventIdSet": true,
+ "sameHanaRefAction": true,
+ "occurredAtEqualToSecond": true,
+ "occurredAtExactMs": 0,
+ "allLocalSignatureSuccess": true,
+ "allLocalUploadConfirmed": true,
+ "useEvents": [
+  [
+   "1310acbe-45a0-567b-a434-bc0e7967b38f",
+   "dsh-update-notifier",
+   "use",
+   "2026-10-08T02:45:31.962Z",
+   "成功 · Ed25519 校验通过",
+   "成功 · 服务端已确认 · 尝试 1"
+  ]
+ ],
+ "afterWithdraw": {
+  "local": "本设备 cpIwdidzbzFrwGXDWnJhhuvNqk-p1MQtLNyzGfNMAQQ（测试主体 315b8fb7-8731-4cb6-ada1-79b425812f1c）：本机 0 条；已确认 0，重复 0，等待 0，拒绝 0；上报状态 stopped。",
+  "remote": "服务端记录：本设备 0 条（2026-10-08T02:45:43.254Z 读取）。",
+  "other": "另一测试主体：服务端 1 条。",
+  "withdrawal": "撤回：服务端删除已确认；服务端删除条数 178；尝试 1 次"
+ },
+ "notCollectedAfterWithdraw": "命令 执行成功；未同意，本机记录 0 → 0 条（不采集）。"
+}

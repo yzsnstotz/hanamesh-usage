@@ -1,0 +1,784 @@
+TAP version 13
+# Subtest: Host command success records one signed use for the resolved owning package
+ok 1 - Host command success records one signed use for the resolved owning package
+  ---
+  duration_ms: 11.521125
+  type: 'test'
+  ...
+# Subtest: Host command facts with withheld consent, mismatched entry or unproven manifest write nothing
+ok 2 - Host command facts with withheld consent, mismatched entry or unproven manifest write nothing
+  ---
+  duration_ms: 2.068583
+  type: 'test'
+  ...
+# Subtest: command use fails without a durable event write, and consent withdrawal clears recorded use
+ok 3 - command use fails without a durable event write, and consent withdrawal clears recorded use
+  ---
+  duration_ms: 2.821792
+  type: 'test'
+  ...
+# Subtest: X01 SOURCE: declaration schema valid and all stateful groups/boundaries enumerated
+ok 4 - X01 SOURCE: declaration schema valid and all stateful groups/boundaries enumerated
+  ---
+  duration_ms: 0.765333
+  type: 'test'
+  ...
+# Subtest: X01 schema rejects absent reasons, one-sided boundary and invalid safe side
+ok 5 - X01 schema rejects absent reasons, one-sided boundary and invalid safe side
+  ---
+  duration_ms: 0.314083
+  type: 'test'
+  ...
+# Subtest: U11 core link module is present
+ok 6 - U11 core link module is present
+  ---
+  duration_ms: 0.298792
+  type: 'test'
+  ...
+# Subtest: U11 absent and incompatible core stay optional, while late compatible service attaches
+ok 7 - U11 absent and incompatible core stay optional, while late compatible service attaches
+  ---
+  duration_ms: 1.763792
+  type: 'test'
+  ...
+# Subtest: U12 signed event uses canonical six-key bytes and a 64-byte Ed25519 signature
+ok 8 - U12 signed event uses canonical six-key bytes and a 64-byte Ed25519 signature
+  ---
+  duration_ms: 8.971375
+  type: 'test'
+  ...
+# Subtest: event nonce encodes 16 random bytes with a server-safe first character
+ok 9 - event nonce encodes 16 random bytes with a server-safe first character
+  ---
+  duration_ms: 0.875667
+  type: 'test'
+  ...
+# Subtest: T03 FIXTURE: complete FR-10 schema, source tuple and pins
+ok 10 - T03 FIXTURE: complete FR-10 schema, source tuple and pins
+  ---
+  duration_ms: 0.820791
+  type: 'test'
+  ...
+# Subtest: T04 FIXTURE: unknown is null with reason, NOT zero
+ok 11 - T04 FIXTURE: unknown is null with reason, NOT zero
+  ---
+  duration_ms: 0.390667
+  type: 'test'
+  ...
+# Subtest: T04 FIXTURE: actual normalized zero stays reported, empty bucket stays null
+ok 12 - T04 FIXTURE: actual normalized zero stays reported, empty bucket stays null
+  ---
+  duration_ms: 0.200666
+  type: 'test'
+  ...
+# Subtest: T06 FIXTURE: reported and estimated NEVER add together
+ok 13 - T06 FIXTURE: reported and estimated NEVER add together
+  ---
+  duration_ms: 10.945708
+  type: 'test'
+  ...
+# Subtest: T07 FIXTURE: terminal result vocabulary preserves failures and interruptions
+ok 14 - T07 FIXTURE: terminal result vocabulary preserves failures and interruptions
+  ---
+  duration_ms: 0.68075
+  type: 'test'
+  ...
+# Subtest: malformed TokenUsage is unavailable rather than guessed or zero
+ok 15 - malformed TokenUsage is unavailable rather than guessed or zero
+  ---
+  duration_ms: 0.231125
+  type: 'test'
+  ...
+# Subtest: pinned DSH TokenUsage reports disjoint counters across two assistant messages
+ok 16 - pinned DSH TokenUsage reports disjoint counters across two assistant messages
+  ---
+  duration_ms: 0.317334
+  type: 'test'
+  ...
+# Subtest: attribution reads immutable binding, invalid binding ids fail closed
+ok 17 - attribution reads immutable binding, invalid binding ids fail closed
+  ---
+  duration_ms: 0.568875
+  type: 'test'
+  ...
+# Subtest: fork prefix is not a new execution; source identities are not synthesized
+ok 18 - fork prefix is not a new execution; source identities are not synthesized
+  ---
+  duration_ms: 0.264334
+  type: 'test'
+  ...
+# Subtest: route change stays unavailable instead of attributing to last model
+ok 19 - route change stays unavailable instead of attributing to last model
+  ---
+  duration_ms: 0.132042
+  type: 'test'
+  ...
+# Subtest: no start time never infers wall clock or creates duration
+ok 20 - no start time never infers wall clock or creates duration
+  ---
+  duration_ms: 0.123166
+  type: 'test'
+  ...
+# Subtest: T08 FIXTURE: concurrent replay has one publication, restart still dedups
+ok 21 - T08 FIXTURE: concurrent replay has one publication, restart still dedups
+  ---
+  duration_ms: 6.639083
+  type: 'test'
+  ...
+# Subtest: concurrent different source turns retain both, no lost write
+ok 22 - concurrent different source turns retain both, no lost write
+  ---
+  duration_ms: 0.430333
+  type: 'test'
+  ...
+# Subtest: failed durable write leaves old snapshot and can be retried
+ok 23 - failed durable write leaves old snapshot and can be retried
+  ---
+  duration_ms: 0.239709
+  type: 'test'
+  ...
+# Subtest: immutable input and query results cannot mutate authoritative snapshot
+ok 24 - immutable input and query results cannot mutate authoritative snapshot
+  ---
+  duration_ms: 0.124125
+  type: 'test'
+  ...
+# Subtest: identity conflict refuses rewrite of terminal fact
+ok 25 - identity conflict refuses rewrite of terminal fact
+  ---
+  duration_ms: 0.158792
+  type: 'test'
+  ...
+# Subtest: capacity refusal does not evict dedup history
+ok 26 - capacity refusal does not evict dedup history
+  ---
+  duration_ms: 0.15375
+  type: 'test'
+  ...
+# Subtest: closing denies new writes and new queries
+ok 27 - closing denies new writes and new queries
+  ---
+  duration_ms: 0.216416
+  type: 'test'
+  ...
+# Subtest: filters and stable pagination aggregate all matched rows
+ok 28 - filters and stable pagination aggregate all matched rows
+  ---
+  duration_ms: 5.356625
+  type: 'test'
+  ...
+# Subtest: invalid measurements are not treated as zero; overflow is explicit
+ok 29 - invalid measurements are not treated as zero; overflow is explicit
+  ---
+  duration_ms: 0.150125
+  type: 'test'
+  ...
+# Subtest: corrupt/unknown fields and duplicate stored identities fail closed
+ok 30 - corrupt/unknown fields and duplicate stored identities fail closed
+  ---
+  duration_ms: 1.787917
+  type: 'test'
+  ...
+# Subtest: remote four-state labels remain distinct and prototype keys are refused
+ok 31 - remote four-state labels remain distinct and prototype keys are refused
+  ---
+  duration_ms: 0.11675
+  type: 'test'
+  ...
+# Subtest: T12 durability: a stored snapshot recorded under an OLDER Registry version still validates (a re-pin must never make the host unbootable on its own data)
+ok 32 - T12 durability: a stored snapshot recorded under an OLDER Registry version still validates (a re-pin must never make the host unbootable on its own data)
+  ---
+  duration_ms: 0.166375
+  type: 'test'
+  ...
+# Subtest: U03 durability: a stored snapshot recorded under another non-empty DSH version still validates
+ok 33 - U03 durability: a stored snapshot recorded under another non-empty DSH version still validates
+  ---
+  duration_ms: 0.104458
+  type: 'test'
+  ...
+# Subtest: T6 EventStore dedup identity includes attribution and receipt (root-aware copy for mutation)
+ok 34 - T6 EventStore dedup identity includes attribution and receipt (root-aware copy for mutation)
+  ---
+  duration_ms: 3.25375
+  type: 'test'
+  ...
+# Subtest: X03 FIXTURE POSIX: SIGKILL between writes leaves source, never source-less summary
+ok 35 - X03 FIXTURE POSIX: SIGKILL between writes leaves source, never source-less summary
+  ---
+  duration_ms: 281.540625
+  type: 'test'
+  ...
+# {"evidence":"FIXTURE_POSIX_NOT_DSH","label":"between-first-and-second-durable-side","code":null,"signal":"SIGKILL","sourcePresent":true,"summaryCount":0}
+# Subtest: X03 FIXTURE POSIX: SIGKILL between Declaration and event leaves the Declaration safe side
+ok 36 - X03 FIXTURE POSIX: SIGKILL between Declaration and event leaves the Declaration safe side
+  ---
+  duration_ms: 115.290375
+  type: 'test'
+  ...
+# {"evidence":"FIXTURE_POSIX_NOT_DSH","label":"between-declaration-and-event","code":null,"signal":"SIGKILL","summaryCount":1,"eventCount":0}
+# Subtest: X02 FIXTURE POSIX: declaration unit SIGKILL before-rename sees whole image or none
+ok 37 - X02 FIXTURE POSIX: declaration unit SIGKILL before-rename sees whole image or none
+  ---
+  duration_ms: 111.935042
+  type: 'test'
+  ...
+# {"evidence":"FIXTURE_POSIX_NOT_DSH","point":"before-rename","label":"before-rename","code":null,"signal":"SIGKILL","summaryCount":0,"identityComplete":true}
+# Subtest: X02 FIXTURE POSIX: declaration unit SIGKILL after-rename sees whole image or none
+ok 38 - X02 FIXTURE POSIX: declaration unit SIGKILL after-rename sees whole image or none
+  ---
+  duration_ms: 114.07475
+  type: 'test'
+  ...
+# {"evidence":"FIXTURE_POSIX_NOT_DSH","point":"after-rename","label":"after-rename","code":null,"signal":"SIGKILL","summaryCount":1,"identityComplete":true}
+# Subtest: X02 FIXTURE POSIX: event unit SIGKILL before-rename sees event and identity together or not at all
+ok 39 - X02 FIXTURE POSIX: event unit SIGKILL before-rename sees event and identity together or not at all
+  ---
+  duration_ms: 98.156209
+  type: 'test'
+  ...
+# {"evidence":"FIXTURE_POSIX_NOT_DSH","point":"before-rename","label":"before-rename","code":null,"signal":"SIGKILL","eventCount":0,"eventIdentityComplete":true}
+# Subtest: X02 FIXTURE POSIX: event unit SIGKILL after-rename sees event and identity together or not at all
+ok 40 - X02 FIXTURE POSIX: event unit SIGKILL after-rename sees event and identity together or not at all
+  ---
+  duration_ms: 105.090458
+  type: 'test'
+  ...
+# {"evidence":"FIXTURE_POSIX_NOT_DSH","point":"after-rename","label":"after-rename","code":null,"signal":"SIGKILL","eventCount":1,"eventIdentityComplete":true}
+# Subtest: U06 reported executor and endedAt derive one use event after the declaration
+ok 41 - U06 reported executor and endedAt derive one use event after the declaration
+  ---
+  duration_ms: 5.736584
+  type: 'test'
+  ...
+# Subtest: U06 unavailable executor is skipped instead of guessed
+ok 42 - U06 unavailable executor is skipped instead of guessed
+  ---
+  duration_ms: 0.310666
+  type: 'test'
+  ...
+# Subtest: U06 endedAt falls back to startedAt, while both unavailable skip
+ok 43 - U06 endedAt falls back to startedAt, while both unavailable skip
+  ---
+  duration_ms: 0.677875
+  type: 'test'
+  ...
+# Subtest: U06 withheld consent and absent device create no event
+ok 44 - U06 withheld consent and absent device create no event
+  ---
+  duration_ms: 0.246041
+  type: 'test'
+  ...
+# Subtest: U05 core exports the usage event contract surface
+ok 45 - U05 core exports the usage event contract surface
+  ---
+  duration_ms: 0.393709
+  type: 'test'
+  ...
+# Subtest: U05 canonical JSON sorts the six signed keys and wire event has exactly seven keys
+ok 46 - U05 canonical JSON sorts the six signed keys and wire event has exactly seven keys
+  ---
+  duration_ms: 5.955875
+  type: 'test'
+  ...
+# Subtest: U05 event schema is closed and refuses unsafe Hana references
+ok 47 - U05 event schema is closed and refuses unsafe Hana references
+  ---
+  duration_ms: 0.642292
+  type: 'test'
+  ...
+# Subtest: U05 event export is rebuilt field by field and preserves exactly the local contract
+ok 48 - U05 event export is rebuilt field by field and preserves exactly the local contract
+  ---
+  duration_ms: 0.32175
+  type: 'test'
+  ...
+# Subtest: U07 event identities are deterministic UUIDv5 values separated by source semantics
+ok 49 - U07 event identities are deterministic UUIDv5 values separated by source semantics
+  ---
+  duration_ms: 0.928958
+  type: 'test'
+  ...
+# Subtest: U07 EventStore replays as duplicate without changing nonce and rejects identity conflict
+ok 50 - U07 EventStore replays as duplicate without changing nonce and rejects identity conflict
+  ---
+  duration_ms: 0.8465
+  type: 'test'
+  ...
+# Subtest: U08 EventStore never evicts pending events at capacity
+ok 51 - U08 EventStore never evicts pending events at capacity
+  ---
+  duration_ms: 0.410959
+  type: 'test'
+  ...
+# Subtest: U08 EventStore prunes only terminal events older than 90 days
+ok 52 - U08 EventStore prunes only terminal events older than 90 days
+  ---
+  duration_ms: 0.352667
+  type: 'test'
+  ...
+# Subtest: U12 EventStore signs all legacy pending events in one publication
+ok 53 - U12 EventStore signs all legacy pending events in one publication
+  ---
+  duration_ms: 0.25225
+  type: 'test'
+  ...
+# Subtest: U13 EventStore applies accepted, duplicate and rejected batch outcomes atomically
+ok 54 - U13 EventStore applies accepted, duplicate and rejected batch outcomes atomically
+  ---
+  duration_ms: 1.642458
+  type: 'test'
+  ...
+# Subtest: U15 EventStore withdrawal clears all events in one publication before remote work
+ok 55 - U15 EventStore withdrawal clears all events in one publication before remote work
+  ---
+  duration_ms: 0.917958
+  type: 'test'
+  ...
+# Subtest: T6 attribution fields default to null and legacy events without a receipt key still validate
+ok 56 - T6 attribution fields default to null and legacy events without a receipt key still validate
+  ---
+  duration_ms: 0.345833
+  type: 'test'
+  ...
+# Subtest: T6 wire event carries the optional keys only when set; the six-key signing input is unchanged
+ok 57 - T6 wire event carries the optional keys only when set; the six-key signing input is unchanged
+  ---
+  duration_ms: 0.666041
+  type: 'test'
+  ...
+# Subtest: T6 receipt is bounded, content-free and only rides on use events
+ok 58 - T6 receipt is bounded, content-free and only rides on use events
+  ---
+  duration_ms: 0.840708
+  type: 'test'
+  ...
+# Subtest: T6 EventStore dedup identity includes attribution and receipt
+ok 59 - T6 EventStore dedup identity includes attribution and receipt
+  ---
+  duration_ms: 1.638417
+  type: 'test'
+  ...
+# Subtest: T6 legacy snapshot without receipt keys loads and later events coexist
+ok 60 - T6 legacy snapshot without receipt keys loads and later events coexist
+  ---
+  duration_ms: 0.944542
+  type: 'test'
+  ...
+# Subtest: T12 FIXTURE: live source flush/read must precede sidecar write
+ok 61 - T12 FIXTURE: live source flush/read must precede sidecar write
+  ---
+  duration_ms: 6.361208
+  type: 'test'
+  ...
+# Subtest: live listener absence never creates a falsely durable summary
+ok 62 - live listener absence never creates a falsely durable summary
+  ---
+  duration_ms: 0.955
+  type: 'test'
+  ...
+# Subtest: source read missing terminal refuses publication
+ok 63 - source read missing terminal refuses publication
+  ---
+  duration_ms: 1.535459
+  type: 'test'
+  ...
+# Subtest: source error produces only bounded code diagnostics, not raw credentials
+ok 64 - source error produces only bounded code diagnostics, not raw credentials
+  ---
+  duration_ms: 0.550333
+  type: 'test'
+  ...
+# Subtest: cold replay is read-only, flushes source and deduplicates second reconciliation
+ok 65 - cold replay is read-only, flushes source and deduplicates second reconciliation
+  ---
+  duration_ms: 1.048333
+  type: 'test'
+  ...
+# Subtest: U02 DSH session without Registry binding is recorded with honest unavailable executor
+ok 66 - U02 DSH session without Registry binding is recorded with honest unavailable executor
+  ---
+  duration_ms: 0.437083
+  type: 'test'
+  ...
+# Subtest: fork inherited end is skipped on both live and cold paths
+ok 67 - fork inherited end is skipped on both live and cold paths
+  ---
+  duration_ms: 0.30625
+  type: 'test'
+  ...
+# Subtest: T08 FIXTURE: replayed session/event notifications do not inflate counts
+ok 68 - T08 FIXTURE: replayed session/event notifications do not inflate counts
+  ---
+  duration_ms: 0.514333
+  type: 'test'
+  ...
+# Subtest: export defaults disabled; enabling local policy exposes only projected record
+ok 69 - export defaults disabled; enabling local policy exposes only projected record
+  ---
+  duration_ms: 2.170833
+  type: 'test'
+  ...
+# Subtest: T11 FIXTURE ONLY: no connection/cloud module is required for local service
+ok 70 - T11 FIXTURE ONLY: no connection/cloud module is required for local service
+  ---
+  duration_ms: 0.89925
+  type: 'test'
+  ...
+# Subtest: U06 source declaration commits before its derived event
+ok 71 - U06 source declaration commits before its derived event
+  ---
+  duration_ms: 3.071333
+  type: 'test'
+  ...
+# Subtest: U06 derivation failure is bounded and never rolls back the Declaration
+ok 72 - U06 derivation failure is bounded and never rolls back the Declaration
+  ---
+  duration_ms: 0.449125
+  type: 'test'
+  ...
+# Subtest: U09 mounted service exposes the record seat while withheld remains event-free
+ok 73 - U09 mounted service exposes the record seat while withheld remains event-free
+  ---
+  duration_ms: 0.44
+  type: 'test'
+  ...
+# Subtest: U11 absent and incompatible core never block local Declaration recording
+ok 74 - U11 absent and incompatible core never block local Declaration recording
+  ---
+  duration_ms: 1.53975
+  type: 'test'
+  ...
+# Subtest: U11 late core attachment signs legacy pending events and starts from the current consent
+ok 75 - U11 late core attachment signs legacy pending events and starts from the current consent
+  ---
+  duration_ms: 1.612916
+  type: 'test'
+  ...
+# Subtest: U17 health exposes the complete bounded field table
+ok 76 - U17 health exposes the complete bounded field table
+  ---
+  duration_ms: 0.595084
+  type: 'test'
+  ...
+# Subtest: U19 inventory module is present
+ok 77 - U19 inventory module is present
+  ---
+  duration_ms: 0.92875
+  type: 'test'
+  ...
+# Subtest: U19 first scan installs all, stable/disabled scans add none, upgrade and removal are distinct
+ok 78 - U19 first scan installs all, stable/disabled scans add none, upgrade and removal are distinct
+  ---
+  duration_ms: 32.865917
+  type: 'test'
+  ...
+# Subtest: U19 unreadable entries are isolated and withheld consent updates snapshot without events
+ok 79 - U19 unreadable entries are isolated and withheld consent updates snapshot without events
+  ---
+  duration_ms: 0.173959
+  type: 'test'
+  ...
+# Subtest: official api-key package name cannot abort consented inventory events
+ok 80 - official api-key package name cannot abort consented inventory events
+  ---
+  duration_ms: 0.449917
+  type: 'test'
+  ...
+# Subtest: a pre-consent snapshot with an unsafe official name cannot abort later grant
+ok 81 - a pre-consent snapshot with an unsafe official name cannot abort later grant
+  ---
+  duration_ms: 0.338625
+  type: 'test'
+  ...
+# Subtest: U19 granting consent after a withheld first scan emits the current installs once
+ok 82 - U19 granting consent after a withheld first scan emits the current installs once
+  ---
+  duration_ms: 0.790583
+  type: 'test'
+  ...
+# Subtest: U08 stable inventory rescan does not resurrect a terminal install past retention
+ok 83 - U08 stable inventory rescan does not resurrect a terminal install past retention
+  ---
+  duration_ms: 0.745458
+  type: 'test'
+  ...
+# Subtest: U19 uninstall uses the uninstall identity key
+ok 84 - U19 uninstall uses the uninstall identity key
+  ---
+  duration_ms: 0.551459
+  type: 'test'
+  ...
+# Subtest: page opened records only after consent, deduplicates operation and records a new open
+ok 85 - page opened records only after consent, deduplicates operation and records a new open
+  ---
+  duration_ms: 11.052375
+  type: 'test'
+  ...
+# Subtest: page source must match canonical identity, active Inventory and an ordinary installed bundle row
+ok 86 - page source must match canonical identity, active Inventory and an ordinary installed bundle row
+  ---
+  duration_ms: 26.726958
+  type: 'test'
+  ...
+# Subtest: failed page write commits neither event nor dedupe; same fact succeeds after storage returns
+ok 87 - failed page write commits neither event nor dedupe; same fact succeeds after storage returns
+  ---
+  duration_ms: 13.97975
+  type: 'test'
+  ...
+# Subtest: normal client export contributes exactly its own Settings section
+ok 88 - normal client export contributes exactly its own Settings section
+  ---
+  duration_ms: 7.726
+  type: 'test'
+  ...
+# Subtest: panel read uses the selected carrier with receiver and refuses non-HTML/error replies
+ok 89 - panel read uses the selected carrier with receiver and refuses non-HTML/error replies
+  ---
+  duration_ms: 23.952333
+  type: 'test'
+  ...
+# Subtest: panel reads only the current device and distinguishes cryptographic validity from delivery
+ok 90 - panel reads only the current device and distinguishes cryptographic validity from delivery
+  ---
+  duration_ms: 14.883208
+  type: 'test'
+  ...
+# Subtest: panel reports invalid signatures and missing identity as failure and unknown
+ok 91 - panel reports invalid signatures and missing identity as failure and unknown
+  ---
+  duration_ms: 3.824583
+  type: 'test'
+  ...
+# Subtest: panel with unavailable signer key never labels a stored signature verified
+ok 92 - panel with unavailable signer key never labels a stored signature verified
+  ---
+  duration_ms: 1.248167
+  type: 'test'
+  ...
+# Subtest: read-only authenticated panel routes expose independent statuses and reject write/filter misuse
+ok 93 - read-only authenticated panel routes expose independent statuses and reject write/filter misuse
+  ---
+  duration_ms: 39.4025
+  type: 'test'
+  ...
+# Subtest: test-supply display declaration is explicit, closed and boolean-only
+ok 94 - test-supply display declaration is explicit, closed and boolean-only
+  ---
+  duration_ms: 0.373
+  type: 'test'
+  ...
+# Subtest: T09 FIXTURE ONLY: prompt, paths, files, full result and credentials never enter summary
+ok 95 - T09 FIXTURE ONLY: prompt, paths, files, full result and credentials never enter summary
+  ---
+  duration_ms: 1.795375
+  type: 'test'
+  ...
+# Subtest: metadata guards reject likely secrets, URLs, personal paths and HTML
+ok 96 - metadata guards reject likely secrets, URLs, personal paths and HTML
+  ---
+  duration_ms: 0.092584
+  type: 'test'
+  ...
+# Subtest: provider/model unsafe text is redacted, not truncated into an apparently safe value
+ok 97 - provider/model unsafe text is redacted, not truncated into an apparently safe value
+  ---
+  duration_ms: 0.083792
+  type: 'test'
+  ...
+# Subtest: export allowlist drops future local-only properties and untrusted eventRef
+ok 98 - export allowlist drops future local-only properties and untrusted eventRef
+  ---
+  duration_ms: 0.087792
+  type: 'test'
+  ...
+# Subtest: HTML escapes unsafe content instead of executable markup
+ok 99 - HTML escapes unsafe content instead of executable markup
+  ---
+  duration_ms: 0.252291
+  type: 'test'
+  ...
+# Subtest: T10 SOURCE/SCHEMA: no local economic assertions and reserved attestation fields stay null
+ok 100 - T10 SOURCE/SCHEMA: no local economic assertions and reserved attestation fields stay null
+  ---
+  duration_ms: 0.067
+  type: 'test'
+  ...
+# Subtest: U09 record seat module is present
+ok 101 - U09 record seat module is present
+  ---
+  duration_ms: 0.373333
+  type: 'test'
+  ...
+# Subtest: U09 record seat returns withheld, recorded, duplicate and rejected dispositions
+ok 102 - U09 record seat returns withheld, recorded, duplicate and rejected dispositions
+  ---
+  duration_ms: 4.203333
+  type: 'test'
+  ...
+# Subtest: U09 record seat rejects timestamps outside the 90-day and five-minute window
+ok 103 - U09 record seat rejects timestamps outside the 90-day and five-minute window
+  ---
+  duration_ms: 0.295375
+  type: 'test'
+  ...
+# Subtest: T6 record seat accepts sourceHanaRef, targetRef and a use receipt; rejects receipts on open and bad shapes
+ok 104 - T6 record seat accepts sourceHanaRef, targetRef and a use receipt; rejects receipts on open and bad shapes
+  ---
+  duration_ms: 2.11275
+  type: 'test'
+  ...
+# Subtest: R1 remote readback pages the device-signed public route to the end and never writes local state
+ok 105 - R1 remote readback pages the device-signed public route to the end and never writes local state
+  ---
+  duration_ms: 19.025792
+  type: 'test'
+  ...
+# Subtest: R2 an empty server page is an actual zero, distinct from unknown
+ok 106 - R2 an empty server page is an actual zero, distinct from unknown
+  ---
+  duration_ms: 0.22325
+  type: 'test'
+  ...
+# Subtest: R3 refusal, outage and malformed bodies are unknown with bounded codes, never zero
+ok 107 - R3 refusal, outage and malformed bodies are unknown with bounded codes, never zero
+  ---
+  duration_ms: 2.004417
+  type: 'test'
+  ...
+# Subtest: R4 no server origin or no device is reported, not guessed
+ok 108 - R4 no server origin or no device is reported, not guessed
+  ---
+  duration_ms: 0.139667
+  type: 'test'
+  ...
+# Subtest: R5 remote readback is only on the authenticated exact registry, GET-only and query-free
+ok 109 - R5 remote readback is only on the authenticated exact registry, GET-only and query-free
+  ---
+  duration_ms: 1.744375
+  type: 'test'
+  ...
+# Subtest: U04 package is the standalone hanamesh-usage DSH bundle
+ok 110 - U04 package is the standalone hanamesh-usage DSH bundle
+  ---
+  duration_ms: 1.325
+  type: 'test'
+  ...
+# Subtest: U04 bundle patch inserts exactly one hanamesh-usage loader row
+ok 111 - U04 bundle patch inserts exactly one hanamesh-usage loader row
+  ---
+  duration_ms: 0.3015
+  type: 'test'
+  ...
+# Subtest: U02 runtime-registry is absent from package, source, vendor and contract inventory
+ok 112 - U02 runtime-registry is absent from package, source, vendor and contract inventory
+  ---
+  duration_ms: 0.866834
+  type: 'test'
+  ...
+# Subtest: U23 stage4 standins and isolated-host scripts are present
+ok 113 - U23 stage4 standins and isolated-host scripts are present
+  ---
+  duration_ms: 1.644167
+  type: 'test'
+  ...
+# Subtest: U31 suite tgz bundles usage without a checkout-specific path
+ok 114 - U31 suite tgz bundles usage without a checkout-specific path
+  ---
+  duration_ms: 22.940458
+  type: 'test'
+  ...
+# Subtest: authenticated exact route registry only; lifecycle removes all routes
+ok 115 - authenticated exact route registry only; lifecycle removes all routes
+  ---
+  duration_ms: 2.946708
+  type: 'test'
+  ...
+# Subtest: query API uses no-store headers; HTML has distinct unavailable label
+ok 116 - query API uses no-store headers; HTML has distinct unavailable label
+  ---
+  duration_ms: 25.1315
+  type: 'test'
+  ...
+# Subtest: unknown, repeated, nonnumeric or out-of-range parameters are rejected
+ok 117 - unknown, repeated, nonnumeric or out-of-range parameters are rejected
+  ---
+  duration_ms: 1.976458
+  type: 'test'
+  ...
+# Subtest: export is POST only and opt-in
+ok 118 - export is POST only and opt-in
+  ---
+  duration_ms: 3.213417
+  type: 'test'
+  ...
+# Subtest: transport unexpected errors never serialize original Error
+ok 119 - transport unexpected errors never serialize original Error
+  ---
+  duration_ms: 0.366208
+  type: 'test'
+  ...
+# Subtest: U13 upload reporter module is present
+ok 120 - U13 upload reporter module is present
+  ---
+  duration_ms: 0.325959
+  type: 'test'
+  ...
+# Subtest: U13 accepted, duplicate and rejected outcomes become terminal in one batch
+ok 121 - U13 accepted, duplicate and rejected outcomes become terminal in one batch
+  ---
+  duration_ms: 12.523625
+  type: 'test'
+  ...
+# Subtest: U14 401 and 5xx retain pending events, increment attempts and expose only bounded errors
+ok 122 - U14 401 and 5xx retain pending events, increment attempts and expose only bounded errors
+  ---
+  duration_ms: 2.224625
+  type: 'test'
+  ...
+# Subtest: U14 64KiB limit halves a large batch and offline origin sends nothing
+ok 123 - U14 64KiB limit halves a large batch and offline origin sends nothing
+  ---
+  duration_ms: 237.225125
+  type: 'test'
+  ...
+# Subtest: U16 withheld consent performs zero requests across repeated triggers
+ok 124 - U16 withheld consent performs zero requests across repeated triggers
+  ---
+  duration_ms: 0.242958
+  type: 'test'
+  ...
+# Subtest: T6 attributed events upload the optional keys verbatim while plain events keep seven keys
+ok 125 - T6 attributed events upload the optional keys verbatim while plain events keep seven keys
+  ---
+  duration_ms: 0.716167
+  type: 'test'
+  ...
+# Subtest: U15 withdrawal clears locally before DELETE and success is never resent
+ok 126 - U15 withdrawal clears locally before DELETE and success is never resent
+  ---
+  duration_ms: 17.561625
+  type: 'test'
+  ...
+# Subtest: U15 failed withdrawal retries, then stops after the first success
+ok 127 - U15 failed withdrawal retries, then stops after the first success
+  ---
+  duration_ms: 1.785417
+  type: 'test'
+  ...
+# Subtest: U15 offline withdrawal only clears local state
+ok 128 - U15 offline withdrawal only clears local state
+  ---
+  duration_ms: 0.28
+  type: 'test'
+  ...
+1..128
+# tests 128
+# suites 0
+# pass 128
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 528.358042

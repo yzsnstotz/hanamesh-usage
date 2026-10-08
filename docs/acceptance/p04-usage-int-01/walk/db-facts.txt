@@ -1,0 +1,5 @@
+events_by_device|PEKhw3zIb1fBt_JZNcu-YFrCOafcA6Og1y_5l8YBlKg|use|1
+withdrawals|cpIwdidzbzFrwGXDWnJhhuvNqk-p1MQtLNyzGfNMAQQ|1
+ERROR:  relation "identity.devices" does not exist
+LINE 1: ...T 'devices', device_id, principal_id, status FROM identity.d...
+                                                             ^
