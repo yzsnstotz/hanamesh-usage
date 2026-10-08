@@ -1,0 +1,16 @@
+{
+  "diagnosticOnly": true,
+  "observedFact": {
+    "commandId": "cmd-9d91ca65-2",
+    "phase": "succeeded",
+    "source": {
+      "entryId": "include:agent-preset-registry:command-goal",
+      "moduleName": "@deepseek-ai/dsh-command-goal"
+    },
+    "occurredAt": 1791498323638
+  },
+  "rootBaseUrl": "file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-10514290-7b05-4d9e-96ff-00b81062f6fd/dsh-home/profiles/web/",
+  "selected": [],
+  "lookups": [],
+  "resolvedOwningPackage": null
+}

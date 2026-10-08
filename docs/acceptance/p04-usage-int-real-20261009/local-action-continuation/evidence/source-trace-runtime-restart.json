@@ -1,0 +1,6 @@
+{
+  "oldOwnPid": 84338,
+  "newOwnPid": 92214,
+  "reason": "read-only public Loader source diagnosis; no identity or event supplied",
+  "priorNativeSuccessReceipt": "local-action-state.json"
+}

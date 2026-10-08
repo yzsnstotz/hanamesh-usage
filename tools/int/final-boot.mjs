@@ -14,7 +14,7 @@ const profileBoot=runtimeRoot ? path.join(runtimeRoot,'apps/cli/lib/profile-boot
 const launchEnvironment=runtimeRoot ? path.join(runtimeRoot,'packages/util/launch-environment/lib/index.js') : path.join(run,'runtime/node_modules/@deepseek-ai/dsh-launch-environment/lib/index.js');
 const {runProfile}=await import(pathToFileURL(profileBoot).href);
 const {createLaunchEnvironmentSnapshot}=await import(pathToFileURL(launchEnvironment).href);
-const app=await runProfile({profile:'web',patchFiles:[path.join(run,'state/final.patch.json')],args:['--host','127.0.0.1','--port','0'],environment:createLaunchEnvironmentSnapshot([{source:'process',values:process.env}])});
+const app=await runProfile({profile:'web',patchFiles:[path.join(run,'state/final.patch.json')],args:['--host','127.0.0.1','--port',String(inputs.dshPort??0)],environment:createLaunchEnvironmentSnapshot([{source:'process',values:process.env}])});
 const ctx=app.ctx;
 const core=ctx.get('hanameshCore');const usage=ctx.get('hanameshUsage');
 if(!core||!usage)throw Error('REAL_INSTALLED_SERVICE_MISSING');
@@ -26,6 +26,17 @@ const hostPort=JSON.parse(await readFile(path.join(run,'state/INPUTS.json'),'utf
 async function signedPost(events){const body=JSON.stringify(events);const headers=await core.signRequest({method:'POST',path:'/v1/usage/events',body:new TextEncoder().encode(body)});const response=await fetch(hostOrigin+'/v1/usage/events',{method:'POST',headers:{...headers,'content-type':'application/json',origin:hostOrigin},body});return {httpStatus:response.status,body:await response.json()};}
 const operations={
  async state(){await usage.drain();return {coreSession:core.getSession(),consent:core.getConsent(),usageHealth:usage.health(),panel:usage.panel(),modelRequests,facts};},
+ async sourceTrace(){
+  // Read the already captured native fact for diagnosis only; never emit it or record an event.
+  const prior=JSON.parse(await readFile(path.join(run,'evidence/local-action-state.json'),'utf8'));
+  const fact=lastFact??prior.facts.at(-1);if(!fact)throw Error('NO_OBSERVED_FACT_FOR_DIAGNOSIS');
+  const {commandPackage}=await import(pathToFileURL(path.join(run,'dsh-home/profiles/web/node_modules/hanamesh-usage/lib/host/command-source.js')).href);
+  const selected=[...ctx.loader.entries()].filter(entry=>entry.id===fact.source.entryId).map(entry=>({id:entry.id,name:entry.options.name,group:entry.options.group??null,parentBaseUrl:entry.parent?.tree?.ctx?.baseUrl??null}));
+  const service=ctx.get('pluginPackages');
+  const lookups=selected.map(entry=>{try{const pkg=service.packageOf(entry.name,entry.parentBaseUrl);return {entryId:entry.id,name:pkg?.name??null,version:pkg?.version??null,dir:pkg?.dir??null};}catch(error){return {entryId:entry.id,error:error.message};}});
+  const sameModuleEntries=[...ctx.loader.entries()].filter(entry=>entry.options.name===fact.source.moduleName).map(entry=>({id:entry.id,name:entry.options.name,group:entry.options.group??null,parentBaseUrl:entry.parent?.tree?.ctx?.baseUrl??null}));
+  return {diagnosticOnly:true,observedFact:fact,rootBaseUrl:ctx.baseUrl??null,selected,sameModuleEntries,lookups,resolvedOwningPackage:commandPackage(ctx,fact.source)};
+ },
  remote:()=>usage.remote(),
  async replay(){if(!lastFact)throw Error('NO_REAL_UI_COMMAND_FACT');await usage.drain();const before=usage.panel().total;ctx.emit('commands/operation',lastFact);await usage.drain();const event=usage.events({limit:1000}).events.find(e=>e.evidenceRef===`command:${lastFact.commandId}:succeeded`);if(!event)throw Error('ORDINARY_EVENT_MISSING');return {commandId:lastFact.commandId,localBefore:before,localAfter:usage.panel().total,server:await signedPost([wireEvent(event)])};},
  async rejectBatch(){await usage.drain();const event=usage.events({limit:1000}).events.find(e=>e.evidenceRef===`command:${lastFact?.commandId}:succeeded`);if(!event)throw Error('ORDINARY_EVENT_MISSING');return {supply:'NEGATIVE_REQUEST_ONLY_NOT_ORDINARY_ACTION',server:await signedPost([wireEvent(event),{...wireEvent(event),deviceId:'device_INVALID_STUB'}])};}

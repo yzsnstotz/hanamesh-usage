@@ -1,0 +1,6 @@
+{
+  "oldOwnPid": 92214,
+  "newOwnPid": 92885,
+  "fixedPort": 56000,
+  "reason": "keep PM-authorized current entry at 56000; original dynamic diagnostic restart was 58226"
+}

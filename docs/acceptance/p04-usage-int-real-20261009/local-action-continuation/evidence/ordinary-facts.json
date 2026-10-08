@@ -1,0 +1,20 @@
+[
+  {
+    "commandId": "cmd-bed28d52-1",
+    "phase": "succeeded",
+    "source": {
+      "entryId": "include:agent-preset-registry:command-goal",
+      "moduleName": "@deepseek-ai/dsh-command-goal"
+    },
+    "occurredAt": 1791498664892
+  },
+  {
+    "commandId": "cmd-bed28d52-2",
+    "phase": "succeeded",
+    "source": {
+      "entryId": "include:permission",
+      "moduleName": "@deepseek-ai/dsh-permission-presets"
+    },
+    "occurredAt": 1791498831084
+  }
+]

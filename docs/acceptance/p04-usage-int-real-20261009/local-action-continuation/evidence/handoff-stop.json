@@ -1,0 +1,21 @@
+{
+  "recordedAt": "2026-10-08T22:40:18.492457+00:00",
+  "compactionCount": 3,
+  "compactionTimestamps": [
+    "2026-10-08T11:04:45.247Z",
+    "2026-10-08T22:00:12.170Z",
+    "2026-10-08T22:38:33.008Z"
+  ],
+  "stopReason": "PM requires HANDOFF at three compactions; no new engineering segment",
+  "guiLock": "FREE",
+  "pids": {
+    "host": 79289,
+    "officialCounterpart": 80874,
+    "forkMain": 92885
+  },
+  "verification": {
+    "nodeCheckFinalBoot": "exit0",
+    "codeDiffCheck": "exit0"
+  },
+  "remaining": "PG use readback, replay, fresh-valid failed-batch atomicity, device access checks, re-withdraw, aliases and independent verifier NOT_RUN"
+}
