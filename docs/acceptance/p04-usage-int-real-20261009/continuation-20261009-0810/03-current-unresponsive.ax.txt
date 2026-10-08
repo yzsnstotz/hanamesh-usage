@@ -1,0 +1,27 @@
+Window: "Page Unresponsive", App: Google Chrome.
+0 window Page Unresponsive, Secondary Actions: Raise
+	1 container Page Unresponsive
+		2 container
+			3 heading Page Unresponsive
+			4 container
+				5 text You can wait for it to become responsive or exit the page.
+				6 scroll area
+					7 table
+						8 row DeepSeek Harness
+							9 cell DeepSeek Harness
+			10 container
+				11 button Exit Page
+				12 button Wait
+13 menu bar
+	14 Chrome
+	15 File
+	16 Edit
+	17 View
+	18 History
+	19 Bookmarks
+	20 Profiles
+	21 Tab
+	22 Window
+	23 Help
+
+The focused UI element is 7 table

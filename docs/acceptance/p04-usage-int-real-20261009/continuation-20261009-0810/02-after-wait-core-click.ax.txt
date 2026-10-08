@@ -1,0 +1,16 @@
+The following is a diff from the previous accessibility tree for Window: "Page Unresponsive" with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 0-91
++103 window Page Unresponsive, Secondary Actions: Raise
++	104 container Page Unresponsive
++		105 container
++			106 heading Page Unresponsive
++			107 container
++				108 text You can wait for it to become responsive or exit the page.
++				109 scroll area
++					110 table
++						111 row DeepSeek Harness
++							112 cell DeepSeek Harness
++			113 container
++				114 button Exit Page
++				115 button Wait
+The focused UI element is 110 table
