@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: published event nonce is a token, independent of the producer entropy encoding
+not ok 1 - published event nonce is a token, independent of the producer entropy encoding
+  ---
+  duration_ms: 1.202125
+  type: 'test'
+  location: '/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/final-01a11b0f/source/hanamesh-usage/tests/contract-wire.test.mjs:7:1'
+  failureType: 'testCodeFailure'
+  error: 'INVALID_USAGE_EVENT'
+  code: 'INVALID_USAGE_EVENT'
+  name: 'UsageError'
+  stack: |-
+    invalid (file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/final-01a11b0f/source/hanamesh-usage/lib/core/events.js:59:28)
+    validateEvent (file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/final-01a11b0f/source/hanamesh-usage/lib/core/events.js:70:9)
+    createUsageEvent (file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/final-01a11b0f/source/hanamesh-usage/lib/core/events.js:93:5)
+    TestContext.<anonymous> (file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/final-01a11b0f/source/hanamesh-usage/tests/contract-wire.test.mjs:8:26)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1103:25)
+    Test.start (node:internal/test_runner/test:1000:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+  ...
+# Subtest: local stub device ids cannot enter the public wire event
+not ok 2 - local stub device ids cannot enter the public wire event
+  ---
+  duration_ms: 0.5155
+  type: 'test'
+  location: '/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/final-01a11b0f/source/hanamesh-usage/tests/contract-wire.test.mjs:10:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'INVALID_USAGE_EVENT'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/final-01a11b0f/source/hanamesh-usage/tests/contract-wire.test.mjs:12:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1103:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+    Test.postRun (node:internal/test_runner/test:1232:19)
+    Test.run (node:internal/test_runner/test:1160:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 39.419708

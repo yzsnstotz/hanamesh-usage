@@ -1,0 +1,38 @@
+TAP version 13
+# Subtest: published event nonce is a token, independent of the producer entropy encoding
+ok 1 - published event nonce is a token, independent of the producer entropy encoding
+  ---
+  duration_ms: 1.442167
+  type: 'test'
+  ...
+# Subtest: local stub device ids cannot enter the public wire event
+ok 2 - local stub device ids cannot enter the public wire event
+  ---
+  duration_ms: 0.287625
+  type: 'test'
+  ...
+# Subtest: mixed signed batch with a local stub sends nothing and keeps every event pending
+not ok 3 - mixed signed batch with a local stub sends nothing and keeps every event pending
+  ---
+  duration_ms: 1.137
+  type: 'test'
+  location: '/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/final-01a11b0f/source/hanamesh-usage/tests/contract-wire.test.mjs:15:1'
+  failureType: 'testCodeFailure'
+  error: 'INVALID_USAGE_EVENT'
+  code: 'INVALID_USAGE_EVENT'
+  name: 'UsageError'
+  stack: |-
+    invalid (file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/final-01a11b0f/source/hanamesh-usage/lib/core/events.js:55:28)
+    wireEvent (file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/final-01a11b0f/source/hanamesh-usage/lib/core/events.js:98:9)
+    Array.map (<anonymous>)
+    runOnceRaw (file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/final-01a11b0f/source/hanamesh-usage/lib/host/upload.js:54:53)
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 2
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 41.218375
