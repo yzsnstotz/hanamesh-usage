@@ -2,7 +2,7 @@ TAP version 13
 # Subtest: T6 EventStore dedup identity includes attribution and receipt (root-aware copy for mutation)
 ok 1 - T6 EventStore dedup identity includes attribution and receipt (root-aware copy for mutation)
   ---
-  duration_ms: 2.00725
+  duration_ms: 6.55675
   type: 'test'
   ...
 1..1
@@ -13,4 +13,4 @@ ok 1 - T6 EventStore dedup identity includes attribution and receipt (root-aware
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 35.202875
+# duration_ms 126.574125

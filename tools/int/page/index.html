@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P04 Usage 整合 · 开发小界面</title>
+<link rel="stylesheet" href="/page.css">
+<script src="/page.js" defer></script>
+</head>
+<body>
+<main>
+<h1>Usage 同意 · 上报 · 服务端读回 · 撤回</h1>
+<section class="supply" aria-label="测试供给说明">
+  <strong>本页含测试供给，不是正式客户端：</strong>
+  <ul>
+    <li><b>测试 Core</b>：本人同意开关、设备密钥和请求签名由本页的测试 Core 提供（设备经服务端 Identity 公开接口正常注册），不是真实 HanaMesh Core 设置。</li>
+    <li><b>另一测试主体</b>：由测试供给直接经服务端公开接口写入和读取，用来核对“撤回不影响别人”。</li>
+    <li><b>普通插件动作</b>：真实已安装的 <code>dsh-update-notifier</code> 的 <code>/check-updates</code> 命令，由宿主公开命令接口执行；不是在客户端窗口里点击。</li>
+    <li>真实执行的部分：Usage 插件（正常安装）、事件签名与上报、服务端 Usage/Identity 与数据库记录、读回和删除。</li>
+  </ul>
+  <p id="versions">版本读取中…</p>
+</section>
+
+<section aria-labelledby="h-consent">
+  <h2 id="h-consent">1 · 本人同意（测试 Core）</h2>
+  <p>当前：<strong id="consent">读取中…</strong></p>
+  <button type="button" id="grant">开启同意</button>
+  <button type="button" id="withhold">撤回同意</button>
+  <p id="withdrawal" role="status"></p>
+</section>
+
+<section aria-labelledby="h-action">
+  <h2 id="h-action">2 · 普通插件动作</h2>
+  <button type="button" id="action">执行普通插件命令 /check-updates</button>
+  <button type="button" id="replay">重放刚才那次成功事实</button>
+  <p id="action-result" role="status"></p>
+</section>
+
+<section aria-labelledby="h-local">
+  <h2 id="h-local">3 · 本机记录（Usage 插件）</h2>
+  <p id="local-summary"></p>
+  <table>
+    <thead><tr><th>事件 ID</th><th>插件</th><th>动作</th><th>时间</th><th>签名</th><th>上报</th></tr></thead>
+    <tbody id="local-rows"></tbody>
+  </table>
+</section>
+
+<section aria-labelledby="h-remote">
+  <h2 id="h-remote">4 · 服务端记录（本设备签名读回）</h2>
+  <button type="button" id="remote">读取服务端记录</button>
+  <p id="remote-summary" role="status">尚未读取。</p>
+  <table>
+    <thead><tr><th>事件 ID</th><th>插件</th><th>动作</th><th>时间</th><th>服务端接收时间</th></tr></thead>
+    <tbody id="remote-rows"></tbody>
+  </table>
+</section>
+
+<section aria-labelledby="h-other">
+  <h2 id="h-other">5 · 另一测试主体（测试供给）</h2>
+  <p id="other-subject"></p>
+  <button type="button" id="other-seed">给另一测试主体写入 1 条记录</button>
+  <button type="button" id="other-read">读取另一测试主体的记录数</button>
+  <p id="other-summary" role="status">尚未读取。</p>
+</section>
+
+<section aria-labelledby="h-log">
+  <h2 id="h-log">最近一步的原始回执</h2>
+  <pre id="last"></pre>
+</section>
+</main>
+</body>
+</html>
