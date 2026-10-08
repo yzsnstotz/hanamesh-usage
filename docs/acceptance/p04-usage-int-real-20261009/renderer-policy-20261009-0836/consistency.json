@@ -1,0 +1,17 @@
+{
+  "mainLocal": 181,
+  "mainRemote": 181,
+  "mainPG": 181,
+  "allPGRows": 359,
+  "allPGRowsExactlyEqualPriorFinal": true,
+  "otherPG": 178,
+  "otherRowsExactlyEqualPriorFinal": true,
+  "idSetsEqual": true,
+  "consent": "granted",
+  "bound": false,
+  "pending": 0,
+  "facts": 0,
+  "models": 0,
+  "withdrawal": null,
+  "newRejectBatchCalled": false
+}
