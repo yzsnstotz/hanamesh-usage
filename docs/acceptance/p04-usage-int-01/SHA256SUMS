@@ -9,6 +9,17 @@ d2854fa741f26d6788f86d23cbb1140f2e907003d498a230863b64081f1658ca  ./engineering/
 18dfd2ab8bbe58c10852f49820624bf044d469240d7999a96ce20ee16ba8b2ad  ./entry/step1-127.png
 7d730c50a4d85abeb3a96c314293126d36f2c40cbd217d5ee0eb2ce654daacce  ./entry/step1-localhost-tail.json
 18dfd2ab8bbe58c10852f49820624bf044d469240d7999a96ce20ee16ba8b2ad  ./entry/step1-localhost-tail.png
+4f5c028746bf1bcc77a55e8410c825e309539c032eae44160b445eea5159d281  ./host35/entry/db-start.txt
+cdad9d15edc9380067bace73326c0e4ce65674c95c3f099a56a967af757cc534  ./host35/entry/host-matrix.tsv
+815e55418b5245c55c4cf5fc7ab8a4d82444c94a59b231b54b745ac6c554114b  ./host35/entry/install-receipts.json
+8d8d4f35cc734130bee6a4fd32cbcea32339cd7f10bcbd692cb4a4cc619386b3  ./host35/entry/step1-127.png
+8d8d4f35cc734130bee6a4fd32cbcea32339cd7f10bcbd692cb4a4cc619386b3  ./host35/entry/step1-localhost-tail.png
+9186094530121ee621c8929809b8802224e57e45c544478fce79a817a22e50c7  ./host35/walk/00-open.png
+8897d909e1962e3cdb7549f3e0e7917cdda9376ed340264e4bd02aff3e66a530  ./host35/walk/07-withhold.png
+29e28a5416b8e05089c8052f8632825247789b25936ce968f7a0977ad91cfaf5  ./host35/walk/08-action-after-withhold.png
+256693c783658bf30d1beaf50760b73f6e05edfa1b8a91490f7f36a897cd0acd  ./host35/walk/drive.json
+4237d9150841a91d10271b275e73540ffb8668b3619e13115fa86fcaeb44964f  ./host35/walk/time-check.json
+6e44c89ed3e850ad0e41c868ac90dada241a88eac32891a30ae825b366bdc7c6  ./host35/walk/time-check.mjs.txt
 197bdde09547b49dc55c681ebed32889891da17fbc1fd9b4abe571d68cc6c652  ./rework/extra.txt
 2ccbe791297fffc2f0909a1c037263fa96437880030685853fef293abbacfbfc  ./rework/green-after-restart.tsv
 d6be52e0643e250d5faac8b7674936a29d2237f6279a42bb109c1fb043e20f51  ./rework/inventory-diag.json

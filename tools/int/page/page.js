@@ -19,7 +19,7 @@ async function call(method, path, body) {
 }
 
 function renderState(s) {
-  $('versions').textContent = `hanamesh-usage ${s.versions.usage} · 普通插件 ${s.versions.ordinary} · 服务端 ${s.versions.hostOrigin}`;
+  $('versions').textContent = `hanamesh-usage ${s.versions.usage} · 普通插件 ${s.versions.ordinary} · 服务端 ${s.versions.hostOrigin}（${s.versions.host} · ${s.versions.serverUsage}，正常安装）`;
   $('consent').textContent = s.consent === 'granted' ? '已开启（测试 Core）' : '未开启 / 已撤回（测试 Core）';
   const w = s.withdrawal;
   if (w === null) show('withdrawal', '');

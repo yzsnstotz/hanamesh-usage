@@ -27,6 +27,9 @@ const UI_HOSTS = [`127.0.0.1:${UI_PORT}`, `localhost:${UI_PORT}`, `[::1]:${UI_PO
 const OTHER_HANA = '@hanamesh-dev/p04-int-other-subject';
 const here = fileURLToPath(new URL('./', import.meta.url));
 const {signingJSON, wireEvent} = await import(pathToFileURL(join(here, '../../lib/core/index.js')).href);
+// Installed Host supply, read back from its own package metadata (shown on the page; never guessed).
+const hostPackage = JSON.parse(await readFile(join(run, 'host/hanamesh-server/package.json'), 'utf8'));
+const serverUsagePackage = JSON.parse(await readFile(join(run, 'host/hanamesh-server/node_modules/@hanamesh/server-usage/package.json'), 'utf8'));
 const log = (event, fields = {}) => console.log(JSON.stringify({at: new Date().toISOString(), event, ...fields}));
 
 // ---- fixture Core adapter: device keys registered through Identity's public device routes ----
@@ -141,7 +144,7 @@ const operations = {
   async state() {
     return {
       supply: {core: 'FIXTURE_CORE_ADAPTER', otherSubject: 'FIXTURE_DIRECT_PUBLIC_ROUTE', ordinaryAction: 'REAL_HOST_COMMAND_DISPATCH_NOT_RENDERER', receiver: 'REAL_SERVER_USAGE_LOCAL_TEST_HOST'},
-      versions: {usage: usagePackage.version, ordinary: `${ordinaryPackage.name}@${ordinaryPackage.version}`, hostOrigin: HOST_ORIGIN},
+      versions: {usage: usagePackage.version, ordinary: `${ordinaryPackage.name}@${ordinaryPackage.version}`, hostOrigin: HOST_ORIGIN, host: `${hostPackage.name}@${hostPackage.version}`, serverUsage: `${serverUsagePackage.name}@${serverUsagePackage.version}`},
       consent: state.consent, self: {deviceId: state.devices.self.deviceId, principalId: state.devices.self.principalId},
       other: {deviceId: state.devices.other.deviceId, principalId: state.devices.other.principalId},
       panel: api.panel(), withdrawal: api.health().withdrawal, modelRequests,

@@ -1,4 +1,5 @@
-// P04-USAGE-INT-01 assembly only (not product code): a fresh, card-owned hanamesh-server rc.34 instance.
+// P04-USAGE-INT-01 assembly only (not product code): a fresh, card-owned hanamesh-server instance
+// (rc.35 since HOST-USAGE12-SUPPLY-01; rc.34 before).
 // Consumes the delivered Host package as installed under <run>/host/hanamesh-server (exact tgz + its lock),
 // a fresh labelled tmpfs PostgreSQL, the package's own dist/migrate-cli.js and dist/start.js.
 // Secrets live only in <run>/host/state/secrets.json and runtime.env.json (0600); never printed.

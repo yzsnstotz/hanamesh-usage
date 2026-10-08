@@ -1,0 +1,16 @@
+evil.example	/	421
+evil.example	/page.js	421
+evil.example	/api/state	421
+evil.example	/api/remote	421
+127.0.0.1:48671	/	200
+127.0.0.1:48671	/page.js	200
+127.0.0.1:48671	/api/state	200
+127.0.0.1:48671	/api/remote	200
+localhost:48671	/	200
+localhost:48671	/page.js	200
+localhost:48671	/api/state	200
+localhost:48671	/api/remote	200
+[::1]:48671	/	200
+[::1]:48671	/page.js	200
+[::1]:48671	/api/state	200
+[::1]:48671	/api/remote	200
