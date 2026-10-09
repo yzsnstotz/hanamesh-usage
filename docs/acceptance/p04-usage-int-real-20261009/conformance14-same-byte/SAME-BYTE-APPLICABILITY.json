@@ -1,0 +1,125 @@
+{
+  "atUTC": "2026-10-09T00:58:40.363904+00:00",
+  "scope": "PACKAGE/STATIC SAME-BYTE APPLICABILITY; no vector rerun or product gate",
+  "rc14FormalTag": {
+    "object": "b6053e44c1426ab6ac879b8b590552e8af59ded5",
+    "target": "4144a4d2813e2ef581dbac49c31f1e0a7a9b60eb",
+    "freshRemoteExit": 0,
+    "freshRemote": "b6053e44c1426ab6ac879b8b590552e8af59ded5\trefs/tags/v0.2.0-rc.14\n4144a4d2813e2ef581dbac49c31f1e0a7a9b60eb\trefs/tags/v0.2.0-rc.14^{}\n",
+    "tagTGZEqualsNormalVendor": true,
+    "tgzSHA256": "7f5d019c7e765c19965216f3cf69b12da37859ebe5168b1f2cf27ad154948287"
+  },
+  "rc13TGZSHA256": "96fab9d8467df471329f194f135247a9bff8b094bf27e22c914897bc3b6cd964",
+  "payloadComparison": {
+    "files": 56,
+    "unchanged": 54,
+    "changed": [
+      "dist/index.js",
+      "package.json"
+    ]
+  },
+  "installedReadback": [
+    {
+      "package": "rc13",
+      "installedRoot": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/final-01a11b0f/supply/server-usage13/package",
+      "files": 56,
+      "differences": []
+    },
+    {
+      "package": "rc14",
+      "installedRoot": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/host37-prep-3f4f03b6-5e2b-4f69-8461-dbbc5c38bd5c/consumer/node_modules/.pnpm/@hanamesh+server-usage@file+vendor+hanamesh-server-usage-0.2.0-rc.14.tgz_@hanamesh+serv_e9a6ef7ec5a0f0b9dde782c23c2ef20b/node_modules/@hanamesh/server-usage",
+      "files": 56,
+      "differences": []
+    }
+  ],
+  "conformanceClosure": [
+    {
+      "file": "dist/conformance/index.js",
+      "rc13SHA256": "e573f3620b6a45b418ae1d166807990c3f2fa3b4de5d0b1e94ae6bf44f2c1b72",
+      "rc14SHA256": "e573f3620b6a45b418ae1d166807990c3f2fa3b4de5d0b1e94ae6bf44f2c1b72",
+      "same": true
+    },
+    {
+      "file": "dist/conformance/index.d.ts",
+      "rc13SHA256": "b1306c43c70feff5ccccd98aeca4f8f370b5f41fc753dd4bce7c8214a6dede5f",
+      "rc14SHA256": "b1306c43c70feff5ccccd98aeca4f8f370b5f41fc753dd4bce7c8214a6dede5f",
+      "same": true
+    },
+    {
+      "file": "contract/usage-contract.schema.json",
+      "rc13SHA256": "9bab28f71a66839468f4d72ef2d062bda34fe902c0915c63456835c6662983f5",
+      "rc14SHA256": "9bab28f71a66839468f4d72ef2d062bda34fe902c0915c63456835c6662983f5",
+      "same": true
+    },
+    {
+      "file": "contract/fixtures.json",
+      "rc13SHA256": "ea6b2fbfa8ac98bdeef675c5aaf714b97304f5827c0cc64a165d95edc9fe7746",
+      "rc14SHA256": "ea6b2fbfa8ac98bdeef675c5aaf714b97304f5827c0cc64a165d95edc9fe7746",
+      "same": true
+    }
+  ],
+  "publicExportUnchanged": true,
+  "UsageInstalledReadback": [
+    {
+      "installedRoot": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/final-01a11b0f/consumer/node_modules/hanamesh-usage",
+      "files": 50,
+      "differences": []
+    },
+    {
+      "installedRoot": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60/dsh-home/profiles/web/node_modules/hanamesh-usage",
+      "files": 50,
+      "differences": []
+    }
+  ],
+  "referencedReceipt": {
+    "path": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/final-01a11b0f/source/hanamesh-usage/docs/acceptance/p04-usage-int-final-source/source-conformance.json",
+    "SHA256": "747094c035587bc2c5277e84eaf823eccbfffe5f628392b314691a50f7a119a9",
+    "scope": "SOURCE_CONFORMANCE_ONLY; synthetic event, in-memory Core; REAL_RUNTIME/REAL_UI NOT_RUN",
+    "checks": [
+      {
+        "id": "C-canonical",
+        "ok": true,
+        "observations": {
+          "vectors": 3
+        }
+      },
+      {
+        "id": "C-sign",
+        "ok": true,
+        "observations": {
+          "vectors": 3
+        }
+      },
+      {
+        "id": "C-device-id",
+        "ok": true,
+        "observations": {
+          "accept": 5,
+          "reject": 8
+        }
+      },
+      {
+        "id": "C-events",
+        "ok": true,
+        "observations": {
+          "events": 1
+        }
+      }
+    ],
+    "suiteCONTRACTVersion": "0.2.0-rc.13",
+    "notRun": [
+      "ServerUsage real HTTP/package source suites",
+      "Identity10 actual HTTP consumer suite",
+      "uniform client UI",
+      "real person/device identity",
+      "server persistence/readback/replay/withdrawal"
+    ]
+  },
+  "notRerun": "checkConsumer unchanged vectors; Core source suites; provider HTTP/package suite",
+  "note": "rc14 normal package exports byte-identical suite CONTRACT.version rc13; do not rewrite source constant or report it as rc14-valued suite",
+  "GUI": 0,
+  "POSTs": 0,
+  "profileStarts": 0,
+  "PGAccess": 0,
+  "deletions": 0
+}

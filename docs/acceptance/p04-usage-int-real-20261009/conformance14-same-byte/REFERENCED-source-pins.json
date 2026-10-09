@@ -1,0 +1,21 @@
+{
+  "coreContract": {
+    "tag": "v0.2.0-rc.55",
+    "commit": "c2c27e89d2af495d2e2b8b2641a1a155f56f13d3",
+    "suite": "supply/core55/lib/contract-suite.js",
+    "copiedIntoUsagePackage": false
+  },
+  "serverUsage": {
+    "tag": "v0.2.0-rc.13",
+    "tgzSha256": "96fab9d8467df471329f194f135247a9bff8b094bf27e22c914897bc3b6cd964",
+    "suite": "supply/server-usage13/package/dist/conformance/index.js",
+    "copiedIntoUsagePackage": false
+  },
+  "identity": {
+    "tag": "v0.2.0-rc.10",
+    "commit": "ed5d5dd02e36dda061b157ebc3b374127395a846",
+    "supply": "untouched tag export for strict-peer install probe, not published tgz",
+    "httpConformance": "NOT_RUN"
+  },
+  "sourceSuitesAndFixturesUnchanged": true
+}

@@ -1,0 +1,59 @@
+{
+  "sourceOrigin": "hanamesh-usage",
+  "dependencyChanges": 0,
+  "peerChanges": 0,
+  "productCodeChanges": 0,
+  "normalPackageChanges": 0,
+  "sourceVsInstalled": "Prior rc13 SOURCE/FIXTURE checkConsumer result referenced on unchanged actual Usage rc17 installed payload and rc14 normal installed suite closure; this turn only fresh package bytes and public export import, not new source or installed vector run",
+  "license": [
+    {
+      "name": "hanamesh-usage",
+      "version": "0.2.0-rc.17",
+      "license": "MIT",
+      "source": "existing normal private package",
+      "use": "actual unchanged consumer"
+    },
+    {
+      "name": "@hanamesh/server-usage",
+      "version": "0.2.0-rc.14",
+      "license": "UNLICENSED",
+      "source": "authorized existing private formal tag and normal vendor package",
+      "use": "existing public conformance export"
+    }
+  ],
+  "wait": [
+    "platform CUA header-policy inventory restoration",
+    "P04-WEB-DEVICE-BIND-01 actual person binding for person subgate"
+  ],
+  "normalSupplyUpdates": {
+    "HostReport": "docs582e57f7 callback matching engineering receipt accepted by PM; true OAuth NOT_RUN",
+    "WebReport": "docsaa8982da/sourceae2f9af7 normal proxy51026->55915; actual person binding NOT_RUN"
+  },
+  "kept": [
+    "new normal Core profile PREPARED ONLY/not started",
+    "old PG359 scenes unchanged; not accessed this turn",
+    "normal Host36 and TEST503 Host37 separate",
+    "all old evidence/raw/rollback retained"
+  ],
+  "thisTurn": {
+    "CUA": 0,
+    "GUI": 0,
+    "profileStart": 0,
+    "HTTP": 0,
+    "PGAccess": 0,
+    "deletions": 0,
+    "checkConsumerReruns": 0,
+    "CoreSuiteReruns": 0
+  },
+  "notRun": [
+    "renderer/ordinary facts",
+    "401 fresh whole-batch rejection",
+    "503 actual transaction rollback",
+    "current-cycle withdrawal/stop collection",
+    "alias",
+    "person OAuth/binding/account readback",
+    "R6",
+    "independent VERIFY",
+    "owner acceptance"
+  ]
+}

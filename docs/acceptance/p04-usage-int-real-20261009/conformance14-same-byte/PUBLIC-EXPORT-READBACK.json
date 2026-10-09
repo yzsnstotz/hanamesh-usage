@@ -1,0 +1,13 @@
+{
+  "atUTC": "2026-10-09T00:59:00.964232+00:00",
+  "cwd": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/host37-prep-3f4f03b6-5e2b-4f69-8461-dbbc5c38bd5c/consumer",
+  "argv": [
+    "/Users/yzliu/.local/share/fnm/node-versions/v24.13.1/installation/bin/node",
+    "--input-type=module",
+    "-e",
+    "<exact PUBLIC-EXPORT-PROBE.mjs contents>"
+  ],
+  "exitCode": 0,
+  "stdout": "{\"scope\":\"normal installed public export resolution/import only; vectors not rerun\",\"specifier\":\"@hanamesh/server-usage/conformance\",\"resolved\":\"file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/host37-prep-3f4f03b6-5e2b-4f69-8461-dbbc5c38bd5c/consumer/node_modules/.pnpm/@hanamesh+server-usage@file+vendor+hanamesh-server-usage-0.2.0-rc.14.tgz_@hanamesh+serv_e9a6ef7ec5a0f0b9dde782c23c2ef20b/node_modules/@hanamesh/server-usage/dist/conformance/index.js\",\"packageVersion\":\"0.2.0-rc.14\",\"packageLicense\":\"UNLICENSED\",\"packageExport\":{\"types\":\"./dist/conformance/index.d.ts\",\"import\":\"./dist/conformance/index.js\"},\"suiteContract\":{\"package\":\"@hanamesh/server-usage\",\"version\":\"0.2.0-rc.13\",\"protocolVersion\":\"1\"},\"checkConsumerType\":\"function\",\"runHttpSuiteType\":\"function\",\"invokedChecks\":0,\"HTTP\":0,\"GUI\":0}\n",
+  "stderr": ""
+}
