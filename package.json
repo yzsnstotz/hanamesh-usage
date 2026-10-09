@@ -1,6 +1,6 @@
 {
   "name": "hanamesh-usage",
-  "version": "0.2.0-rc.17",
+  "version": "0.2.0-rc.19",
   "description": "Consent-gated, device-signed HanaMesh usage events for DSH",
   "type": "module",
   "main": "lib/host/index.js",
@@ -112,6 +112,8 @@
     "@types/react": "18.3.1",
     "react": "18.3.1",
     "typescript": "5.9.3",
-    "zod": "4.5.4"
+    "zod": "4.5.4",
+    "hanamesh-core": "git+https://github.com/yzsnstotz/hanamesh-core.git#semver:^0.2.0-rc.55",
+    "@hanamesh/server-usage": "git+https://github.com/yzsnstotz/hanamesh-server-usage.git#semver:^0.2.0-rc.14"
   }
 }

@@ -1,12 +1,17 @@
 {
   "hanameshCore": {
     "protocolVersion": "1",
-    "contract": "docs/contracts/hanamesh-core/contract.d.ts",
-    "sha256": "12312eeed1cdb82dfeeb1cdda27dae081a0099a6e2eecd0ab26ddee1c4e61678",
-    "standin": true
+    "source": "git+https://github.com/yzsnstotz/hanamesh-core.git#semver:^0.2.0-rc.55",
+    "contract": "hanamesh-core/contract",
+    "suite": "hanamesh-core/contract/suite"
   },
   "host": {
     "version": "0.1.5-alpha.1",
     "commit": "5dda764ed3aa172535a7967b06ff95d9cbfe536a"
+  },
+  "serverUsage": {
+    "protocolVersion": "1",
+    "source": "git+https://github.com/yzsnstotz/hanamesh-server-usage.git#semver:^0.2.0-rc.14",
+    "suite": "@hanamesh/server-usage/conformance"
   }
 }

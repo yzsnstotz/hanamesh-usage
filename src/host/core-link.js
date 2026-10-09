@@ -3,12 +3,12 @@ import { signingJSON, UsageError, validateEvent, wireEvent } from '../core/index
 
 const required = ['getDeviceId','sign','signRequest','getConsent','onConsentChange','getSession','getServerOrigin'];
 
-/** @param {unknown} value @returns {{status:'absent'|'incompatible'|'present',core:import('../../docs/contracts/hanamesh-core/contract.js').HanaMeshCoreContract|null}} */
+/** @param {unknown} value @returns {{status:'absent'|'incompatible'|'present',core:import('hanamesh-core/contract').HanaMeshCoreContract|null}} */
 export function duckCore(value) {
   if (value === undefined || value === null) return {status:'absent',core:null};
   if (typeof value !== 'object' || value === null || /** @type {{protocolVersion?:unknown}} */ (value).protocolVersion !== '1'
     || required.some(name=>typeof /** @type {Record<string,unknown>} */ (value)[name] !== 'function')) return {status:'incompatible',core:null};
-  const candidate=/** @type {import('../../docs/contracts/hanamesh-core/contract.js').HanaMeshCoreContract} */ (value);
+  const candidate=/** @type {import('hanamesh-core/contract').HanaMeshCoreContract} */ (value);
   return {status:'present',core:{
     protocolVersion:'1',
     getDeviceId:candidate.getDeviceId.bind(candidate),
@@ -29,7 +29,7 @@ export function createCoreLink(ctx) {
   // ctx property is a runtime error even when the service is intentionally absent.
   const current=typeof ctx.get==='function'?ctx.get('hanameshCore'):undefined;
   let linked=duckCore(current);
-  /** @type {Set<(status:'absent'|'incompatible'|'present',core:import('../../docs/contracts/hanamesh-core/contract.js').HanaMeshCoreContract|null)=>void>} */
+  /** @type {Set<(status:'absent'|'incompatible'|'present',core:import('hanamesh-core/contract').HanaMeshCoreContract|null)=>void>} */
   const listeners=new Set();
   const stopService=ctx.on('internal/service',(name,value)=>{
     if(name!=='hanameshCore')return;
@@ -39,13 +39,13 @@ export function createCoreLink(ctx) {
   return {
     status:()=>linked.status,
     get:()=>linked.core,
-    /** @param {(status:'absent'|'incompatible'|'present',core:import('../../docs/contracts/hanamesh-core/contract.js').HanaMeshCoreContract|null)=>void} listener */
+    /** @param {(status:'absent'|'incompatible'|'present',core:import('hanamesh-core/contract').HanaMeshCoreContract|null)=>void} listener */
     onChange(listener){listeners.add(listener);return()=>listeners.delete(listener);},
     close(){listeners.clear();stopService();},
   };
 }
 
-/** @param {import('../../docs/contracts/hanamesh-core/contract.js').HanaMeshCoreContract} core @param {import('../core/index.js').UsageEvent} input */
+/** @param {import('hanamesh-core/contract').HanaMeshCoreContract} core @param {import('../core/index.js').UsageEvent} input */
 export function signUsageEvent(core,input) {
   validateEvent(input);
   const wire=wireEvent(input);const {signature: _signature,...six}=wire;

@@ -1,4 +1,4 @@
-# hanamesh-usage · 0.2.0-rc.17
+# hanamesh-usage · 0.2.0-rc.19
 
 > rc.13 消费公开 `client-page/opened` 并映射 open：核 canonical package、当前 Plugin Inventory 的启用/active 状态，以及 profile-installed、enabled、removable bundle 的实际所属 row；缺少这些公开服务或身份不一致时不采集。以 Host operationId 幂等，内置平台页及平台代生成的配置页不算普通插件。沿用 rc.12 succeeded→use；页面内按钮不自动算 use。组件与正式 GUI/真实 Core 服务端产品门分别记录。
 
@@ -97,3 +97,7 @@ module table 获取同一实例，`react@18.3.1` / `@types/react@18.3.1` 仅开�
 ## rc.17 · 发布源事件边界
 
 事件 nonce 按 ServerUsage rc13 的 Token 合约校验，不把本插件的 16 字节随机数编码当成协议。自产 nonce 仍由原生成器保留 128 位随机性。`wireEvent` 仅接受 43 字符的 Identity 设备 ID，短 ID 的离线本地样本不能签名或进入上报批次。未新增依赖、未修改签名六字段、同意、队列或撤回逻辑。
+
+开发时合约类型与一致性套件从已发布源 tag 正常安装：Core `#semver:^0.2.0-rc.55`、ServerUsage `#semver:^0.2.0-rc.14`。只使用 Core 的 `./contract` 类型及双方公开 suite；运行时仍通过 Cordis 的 `hanameshCore` 服务，不 import 邻插件业务模块。锁文件记录一次解析的 commit，manifest 保持范围引用。npm 的 0.x caret 上限是下一 minor，不能据此声称覆盖整个 major；rc 的选择以实际包管理解析回执为准。
+
+工程安装使用正常 peer 解析：`npm install --ignore-scripts --strict-peer-deps`；冻结安装使用 `npm ci --ignore-scripts --strict-peer-deps`。本仓已去除旧 `legacy-peer-deps=true` 配置；必须同时核 `npm ls --all`，不能只以安装 exit0 宣称闭包齐全。
