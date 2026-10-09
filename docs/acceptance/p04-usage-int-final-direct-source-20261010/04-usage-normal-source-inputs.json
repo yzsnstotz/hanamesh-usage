@@ -1,0 +1,361 @@
+{
+  "version": "0.2.0-rc.19",
+  "formalTag": null,
+  "sourceAuthority": "MERGE-USAGE-MAIN-01 normal main/package closure; no invented formal rc19 tag",
+  "sourceReceiptCommit": "cb0aeb7de11bb211dce3ae0fe432808f0d6fee9e",
+  "normalPack": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-c0f2439f-2b2a-4036-932b-ef0b85728101/supply/hanamesh-usage-0.2.0-rc.19.tgz",
+  "sha256": "3bfab04bd2fc6a84ac22472d1820a8db0b62f8aae72ce6c779da4313718296c3",
+  "all50Unchanged": true,
+  "files": [
+    {
+      "file": "LICENSE",
+      "normalPackSHA256": "cd29e05178eecb3207c494901de7d41785a7b31216e94ab37f3e104e93f3f3b1",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/boundary.js",
+      "normalPackSHA256": "aad8c707cea28f9ee0fa1ba87dd8a7e23e473835d23ed0d68ec443618d94ee0c",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/canonical.js",
+      "normalPackSHA256": "b12a56259a5f7a82380cdef90ba3518b912a2e6c2da1cd5c144bb10f7def91a7",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/client.js",
+      "normalPackSHA256": "57cbcd1c0e033308ec3e060ac196b52e412ef6ae9fe8463b489b7dfc93b14e3b",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/host/command-source.js",
+      "normalPackSHA256": "859ef48cfcc2917dfbfe9b3bdb55cae761110b661ef564e13456e9120cb7408b",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/host/core-link.js",
+      "normalPackSHA256": "5b797b87abe08f33c6457d7445d81aefd5e08c63599edc83b310fbb789b41b03",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/derive.js",
+      "normalPackSHA256": "517b09baf14dae44d75c0daf8e13d80c0461da824fa9f1313f49f7d457debd3b",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/event-store.js",
+      "normalPackSHA256": "a6c19f5830fe8b7b1aa434f8019cee19051a5639598c7827a2cb3c1ee8faa571",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/events.js",
+      "normalPackSHA256": "498a645266dbb72ebd3b27efb17a2a0850e8a1e8159532e4e7bbef76bf7556e3",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/identity.js",
+      "normalPackSHA256": "4456bdc492864f7c83695cee27ec5747f81b07cfd4aae9ff2cf201d485fa92bd",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/client/index.js",
+      "normalPackSHA256": "4f9067a7c11140d7cdb2cc6e95908716b7fcfddbd1f0eea10b67392bf241c8a1",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/index.js",
+      "normalPackSHA256": "60cb43c6fbfacb66c559c9f9b20e2be78fd096b64c1198892baadfb84070e6a9",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/host/index.js",
+      "normalPackSHA256": "ea269ddbd0b82bbe35f642af89eded46edf5c2bd568a9506a12838632b00c378",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/host/inventory.js",
+      "normalPackSHA256": "0fad4fbf2c835a12c755f520e8f9674b950de14ec5c67e48912810e7dcc7d725",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/host/mount.js",
+      "normalPackSHA256": "74e77523f9b82db915ce72d9f72fd8e766d2486ed0229e8f3fbb4d53f35a42d3",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/host/page-source.js",
+      "normalPackSHA256": "ed4ca0a2c22f5d98c068b9d2c6a264686c23339f517ee47d2cc94658512dc0b2",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/host/panel.js",
+      "normalPackSHA256": "dd53d598561528e0ddc3ee808e195c9785d91895584a2d46dbbf10df2d3706c7",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/pins.js",
+      "normalPackSHA256": "3abf27cf2b6a26486765c3a700fb37eadecf2b14c7d90dc0bab42f97e4833b38",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/privacy.js",
+      "normalPackSHA256": "627a23aa2383a31f7f446cc11d60c58ad0eeebff8f28561a0059cc400a61f48e",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/project.js",
+      "normalPackSHA256": "8dab8ddb98c0a481e94c4526eb90ac78d1d46da6a0d272724725bd62bf308a17",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/query.js",
+      "normalPackSHA256": "20d5a1e0d90ddc9fc2efa587d980042f5a0823d39971cdb1236ea62f75c17b54",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/host/record.js",
+      "normalPackSHA256": "412bd33620d5f101526434a1d07af7c20eca27923a9b581fea3d9cfee79669dc",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/store.js",
+      "normalPackSHA256": "73d260d4b6f329b20dee558d9ec64ee0c99d213226dec600569189d2a9b9e661",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/host/transport.js",
+      "normalPackSHA256": "8822c50dec86169d5e692fe04d83eaa66ff2816f2b5b7d29b706a1a06d4f0fe0",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/types.js",
+      "normalPackSHA256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/host/upload.js",
+      "normalPackSHA256": "335608e58ac342b593e897f04899eb6df372460a8f0dd8fffb33c2a28854c222",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/validate.js",
+      "normalPackSHA256": "1d14117c80034f24158131306eb4a967870bc841a54b948bc62674fd14e03c46",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/view.js",
+      "normalPackSHA256": "14a8e517fe119ce78019f2c28ba443dfc8343c82e0edfe1fe96af1d1fa7e8f59",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "consistency.json",
+      "normalPackSHA256": "0dd4724186b30722ea55bcba1dbc8b582535cf3c5a27bb3ade458aa3ddb6bdc5",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "package.json",
+      "normalPackSHA256": "4641ec614444b472c18f261b5bd212245c43215250c0d30239ef91fed2b4993c",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "README.md",
+      "normalPackSHA256": "4d95f59f8ec7eaea3382f0814cf432279e2add9a458d24666561acc10fc0ba2c",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/boundary.d.ts",
+      "normalPackSHA256": "8dfd202f8aca3db4f93e0931fd73fff29fc5e35eef5c4e9fa6b9ffe0cda4cbf4",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/canonical.d.ts",
+      "normalPackSHA256": "6c681a2fd375d36823cb3ec8c3ab8558e421ce2e67fffff19da525f68d99f364",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/host/contracts.d.ts",
+      "normalPackSHA256": "849ec9f421eb6922f39bcc30f3be1669f950e71af991c5a58d821b28af0f7e78",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/derive.d.ts",
+      "normalPackSHA256": "48cc7bce98bae9f02f44bf91ccb32211625733900155e31d3baf8a9562f35251",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/event-store.d.ts",
+      "normalPackSHA256": "93f5d775258493ed928b0ddd18edb66c5e186bda4c597dc1a2d4d1a6f95d0bad",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/events.d.ts",
+      "normalPackSHA256": "b0def98bb407ef6cc855c24d866fc19dfd14d60db05ba7a1bbbbe600318fb131",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/identity.d.ts",
+      "normalPackSHA256": "93874421cee7cd3a4a54de454b6c5d0652f901263ff4cfa68f67863d71f26bdb",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/client/index.d.ts",
+      "normalPackSHA256": "35538445a7d9526fab7f71f89b1675930da89c57e66e0f4ea114a941c1735c30",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/index.d.ts",
+      "normalPackSHA256": "60cb43c6fbfacb66c559c9f9b20e2be78fd096b64c1198892baadfb84070e6a9",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/host/index.d.ts",
+      "normalPackSHA256": "3db8384c39c8130534ad047ffe7b4ff9b1e2ae50eab56460ecdc6bbfef32e4fd",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/pins.d.ts",
+      "normalPackSHA256": "3f00d9e539497ec1856795468d48a9cbd80ca125f67da3e473043fde929000d0",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/privacy.d.ts",
+      "normalPackSHA256": "61fa8b3e11a7a1789beb6b1dfbcb78aab083a4f8c4112d6a94c40d0e5c500710",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/project.d.ts",
+      "normalPackSHA256": "c5086dac12d1f8281cc73cc24daef4c7e239f4a04089da1af6e9bee112ad2e23",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/query.d.ts",
+      "normalPackSHA256": "b475592fb8f689bbe7875a387d347cb37fedb2e5253665f053834f9d404cdb29",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/store.d.ts",
+      "normalPackSHA256": "bf92cba134b6ea67e0db01a3a8b6a8f5d34daba9507d1138ea9ef85b86290b7b",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/types.d.ts",
+      "normalPackSHA256": "e360fc9a35bb9b0de1267bb9692e5073b04e7b1c1ec5fd7b2f8d51df15cfbc69",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/validate.d.ts",
+      "normalPackSHA256": "0c5e3e26ddbe146e984b75cd5829d9b1c4c84785b1063979949c7582b47c8355",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "lib/core/view.d.ts",
+      "normalPackSHA256": "75086d5f669d6dac26f93c72859771040b58a79c9b99dcb3924dc6c24f33d8ff",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    },
+    {
+      "file": "profile/cordis.patch.yml",
+      "normalPackSHA256": "4ac8d80b2c30a09a6823eba9786a5212bac4502f408647c01dca505f15e52580",
+      "equalActualInstall": true,
+      "equalPassedSource": true,
+      "equalCurrentSource": true
+    }
+  ]
+}

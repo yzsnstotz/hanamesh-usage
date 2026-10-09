@@ -1,0 +1,463 @@
+{
+  "normalPack": "/Users/yzliu/.cache/hanamesh-runs/CONTRACT-SERVER-USAGE-MAJOR-COMPAT-01/identity-rc2-actual-20261009/candidate/hanamesh-server-usage-0.3.1-rc.1.tgz",
+  "sha256": "1f7bbadac38cc560f5a3fe98e2c2cc438b15fe67aaf2d847f3a96de048fd116a",
+  "bytes": 84290,
+  "members": 56,
+  "all56EqualCurrentTag": true,
+  "samePrevious": 53,
+  "changedMetadataOnly": [
+    "package.json",
+    "docs/DEVKIT_LICENSE_RECORD.md",
+    "README.md"
+  ],
+  "files": [
+    {
+      "file": "dist/http/dev-usage/page.css",
+      "normalPackSHA256": "65b5ed7bf2a5bbc6f85af956b41f24dfad6a1980545fece2e44966e588af7b1f",
+      "publishedTagSHA256": "65b5ed7bf2a5bbc6f85af956b41f24dfad6a1980545fece2e44966e588af7b1f",
+      "previousPublishedSHA256": "65b5ed7bf2a5bbc6f85af956b41f24dfad6a1980545fece2e44966e588af7b1f",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/http/dev-usage/page.html",
+      "normalPackSHA256": "ee3f103cc5f55a0658b2686f243e239e8cee608ed4a6cd4e36b6886a7e2bdc2b",
+      "publishedTagSHA256": "ee3f103cc5f55a0658b2686f243e239e8cee608ed4a6cd4e36b6886a7e2bdc2b",
+      "previousPublishedSHA256": "ee3f103cc5f55a0658b2686f243e239e8cee608ed4a6cd4e36b6886a7e2bdc2b",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/database/columns.js",
+      "normalPackSHA256": "6879b7b4511e255192db9309315f7ea477a3153e95e8f0aee51bb24eafc123ab",
+      "publishedTagSHA256": "6879b7b4511e255192db9309315f7ea477a3153e95e8f0aee51bb24eafc123ab",
+      "previousPublishedSHA256": "6879b7b4511e255192db9309315f7ea477a3153e95e8f0aee51bb24eafc123ab",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/contracts.js",
+      "normalPackSHA256": "77ee6d6939917d33260254a3b746a21615b5f7f1e625fe0836802e47923b20b4",
+      "publishedTagSHA256": "77ee6d6939917d33260254a3b746a21615b5f7f1e625fe0836802e47923b20b4",
+      "previousPublishedSHA256": "77ee6d6939917d33260254a3b746a21615b5f7f1e625fe0836802e47923b20b4",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/http/dev-page.js",
+      "normalPackSHA256": "342e7c01ef03491038c8977ba7772f904e02230b7c02d30686e2ca8647baa9f7",
+      "publishedTagSHA256": "342e7c01ef03491038c8977ba7772f904e02230b7c02d30686e2ca8647baa9f7",
+      "previousPublishedSHA256": "342e7c01ef03491038c8977ba7772f904e02230b7c02d30686e2ca8647baa9f7",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/errors.js",
+      "normalPackSHA256": "ae4e3913be3462b89bcd7b9b490e336c00870beaea002115318a8ee5516db491",
+      "publishedTagSHA256": "ae4e3913be3462b89bcd7b9b490e336c00870beaea002115318a8ee5516db491",
+      "previousPublishedSHA256": "ae4e3913be3462b89bcd7b9b490e336c00870beaea002115318a8ee5516db491",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/database/events-repository.js",
+      "normalPackSHA256": "1182420a48d52334afc17aabd3700821936713981badfe56916fbc9c57dc065c",
+      "publishedTagSHA256": "1182420a48d52334afc17aabd3700821936713981badfe56916fbc9c57dc065c",
+      "previousPublishedSHA256": "1182420a48d52334afc17aabd3700821936713981badfe56916fbc9c57dc065c",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/events.js",
+      "normalPackSHA256": "930fa4db27b08c76b6320a0b5f9198632e75b4466bed9a8b2d0acec6609ccdc3",
+      "publishedTagSHA256": "930fa4db27b08c76b6320a0b5f9198632e75b4466bed9a8b2d0acec6609ccdc3",
+      "previousPublishedSHA256": "930fa4db27b08c76b6320a0b5f9198632e75b4466bed9a8b2d0acec6609ccdc3",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/identity-types.js",
+      "normalPackSHA256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "publishedTagSHA256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "previousPublishedSHA256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/conformance/index.js",
+      "normalPackSHA256": "7f2e83ba9e829f66d29bd445d259c27c899a7f8f970b5d5c6e2b629a072a0f11",
+      "publishedTagSHA256": "7f2e83ba9e829f66d29bd445d259c27c899a7f8f970b5d5c6e2b629a072a0f11",
+      "previousPublishedSHA256": "7f2e83ba9e829f66d29bd445d259c27c899a7f8f970b5d5c6e2b629a072a0f11",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/index.js",
+      "normalPackSHA256": "75b451fbe6014251404676b8a40d8f61a574f8e335a913e33142f76cdb70d86b",
+      "publishedTagSHA256": "75b451fbe6014251404676b8a40d8f61a574f8e335a913e33142f76cdb70d86b",
+      "previousPublishedSHA256": "75b451fbe6014251404676b8a40d8f61a574f8e335a913e33142f76cdb70d86b",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/http/limiter.js",
+      "normalPackSHA256": "05072d8c7b6700a7d2d0df9997b6b1a9226bfff5823b5ab5dc8084900989fb09",
+      "publishedTagSHA256": "05072d8c7b6700a7d2d0df9997b6b1a9226bfff5823b5ab5dc8084900989fb09",
+      "previousPublishedSHA256": "05072d8c7b6700a7d2d0df9997b6b1a9226bfff5823b5ab5dc8084900989fb09",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/migrations.js",
+      "normalPackSHA256": "4522cbaa566199f8d96b516767ed1ed8c589492901c53f6e730d4eeda1799320",
+      "publishedTagSHA256": "4522cbaa566199f8d96b516767ed1ed8c589492901c53f6e730d4eeda1799320",
+      "previousPublishedSHA256": "4522cbaa566199f8d96b516767ed1ed8c589492901c53f6e730d4eeda1799320",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/http/dev-usage/page.js",
+      "normalPackSHA256": "5ad750e6db6830b21b3c13c67df8addf07c901c3f5fcad4aa770f73da95f36ed",
+      "publishedTagSHA256": "5ad750e6db6830b21b3c13c67df8addf07c901c3f5fcad4aa770f73da95f36ed",
+      "previousPublishedSHA256": "5ad750e6db6830b21b3c13c67df8addf07c901c3f5fcad4aa770f73da95f36ed",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/http/plugin.js",
+      "normalPackSHA256": "a0a9384c612a6fe4647fe16e51109e8b2333b05958d49feb326be91ff80f0c39",
+      "publishedTagSHA256": "a0a9384c612a6fe4647fe16e51109e8b2333b05958d49feb326be91ff80f0c39",
+      "previousPublishedSHA256": "a0a9384c612a6fe4647fe16e51109e8b2333b05958d49feb326be91ff80f0c39",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/database/preflight.js",
+      "normalPackSHA256": "34bac438ae8236a36c18da1c2eda659252ef02a47a150d9c91f7710fd80e82be",
+      "publishedTagSHA256": "34bac438ae8236a36c18da1c2eda659252ef02a47a150d9c91f7710fd80e82be",
+      "previousPublishedSHA256": "34bac438ae8236a36c18da1c2eda659252ef02a47a150d9c91f7710fd80e82be",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/database/repository.js",
+      "normalPackSHA256": "c566568e59414fd4c7e40894177e904772eb55d0fcd89e12a6bc926d7caee9a8",
+      "publishedTagSHA256": "c566568e59414fd4c7e40894177e904772eb55d0fcd89e12a6bc926d7caee9a8",
+      "previousPublishedSHA256": "c566568e59414fd4c7e40894177e904772eb55d0fcd89e12a6bc926d7caee9a8",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/database/schema.js",
+      "normalPackSHA256": "7218b078e544d28f592377a5f955ef73141166856eb870752e92cd59c82fd15b",
+      "publishedTagSHA256": "7218b078e544d28f592377a5f955ef73141166856eb870752e92cd59c82fd15b",
+      "previousPublishedSHA256": "7218b078e544d28f592377a5f955ef73141166856eb870752e92cd59c82fd15b",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/server-contracts.js",
+      "normalPackSHA256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "publishedTagSHA256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "previousPublishedSHA256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/service.js",
+      "normalPackSHA256": "03afbbccec5e4a39161095da8e9639f42a9f243deb289e807f43aa2568bac022",
+      "publishedTagSHA256": "03afbbccec5e4a39161095da8e9639f42a9f243deb289e807f43aa2568bac022",
+      "previousPublishedSHA256": "03afbbccec5e4a39161095da8e9639f42a9f243deb289e807f43aa2568bac022",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/transaction.js",
+      "normalPackSHA256": "81a446d654b0afe71ee508bbcc88fa566131f1dcd23db9d9ca3b580c7b3e33e1",
+      "publishedTagSHA256": "81a446d654b0afe71ee508bbcc88fa566131f1dcd23db9d9ca3b580c7b3e33e1",
+      "previousPublishedSHA256": "81a446d654b0afe71ee508bbcc88fa566131f1dcd23db9d9ca3b580c7b3e33e1",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/validation.js",
+      "normalPackSHA256": "19eed453695d112e481d2bd9df46a3a8cb7088bc2e9e06ad43405c5df08a7ced",
+      "publishedTagSHA256": "19eed453695d112e481d2bd9df46a3a8cb7088bc2e9e06ad43405c5df08a7ced",
+      "previousPublishedSHA256": "19eed453695d112e481d2bd9df46a3a8cb7088bc2e9e06ad43405c5df08a7ced",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "migrations/checksums.json",
+      "normalPackSHA256": "c37b098fac6536abebf920b8c082a55509b007501b473ab079a7cd34f29695a5",
+      "publishedTagSHA256": "c37b098fac6536abebf920b8c082a55509b007501b473ab079a7cd34f29695a5",
+      "previousPublishedSHA256": "c37b098fac6536abebf920b8c082a55509b007501b473ab079a7cd34f29695a5",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "consistency.json",
+      "normalPackSHA256": "75489e1e7b48c4f4da852f0bcdf7cc0472d8232c58d86ec8f5490afa09bdddb9",
+      "publishedTagSHA256": "75489e1e7b48c4f4da852f0bcdf7cc0472d8232c58d86ec8f5490afa09bdddb9",
+      "previousPublishedSHA256": "75489e1e7b48c4f4da852f0bcdf7cc0472d8232c58d86ec8f5490afa09bdddb9",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/database/constraints.json",
+      "normalPackSHA256": "06cc8318f2f93e43b4c3f1e324fae265e482e82031fbe8a2773ebf07732cdaf0",
+      "publishedTagSHA256": "06cc8318f2f93e43b4c3f1e324fae265e482e82031fbe8a2773ebf07732cdaf0",
+      "previousPublishedSHA256": "06cc8318f2f93e43b4c3f1e324fae265e482e82031fbe8a2773ebf07732cdaf0",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "contract/fixtures.json",
+      "normalPackSHA256": "a9976dfd27fcdea9ce812a7273c4bd7a34979d55de3aed4aec1de57b1e3e45d1",
+      "publishedTagSHA256": "a9976dfd27fcdea9ce812a7273c4bd7a34979d55de3aed4aec1de57b1e3e45d1",
+      "previousPublishedSHA256": "a9976dfd27fcdea9ce812a7273c4bd7a34979d55de3aed4aec1de57b1e3e45d1",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "package.json",
+      "normalPackSHA256": "bbba3404bd7ada36e462466044e45ce64261d2a14757dd005ae073853bb5f8a6",
+      "publishedTagSHA256": "bbba3404bd7ada36e462466044e45ce64261d2a14757dd005ae073853bb5f8a6",
+      "previousPublishedSHA256": "cb536988ba27759dcfd238fb8545d8af465264d0150218e400c0d4f833a87e73",
+      "equalCurrentTag": true,
+      "equalPreviousTag": false
+    },
+    {
+      "file": "contract/usage-contract.schema.json",
+      "normalPackSHA256": "8055477927a45b7f2c1d5710172c5c4b6563496e06c8267969f2d8f4951434d6",
+      "publishedTagSHA256": "8055477927a45b7f2c1d5710172c5c4b6563496e06c8267969f2d8f4951434d6",
+      "previousPublishedSHA256": "8055477927a45b7f2c1d5710172c5c4b6563496e06c8267969f2d8f4951434d6",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "AGENTS.md",
+      "normalPackSHA256": "96b2314e03af174615eeedeb3f63f41d812ba73a7b71df39570451b7ac051cf0",
+      "publishedTagSHA256": "96b2314e03af174615eeedeb3f63f41d812ba73a7b71df39570451b7ac051cf0",
+      "previousPublishedSHA256": "96b2314e03af174615eeedeb3f63f41d812ba73a7b71df39570451b7ac051cf0",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "docs/API.md",
+      "normalPackSHA256": "7a8a78e5ab29a448f4bdb0fca5b4cc532e1cdeb9555fc356964a9716f3811ffd",
+      "publishedTagSHA256": "7a8a78e5ab29a448f4bdb0fca5b4cc532e1cdeb9555fc356964a9716f3811ffd",
+      "previousPublishedSHA256": "7a8a78e5ab29a448f4bdb0fca5b4cc532e1cdeb9555fc356964a9716f3811ffd",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "docs/DEVKIT_LICENSE_RECORD.md",
+      "normalPackSHA256": "4173674e5223e9a133d6e55238da482758222ad4736fcc26ab54a990950c9435",
+      "publishedTagSHA256": "4173674e5223e9a133d6e55238da482758222ad4736fcc26ab54a990950c9435",
+      "previousPublishedSHA256": "973aa9fc94ddde051091221b70cf99231a535503600a6055b8c52936459cd6cb",
+      "equalCurrentTag": true,
+      "equalPreviousTag": false
+    },
+    {
+      "file": "migrations/meta/README.md",
+      "normalPackSHA256": "2eadf517af9f6afb8d4442d8ab67c33a50bd90487521f4ff8c9a65ceedd47800",
+      "publishedTagSHA256": "2eadf517af9f6afb8d4442d8ab67c33a50bd90487521f4ff8c9a65ceedd47800",
+      "previousPublishedSHA256": "2eadf517af9f6afb8d4442d8ab67c33a50bd90487521f4ff8c9a65ceedd47800",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "README.md",
+      "normalPackSHA256": "ebb9164bbde3d49fa060a7f39126bf25714c1f03cf0ab4a161b3e977d7af4c48",
+      "publishedTagSHA256": "ebb9164bbde3d49fa060a7f39126bf25714c1f03cf0ab4a161b3e977d7af4c48",
+      "previousPublishedSHA256": "2bace0ba86cf2a30c44846f63ceb9eeac4cdbdd1da8b342e7d3b2987ed46e9b9",
+      "equalCurrentTag": true,
+      "equalPreviousTag": false
+    },
+    {
+      "file": "docs/SECURITY.md",
+      "normalPackSHA256": "b5799d7f31b5761147aa14adf0fdbf2380c5885e54b1540d051a7e89a79a1ba4",
+      "publishedTagSHA256": "b5799d7f31b5761147aa14adf0fdbf2380c5885e54b1540d051a7e89a79a1ba4",
+      "previousPublishedSHA256": "b5799d7f31b5761147aa14adf0fdbf2380c5885e54b1540d051a7e89a79a1ba4",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "migrations/0000_usage.sql",
+      "normalPackSHA256": "5f6612407e692a5a78b40f229a24d0a1a85f27e73f5765f722e3fdd0eeb11026",
+      "publishedTagSHA256": "5f6612407e692a5a78b40f229a24d0a1a85f27e73f5765f722e3fdd0eeb11026",
+      "previousPublishedSHA256": "5f6612407e692a5a78b40f229a24d0a1a85f27e73f5765f722e3fdd0eeb11026",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "migrations/0001_usage_events.sql",
+      "normalPackSHA256": "7beb0314e6b40e2f851591173c4139fdb554f8396b3ffeee9632cc66b11c7058",
+      "publishedTagSHA256": "7beb0314e6b40e2f851591173c4139fdb554f8396b3ffeee9632cc66b11c7058",
+      "previousPublishedSHA256": "7beb0314e6b40e2f851591173c4139fdb554f8396b3ffeee9632cc66b11c7058",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "migrations/0002_usage_receipts.sql",
+      "normalPackSHA256": "3eb134f797bc374be1a5c8b53162dde7208acb85bbf25004635693ad32bad770",
+      "publishedTagSHA256": "3eb134f797bc374be1a5c8b53162dde7208acb85bbf25004635693ad32bad770",
+      "previousPublishedSHA256": "3eb134f797bc374be1a5c8b53162dde7208acb85bbf25004635693ad32bad770",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/database/columns.d.ts",
+      "normalPackSHA256": "ae1d14986564ed8128949f199f4fc41154363fe71146f76ecf821cb679f90036",
+      "publishedTagSHA256": "ae1d14986564ed8128949f199f4fc41154363fe71146f76ecf821cb679f90036",
+      "previousPublishedSHA256": "ae1d14986564ed8128949f199f4fc41154363fe71146f76ecf821cb679f90036",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/contracts.d.ts",
+      "normalPackSHA256": "b3fdfc1cf4786e03f0c75bd77a2999921ed6f243119621603bc0041568b99b39",
+      "publishedTagSHA256": "b3fdfc1cf4786e03f0c75bd77a2999921ed6f243119621603bc0041568b99b39",
+      "previousPublishedSHA256": "b3fdfc1cf4786e03f0c75bd77a2999921ed6f243119621603bc0041568b99b39",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/http/dev-page.d.ts",
+      "normalPackSHA256": "338bf905dad7b8c13289dd3f59f2b88e2e5e6fb4a7f11a7a9d6efedaa70ce294",
+      "publishedTagSHA256": "338bf905dad7b8c13289dd3f59f2b88e2e5e6fb4a7f11a7a9d6efedaa70ce294",
+      "previousPublishedSHA256": "338bf905dad7b8c13289dd3f59f2b88e2e5e6fb4a7f11a7a9d6efedaa70ce294",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/errors.d.ts",
+      "normalPackSHA256": "1973ed657ab877b58b12251c8d46dd6a2f0aa5726f6d76ff0bd4e50815a46246",
+      "publishedTagSHA256": "1973ed657ab877b58b12251c8d46dd6a2f0aa5726f6d76ff0bd4e50815a46246",
+      "previousPublishedSHA256": "1973ed657ab877b58b12251c8d46dd6a2f0aa5726f6d76ff0bd4e50815a46246",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/database/events-repository.d.ts",
+      "normalPackSHA256": "28d3e0ca3a59a252fbba12cd36a312402567cd45bf129deeaddea8aa55cc4fa9",
+      "publishedTagSHA256": "28d3e0ca3a59a252fbba12cd36a312402567cd45bf129deeaddea8aa55cc4fa9",
+      "previousPublishedSHA256": "28d3e0ca3a59a252fbba12cd36a312402567cd45bf129deeaddea8aa55cc4fa9",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/events.d.ts",
+      "normalPackSHA256": "dc72bcb0cd724b9e5ce02e462589c56c9bbc15aadfdbc9e2b0d68c8c8b15901f",
+      "publishedTagSHA256": "dc72bcb0cd724b9e5ce02e462589c56c9bbc15aadfdbc9e2b0d68c8c8b15901f",
+      "previousPublishedSHA256": "dc72bcb0cd724b9e5ce02e462589c56c9bbc15aadfdbc9e2b0d68c8c8b15901f",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/identity-types.d.ts",
+      "normalPackSHA256": "2583441a08d3c236ce095f9739bc9eb3f582d370e724cf2f9690ca9b2a1424c4",
+      "publishedTagSHA256": "2583441a08d3c236ce095f9739bc9eb3f582d370e724cf2f9690ca9b2a1424c4",
+      "previousPublishedSHA256": "2583441a08d3c236ce095f9739bc9eb3f582d370e724cf2f9690ca9b2a1424c4",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/conformance/index.d.ts",
+      "normalPackSHA256": "3d32a52263f51ad1bf349426c94afafec3b8a4f494e26530ba73ee01112d8b4b",
+      "publishedTagSHA256": "3d32a52263f51ad1bf349426c94afafec3b8a4f494e26530ba73ee01112d8b4b",
+      "previousPublishedSHA256": "3d32a52263f51ad1bf349426c94afafec3b8a4f494e26530ba73ee01112d8b4b",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/index.d.ts",
+      "normalPackSHA256": "1bba32e45b89f6cb25a05ec2907594ee3fdd6281a9022b588f19ac31c47753eb",
+      "publishedTagSHA256": "1bba32e45b89f6cb25a05ec2907594ee3fdd6281a9022b588f19ac31c47753eb",
+      "previousPublishedSHA256": "1bba32e45b89f6cb25a05ec2907594ee3fdd6281a9022b588f19ac31c47753eb",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/http/limiter.d.ts",
+      "normalPackSHA256": "f88dce5381b7a76387ac6aaca14a2515ca1c55b3101a576f36298a246dd9c104",
+      "publishedTagSHA256": "f88dce5381b7a76387ac6aaca14a2515ca1c55b3101a576f36298a246dd9c104",
+      "previousPublishedSHA256": "f88dce5381b7a76387ac6aaca14a2515ca1c55b3101a576f36298a246dd9c104",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/migrations.d.ts",
+      "normalPackSHA256": "1dabd775f3cff448a6f4291cca54dfc02c53ed7533786adeec0f922a9533b008",
+      "publishedTagSHA256": "1dabd775f3cff448a6f4291cca54dfc02c53ed7533786adeec0f922a9533b008",
+      "previousPublishedSHA256": "1dabd775f3cff448a6f4291cca54dfc02c53ed7533786adeec0f922a9533b008",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/http/plugin.d.ts",
+      "normalPackSHA256": "8e456d8779a07f6c42d1f50f57f498b03e2a468f9818e66755e47288d90972a1",
+      "publishedTagSHA256": "8e456d8779a07f6c42d1f50f57f498b03e2a468f9818e66755e47288d90972a1",
+      "previousPublishedSHA256": "8e456d8779a07f6c42d1f50f57f498b03e2a468f9818e66755e47288d90972a1",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/database/preflight.d.ts",
+      "normalPackSHA256": "8d0930276be167e20e8b950c9948930e864963187bd0ecec74d7f72506f0c364",
+      "publishedTagSHA256": "8d0930276be167e20e8b950c9948930e864963187bd0ecec74d7f72506f0c364",
+      "previousPublishedSHA256": "8d0930276be167e20e8b950c9948930e864963187bd0ecec74d7f72506f0c364",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/database/repository.d.ts",
+      "normalPackSHA256": "f4808c74cbc004e396a702e18c8f2b5a3a1a3a59df6eab16deebe20d4b2e5c43",
+      "publishedTagSHA256": "f4808c74cbc004e396a702e18c8f2b5a3a1a3a59df6eab16deebe20d4b2e5c43",
+      "previousPublishedSHA256": "f4808c74cbc004e396a702e18c8f2b5a3a1a3a59df6eab16deebe20d4b2e5c43",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/database/schema.d.ts",
+      "normalPackSHA256": "3e2d5494c69e2bbb24bcb11849cc21af32bcf42550323f76a3c0c229ee526e3e",
+      "publishedTagSHA256": "3e2d5494c69e2bbb24bcb11849cc21af32bcf42550323f76a3c0c229ee526e3e",
+      "previousPublishedSHA256": "3e2d5494c69e2bbb24bcb11849cc21af32bcf42550323f76a3c0c229ee526e3e",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/server-contracts.d.ts",
+      "normalPackSHA256": "22b79a3ca0a53570c18870da6884fe00811de4264d1dc4faae23bdbf4116e063",
+      "publishedTagSHA256": "22b79a3ca0a53570c18870da6884fe00811de4264d1dc4faae23bdbf4116e063",
+      "previousPublishedSHA256": "22b79a3ca0a53570c18870da6884fe00811de4264d1dc4faae23bdbf4116e063",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/service.d.ts",
+      "normalPackSHA256": "0a855eb86c7898296a2f838418cbfd2f560fca0b3e0c05ea12100f5eb625fb09",
+      "publishedTagSHA256": "0a855eb86c7898296a2f838418cbfd2f560fca0b3e0c05ea12100f5eb625fb09",
+      "previousPublishedSHA256": "0a855eb86c7898296a2f838418cbfd2f560fca0b3e0c05ea12100f5eb625fb09",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/transaction.d.ts",
+      "normalPackSHA256": "bb60d5db169de2ea45f554a23ebcbad8dc09cb8bfda0e2d0194bf74fd48d12a1",
+      "publishedTagSHA256": "bb60d5db169de2ea45f554a23ebcbad8dc09cb8bfda0e2d0194bf74fd48d12a1",
+      "previousPublishedSHA256": "bb60d5db169de2ea45f554a23ebcbad8dc09cb8bfda0e2d0194bf74fd48d12a1",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    },
+    {
+      "file": "dist/validation.d.ts",
+      "normalPackSHA256": "b874975ab786489481a5a30333a30e0c94bc638d6ef988f05ce236987f3e27dc",
+      "publishedTagSHA256": "b874975ab786489481a5a30333a30e0c94bc638d6ef988f05ce236987f3e27dc",
+      "previousPublishedSHA256": "b874975ab786489481a5a30333a30e0c94bc638d6ef988f05ce236987f3e27dc",
+      "equalCurrentTag": true,
+      "equalPreviousTag": true
+    }
+  ]
+}

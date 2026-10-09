@@ -1,0 +1,33 @@
+{
+  "rerun": false,
+  "why": "Actual Usage19 all50 files unchanged; Core public source5 exact; latest normal ServerUsage56 exact tag and previous business/contract53 exact; reuse passed source gates only",
+  "core": {
+    "publishedSource": {
+      "tag": "v0.3.2",
+      "tagObject": "f8bd539f5390cdd1614eb6bf95d3866ead86ab9d",
+      "target": "00b936fcff8c3bff462fcfa14ce4f1729704f215",
+      "freshRemote": "f8bd539f5390cdd1614eb6bf95d3866ead86ab9d\trefs/tags/v0.3.2\n00b936fcff8c3bff462fcfa14ce4f1729704f215\trefs/tags/v0.3.2^{}\n"
+    },
+    "originalReceipt": {
+      "path": "/Users/yzliu/.cache/hanamesh-pm-1921-docs-merge/bluemap/cards/MERGE-USAGE-MAIN-01/evidence/normal-consumer/contract-consumer.json",
+      "sha256": "bd74f90eadf105d02f740f4d4c9c7f3cb20821dd004bae116c6112581753ebd4"
+    },
+    "consumer": "13/13 inherited SOURCE/FIXTURE"
+  },
+  "serverUsage": {
+    "publishedSource": {
+      "tag": "v0.3.1-rc.1",
+      "tagObject": "1a5eca5fbfa4b0113ebf19162d3bebc6f70d06bc",
+      "target": "24299fb8f8ed22edb3200b4871cc2f11041c0b61",
+      "freshRemote": "1a5eca5fbfa4b0113ebf19162d3bebc6f70d06bc\trefs/tags/v0.3.1-rc.1\n24299fb8f8ed22edb3200b4871cc2f11041c0b61\trefs/tags/v0.3.1-rc.1^{}\n"
+    },
+    "originalReceipt": {
+      "path": "/Users/yzliu/.cache/hanamesh-runs/MERGE-USAGE-MAIN-01/srv03-0f07fcbb-afe9-4b50-b429-8ee5314ff8b1/evidence/consumer-suite.json",
+      "sha256": "259601fe7bace18e00031f017bdd8fdaab4d89535a81c0d5558f231c71ad3932"
+    },
+    "consumer": "C-canonical3/C-sign3/C-device-id accept5 reject8/C-events1 inherited SOURCE/FIXTURE",
+    "contractVersion": "0.3.0-rc.1",
+    "packageVersion": "0.3.1-rc.1"
+  },
+  "supplierActual": "Current ServerUsage supplier normal actual HTTP10/package7 and Core current source gate already collected by PM; reference only, not rerun here"
+}
