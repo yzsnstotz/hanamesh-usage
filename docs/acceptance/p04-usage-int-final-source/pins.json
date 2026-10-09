@@ -1,0 +1,186 @@
+{
+  "Host35": {
+    "name": "hanamesh-server",
+    "version": "0.2.0-rc.35",
+    "peerDependencies": {
+      "@hanamesh/server-chain": "0.1.0-rc.11",
+      "@hanamesh/server-claim": "0.1.0-rc.11",
+      "@hanamesh/server-custody": "0.1.0-rc.20",
+      "@hanamesh/server-identity": "0.2.0-rc.7",
+      "@hanamesh/server-indexer": "0.1.0-rc.16",
+      "@hanamesh/server-probe-module": "0.1.0",
+      "@hanamesh/server-provider-registry": "0.1.0-rc.3",
+      "@hanamesh/server-registry": "0.1.0-rc.11",
+      "@hanamesh/server-revenue-router": "0.1.0-rc.3",
+      "@hanamesh/server-semantic": "0.1.0-rc.3",
+      "@hanamesh/server-usage": "0.2.0-rc.12"
+    },
+    "devDependencies": {
+      "@types/node": "24.13.4",
+      "@types/pg": "8.23.1",
+      "typescript": "5.9.3",
+      "@hanamesh/server-chain": "file:vendor/hanamesh-server-chain-0.1.0-rc.11.tgz",
+      "@hanamesh/server-claim": "file:vendor/hanamesh-server-claim-0.1.0-rc.11.tgz",
+      "@hanamesh/server-custody": "file:vendor/hanamesh-server-custody-0.1.0-rc.20.tgz",
+      "@hanamesh/server-identity": "file:vendor/hanamesh-server-identity-0.2.0-rc.7.tgz",
+      "@hanamesh/server-indexer": "file:vendor/hanamesh-server-indexer-0.1.0-rc.16.tgz",
+      "@hanamesh/server-probe-module": "file:vendor/hanamesh-server-probe-module-0.1.0.tgz",
+      "@hanamesh/server-provider-registry": "file:vendor/hanamesh-server-provider-registry-0.1.0-rc.3.tgz",
+      "@hanamesh/server-registry": "file:vendor/hanamesh-server-registry-0.1.0-rc.11.tgz",
+      "@hanamesh/server-revenue-router": "file:vendor/hanamesh-server-revenue-router-0.1.0-rc.3.tgz",
+      "@hanamesh/server-semantic": "file:vendor/hanamesh-server-semantic-0.1.0-rc.3.tgz",
+      "@hanamesh/server-usage": "file:vendor/hanamesh-server-usage-0.2.0-rc.12.tgz"
+    },
+    "hanamesh": null
+  },
+  "ServerUsage13": {
+    "name": "@hanamesh/server-usage",
+    "version": "0.2.0-rc.13",
+    "peerDependencies": {
+      "@hanamesh/server-identity": "0.2.0-rc.7",
+      "fastify": "5.12.3",
+      "drizzle-orm": "0.45.2",
+      "pg": "8.23.0",
+      "@hanamesh/devkit": "0.1.0-rc.2"
+    },
+    "devDependencies": {
+      "@hanamesh/server-identity": "file:vendor/hanamesh-server-identity-0.2.0-rc.7.tgz",
+      "@types/node": "24.13.4",
+      "@types/pg": "8.23.1",
+      "drizzle-orm": "0.45.2",
+      "fastify": "5.12.3",
+      "pg": "8.23.0",
+      "typescript": "5.9.3",
+      "@hanamesh/devkit": "file:vendor/hanamesh-devkit-0.1.0-rc.2.tgz"
+    },
+    "hanamesh": {
+      "module": "srv-usage",
+      "protocolVersion": "1",
+      "toolchain": {
+        "node": "24.13.1",
+        "pnpm": "10.33.0",
+        "typescript": "5.9.3",
+        "@types/node": "24.13.4"
+      },
+      "identityArtifact": {
+        "path": "vendor/hanamesh-server-identity-0.2.0-rc.7.tgz",
+        "sha256": "7edf2bed46ed036b2cb2959df584b86e8cc985a4aee8fa051fc340e9550ecb63"
+      },
+      "contract": {
+        "version": "0.2.0-rc.13",
+        "schema": "./contract/schema.json",
+        "fixtures": "./contract/fixtures.json",
+        "suite": "./conformance"
+      }
+    }
+  },
+  "Identity10": {
+    "name": "@hanamesh/server-identity",
+    "version": "0.2.0-rc.10",
+    "peerDependencies": {
+      "@hanamesh/devkit": "0.1.0-rc.2",
+      "fastify": "5.12.3"
+    },
+    "devDependencies": {
+      "@hanamesh/devkit": "file:vendor/hanamesh-devkit-0.1.0-rc.2.tgz",
+      "@types/node": "24.3.0",
+      "fastify": "5.12.3",
+      "typescript": "5.9.3"
+    },
+    "hanamesh": null
+  },
+  "Usage16": {
+    "name": "hanamesh-usage",
+    "version": "0.2.0-rc.16",
+    "peerDependencies": {
+      "@deepseek-ai/cordis": "4.0.4",
+      "@deepseek-ai/dsh-agent": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-attachment": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-client-connection": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-llm": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-session": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-session-persistence": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-storage": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-storage-domain": "0.2.0-rc.2",
+      "zod": "4.5.4"
+    },
+    "devDependencies": {
+      "@deepseek-ai/cordis": "4.0.4",
+      "@deepseek-ai/dsh-agent": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-attachment": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-client-connection": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-llm": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-scope": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-session": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-session-persistence": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-storage": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-storage-domain": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-system-prompt": "0.2.0-rc.2",
+      "@deepseek-ai/schemastery": "3.18.4",
+      "@types/node": "24.13.4",
+      "@types/react": "18.3.1",
+      "react": "18.3.1",
+      "typescript": "5.9.3",
+      "zod": "4.5.4"
+    },
+    "hanamesh": null
+  },
+  "Core55": {
+    "name": "hanamesh-core",
+    "version": "0.2.0-rc.55",
+    "peerDependencies": {
+      "@deepseek-ai/cordis": "4.0.4",
+      "@deepseek-ai/dsh-client-connection": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-storage-domain": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-client-ui-settings": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-client-ui-sidebar": "0.2.0-rc.2",
+      "react": "18.3.1",
+      "zod": "4.5.4",
+      "@hanamesh/devkit": "0.1.0-rc.1"
+    },
+    "devDependencies": {
+      "@deepseek-ai/cordis": "4.0.4",
+      "@deepseek-ai/dsh-client-connection": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-storage-domain": "0.2.0-rc.2",
+      "@types/node": "24.13.4",
+      "@types/react": "18.3.12",
+      "react": "18.3.1",
+      "typescript": "5.9.3",
+      "zod": "4.5.4",
+      "@deepseek-ai/dsh-typert-protocol": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-client-ui-settings": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-client-ui-sidebar": "0.2.0-rc.2",
+      "@hanamesh/devkit": "file:vendor/hanamesh-devkit-0.1.0-rc.1.tgz"
+    },
+    "hanamesh": null
+  },
+  "Core56": {
+    "name": "hanamesh-core",
+    "version": "0.2.0-rc.56",
+    "peerDependencies": {
+      "@deepseek-ai/cordis": "4.0.4",
+      "@deepseek-ai/dsh-client-connection": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-storage-domain": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-client-ui-settings": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-client-ui-sidebar": "0.2.0-rc.2",
+      "react": "18.3.1",
+      "zod": "4.5.4",
+      "@hanamesh/devkit": "0.1.0-rc.1"
+    },
+    "devDependencies": {
+      "@deepseek-ai/cordis": "4.0.4",
+      "@deepseek-ai/dsh-client-connection": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-storage-domain": "0.2.0-rc.2",
+      "@types/node": "24.13.4",
+      "@types/react": "18.3.12",
+      "react": "18.3.1",
+      "typescript": "5.9.3",
+      "zod": "4.5.4",
+      "@deepseek-ai/dsh-typert-protocol": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-client-ui-settings": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-client-ui-sidebar": "0.2.0-rc.2",
+      "@hanamesh/devkit": "file:vendor/hanamesh-devkit-0.1.0-rc.1.tgz"
+    },
+    "hanamesh": null
+  }
+}

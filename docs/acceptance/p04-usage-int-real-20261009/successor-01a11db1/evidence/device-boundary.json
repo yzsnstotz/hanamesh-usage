@@ -1,0 +1,22 @@
+{
+  "observerOnly": true,
+  "targetDevice": "GlddWEuTPx1eM81_a8pYNt9byskcX8KoM4GEG0sf2Cg",
+  "GET": {
+    "httpStatus": 403,
+    "body": {
+      "error": {
+        "code": "USAGE_DEVICE_MISMATCH",
+        "message": "Authenticated device does not match the event device."
+      }
+    }
+  },
+  "DELETE": {
+    "httpStatus": 403,
+    "body": {
+      "error": {
+        "code": "USAGE_DEVICE_MISMATCH",
+        "message": "Authenticated device does not match the event device."
+      }
+    }
+  }
+}

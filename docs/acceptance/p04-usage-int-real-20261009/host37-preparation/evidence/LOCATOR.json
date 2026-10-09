@@ -1,0 +1,46 @@
+{
+  "label": "TEST ONLY · P04 usage hook fault supply · not a production Host",
+  "card": "P04-HOST-IDENTITY10-USAGE14-SUPPLY-01",
+  "startedAt": "2026-10-08T23:40:34.390Z",
+  "pid": 39742,
+  "package": {
+    "name": "hanamesh-server",
+    "version": "0.2.0-rc.37",
+    "root": "/Users/yzliu/.cache/hanamesh-runs/P04-HOST-IDENTITY10-USAGE14-SUPPLY-01/5fefaad7-c0f6-49fc-8960-eeba144e0908/consumer/node_modules/.pnpm/hanamesh-server@file+vendor+hanamesh-server-0.2.0-rc.37.tgz_7ce5cb8873d527398356057121c206b8/node_modules/hanamesh-server"
+  },
+  "hostUrl": "http://127.0.0.1:53307",
+  "identityDeploymentId": "p04-hook-fault-59afe8edd30f787f",
+  "control": {
+    "url": "http://127.0.0.1:53309",
+    "arm": "POST /arm (Content-Type: application/json, body {}) — one-shot: the next batch with accepted events fails after the real points hook",
+    "disarm": "POST /disarm",
+    "state": "GET /state"
+  },
+  "expected": {
+    "armedBatch": "503 {\"error\":{\"code\":\"USAGE_EVENT_HOOK_FAILED\"}} and the whole batch rolled back",
+    "afterwards": "normal resend of the same signed events is accepted once"
+  },
+  "postgres": {
+    "version": "17.11 (Debian 17.11-1.pgdg12+2)",
+    "container": "hm-p04-usage-hook-fault-59afe8edd30f787f",
+    "image": "sha256:cf134a767f474095eeba57e0117be8e568e011a63f33fbf252f14c9b760f8e6f",
+    "loopbackPort": 32868,
+    "database": "hm_test",
+    "tmpfs": true,
+    "runtimeRole": "hm_runtime",
+    "readerRole": "hm_test_reader",
+    "readerEnvFile": "/Users/yzliu/.cache/hanamesh-runs/P04-HOST-IDENTITY10-USAGE14-SUPPLY-01/5fefaad7-c0f6-49fc-8960-eeba144e0908/supply/reader.env",
+    "migrations": {
+      "applied": 36,
+      "total": 36
+    }
+  },
+  "explicitTestSupplies": [
+    "CUSTODY_CHAIN_EXECUTOR=fake (FakeChainExecutor)",
+    "SEMANTIC_EMBEDDING_PROVIDER=stub",
+    "generated isolated secrets",
+    "IDENTITY_ALLOW_REGISTRATION=true on this TEST Host only",
+    "no OAuth/model/email actions"
+  ],
+  "stop": "kill -TERM 39742"
+}

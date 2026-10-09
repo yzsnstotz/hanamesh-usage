@@ -1,0 +1,21 @@
+{
+  "run": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-99f45855-26b9-4442-b66f-def549b4a2b2",
+  "hostPort": 54399,
+  "packages": {
+    "host": {
+      "path": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-99f45855-26b9-4442-b66f-def549b4a2b2/supply/hanamesh-server-0.2.0-rc.36.tgz",
+      "sha256": "f096b88b098a3372f827c0c827386de6ac91445d23d3807d5393c57cd20d4e08",
+      "bytes": 1465592
+    },
+    "core": {
+      "path": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-99f45855-26b9-4442-b66f-def549b4a2b2/supply/hanamesh-core-0.2.0-rc.56.tgz",
+      "sha256": "7342a2ab95b78a83d74a4c927039b4998f0dd76f3c7e8ed9b09c31700e642e28",
+      "bytes": 91797
+    },
+    "usage": {
+      "path": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-99f45855-26b9-4442-b66f-def549b4a2b2/supply/hanamesh-usage-0.2.0-rc.17.tgz",
+      "sha256": "063ae9b40a183de1ece5086300fe01fdbd29d9b478148e8053fb7c59b5c962b9",
+      "bytes": 47355
+    }
+  }
+}

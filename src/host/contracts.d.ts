@@ -39,7 +39,16 @@ export interface HealthSnapshot {
   withdrawal:{requestedAt:string;deviceId:string;state:'pending'|'sent'|'offline';attempts:number;deletedEvents:number|null;lastError:string|null}|null;
   inventory:{available:boolean;source:'loader'|'plugin-inventory'|'none';lastScanAt:string|null;detail:{package:string;serviceKey:string;methods:string[]}|null};
 }
+export interface RemoteEvent { eventId:string; hanaRef:string; action:UsageEvent['action']; occurredAt:string; receivedAt:string }
+/** This device's server records, read through the public device-signed route. `total` is null unless `state` is available. */
+export interface RemoteSnapshot {
+  state:'available'|'unknown'|'offline'; deviceId:string|null; total:number|null; events:RemoteEvent[];
+  code:'CORE_UNAVAILABLE'|'DEVICE_UNAVAILABLE'|'SERVER_ORIGIN_UNAVAILABLE'|'REMOTE_UNAUTHORIZED'|'REMOTE_UNAVAILABLE'|'REMOTE_RESPONSE_INVALID'|null;
+  httpStatus:number|null; checkedAt:string;
+}
 export interface UsageService {
+  /** Read-only, user-triggered: never writes local state and never collects. */
+  remote(): Promise<RemoteSnapshot>;
   query(filter?: Filter): QueryResult;
   export(filter?: Filter): QueryResult;
   events(filter?: {state?: UploadState; limit?: number; after?: string}): {total:number;events:UsageEvent[]};

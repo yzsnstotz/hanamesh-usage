@@ -1,7 +1,7 @@
 import type { Context } from '@deepseek-ai/cordis';
 import type { DomainSpec } from '@deepseek-ai/dsh-storage-domain';
 import type { Config } from './contracts.js';
-export type { Config, HealthSnapshot, RecordInput, RecordResult, UsageService, PanelTestSupply, PanelEvent, PanelSnapshot } from './contracts.js';
+export type { Config, HealthSnapshot, RecordInput, RecordResult, UsageService, PanelTestSupply, PanelEvent, PanelSnapshot, RemoteEvent, RemoteSnapshot } from './contracts.js';
 export declare const name: 'hanamesh-usage';
 export declare const inject: string[];
 export declare const usageDomainSpec: DomainSpec;

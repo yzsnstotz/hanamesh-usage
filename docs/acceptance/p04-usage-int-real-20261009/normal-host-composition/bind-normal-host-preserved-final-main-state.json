@@ -1,0 +1,3705 @@
+{
+  "coreSession": {
+    "protocolVersion": "1",
+    "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+    "registration": "registered",
+    "principalId": "7c857b07-2e22-47f5-8aa8-0cb326de0307",
+    "bound": false,
+    "serverReachable": true,
+    "checkedAt": "2026-10-08T22:53:01.571Z",
+    "reason": null
+  },
+  "consent": "granted",
+  "usageHealth": {
+    "pending": 0,
+    "recoveryComplete": true,
+    "failures": {
+      "INVENTORY_ENTRY_UNREADABLE": 105
+    },
+    "consent": "granted",
+    "core": "present",
+    "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+    "outbox": {
+      "state": "idle",
+      "pending": 0,
+      "sent": 180,
+      "duplicate": 1,
+      "rejected": 0,
+      "lastUploadAt": null,
+      "nextAttemptAt": null,
+      "lastError": null
+    },
+    "derive": {
+      "skipped": {
+        "consentWithheld": 0,
+        "executorUnavailable": 0,
+        "timeUnavailable": 0,
+        "noDevice": 0
+      }
+    },
+    "withdrawal": null,
+    "inventory": {
+      "available": true,
+      "source": "loader",
+      "lastScanAt": "2026-10-09T00:03:01.641Z",
+      "detail": {
+        "package": "@deepseek-ai/cordis",
+        "serviceKey": "loader",
+        "methods": [
+          "entries"
+        ]
+      }
+    }
+  },
+  "panel": {
+    "subject": {
+      "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+      "principalId": "7c857b07-2e22-47f5-8aa8-0cb326de0307",
+      "reason": null
+    },
+    "testSupply": {
+      "identity": false,
+      "receiver": false
+    },
+    "consent": "granted",
+    "core": "present",
+    "total": 181,
+    "outbox": {
+      "state": "idle",
+      "pending": 0,
+      "sent": 180,
+      "duplicate": 1,
+      "rejected": 0,
+      "lastUploadAt": null,
+      "nextAttemptAt": null,
+      "lastError": null
+    },
+    "failures": {
+      "INVENTORY_ENTRY_UNREADABLE": 105
+    },
+    "events": [
+      {
+        "eventId": "78a74567-c4cc-563c-9042-42936cc75fb8",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/cordis-plugin-timer",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/cordis-plugin-timer@1.1.6",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "fb2e3acb-30a5-53ca-bd29-2b51e1d88b00",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-agent",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-agent@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "2318bf81-3d8e-5a7f-9598-8b0f8d29e865",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-agent-default-model",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-agent-default-model@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "731a94a8-d8d5-5be0-8b50-11037fd7933a",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-agent-instructions",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-agent-instructions@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "5ff84691-b00c-5d98-bdec-5a80887813eb",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-agent-loop",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-agent-loop@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "31b4e416-1d4c-54e2-83b2-b177209d7cf8",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-agent-preset",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-agent-preset@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "f7230b03-b51e-583e-8de1-4027a9facd9f",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-agent-preset-registry",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-agent-preset-registry@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "6115da81-693c-5ad2-995d-92f4a4f080ad",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-api-account-controller",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-api-account-controller@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "38b4eb21-0f4a-5053-836f-12198ddd9e40",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-api-gateway",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-api-gateway@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "df932a7c-bf0c-5c3c-b640-39979542ecc6",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-api-job-controller",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-api-job-controller@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "08f3e0fb-2ce4-591c-a4ec-2f3d89b321e6",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-api-remotes",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-api-remotes@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "7d518813-c869-5a11-bba3-6970cdb2bdcb",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-api-session-controller",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-api-session-controller@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "53bb7667-645c-5094-ad2c-668791dfa079",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-api-settings-controller",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-api-settings-controller@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "4201e99c-72a5-50f1-b405-cd790c54bf20",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-api-terminal-controller",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-api-terminal-controller@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "811fba3a-0a44-5c7a-902e-b53619ed3c58",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-api-workspace-controller",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-api-workspace-controller@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "d1a6e57a-ad92-5800-ba7a-d039014efcff",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-api-workspace-files",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-api-workspace-files@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "4160347c-df34-5b46-bf53-0988d662122c",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-attachment-local",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-attachment-local@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "f5d37147-2135-5e4d-a2f9-a660061b4f97",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-authorization",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-authorization@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "a4e6398d-534e-5924-84f0-eea043c1fdc5",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-bash-sandbox",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-bash-sandbox@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "ae69ede4-cf3d-50c5-b9de-47ec73d6844b",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-connection",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-connection@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "2896c225-523f-5236-a10b-ab788814c9f0",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-file-upload",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-file-upload@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "ca5ae22d-bd12-56cb-8b33-4703f38d3c9a",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-hmr",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-hmr@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "3ddffd20-ad3b-5399-87d7-bdc91944cddc",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-locale",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-locale@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "cf747b4d-894a-58e2-a913-c75bdb030281",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-modules",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-modules@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "41072e8b-7e61-545c-9bca-ab41340bd2f7",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-product-analytics",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-product-analytics@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "9f943488-a286-5ced-8241-ab4838ab46b3",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-resources",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-resources@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "04695aa1-8eaa-562a-9502-bf73f50506e3",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-shortcuts",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-shortcuts@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "4b9f3f71-1aa2-5972-984b-678800001860",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-agent-preset",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-agent-preset@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "4b28ae71-2779-501e-9210-1952515707ac",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-approval",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-approval@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "298f3f09-f480-568b-9dc6-7bb5a4593ab5",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-attachment",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-attachment@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "d271e1a2-5932-5a01-9e69-ec62937a081c",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-brand-official",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-brand-official@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "02a31d64-c928-5e58-81f7-51579f23efb1",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-chat",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-chat@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "b619c435-0946-5e39-84d4-94e94d858ada",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-commands",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-commands@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "2211e48b-9a91-5ba5-868b-eda03b334b59",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-conversation",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-conversation@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "95a13112-3f59-5381-947a-d86c87c5935d",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-cordis",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-cordis@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "97d53858-13b2-5a0a-8cba-5ac3ff0a003c",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-deliverables",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-deliverables@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "b78dfd7e-5a4b-5238-ac3b-d49a2ef9c523",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-directory-picker-native",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-directory-picker-native@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "83222f6d-5dcb-5e80-b49b-cf20666047cb",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-goal",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-goal@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "9829a100-c395-5c66-8438-476f48f712f0",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-input-trigger",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-input-trigger@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "b3e8a9a1-71d8-52ac-aacd-f5822a018e38",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-jobs",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-jobs@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "79d90f8f-7b34-5362-ab6f-68bdd9e68021",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-layout",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-layout@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "c213bb2f-16f9-5382-9f4b-fd4dd1b4ad01",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-message-feedback",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-message-feedback@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "6284919c-80f9-56d4-8529-b7f9c01dd99a",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-model-selection",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-model-selection@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "2f541fa8-d478-5c7e-848d-2451347720f8",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-open-in-app",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-open-in-app@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "0ad6f499-5dcf-5c4b-8198-10c1201f8d74",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-permission-presets",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-permission-presets@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "ec07d543-b393-506f-9ff2-9d9aa10c3039",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-plan",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-plan@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "71f9700b-5f28-565a-9789-1048caa76a07",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-plugin-manager",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-plugin-manager@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "93d5d244-5b10-562a-a256-eddd9100baba",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-reference",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-reference@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "a20f360b-c8b2-5403-8361-06868245f9d8",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-renderer",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-renderer@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "983fdee8-11e9-55ce-8161-fe4dce2c9b4f",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-session",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-session@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "86565c20-d995-58f2-94e8-799b14c48ec3",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-settings",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-settings@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "47d21db2-809a-559d-8bc9-bb0726e01a23",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-settings-account",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-settings-account@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "557ad6b6-24af-5a8f-bcb8-b8d00834b3be",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-settings-agent-loop",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-settings-agent-loop@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "04850751-bba0-58c5-82f1-abfc4864c7d3",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-settings-general",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-settings-general@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "9fbf94e3-9ea0-5d10-8dca-404308a76ad3",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-settings-models",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-settings-models@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "c9bd8cef-1c9d-5e3e-a1f3-8398a9f6fd8c",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-settings-plugin-inventory@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "269d8105-bbc7-5114-8453-aef9a7508f61",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-settings-plugins",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-settings-plugins@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "ccfd4901-0a09-5836-85fb-79751bbaad3c",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-settings-session-log",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-settings-session-log@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "f21c17a5-06b2-55d7-bf28-70685e2e8350",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-settings-shell",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-settings-shell@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "3f615096-a44b-5c3b-b182-be3fe38903a0",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-settings-subagent",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-settings-subagent@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "2f75f60d-a913-56d7-8f35-b6f6a1ad5adc",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-settings-web-search",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-settings-web-search@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "34421c0d-f7fd-5b1a-9b63-af041151ec8d",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-shortcuts",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-shortcuts@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "78cecb3e-2175-5caa-a925-30c16dc9794f",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-sidebar",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-sidebar@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "0ac45180-7b2f-5999-ad01-961220312841",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-sidebar-browser",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-sidebar-browser@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "0a79e72d-88fc-5e71-93de-1c8176873e2a",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-sidebar-documentpreview",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-sidebar-documentpreview@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "b3eb4110-86a2-54d2-8b01-f8b967e1fd77",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-sidebar-files",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-sidebar-files@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "341a02ff-826c-5c4a-8f0e-aad6ff6e31b4",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-sidebar-right",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-sidebar-right@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "953054be-ffe0-5d88-844a-3328647d39b8",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-sidebar-terminal",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-sidebar-terminal@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "7bec7938-2c3d-5939-ad1f-669817618595",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-skill",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-skill@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "7a8a0886-2dd6-554c-826b-136e8dc5d2c5",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-subagent",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-subagent@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "c4397042-e554-5c21-8fad-96ad018a7b11",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-theme",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-theme@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "e2c31708-2660-5033-90c5-3bdde91f63cc",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-tool",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-tool@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "fdb1f025-cccc-571b-bc92-c29f5393600a",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-trajectory",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-trajectory@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "61cbc4d2-aab0-5179-a6a3-7ed8898a9c37",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-user-questions",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-user-questions@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "3a33a1af-b620-59b1-8019-2a1c32847718",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-workflow-run",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-workflow-run@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "73b89274-9eab-5912-9ea9-4edb62d4a6a1",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-client-ui-workspace",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-client-ui-workspace@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "8bf722c4-0234-540a-a00f-1ce3669991a6",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-command-compact",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-command-compact@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "21a5da48-65e5-5c31-a9fc-c235e7bbd666",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-command-feedback",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-command-feedback@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "066fb161-e229-568f-b002-c851e29252f7",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-command-goal",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-command-goal@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "4d34b7d5-f986-5100-8419-e228ea5529ab",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-commands",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-commands@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "5acd2469-3cc6-5436-b7b1-7b6e57eac83e",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-compaction-basic",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-compaction-basic@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "aeca2afb-d2b0-5058-a257-c7da9392cda2",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-compaction-image-offload",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-compaction-image-offload@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "df553049-5a3c-5915-a8a8-f73353c93b30",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-compaction-tool-result-pruner",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-compaction-tool-result-pruner@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "6003b83f-523c-55f5-ab9e-b3e919825858",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-config-editor",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-config-editor@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "c81e56c4-2621-5f8e-b183-1e304d2b3631",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-cordis-client-runner",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-cordis-client-runner@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "780b0e56-b35d-5dee-8621-7481b04ec2e9",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-cordis-host-runner",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-cordis-host-runner@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "a01a4549-5cdb-5ebf-b8f4-1178f0e6191b",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-credentials-local",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-credentials-local@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "00cacd71-eb74-5f7a-8a8d-a5e3a803a75b",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-deepseek-account-platform",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-deepseek-account-platform@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "1cefb64f-bb05-591a-a49f-4cd0bad37011",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-deepseek-llm-api-extensions",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-deepseek-llm-api-extensions@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "cda92a49-db36-54b5-9961-1ceb8dc7d830",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-file-reference-local",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-file-reference-local@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "017073a0-11d9-50c3-8e4d-e0f9b50a2e30",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-fs-observation-policy",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-fs-observation-policy@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "bcd22708-f67a-5a5b-9767-780620b6816f",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-fs-sandbox",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-fs-sandbox@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "7a1a09e2-0f33-57d9-a3b0-096956bf5115",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-goal",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-goal@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "e2f7a432-1712-5b0e-b23e-288046d5f7eb",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-goal-round-driver",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-goal-round-driver@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "e91ab6c7-95d1-5afb-9611-e371bf600cf4",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-hmr",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-hmr@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "dda4892c-1192-51eb-85fb-b2ebc58e2b0c",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-host-directory-picker-auto",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-host-directory-picker-auto@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "282d3f07-b212-5d1f-8408-ad7dac3751ca",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-host-directory-picker-native",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-host-directory-picker-native@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "00c4f97e-5db5-568e-897f-1793677b82ad",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-host-open-in-app",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-host-open-in-app@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "cfea94d4-dd26-5628-ae73-51fa81c3d200",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-host-plugin-inventory",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-host-plugin-inventory@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "17b7d5eb-6f58-5834-98b7-65e101081565",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-host-product-telemetry-otel",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-host-product-telemetry-otel@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "84a7dc2b-1146-5041-a156-e9d3bf392be5",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-host-webserver",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-host-webserver@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "1e2ba5f4-b61d-5b91-912e-fda4144f567b",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-jobs-local",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-jobs-local@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "6931672b-01b6-5918-b186-2675f3cd4ac3",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-llm",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-llm@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "c944b95a-5c7c-5a9c-8854-5cc77d6cf246",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-llm-deepseek-account",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-llm-deepseek-account@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "86dafb9d-35c1-52b4-b7fb-536d246d4e14",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-llm-pi-ai",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-llm-pi-ai@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "d67e2ea0-72f8-5976-be1c-80a224d94dd3",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-llm-retry",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-llm-retry@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "a821e13f-c0a9-5d4d-b01b-da546f5525f6",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-mcp-resources",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-mcp-resources@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "323a8aa1-efa0-52ab-9240-d32cb62e8066",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-message-feedback",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-message-feedback@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "2b94addf-8d18-59c1-b823-da78b74768a3",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-office-to-pdf",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-office-to-pdf@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "f37bf194-192d-52ee-a591-9e8165f56855",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-otel",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-otel@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "8757f70b-489d-52b4-9a62-bdb0f1f8b6af",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-permission-presets",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-permission-presets@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "4cb8863c-845c-56e8-91ca-2a723e6a3834",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-plan-mode",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-plan-mode@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "1773dd9b-4fe5-53ca-80cb-b3af4db6e7a6",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-plugin-manager",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-plugin-manager@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "a7dc6579-025a-571c-a232-818a89a0ff26",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-plugin-package-inventory-deepseek",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-plugin-package-inventory-deepseek@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "16b825bc-44e0-52c0-9adb-933499e84b40",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-ptc-runtime-node",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-ptc-runtime-node@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "328cb610-2d9d-5e44-806f-2a36a5e2ea10",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-pwsh-sandbox",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-pwsh-sandbox@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "e8ac53c1-2dfe-56e2-8791-24e3bb867c04",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-repeat-tool-reminder",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-repeat-tool-reminder@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "6e4b43c0-02eb-54b5-8ffe-8d24095d8cb4",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-sandbox-local",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-sandbox-local@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "ef37018f-adf2-51dc-87c2-35bca56d1a3c",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-sandbox-policy",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-sandbox-policy@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "739ebe8c-b089-52a0-a27c-a1ac5b69b401",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-session",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-session@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "a355c52d-bb5e-5430-9710-5bb1d7cb2441",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-session-checkpoint-policy",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-session-checkpoint-policy@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "15cabdb7-e1a7-5ec8-9cf3-94aaa0a7a6e0",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-session-log-deepseek",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-session-log-deepseek@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "81b9c04e-24b3-58c7-80f5-4c9affa865c6",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-session-log-export",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-session-log-export@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "794ea7cb-54ba-5321-8b4e-fc7c946f8bbe",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-session-persistence-jsonl",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-session-persistence-jsonl@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "7bb642de-8906-5a21-b8c7-1e8ec530593f",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-session-projection",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-session-projection@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "aec918c9-bef3-553e-a5ad-c8b8754eb70b",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-session-projection-cache",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-session-projection-cache@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "e65d29d2-cb8c-5742-bcbc-19e38cda8751",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-session-query-sqlite",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-session-query-sqlite@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "9517751f-c856-5d66-b11a-d9c84007c52d",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-session-reference",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-session-reference@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "c29a013d-0a64-544a-8db6-8105ebf6cdc6",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-session-stats",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-session-stats@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "0f0af1d5-0bd6-55e2-8703-0dde4dc4d43b",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-session-telemetry-otel",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-session-telemetry-otel@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "299f4c6a-a141-5161-81b9-6e5681b75b56",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-session-title",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-session-title@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "79a9f63e-c12f-53e7-8f9e-90c350fc41d3",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-session-title-first-prompt-llm",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-session-title-first-prompt-llm@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "8518e868-e956-5459-8f93-ea351cd3d6b9",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-session-turn-outline",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-session-turn-outline@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "a3b5332e-d2e4-5811-bb6c-5bba7f658279",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-settings",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-settings@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "169760d7-6b3a-5c57-8a21-27df81832fc6",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-shell-env",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-shell-env@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "6b942be6-24dc-5d4d-befd-aa006004f534",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-skill",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-skill@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "262045dc-0b2f-5760-bbfc-d77e72786f24",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-skill-badge",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-skill-badge@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "12021e8f-6ad5-5653-be3a-52ab5008902b",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-skill-filesystem",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-skill-filesystem@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "fa06812f-833b-58a6-b4c6-cc31a306f33e",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-spill-local",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-spill-local@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "a58e64c6-cb99-5d22-9d03-59acf4b16a55",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-spill-policy",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-spill-policy@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "9fc4e6dd-44c4-506b-a052-7b9af6fef437",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-storage",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-storage@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "aa360541-25da-5f1a-9831-aed5d8c26deb",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-storage-domain",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-storage-domain@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "46269e68-70af-561c-99a0-0dfb41db0517",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-storage-json",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-storage-json@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "13b2450d-2c3f-5f17-a7f8-1adf5e2335a8",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-subagent",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-subagent@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "f4d33240-4ecd-571f-8077-8ab0e5eb9c71",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-subagent-fork-in-process",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-subagent-fork-in-process@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "5cbe70e5-f30b-5068-a5f4-2da8d0135b57",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-subagent-spawn-in-process",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-subagent-spawn-in-process@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "d41c7e08-d2a6-526f-a0d0-e36d7da41511",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-subprocess-local",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-subprocess-local@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "db507721-b5cc-594f-88a4-1a59a3d4c41f",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-system-prompt",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-system-prompt@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "003f7d13-f335-52da-a039-f00b60b550d8",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-token-meter",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-token-meter@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "18e27c3f-f6d0-54a1-91cf-355aa67932cd",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-tool-bash",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-tool-bash@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "836345c1-e074-5f47-a17a-796ae9b4bcca",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-tool-call-timeout-policy",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-tool-call-timeout-policy@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "f5023f0a-cfeb-5952-b988-b316202265ca",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-tool-fs",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-tool-fs@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "66aa9c30-93eb-574e-89c2-adf6fe27bdf1",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-tool-fs-search",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-tool-fs-search@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "e08e8da5-55a4-5571-a36f-48e895915a76",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-tool-goal",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-tool-goal@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "cb473c73-68d4-54e1-9bf5-78c7cda655ed",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-tool-jobs",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-tool-jobs@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "efd0fa7c-d9fb-52ce-bd7d-1496b1384449",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-tool-pwsh",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-tool-pwsh@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "bf2ee2e2-79e9-52e6-ba6d-197464810038",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-tool-ralph",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-tool-ralph@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "1b25434d-91fe-5bc6-b123-bb8e3e00ed52",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-tool-skill",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-tool-skill@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "1837b048-75ad-528b-81d0-dd1e8b9f64f3",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-tool-subagent",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-tool-subagent@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "f4a997f6-a0dd-5d36-b999-5b0cf2936464",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-tool-subagent-control",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-tool-subagent-control@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "a3e60fb2-8255-5c99-a827-e505bf2583bd",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-tool-todo",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-tool-todo@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "dc9ed488-a16c-5006-915d-b54307741a93",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-tool-web",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-tool-web@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "940dd333-d503-560f-885c-3e70249666e9",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-tool-workflow",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-tool-workflow@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "b3871909-36f8-5581-b4b1-07a22569bc30",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-tools",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-tools@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "ca3b6577-280e-5b77-8868-596beb96fcc4",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-typert-loader",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-typert-loader@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "ca8c7c4a-1628-5691-998e-b3962535653e",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-typert-registry",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-typert-registry@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "cfaffdf7-8d19-5eed-b894-6b7a321af833",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-user-approval",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-user-approval@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "c6a0b79c-e352-5db7-8293-35cf1df67b6c",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-user-questions",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-user-questions@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "6ecfc95b-a5bf-5246-bf11-d1462f8af303",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-web",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-web@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "c08e464a-5678-5696-9210-e12ad807ce6b",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-web-app",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-web-app@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "f21e8695-2369-5f6f-954a-eaadad742cef",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-web-fetch-http",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-web-fetch-http@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "c80ed9f2-ae6c-535b-bd28-80add7fc4ab4",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-web-search-deepseek",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-web-search-deepseek@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "6c76dc26-a896-50a3-b083-72ebf28d6590",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-workflow-ptc",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-workflow-ptc@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "b3b5e7a4-2b22-51eb-848a-e97b0951ffec",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-workspace",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-workspace@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "59cc528a-3d92-5f97-b3fc-b359a44917d2",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-workspace-changes",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "@deepseek-ai/dsh-workspace-changes@0.2.0-rc.2",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "90849a7b-66bc-5a7e-b90a-8e660c5c1909",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "dsh-update-notifier",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "dsh-update-notifier@0.2.1",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "f6de6fe8-c473-50d8-b119-ea03646b7518",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "hanamesh-core",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "hanamesh-core@0.2.0-rc.56",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "802eb66a-b592-58ce-8ac6-85b85361d610",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "hanamesh-usage",
+        "action": "install",
+        "occurredAt": "2026-10-08T22:24:58.676Z",
+        "source": "loader",
+        "sourcePlugin": null,
+        "evidenceRef": "hanamesh-usage@0.2.0-rc.17",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:25:04.021Z"
+        }
+      },
+      {
+        "eventId": "42a363c1-6e1a-5d0e-ab7a-6f0077dc9b82",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-permission-presets",
+        "action": "use",
+        "occurredAt": "2026-10-08T22:33:51.084Z",
+        "source": "seat",
+        "sourcePlugin": "@deepseek-ai/dsh-permission-presets",
+        "evidenceRef": "command:cmd-bed28d52-2:succeeded",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:33:52.977Z"
+        }
+      },
+      {
+        "eventId": "3ac71430-3a1f-546a-95ea-c171269f0532",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "hanamesh-usage",
+        "action": "open",
+        "occurredAt": "2026-10-08T22:35:17.096Z",
+        "source": "seat",
+        "sourcePlugin": "hanamesh-usage",
+        "evidenceRef": "page:8e6ad38d-767a-4649-92ca-4aa54f688872",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "sent",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:35:18.083Z"
+        }
+      },
+      {
+        "eventId": "31db923e-d0fe-5200-9c77-43c29333a38e",
+        "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+        "hanaRef": "@deepseek-ai/dsh-permission-presets",
+        "action": "use",
+        "occurredAt": "2026-10-08T22:49:33.697Z",
+        "source": "seat",
+        "sourcePlugin": "@deepseek-ai/dsh-permission-presets",
+        "evidenceRef": "command:cmd-bed28d52-3:succeeded",
+        "signature": {
+          "state": "success",
+          "code": null
+        },
+        "upload": {
+          "state": "duplicate",
+          "code": null,
+          "attempts": 1,
+          "sentAt": "2026-10-08T22:49:38.578Z"
+        }
+      }
+    ]
+  },
+  "modelRequests": 0,
+  "facts": []
+}

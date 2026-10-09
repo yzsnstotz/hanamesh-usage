@@ -1,0 +1,4 @@
+evil POST same-origin header	{"error":"HOST_NOT_ALLOWED"} 421
+no Host header	400
+real localhost name	200
+real ::1	200

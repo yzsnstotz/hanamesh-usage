@@ -1,0 +1,6 @@
+{
+  "reason": "localhost resolved ::1 only; public Core origin uses 127.0.0.1",
+  "ownPidStopped": 78820,
+  "publicConfig": "HOST=127.0.0.1",
+  "otherProcessesTouched": false
+}

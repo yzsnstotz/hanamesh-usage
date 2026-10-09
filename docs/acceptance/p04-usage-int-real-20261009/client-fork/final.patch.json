@@ -1,0 +1,28 @@
+[
+  {
+    "id": "hanamesh-core",
+    "config": {
+      "serverOrigin": "http://127.0.0.1:54399",
+      "websiteOrigin": "http://127.0.0.1:54399",
+      "allowSystemBrowser": false,
+      "authNonceSource": "client"
+    }
+  },
+  {
+    "id": "hanamesh-usage",
+    "config": {
+      "uploadIntervalMs": 5000,
+      "panelTestSupply": {
+        "identity": false,
+        "receiver": false
+      }
+    }
+  },
+  {
+    "id": "update-notifier",
+    "config": {
+      "initialDelay": 3600000,
+      "interval": 3600000
+    }
+  }
+]

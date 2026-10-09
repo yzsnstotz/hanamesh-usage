@@ -1,0 +1,34 @@
+[
+  {
+    "name": "core",
+    "argv": [
+      "/Users/yzliu/.local/share/fnm/node-versions/v24.13.1/installation/bin/node",
+      "/Users/yzliu/work/projects/hanamesh/hanamesh-desktop/apps/cli/lib/bin.js",
+      "plugin",
+      "--profile",
+      "web",
+      "add",
+      "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60/supply/hanamesh-core-0.2.0-rc.56.tgz",
+      "--registry=https://registry.npmjs.org/"
+    ],
+    "exitCode": 0,
+    "profile": "fresh web under this DSH_HOME",
+    "profileStarted": false
+  },
+  {
+    "name": "usage",
+    "argv": [
+      "/Users/yzliu/.local/share/fnm/node-versions/v24.13.1/installation/bin/node",
+      "/Users/yzliu/work/projects/hanamesh/hanamesh-desktop/apps/cli/lib/bin.js",
+      "plugin",
+      "--profile",
+      "web",
+      "add",
+      "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60/supply/hanamesh-usage-0.2.0-rc.17.tgz",
+      "--registry=https://registry.npmjs.org/"
+    ],
+    "exitCode": 0,
+    "profile": "fresh web under this DSH_HOME",
+    "profileStarted": false
+  }
+]

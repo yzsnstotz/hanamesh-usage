@@ -1,0 +1,10 @@
+file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/final-01a11b0f/source/hanamesh-usage/tools/int/final-host.mjs:31
+  if (result.status !== 0) throw new Error(`docker ${args[0]} exit ${result.status}: ${result.stderr.trim()}`);
+                                 ^
+
+Error: docker run exit 1: failed to connect to the docker API at unix:///var/run/docker.sock; check if the path is correct and if the daemon is running: dial unix /var/run/docker.sock: connect: no such file or directory
+    at docker (file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/final-01a11b0f/source/hanamesh-usage/tools/int/final-host.mjs:31:34)
+    at up (file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/final-01a11b0f/source/hanamesh-usage/tools/int/final-host.mjs:44:3)
+    at async file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/final-01a11b0f/source/hanamesh-usage/tools/int/final-host.mjs:93:23
+
+Node.js v24.13.1

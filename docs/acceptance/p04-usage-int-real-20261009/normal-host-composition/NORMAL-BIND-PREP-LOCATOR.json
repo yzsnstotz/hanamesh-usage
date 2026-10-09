@@ -1,0 +1,81 @@
+{
+  "label": "PREPARED ONLY · fresh nonaccepted Core/Usage scene; not resident or owner entry",
+  "card": "P04-USAGE-INT-01",
+  "run": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60",
+  "packages": [
+    {
+      "name": "hanamesh-core",
+      "version": "0.2.0-rc.56",
+      "files": 106,
+      "differences": [],
+      "installedRoot": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60/dsh-home/profiles/web/node_modules/hanamesh-core",
+      "tgzSHA256": "7342a2ab95b78a83d74a4c927039b4998f0dd76f3c7e8ed9b09c31700e642e28"
+    },
+    {
+      "name": "hanamesh-usage",
+      "version": "0.2.0-rc.17",
+      "files": 50,
+      "differences": [],
+      "installedRoot": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60/dsh-home/profiles/web/node_modules/hanamesh-usage",
+      "tgzSHA256": "063ae9b40a183de1ece5086300fe01fdbd29d9b478148e8053fb7c59b5c962b9"
+    }
+  ],
+  "DSH_HOME": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60/dsh-home",
+  "profile": "web",
+  "publicOverrideFile": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60/dsh-home/profiles/web/cordis.patch.yml",
+  "websiteOrigin": "http://127.0.0.1:51026",
+  "serverOrigin": "http://127.0.0.1:55915",
+  "normalHostIdentityLocator": "/Users/yzliu/.cache/hanamesh-runs/P04-HOST-IDENTITY10-USAGE14-SUPPLY-01/82e78c02-6ea2-4e95-a969-5f5a99d7f008/selfbind/LOCATOR.json",
+  "CoreLocalURL": null,
+  "bindLinkPublicOperation": {
+    "method": "POST",
+    "path": "/api/hanamesh/core/bind-link",
+    "status": "NOT_RUN; normal Host locator consumed; lawful CUA and registered callback receipt still pending"
+  },
+  "boundAccountPublicReadback": {
+    "Core": "refreshContributions -> signed GET /v1/usage/me/contributions",
+    "ServerUsage": "same normal Identity principalLinks.resolveCanonical",
+    "status": "NOT_RUN"
+  },
+  "hostDependencyRequired": [
+    "normal Host/Identity exact package and public origin",
+    "exact provider callback/baseURL routing receipt",
+    "trusted websiteOrigin51026 and website return origin consistency",
+    "normal official OAuth/API upstream applicability",
+    "same Identity principalLinks readback chain"
+  ],
+  "normalCompositionReadiness": "CLI installed; supplied normal Host consumed; static configuration only; profile not started",
+  "CUA": "header-policy blocker unchanged; no call this turn",
+  "sourceRepairOrNewProtocolNeeded": false,
+  "privacy": "no deviceId/nonce/signature proof URL/private profile copied",
+  "oldScenes": "56000/54399 and accepted62787 unchanged",
+  "normalHost": {
+    "hostUrl": "http://127.0.0.1:55915",
+    "package": "hanamesh-server 0.2.0-rc.36",
+    "postgresLoopbackPort": 32869,
+    "providerCallback": "http://127.0.0.1:55915/api/auth/callback/github",
+    "registeredCallback": "NOT_CHECKED",
+    "websiteOriginTrusted": true,
+    "officialOAuthAndAPIUpstreamDeclared": true,
+    "providerCallbackRegistrationProven": false,
+    "label": "P04 self-bind normal Host/Identity instance (isolated, run-only launcher; real GitHub DEV OAuth App, official upstream)",
+    "explicitTestSupplies": [
+      "CUSTODY_CHAIN_EXECUTOR=fake",
+      "SEMANTIC_EMBEDDING_PROVIDER=stub",
+      "generated isolated secrets"
+    ]
+  },
+  "separate503TestHost": {
+    "package": "hanamesh-server 0.2.0-rc.37",
+    "host": "http://127.0.0.1:53307",
+    "control": "http://127.0.0.1:53309",
+    "pgPort": 32868
+  },
+  "remainingPrerequisites": [
+    "lawful CUA inventory and renderer ability",
+    "registered DEV callback confirmation: NOT_CHECKED in Host locator",
+    "website same normal Host proxy/real login and binding receipt",
+    "fresh normal Core device/challenge/actual bound-account readback",
+    "R6 and independent verification/owner acceptance"
+  ]
+}

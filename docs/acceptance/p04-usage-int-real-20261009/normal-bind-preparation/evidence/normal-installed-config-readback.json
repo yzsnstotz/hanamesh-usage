@@ -1,0 +1,56 @@
+{
+  "packages": [
+    {
+      "name": "hanamesh-core",
+      "version": "0.2.0-rc.56",
+      "files": 106,
+      "differences": [],
+      "installedRoot": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60/dsh-home/profiles/web/node_modules/hanamesh-core",
+      "tgzSHA256": "7342a2ab95b78a83d74a4c927039b4998f0dd76f3c7e8ed9b09c31700e642e28"
+    },
+    {
+      "name": "hanamesh-usage",
+      "version": "0.2.0-rc.17",
+      "files": 50,
+      "differences": [],
+      "installedRoot": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60/dsh-home/profiles/web/node_modules/hanamesh-usage",
+      "tgzSHA256": "063ae9b40a183de1ece5086300fe01fdbd29d9b478148e8053fb7c59b5c962b9"
+    }
+  ],
+  "normalProfileConfigReadback": [
+    {
+      "id": "hanamesh-core",
+      "config": {
+        "serverOrigin": null,
+        "websiteOrigin": "http://127.0.0.1:51026",
+        "allowSystemBrowser": false
+      }
+    }
+  ],
+  "profilePath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60/dsh-home/profiles/web/cordis.patch.yml",
+  "profileStarted": false,
+  "publicOverrideReadbackMatches": true,
+  "deviceOrChallengePOSTs": 0,
+  "references": [
+    {
+      "installedCoreFile": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60/dsh-home/profiles/web/node_modules/hanamesh-core/profile/cordis.patch.yml",
+      "sha256": "014fd7bda9c50bd8f68174f4628211369bbda28b8e5b1fbb70de69119680af48"
+    },
+    {
+      "installedCoreFile": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60/dsh-home/profiles/web/node_modules/hanamesh-core/lib/contracts.d.ts",
+      "sha256": "e7bd468facb0a7cf41c9b5a2c1ae9e8b24a5203e19023e911176e492326c88d9"
+    },
+    {
+      "installedCoreFile": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60/dsh-home/profiles/web/node_modules/hanamesh-core/lib/dsh.mjs",
+      "sha256": "75ac442ad2d9d80a25c1425a326748b9d080e19a03769b7199fd5e04705e8c7c"
+    },
+    {
+      "installedCoreFile": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60/dsh-home/profiles/web/node_modules/hanamesh-core/lib/controller.js",
+      "sha256": "98a7fb5a5fb2d6996ef05ea7f63c67aea3644bded5e51a54e22eb17155d8c2e3"
+    },
+    {
+      "installedCoreFile": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60/dsh-home/profiles/web/node_modules/hanamesh-core/lib/routes.js",
+      "sha256": "8815f5ee04a455989e56c4530ba92a5066d5672dd424ca527e66682ebc5334fd"
+    }
+  ]
+}

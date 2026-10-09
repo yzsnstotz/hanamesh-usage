@@ -1,0 +1,18 @@
+{
+  "consent": "withheld",
+  "localTotal": 0,
+  "remoteTotal": 0,
+  "PGSelf": 0,
+  "PGOther": 178,
+  "otherRecordsExactUnchanged": true,
+  "otherRemoteTotal": 178,
+  "withdrawal": {
+    "requestedAt": "2026-10-08T22:11:44.135Z",
+    "deviceId": "qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w",
+    "state": "sent",
+    "attempts": 1,
+    "deletedEvents": 178,
+    "lastError": null
+  },
+  "modelRequests": 0
+}

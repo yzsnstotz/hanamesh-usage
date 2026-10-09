@@ -1,0 +1,84 @@
+TAP version 13
+# Subtest: R1 remote readback pages the device-signed public route to the end and never writes local state
+not ok 1 - R1 remote readback pages the device-signed public route to the end and never writes local state
+  ---
+  duration_ms: 0.710875
+  type: 'test'
+  location: '/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/source/hanamesh-usage/tests/remote.test.mjs:21:1'
+  failureType: 'testCodeFailure'
+  error: 'f.reporter.readRemote is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/source/hanamesh-usage/tests/remote.test.mjs:24:33)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1103:25)
+    Test.start (node:internal/test_runner/test:1000:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+  ...
+# Subtest: R2 an empty server page is an actual zero, distinct from unknown
+not ok 2 - R2 an empty server page is an actual zero, distinct from unknown
+  ---
+  duration_ms: 0.097792
+  type: 'test'
+  location: '/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/source/hanamesh-usage/tests/remote.test.mjs:41:1'
+  failureType: 'testCodeFailure'
+  error: 'f.reporter.readRemote is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/source/hanamesh-usage/tests/remote.test.mjs:43:37)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1103:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+    Test.postRun (node:internal/test_runner/test:1232:19)
+    Test.run (node:internal/test_runner/test:1160:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+# Subtest: R3 refusal, outage and malformed bodies are unknown with bounded codes, never zero
+not ok 3 - R3 refusal, outage and malformed bodies are unknown with bounded codes, never zero
+  ---
+  duration_ms: 0.115875
+  type: 'test'
+  location: '/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/source/hanamesh-usage/tests/remote.test.mjs:45:1'
+  failureType: 'testCodeFailure'
+  error: 'f.reporter.readRemote is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/source/hanamesh-usage/tests/remote.test.mjs:54:62)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1103:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+    Test.postRun (node:internal/test_runner/test:1232:19)
+    Test.run (node:internal/test_runner/test:1160:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+  ...
+# Subtest: R4 no server origin or no device is reported, not guessed
+not ok 4 - R4 no server origin or no device is reported, not guessed
+  ---
+  duration_ms: 0.089958
+  type: 'test'
+  location: '/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/source/hanamesh-usage/tests/remote.test.mjs:59:1'
+  failureType: 'testCodeFailure'
+  error: 'offline.reporter.readRemote is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/source/hanamesh-usage/tests/remote.test.mjs:61:43)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1103:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+    Test.postRun (node:internal/test_runner/test:1232:19)
+    Test.run (node:internal/test_runner/test:1160:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 45.9625

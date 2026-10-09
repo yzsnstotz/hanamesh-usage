@@ -1,0 +1,13 @@
+{
+  "head": "ad3aa02be71c865f783e2eaf2744524d0c28aa40",
+  "status": "",
+  "runtime": "READ_ONLY_HANAMESH_CLIENT_FORK_PUBLIC_CLI_PROFILE",
+  "files": {
+    "apps/cli/lib/profile-boot.js": "c53d4e2caf21428e263b525e657dafaf63fd183f7ef016aabda56af7998b6c4f",
+    "apps/cli/lib/profile-boot-BZ2ZjNWi.js": "c394b2aa2ce08a3b1fcc8c544257c7d689dd4d0b1cfaf8602687e65eeaba5aa1",
+    "packages/interaction/commands/lib/index.js": "d9cee054e5d6fe740221731d08198f7749b4850d070ccffa213374abcdf44069",
+    "packages/interaction/commands/src/index.ts": "655f3f1e3c91e7c229c5fc8d69245c73a2cc0d950711e5b578eb934d33f882b5",
+    "packages/util/launch-environment/lib/index.js": "6aab33b43d6caa4ee483f7d796a17afb400fca02b7a259fb55d486626e6bb7f0",
+    "pnpm-lock.yaml": "dd728468b7b054573fe5145d636d3ef22a561149484bbf02d84454f3fc9f4928"
+  }
+}

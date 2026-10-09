@@ -1,0 +1,107 @@
+Window: "DeepSeek Harness", App: Google Chrome.
+0 standard window DeepSeek Harness - Google Chrome - snstotz, URL: 127.0.0.1:56000/, Secondary Actions: Raise
+	1 container DeepSeek Harness - Google Chrome - snstotz, URL: 127.0.0.1:56000/
+		2 container
+			3 toolbar
+				4 button (disabled) Back
+				5 button (disabled) Forward
+				6 button Reload
+				7 container
+					8 pop up button View site information
+					9 text field (settable) Address and search bar, Value: 127.0.0.1:56000, Placeholder: Search Google or type a URL
+					10 button Install DeepSeek Harness
+					11 button Bookmark this tab
+				12 container
+					13 pop up button MetaMask
+Has access to this site
+					14 pop up button Extensions
+				15 button Enter Passphrase
+				16 pop up button Chrome
+			17 container
+				18 scroll area
+					19 HTML content DeepSeek Harness, URL: 127.0.0.1:56000/
+						20 container 设置
+							21 container
+								22 text 设置
+								23 button 通用设置
+								24 button 模型
+								25 button 内置插件
+								26 button Agent 预设
+								27 button HanaMesh
+								28 button Usage 开发小面板
+							29 button 打开配置文件
+							30 button 关闭
+							31 container Usage 开发小面板
+								32 heading Usage 开发小面板, Value: 2
+									33 text Usage 开发小面板
+								34 button 刷新本机记录
+								35 container 本机 Usage 事件、签名与上报状态
+									36 HTML content Usage 开发小面板, URL: about:srcdoc
+										37 container
+											38 heading Usage 开发小面板, Value: 1
+												39 text Usage 开发小面板
+											40 container
+												41 text 身份真实性：未知（未提供本次产品门证据） 接收端真实性：未知（未提供本次产品门证据）
+											42 heading 当前设备与采集, Value: 2
+												43 text 当前设备与采集
+											44 text 设备 qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w；主体 7c857b07-2e22-47f5-8aa8-0cb326de0307；。
+											45 text 同意 withheld；Core present；本设备事件 0 条。
+											46 text 只读刷新不会采集事件。open 来自公开页面呈现事实；use 来自成功命令；目录和任意按钮不会冒充 use。
+											47 heading 签名与上报分别判断, Value: 2
+												48 text 签名与上报分别判断
+											49 text 签名成功只说明当前设备公钥下的密码学校验；接收端成功只说明已收到确认，不证明生产身份或数据库。pending/未知不是成功。
+											50 text 上报 stopped；pending 0；sent 0；duplicate 0；rejected 0。
+											51 text 最近错误 无；最近上报 2026-10-08T22:06:14.949Z；采集/签名诊断 INVENTORY_ENTRY_UNREADABLE × 21。
+											52 table 本机当前设备的最小事件与 owning 来源
+												53 text 本机当前设备的最小事件与 owning 来源
+												54 row
+													55 column header
+														56 text 事件 ID
+													57 column header
+														58 text 插件
+													59 column header
+														60 text 动作
+													61 column header
+														62 text ISO 时间
+													63 column header
+														64 text 来源 / 插件 / 事实引用
+													65 column header
+														66 text 签名
+													67 column header
+														68 text 上报
+												69 row
+													70 cell 0-6
+														71 text 当前设备没有事件；未同意或设备未知时不会新采集。
+			72 container Infobar Container
+				73 container Infobar
+					74 container
+						75 text Continue where you left off: Chrome can restore your tabs every time you restart. To turn this on, go to
+						76 link Settings, opens in new tab.
+					77 button Close
+			78 pop up button Tab search
+			79 container
+				80 tab group
+					81 tab (settable, boolean) Session 与 World · HanaWorlds - Memory usage - 73.0 MB, Value: off
+						82 button Close
+					83 tab (settable, boolean) DeepSeek Harness - Memory usage - 158 MB, Value: off
+						84 button Close
+					85 tab (selected, settable, boolean) DeepSeek Harness - Memory usage - 141 MB, Value: on
+						86 button Close
+			87 button New Tab
+			88 button Open Gemini in Chrome
+	89 close button
+	90 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	91 minimize button
+92 menu bar
+	93 Chrome
+	94 File
+	95 Edit
+	96 View
+	97 History
+	98 Bookmarks
+	99 Profiles
+	100 Tab
+	101 Window
+	102 Help
+
+The focused UI element is 28 button Usage 开发小面板

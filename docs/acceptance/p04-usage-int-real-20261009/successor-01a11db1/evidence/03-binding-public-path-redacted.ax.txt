@@ -1,0 +1,64 @@
+Window: "127.0.0.1:54399/me/bind?[REDACTED]", App: Google Chrome.
+0 standard window Secondary Actions: Raise, 127.0.0.1:54399/me/bind?[REDACTED] - Google Chrome - snstotz, URL: 127.0.0.1:54399/me/bind?[REDACTED]
+	1 container 127.0.0.1:54399/me/bind?[REDACTED] - Google Chrome - snstotz, URL: 127.0.0.1:54399/me/bind?[REDACTED]
+		2 container
+			3 toolbar
+				4 button (disabled) Back
+				5 button (disabled) Forward
+				6 button Reload
+				7 container
+					8 pop up button View site information
+					9 text field (settable) Address and search bar, Placeholder: Search Google or type a URL, Value: 127.0.0.1:54399/me/bind?[REDACTED]
+					10 button Bookmark this tab
+				11 container
+					12 pop up button MetaMask
+Has access to this site
+					13 pop up button Extensions
+				14 button Enter Passphrase
+				15 pop up button Chrome
+			16 container
+				17 scroll area
+					18 HTML content 127.0.0.1:54399/me/bind?[REDACTED]
+						19 text {"message":"Route GET:/me/bind?[REDACTED] not found","error":"Not Found","statusCode":404}
+						20 container
+							21 text Pretty-print
+							22 checkbox Pretty-print, Value: 0
+			23 container Infobar Container
+				24 container Infobar
+					25 container
+						26 text Continue where you left off: Chrome can restore your tabs every time you restart. To turn this on, go to
+						27 link Settings, opens in new tab.
+					28 button Close
+			29 pop up button Tab search
+			30 container
+				31 tab group
+					32 tab (settable, boolean) Session 与 World · HanaWorlds - Memory usage - 73.0 MB, Value: off
+						33 button Close
+					34 tab (settable, boolean) DeepSeek Harness - Memory usage - 158 MB, Value: off
+						35 button Close
+					36 tab (settable, boolean) DeepSeek Harness - Memory usage - 154 MB, Value: off
+						37 button Close
+					38 tab (settable, boolean) DeepSeek Harness - Memory usage - 121 MB, Value: off
+						39 button Close
+					40 tab (settable, boolean) DeepSeek Harness - Memory usage - 147 MB, Value: off
+						41 button Close
+					42 tab (selected, settable, boolean) Value: on, 127.0.0.1:54399/me/bind?[REDACTED] - Memory usage - 56.0 MB
+						43 button Close
+			44 button New Tab
+			45 button Open Gemini in Chrome
+	46 close button
+	47 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	48 minimize button
+49 menu bar
+	50 Chrome
+	51 File
+	52 Edit
+	53 View
+	54 History
+	55 Bookmarks
+	56 Profiles
+	57 Tab
+	58 Window
+	59 Help
+
+The focused UI element is 18 HTML content 127.0.0.1:54399/me/bind?[REDACTED]

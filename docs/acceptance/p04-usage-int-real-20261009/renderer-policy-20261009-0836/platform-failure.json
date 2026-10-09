@@ -1,0 +1,47 @@
+{
+  "at": "2026-10-08T23:37:21.878912+00:00",
+  "guiAcquire": "ACQUIRED on first fresh attempt",
+  "guiRelease": "RELEASED by this worker",
+  "CUACall": "await cua.getState({emit:false})",
+  "calls": 1,
+  "error": "Unable to load browser request-header policy. Retry the browser command.",
+  "returnedInventory": {
+    "apps": [
+      {
+        "displayName": "Google Chrome",
+        "id": "com.google.Chrome",
+        "isRunning": true,
+        "lastUsedDate": 813024000,
+        "useCount": 91
+      }
+    ],
+    "browsers": [
+      {
+        "id": "1",
+        "name": "Chrome",
+        "tabs": []
+      },
+      {
+        "id": "2",
+        "name": "Codex MCP Apps",
+        "tabs": []
+      },
+      {
+        "id": "3",
+        "name": "Codex In-app Browser",
+        "tabs": []
+      }
+    ],
+    "errors": [
+      "Browser 1: Error: Unable to load browser request-header policy. Retry the browser command."
+    ]
+  },
+  "returnedTargetTabURL": null,
+  "nativeAXScreenshot": "NOT_OBTAINED",
+  "rendererRecovery": "NOT_RUN",
+  "ExitPageOrReload": false,
+  "retriesOrAlternateTools": 0,
+  "backendProfilePackageChanges": false,
+  "sourceRootCause": "UNKNOWN",
+  "stopAuthority": "PM direct instruction: platform policy loading fault => stop, no retry/tool bypass"
+}

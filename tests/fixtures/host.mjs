@@ -3,7 +3,7 @@ import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
 const {mountUsage}=await import(pathToFileURL(resolve(root,'lib/host/mount.js')).href);
 /** Strictly a FIXTURE of the documented calls, not Cordis/Registry/DSH itself. */
-export async function fixtureHost({live=true,participated=true,persisted=true,bound=true,snapshot,eventSnapshot,allowExport=false,inheritedEventCount=0,throwRead=false,consent='withheld',deviceId='device_A',coreStatus='present',loaderEntries=[],packageOf,pluginInventory,pluginManager,publicKey='',panelTestSupply={identity:false,receiver:false}}={}) {
+export async function fixtureHost({live=true,participated=true,persisted=true,bound=true,snapshot,eventSnapshot,allowExport=false,inheritedEventCount=0,throwRead=false,consent='withheld',deviceId='If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk',coreStatus='present',loaderEntries=[],packageOf,pluginInventory,pluginManager,publicKey='',panelTestSupply={identity:false,receiver:false}}={}) {
   const input=session({inheritedEventCount}), log=[], handlers=new Map(), g=new MemoryGlobal(snapshot),eg=new MemoryGlobal(eventSnapshot??{schemaVersion:1,events:[],withdrawal:null,inventory:{last:null}});
   const originalSet=g.set.bind(g);g.set=async next=>{log.push('summary.set');await originalSet(next);};
   const originalEventSet=eg.set.bind(eg);eg.set=async next=>{log.push('event.set');await originalEventSet(next);};

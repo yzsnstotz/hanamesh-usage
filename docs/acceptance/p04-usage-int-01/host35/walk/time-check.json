@@ -1,0 +1,74 @@
+{
+ "scope": "SELF_CHECK_NOT_ACCEPTANCE",
+ "action": {
+  "commandId": "cmd-27f67580-4",
+  "result": "success",
+  "localBefore": 178,
+  "localAfter": 179,
+  "consent": "granted"
+ },
+ "readback": {
+  "local": 179,
+  "remote": 179,
+  "db": 179,
+  "remoteState": "available",
+  "mismatches": 0,
+  "mismatch": [],
+  "distinctOccurredMs": 3,
+  "nonZeroOccurredMs": 179,
+  "nonZeroReceivedMs": 179,
+  "sample": [
+   {
+    "eventId": "84c82152-acff-5e90-9668-89ccbcc45bb6",
+    "hanaRef": "dsh-update-notifier",
+    "action": "use",
+    "occurredAt": "2026-10-08T04:04:02.540Z",
+    "receivedAt": "2026-10-08T04:04:06.321Z"
+   },
+   {
+    "eventId": "5993f4d6-5d04-5a19-ba6c-b6a96c4c353c",
+    "hanaRef": "dsh-update-notifier",
+    "action": "use",
+    "occurredAt": "2026-10-08T04:05:28.963Z",
+    "receivedAt": "2026-10-08T04:05:31.407Z"
+   },
+   {
+    "eventId": "03409651-5581-5c04-946c-a5ad11f01dd5",
+    "hanaRef": "@deepseek-ai/dsh-llm-pi-ai",
+    "action": "install",
+    "occurredAt": "2026-10-08T04:03:56.056Z",
+    "receivedAt": "2026-10-08T04:04:01.208Z"
+   },
+   {
+    "eventId": "051a556a-d42b-5077-996a-6a59b248582b",
+    "hanaRef": "@deepseek-ai/dsh-host-product-telemetry-otel",
+    "action": "install",
+    "occurredAt": "2026-10-08T04:03:56.056Z",
+    "receivedAt": "2026-10-08T04:04:01.206Z"
+   }
+  ]
+ },
+ "paging": {
+  "limit": 5,
+  "pages": 36,
+  "items": 179,
+  "duplicates": 0,
+  "missing": 0,
+  "orderEqualsDb": true,
+  "largestSameMsGroup": 177
+ },
+ "withdraw": {
+  "withdrawal": {
+   "requestedAt": "2026-10-08T04:05:32.560Z",
+   "deviceId": "m4CWVu_0LAO8aVywic-SNDC1jDuBE0q55jjVXiH9miE",
+   "state": "sent",
+   "attempts": 1,
+   "deletedEvents": 179,
+   "lastError": null
+  },
+  "local": 0,
+  "remote": 0,
+  "db": "0"
+ },
+ "ok": true
+}

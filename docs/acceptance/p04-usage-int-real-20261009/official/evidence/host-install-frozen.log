@@ -1,0 +1,40 @@
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +144
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 144, reused 142, downloaded 0, added 140
+
+   ╭──────────────────────────────────────────╮
+   │                                          │
+   │   Update available! 10.33.0 → 12.10.1.   │
+   │   Changelog: https://pnpm.io/v/12.10.1   │
+   │     To update, run: pnpm add -g pnpm     │
+   │                                          │
+   ╰──────────────────────────────────────────╯
+
+Progress: resolved 144, reused 142, downloaded 0, added 143
+Progress: resolved 144, reused 142, downloaded 0, added 144, done
+
+dependencies:
++ drizzle-orm 0.45.2
++ fastify 5.12.3
++ pg 8.23.0
++ viem 2.56.9
+
+devDependencies:
++ @hanamesh/server-chain 0.1.0-rc.11
++ @hanamesh/server-claim 0.1.0-rc.12
++ @hanamesh/server-custody 0.1.0-rc.21
++ @hanamesh/server-identity 0.2.0-rc.11
++ @hanamesh/server-indexer 0.1.0-rc.17
++ @hanamesh/server-probe-module 0.1.0
++ @hanamesh/server-provider-registry 0.1.0-rc.4
++ @hanamesh/server-registry 0.1.0-rc.12
++ @hanamesh/server-revenue-router 0.1.0-rc.4
++ @hanamesh/server-semantic 0.1.0-rc.3
++ @hanamesh/server-usage 0.2.0-rc.14
++ @types/node 24.13.4
++ @types/pg 8.23.1
++ typescript 5.9.3
+
+Done in 2.2s using pnpm v10.33.0

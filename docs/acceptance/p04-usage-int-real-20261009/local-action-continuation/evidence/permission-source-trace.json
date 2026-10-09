@@ -1,0 +1,39 @@
+{
+  "diagnosticOnly": true,
+  "observedFact": {
+    "commandId": "cmd-bed28d52-2",
+    "phase": "succeeded",
+    "commandName": "permission",
+    "source": {
+      "entryId": "include:permission",
+      "moduleName": "@deepseek-ai/dsh-permission-presets"
+    },
+    "occurredAt": 1791498831084
+  },
+  "rootBaseUrl": "file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-10514290-7b05-4d9e-96ff-00b81062f6fd/dsh-home/profiles/web/",
+  "selected": [
+    {
+      "id": "include:permission",
+      "name": "@deepseek-ai/dsh-permission-presets",
+      "group": null,
+      "parentBaseUrl": "file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-10514290-7b05-4d9e-96ff-00b81062f6fd/dsh-home/profiles/web/"
+    }
+  ],
+  "sameModuleEntries": [
+    {
+      "id": "include:permission",
+      "name": "@deepseek-ai/dsh-permission-presets",
+      "group": null,
+      "parentBaseUrl": "file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-10514290-7b05-4d9e-96ff-00b81062f6fd/dsh-home/profiles/web/"
+    }
+  ],
+  "lookups": [
+    {
+      "entryId": "include:permission",
+      "name": "@deepseek-ai/dsh-permission-presets",
+      "version": "0.2.0-rc.2",
+      "dir": "/Users/yzliu/work/projects/hanamesh/hanamesh-desktop/packages/bundle/base/node_modules/@deepseek-ai/dsh-permission-presets"
+    }
+  ],
+  "resolvedOwningPackage": "@deepseek-ai/dsh-permission-presets"
+}

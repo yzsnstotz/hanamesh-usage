@@ -1,0 +1,25 @@
+{
+ "url": "http://127.0.0.1:48671/",
+ "log": [
+  {
+   "step": "00-open",
+   "at": "2026-10-08T02:47:06.898Z",
+   "versions": "hanamesh-usage 0.2.0-rc.16 · 普通插件 dsh-update-notifier@0.2.1 · 服务端 http://127.0.0.1:48670",
+   "consent": "未开启 / 已撤回（测试 Core）",
+   "withdrawal": "撤回：服务端删除已确认；服务端删除条数 178；尝试 1 次",
+   "action-result": "",
+   "local-summary": "本设备 cpIwdidzbzFrwGXDWnJhhuvNqk-p1MQtLNyzGfNMAQQ（测试主体 315b8fb7-8731-4cb6-ada1-79b425812f1c）：本机 0 条；已确认 0，重复 0，等待 0，拒绝 0；上报状态 stopped。",
+   "remote-summary": "尚未读取。",
+   "other-subject": "另一测试主体设备 PEKhw3zIb1fBt_JZNcu-YFrCOafcA6Og1y_5l8YBlKg（主体 4a2a9544-5b41-497c-bfab-79407c121100）",
+   "other-summary": "尚未读取。",
+   "localRows": [
+    [
+     "本机没有记录。未同意时不会采集。"
+    ]
+   ],
+   "remoteRows": [],
+   "last": "GET /api/state → HTTP 200\n{\n  \"supply\": {\n    \"core\": \"FIXTURE_CORE_ADAPTER\",\n    \"otherSubject\": \"FIXTURE_DIRECT_PUBLIC_ROUTE\",\n    \"ordinaryAction\": \"REAL_HOST_COMMAND_DISPATCH_NOT_RENDERER\",\n    \"receiver\": \"REAL_SERVER_USAGE_LOCAL_TEST_HOST\"\n  },\n  \"versions\": {\n    \"usage\": \"0.2.0-rc.16\",\n    \"ordinary\": \"dsh-update-notifier@0.2.1\",\n    \"hostOrigin\": \"http://127.0.0.1:48670\"\n  },\n  \"consent\": \"withheld\",\n  \"self\": {\n    \"deviceId\": \"cpIwdidzbzFrwGXDWnJhhuvNqk-p1MQtLNyzGfNMAQQ\",\n    \"principalId\": \"315b8fb7-8731-4cb6-ada1-79b425812f1c\"\n  },\n  \"other\": {\n    \"deviceId\": \"PEKhw3zIb1fBt_JZNcu-YFrCOafcA6Og1y_5l8YBlKg\",\n    \"principalId\": \"4a2a9544-5b41-497c-bfab-79407c121100\"\n  },\n  \"panel\": {\n    \"subject\": {\n      \"deviceId\": \"cpIwdidzbzFrwGXDWnJhhuvNqk-p1MQtLNyzGfNMAQQ\",\n      \"principalId\": \"315b8fb7-8731-4cb6-ada1-79b425812f1c\",\n      \"reason\": null\n    },\n    \"testSupply\": {\n      \"identity\": true,\n      \"receiver\": false\n    },\n    \"consent\": \"withheld\",\n    \"core\": \"present\",\n    \"total\": 0,\n    \"outbox\": {\n      \"state\": \"stopped\",\n      \"pending\": 0,\n      \"sent\": 0,\n      \"duplicate\": 0,\n      \"rejected\": 0,\n      \"lastUploadAt\": null,\n      \"nextAttemptAt\": null,\n      \"lastError\": null\n    },\n    \"failures\": {\n      \"INVENTORY_ENTRY_UNREADABLE\": 7\n    },\n    \"events\": []\n  },\n  \"withdrawal\": {\n    \"requestedAt\": \"2026-10-08T02:45:41.069Z\",\n    \"deviceId\": \"cpIwdidzbzFrwGXDWnJhhuvNqk-p1MQtLNyzGfNMAQQ\",\n    \"state\": \"sent\",\n    \"attempts\": 1,\n    \"deletedEvents\": 178,\n    \"lastError\": null\n  },\n  \"modelRequests\": 0\n}"
+  }
+ ],
+ "console": []
+}

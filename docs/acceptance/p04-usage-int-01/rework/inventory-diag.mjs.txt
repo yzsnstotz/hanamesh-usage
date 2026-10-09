@@ -1,0 +1,31 @@
+// P04-USAGE-INT-01 read-only diagnosis of VERIFY finding 3 (not product code, not acceptance).
+// Boots the same web profile from a COPY of the card's dsh-home and classifies every loader entry with the installed
+// Usage's own inspectPackage(), exactly as inventory.js does. Usage itself and Core are not involved; no consent, no events.
+//   DSH_HOME=<copy> node inventory-diag.mjs <desktop> <installedUsageDir> <out.json>
+import {writeFileSync} from 'node:fs';
+import {join} from 'node:path';
+import {pathToFileURL} from 'node:url';
+const [desktop, usageDir, out] = process.argv.slice(2);
+const {runProfile} = await import(pathToFileURL(join(desktop, 'apps/cli/lib/profile-boot.js')));
+const {createLaunchEnvironmentSnapshot} = await import(pathToFileURL(join(desktop, 'packages/util/launch-environment/lib/index.js')));
+const {inspectPackage} = await import(pathToFileURL(join(usageDir, 'lib/host/inventory.js')));
+const {validLoaderReference} = await import(pathToFileURL(join(usageDir, 'lib/core/index.js')));
+const app = await runProfile({profile: 'web', patchFiles: [], args: ['--no-open', '--port', '0'], environment: createLaunchEnvironmentSnapshot([{source: 'process', values: process.env}])});
+const rows = [];
+try {
+  for (const entry of app.ctx.loader.entries()) {
+    if (entry?.options?.group) { rows.push({kind: 'group-skipped', id: entry.id}); continue; }
+    const moduleName = entry?.options?.name, entryId = entry?.id;
+    if (typeof moduleName !== 'string' || typeof entryId !== 'string') { rows.push({kind: 'unreadable', reason: 'NAME_OR_ID_NOT_STRING', id: entryId ?? null, name: moduleName ?? null}); continue; }
+    const baseUrl = entry?.parent?.tree?.ctx?.baseUrl ?? app.ctx.baseUrl ?? null;
+    const result = await inspectPackage(moduleName, baseUrl);
+    const ok = result.kind === 'present' && result.name === moduleName && validLoaderReference(result.name, result.version);
+    let reason = null;
+    if (!ok) reason = typeof baseUrl !== 'string' || !baseUrl.startsWith('file:') ? 'BASEURL_NOT_FILE' : !/^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/i.test(moduleName) ? 'NAME_NOT_PACKAGE' : result.kind !== 'present' ? 'PACKAGE_JSON_UNRESOLVED_OR_INVALID' : 'LOADER_REFERENCE_INVALID';
+    rows.push({kind: ok ? 'present' : 'unreadable', reason, id: entryId, name: moduleName, disabled: Boolean(entry.disabled), baseUrl: typeof baseUrl === 'string' ? baseUrl.replace(/^file:\/\/\/Users\/[^/]+/, 'file:///~') : String(baseUrl), version: result.version ?? null});
+  }
+} finally { await app.shutdown.shutdown(0); }
+const summary = {present: rows.filter(r => r.kind === 'present').length, unreadable: rows.filter(r => r.kind === 'unreadable').length, groupSkipped: rows.filter(r => r.kind === 'group-skipped').length};
+writeFileSync(out, JSON.stringify({scope: 'READ_ONLY_COPY_OF_CARD_DSH_HOME', summary, unreadable: rows.filter(r => r.kind === 'unreadable'), rows}, null, 1) + '\n');
+console.log(JSON.stringify(summary));
+process.exit(0);

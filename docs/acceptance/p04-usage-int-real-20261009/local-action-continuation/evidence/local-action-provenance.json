@@ -1,0 +1,22 @@
+{
+  "purpose": "EXISTING_PUBLIC_ORDINARY_READ_ONLY_COMMAND",
+  "action": "/goal (empty input: show current goal)",
+  "name": "@deepseek-ai/dsh-command-goal",
+  "version": "0.2.0-rc.2",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+    "directory": "packages/goal/command-goal"
+  },
+  "newDependencies": 0,
+  "sourceHead": "ad3aa02be71c865f783e2eaf2744524d0c28aa40",
+  "sourceAndBuiltFileHashes": {
+    "package.json": "7e07bf7e7809eedf7afad62493de2ee8b1c0dce1887747838e039bab8de28f8b",
+    "src/index.ts": "848444ac23f6a4c1f992fc5b10c1ba11d43106f9ce9a9fcc047973c512c3ce1f",
+    "lib/index.js": "ba117f69b62db6ae1d8e546515f1f3309ed4a5ce246223e70315475396f9e5c1"
+  },
+  "stateMutation": false,
+  "registryOrModelRequired": false,
+  "compactionCount": 2
+}

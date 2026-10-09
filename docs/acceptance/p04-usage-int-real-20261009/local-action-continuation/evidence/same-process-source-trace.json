@@ -1,0 +1,25 @@
+{
+  "diagnosticOnly": true,
+  "observedFact": {
+    "commandId": "cmd-bed28d52-1",
+    "phase": "succeeded",
+    "commandName": "goal",
+    "source": {
+      "entryId": "include:agent-preset-registry:command-goal",
+      "moduleName": "@deepseek-ai/dsh-command-goal"
+    },
+    "occurredAt": 1791498664892
+  },
+  "rootBaseUrl": "file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-10514290-7b05-4d9e-96ff-00b81062f6fd/dsh-home/profiles/web/",
+  "selected": [],
+  "sameModuleEntries": [
+    {
+      "id": "include:command-goal",
+      "name": "@deepseek-ai/dsh-command-goal",
+      "group": null,
+      "parentBaseUrl": "file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-10514290-7b05-4d9e-96ff-00b81062f6fd/dsh-home/profiles/web/"
+    }
+  ],
+  "lookups": [],
+  "resolvedOwningPackage": null
+}

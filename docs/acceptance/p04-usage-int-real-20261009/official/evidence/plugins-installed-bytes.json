@@ -1,0 +1,20 @@
+[
+  {
+    "name": "hanamesh-core",
+    "version": "0.2.0-rc.56",
+    "files": 106,
+    "differences": []
+  },
+  {
+    "name": "hanamesh-usage",
+    "version": "0.2.0-rc.17",
+    "files": 50,
+    "differences": []
+  },
+  {
+    "name": "dsh-update-notifier",
+    "version": "0.2.1",
+    "files": 7,
+    "differences": []
+  }
+]

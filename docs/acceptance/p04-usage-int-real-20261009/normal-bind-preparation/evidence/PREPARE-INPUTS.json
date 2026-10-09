@@ -1,0 +1,45 @@
+{
+  "at": "2026-10-08T23:59:08.610888+00:00",
+  "card": "P04-USAGE-INT-01",
+  "writer": "01a11db1-bc52-7522-aaf0-b5581153ec54",
+  "run": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60",
+  "CLI": "/Users/yzliu/work/projects/hanamesh/hanamesh-desktop/apps/cli/lib/bin.js",
+  "packages": [
+    {
+      "file": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60/supply/hanamesh-core-0.2.0-rc.56.tgz",
+      "sha256": "7342a2ab95b78a83d74a4c927039b4998f0dd76f3c7e8ed9b09c31700e642e28",
+      "bytes": 91797
+    },
+    {
+      "file": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60/supply/hanamesh-usage-0.2.0-rc.17.tgz",
+      "sha256": "063ae9b40a183de1ece5086300fe01fdbd29d9b478148e8053fb7c59b5c962b9",
+      "bytes": 47355
+    }
+  ],
+  "CorePublishedConfiguration": "websiteOrigin=http://127.0.0.1:51026 via id hanamesh-core overlay",
+  "normalIdentityHost": "WAITING_HOST_WRITER_LOCATOR",
+  "serverOrigin": null,
+  "websiteOrigin": "http://127.0.0.1:51026",
+  "profileStarted": false,
+  "CoreDeviceCreated": false,
+  "challengePOSTs": 0,
+  "GUIActions": 0,
+  "oldProfileCopied": false,
+  "old56000AndAccepted62787": "untouched",
+  "licences": [
+    {
+      "name": "hanamesh-core",
+      "version": "0.2.0-rc.56",
+      "license": "MIT",
+      "source": "existing exact normal delivered TGZ",
+      "purpose": "fresh nonaccepted website configuration preparation"
+    },
+    {
+      "name": "hanamesh-usage",
+      "version": "0.2.0-rc.17",
+      "license": "MIT",
+      "source": "existing exact normal delivered TGZ",
+      "purpose": "future same-scene Core/Usage integration"
+    }
+  ]
+}

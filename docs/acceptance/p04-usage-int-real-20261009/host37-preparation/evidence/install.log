@@ -1,0 +1,39 @@
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +145
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 145, reused 143, downloaded 0, added 141
+Progress: resolved 145, reused 143, downloaded 0, added 143
+
+   ╭──────────────────────────────────────────╮
+   │                                          │
+   │   Update available! 10.33.0 → 12.10.1.   │
+   │   Changelog: https://pnpm.io/v/12.10.1   │
+   │     To update, run: pnpm self-update     │
+   │                                          │
+   ╰──────────────────────────────────────────╯
+
+Progress: resolved 145, reused 143, downloaded 0, added 145, done
+
+dependencies:
++ @hanamesh/server-chain 0.1.0-rc.11
++ @hanamesh/server-claim 0.1.0-rc.12
++ @hanamesh/server-custody 0.1.0-rc.21
++ @hanamesh/server-identity 0.2.0-rc.11
++ @hanamesh/server-indexer 0.1.0-rc.17
++ @hanamesh/server-probe-module 0.1.0
++ @hanamesh/server-provider-registry 0.1.0-rc.4
++ @hanamesh/server-registry 0.1.0-rc.12
++ @hanamesh/server-revenue-router 0.1.0-rc.4
++ @hanamesh/server-semantic 0.1.0-rc.3
++ @hanamesh/server-usage 0.2.0-rc.14
++ fastify 5.12.3
++ hanamesh-server 0.2.0-rc.37
++ pg 8.23.0
+
+devDependencies:
++ @types/node 24.13.4
++ @types/pg 8.23.1
++ typescript 5.9.3
+
+Done in 2.4s using pnpm v10.33.0

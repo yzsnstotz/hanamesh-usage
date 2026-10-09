@@ -1,4 +1,4 @@
-# hanamesh-usage · 0.2.0-rc.15
+# hanamesh-usage · 0.2.0-rc.17
 
 > rc.13 消费公开 `client-page/opened` 并映射 open：核 canonical package、当前 Plugin Inventory 的启用/active 状态，以及 profile-installed、enabled、removable bundle 的实际所属 row；缺少这些公开服务或身份不一致时不采集。以 Host operationId 幂等，内置平台页及平台代生成的配置页不算普通插件。沿用 rc.12 succeeded→use；页面内按钮不自动算 use。组件与正式 GUI/真实 Core 服务端产品门分别记录。
 
@@ -29,8 +29,9 @@
 - `POST /api/hanamesh/usage/export`
 - `GET /api/hanamesh/usage/health`
 - `GET /api/hanamesh/usage/events`
+- `GET /api/hanamesh/usage/panel`、`/panel/view`、`/panel/remote`（rc.16）
 
-`ctx.hanameshUsage` 提供 `query`、`export`、`health`、`drain`、`reconcile` 与 `record`。`record` 只接受其它 HanaMesh 插件投递的 `open` / `use`，安装与卸载由 Loader 观测产生。rc.7 起 `record` 还接受可选 `sourceHanaRef`（来源 Hana，npm 包名）、`targetRef`（目标应用 / 会话，≤160 的 `[A-Za-z0-9][A-Za-z0-9_.:-]*`）与只配 `use` 的 `receipt {providerId, model|null, count≥1}`；同一 `idempotencyKey` 再投递不同归因或回执得到 `rejected: EVENT_IDENTITY_CONFLICT`，不覆盖。
+`ctx.hanameshUsage` 提供 `query`、`export`、`health`、`drain`、`reconcile`、`record`、`panel` 与 rc.16 的 `remote`。`record` 只接受其它 HanaMesh 插件投递的 `open` / `use`，安装与卸载由 Loader 观测产生。rc.7 起 `record` 还接受可选 `sourceHanaRef`（来源 Hana，npm 包名）、`targetRef`（目标应用 / 会话，≤160 的 `[A-Za-z0-9][A-Za-z0-9_.:-]*`）与只配 `use` 的 `receipt {providerId, model|null, count≥1}`；同一 `idempotencyKey` 再投递不同归因或回执得到 `rejected: EVENT_IDENTITY_CONFLICT`，不覆盖。
 
 ## 隐私与上报边界
 
@@ -55,6 +56,20 @@ npm run test:detached
 
 真实门必须使用全新隔离的 `DSH_HOME` 与随机端口；不得触碰 `~/.dsh` 或 `3080`。STUB/STANDIN 证据不能替代 REAL_SERVER/REAL_CORE。
 
+## rc.16 · 本设备服务端记录读回（P04-USAGE-INT-01）
+
+`remote()` 与认证路由 `GET /api/hanamesh/usage/panel/remote` 只读本设备在服务端的记录：
+用 Core 的 `signRequest` 对服务端公开路由 `GET /v1/usage/me/devices/:deviceId/events`
+签名（签名只含路径，不含查询串），窗口为「当前 +5 分钟」往前 90 天，按 `nextAfter` 翻页到底。
+返回 `{state, deviceId, total, events[{eventId,hanaRef,action,occurredAt,receivedAt}], code, httpStatus, checkedAt}`。
+服务端拒绝（401/403）、不可达、响应格式不对都是 `state:'unknown'` 且 `total:null`，没有服务端地址是
+`offline`；只有服务端真的返回空列表才是 0。读回不写本机状态、不采集、不受同意开关影响（撤回后用它核对删除）。
+路由只挂在 Connection 的认证 exact 注册表，只允许 GET、不接受任何查询参数。
+
+开发小界面（不进包）：`tools/int/` 是 P04 整合卡首段的装配与试用入口——`host.mjs` 起本卡自己的
+hanamesh-server rc.34 + 全新 PG，`setup.mjs` 用公开 CLI 把普通样本和本包装进全新 `DSH_HOME`，
+`dev-entry.mjs` 在真实 DSH 宿主里提供醒目标注的测试 Core 并在 `http://127.0.0.1:48671/` 给出页面。
+
 ## rc.15 · Usage 开发小面板
 
 正常安装本 bundle 后，自己的 `./client` 通过公开 `settings.section` 注册
@@ -78,3 +93,7 @@ module table 获取同一实例，`react@18.3.1` / `@types/react@18.3.1` 仅开�
 类型与组件测试使用，无新增生产 dependency、私有 peer/vendor 或新 bundler。
 原 rc.13 的 page→open、成功 command→use、同意与原子幂等逻辑保持。
 正式 Desktop 新安装、可见首步截图与 owner ACCEPTED 分别等待产品门证据。
+
+## rc.17 · 发布源事件边界
+
+事件 nonce 按 ServerUsage rc13 的 Token 合约校验，不把本插件的 16 字节随机数编码当成协议。自产 nonce 仍由原生成器保留 128 位随机性。`wireEvent` 仅接受 43 字符的 Identity 设备 ID，短 ID 的离线本地样本不能签名或进入上报批次。未新增依赖、未修改签名六字段、同意、队列或撤回逻辑。

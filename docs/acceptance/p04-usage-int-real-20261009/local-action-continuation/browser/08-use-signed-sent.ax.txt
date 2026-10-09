@@ -1,0 +1,2792 @@
+Window: "DeepSeek Harness", App: Google Chrome.
+0 standard window DeepSeek Harness - Google Chrome - snstotz, URL: 127.0.0.1:56000/, Secondary Actions: Raise
+	1 container DeepSeek Harness - Google Chrome - snstotz, URL: 127.0.0.1:56000/
+		2 container
+			3 toolbar
+				4 button (disabled) Back
+				5 button (disabled) Forward
+				6 button Reload
+				7 container
+					8 pop up button View site information
+					9 text field (settable) Address and search bar, Value: 127.0.0.1:56000, Placeholder: Search Google or type a URL
+					10 button Install DeepSeek Harness
+					11 button Bookmark this tab
+				12 container
+					13 pop up button MetaMask
+Has access to this site
+					14 pop up button Extensions
+				15 button Enter Passphrase
+				16 pop up button Chrome
+			17 container
+				18 scroll area
+					19 HTML content DeepSeek Harness, URL: 127.0.0.1:56000/
+						20 container 设置
+							21 container
+								22 text 设置
+								23 button 通用设置
+								24 button 模型
+								25 button 内置插件
+								26 button Agent 预设
+								27 button HanaMesh
+								28 button Usage 开发小面板
+							29 button 打开配置文件
+							30 button 关闭
+							31 container Usage 开发小面板
+								32 heading Usage 开发小面板, Value: 2
+									33 text Usage 开发小面板
+								34 button 刷新本机记录
+								35 container 本机 Usage 事件、签名与上报状态
+									36 HTML content Usage 开发小面板, URL: about:srcdoc
+										37 container
+											38 heading Usage 开发小面板, Value: 1
+												39 text Usage 开发小面板
+											40 container
+												41 text 身份真实性：未知（未提供本次产品门证据） 接收端真实性：未知（未提供本次产品门证据）
+											42 heading 当前设备与采集, Value: 2
+												43 text 当前设备与采集
+											44 text 设备 qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w；主体 7c857b07-2e22-47f5-8aa8-0cb326de0307；。
+											45 text 同意 granted；Core present；本设备事件 179 条。
+											46 text 只读刷新不会采集事件。open 来自公开页面呈现事实；use 来自成功命令；目录和任意按钮不会冒充 use。
+											47 heading 签名与上报分别判断, Value: 2
+												48 text 签名与上报分别判断
+											49 text 签名成功只说明当前设备公钥下的密码学校验；接收端成功只说明已收到确认，不证明生产身份或数据库。pending/未知不是成功。
+											50 text 上报 idle；pending 0；sent 179；duplicate 0；rejected 0。
+											51 text 最近错误 无；最近上报 2026-10-08T22:33:52.993Z；采集/签名诊断 INVENTORY_ENTRY_UNREADABLE × 7。
+											52 table 本机当前设备的最小事件与 owning 来源
+												53 row
+													54 column header
+														55 text 事件 ID
+													56 column header
+														57 text 插件
+													58 column header
+														59 text 动作
+													60 column header
+														61 text ISO 时间
+													62 column header
+														63 text 来源 / 插件 / 事实引用
+													64 column header
+														65 text 签名
+													66 column header
+														67 text 上报
+												68 row
+													69 cell
+														70 text 78a74567-c4cc-563c-9042-42936cc75fb8
+													71 cell
+														72 text @deepseek-ai/cordis-plugin-timer
+													73 cell
+														74 text install
+													75 cell
+														76 text 2026-10-08T22:24:58.676Z
+													77 cell
+														78 text loader 未知 @deepseek-ai/cordis-plugin-timer@1.1.6
+													79 cell
+														80 text 成功 · Ed25519 校验通过
+													81 cell
+														82 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												83 row
+													84 cell
+														85 text fb2e3acb-30a5-53ca-bd29-2b51e1d88b00
+													86 cell
+														87 text @deepseek-ai/dsh-agent
+													88 cell
+														89 text install
+													90 cell
+														91 text 2026-10-08T22:24:58.676Z
+													92 cell
+														93 text loader 未知 @deepseek-ai/dsh-agent@0.2.0-rc.2
+													94 cell
+														95 text 成功 · Ed25519 校验通过
+													96 cell
+														97 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												98 row
+													99 cell
+														100 text 2318bf81-3d8e-5a7f-9598-8b0f8d29e865
+													101 cell
+														102 text @deepseek-ai/dsh-agent-default-model
+													103 cell
+														104 text install
+													105 cell
+														106 text 2026-10-08T22:24:58.676Z
+													107 cell
+														108 text loader 未知 @deepseek-ai/dsh-agent-default-model@0.2.0-rc.2
+													109 cell
+														110 text 成功 · Ed25519 校验通过
+													111 cell
+														112 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												113 row
+													114 cell
+														115 text 731a94a8-d8d5-5be0-8b50-11037fd7933a
+													116 cell
+														117 text @deepseek-ai/dsh-agent-instructions
+													118 cell
+														119 text install
+													120 cell
+														121 text 2026-10-08T22:24:58.676Z
+													122 cell
+														123 text loader 未知 @deepseek-ai/dsh-agent-instructions@0.2.0-rc.2
+													124 cell
+														125 text 成功 · Ed25519 校验通过
+													126 cell
+														127 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												128 row
+													129 cell
+														130 text 5ff84691-b00c-5d98-bdec-5a80887813eb
+													131 cell
+														132 text @deepseek-ai/dsh-agent-loop
+													133 cell
+														134 text install
+													135 cell
+														136 text 2026-10-08T22:24:58.676Z
+													137 cell
+														138 text loader 未知 @deepseek-ai/dsh-agent-loop@0.2.0-rc.2
+													139 cell
+														140 text 成功 · Ed25519 校验通过
+													141 cell
+														142 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												143 row
+													144 cell
+														145 text 31b4e416-1d4c-54e2-83b2-b177209d7cf8
+													146 cell
+														147 text @deepseek-ai/dsh-agent-preset
+													148 cell
+														149 text install
+													150 cell
+														151 text 2026-10-08T22:24:58.676Z
+													152 cell
+														153 text loader 未知 @deepseek-ai/dsh-agent-preset@0.2.0-rc.2
+													154 cell
+														155 text 成功 · Ed25519 校验通过
+													156 cell
+														157 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												158 row
+													159 cell
+														160 text f7230b03-b51e-583e-8de1-4027a9facd9f
+													161 cell
+														162 text @deepseek-ai/dsh-agent-preset-registry
+													163 cell
+														164 text install
+													165 cell
+														166 text 2026-10-08T22:24:58.676Z
+													167 cell
+														168 text loader 未知 @deepseek-ai/dsh-agent-preset-registry@0.2.0-rc.2
+													169 cell
+														170 text 成功 · Ed25519 校验通过
+													171 cell
+														172 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												173 row
+													174 cell
+														175 text 6115da81-693c-5ad2-995d-92f4a4f080ad
+													176 cell
+														177 text @deepseek-ai/dsh-api-account-controller
+													178 cell
+														179 text install
+													180 cell
+														181 text 2026-10-08T22:24:58.676Z
+													182 cell
+														183 text loader 未知 @deepseek-ai/dsh-api-account-controller@0.2.0-rc.2
+													184 cell
+														185 text 成功 · Ed25519 校验通过
+													186 cell
+														187 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												188 row
+													189 cell
+														190 text 38b4eb21-0f4a-5053-836f-12198ddd9e40
+													191 cell
+														192 text @deepseek-ai/dsh-api-gateway
+													193 cell
+														194 text install
+													195 cell
+														196 text 2026-10-08T22:24:58.676Z
+													197 cell
+														198 text loader 未知 @deepseek-ai/dsh-api-gateway@0.2.0-rc.2
+													199 cell
+														200 text 成功 · Ed25519 校验通过
+													201 cell
+														202 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												203 row
+													204 cell
+														205 text df932a7c-bf0c-5c3c-b640-39979542ecc6
+													206 cell
+														207 text @deepseek-ai/dsh-api-job-controller
+													208 cell
+														209 text install
+													210 cell
+														211 text 2026-10-08T22:24:58.676Z
+													212 cell
+														213 text loader 未知 @deepseek-ai/dsh-api-job-controller@0.2.0-rc.2
+													214 cell
+														215 text 成功 · Ed25519 校验通过
+													216 cell
+														217 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												218 row
+													219 cell
+														220 text 08f3e0fb-2ce4-591c-a4ec-2f3d89b321e6
+													221 cell
+														222 text @deepseek-ai/dsh-api-remotes
+													223 cell
+														224 text install
+													225 cell
+														226 text 2026-10-08T22:24:58.676Z
+													227 cell
+														228 text loader 未知 @deepseek-ai/dsh-api-remotes@0.2.0-rc.2
+													229 cell
+														230 text 成功 · Ed25519 校验通过
+													231 cell
+														232 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												233 row
+													234 cell
+														235 text 7d518813-c869-5a11-bba3-6970cdb2bdcb
+													236 cell
+														237 text @deepseek-ai/dsh-api-session-controller
+													238 cell
+														239 text install
+													240 cell
+														241 text 2026-10-08T22:24:58.676Z
+													242 cell
+														243 text loader 未知 @deepseek-ai/dsh-api-session-controller@0.2.0-rc.2
+													244 cell
+														245 text 成功 · Ed25519 校验通过
+													246 cell
+														247 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												248 row
+													249 cell
+														250 text 53bb7667-645c-5094-ad2c-668791dfa079
+													251 cell
+														252 text @deepseek-ai/dsh-api-settings-controller
+													253 cell
+														254 text install
+													255 cell
+														256 text 2026-10-08T22:24:58.676Z
+													257 cell
+														258 text loader 未知 @deepseek-ai/dsh-api-settings-controller@0.2.0-rc.2
+													259 cell
+														260 text 成功 · Ed25519 校验通过
+													261 cell
+														262 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												263 row
+													264 cell
+														265 text 4201e99c-72a5-50f1-b405-cd790c54bf20
+													266 cell
+														267 text @deepseek-ai/dsh-api-terminal-controller
+													268 cell
+														269 text install
+													270 cell
+														271 text 2026-10-08T22:24:58.676Z
+													272 cell
+														273 text loader 未知 @deepseek-ai/dsh-api-terminal-controller@0.2.0-rc.2
+													274 cell
+														275 text 成功 · Ed25519 校验通过
+													276 cell
+														277 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												278 row
+													279 cell
+														280 text 811fba3a-0a44-5c7a-902e-b53619ed3c58
+													281 cell
+														282 text @deepseek-ai/dsh-api-workspace-controller
+													283 cell
+														284 text install
+													285 cell
+														286 text 2026-10-08T22:24:58.676Z
+													287 cell
+														288 text loader 未知 @deepseek-ai/dsh-api-workspace-controller@0.2.0-rc.2
+													289 cell
+														290 text 成功 · Ed25519 校验通过
+													291 cell
+														292 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												293 row
+													294 cell
+														295 text d1a6e57a-ad92-5800-ba7a-d039014efcff
+													296 cell
+														297 text @deepseek-ai/dsh-api-workspace-files
+													298 cell
+														299 text install
+													300 cell
+														301 text 2026-10-08T22:24:58.676Z
+													302 cell
+														303 text loader 未知 @deepseek-ai/dsh-api-workspace-files@0.2.0-rc.2
+													304 cell
+														305 text 成功 · Ed25519 校验通过
+													306 cell
+														307 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												308 row
+													309 cell
+														310 text 4160347c-df34-5b46-bf53-0988d662122c
+													311 cell
+														312 text @deepseek-ai/dsh-attachment-local
+													313 cell
+														314 text install
+													315 cell
+														316 text 2026-10-08T22:24:58.676Z
+													317 cell
+														318 text loader 未知 @deepseek-ai/dsh-attachment-local@0.2.0-rc.2
+													319 cell
+														320 text 成功 · Ed25519 校验通过
+													321 cell
+														322 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												323 row
+													324 cell
+														325 text f5d37147-2135-5e4d-a2f9-a660061b4f97
+													326 cell
+														327 text @deepseek-ai/dsh-authorization
+													328 cell
+														329 text install
+													330 cell
+														331 text 2026-10-08T22:24:58.676Z
+													332 cell
+														333 text loader 未知 @deepseek-ai/dsh-authorization@0.2.0-rc.2
+													334 cell
+														335 text 成功 · Ed25519 校验通过
+													336 cell
+														337 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												338 row
+													339 cell
+														340 text a4e6398d-534e-5924-84f0-eea043c1fdc5
+													341 cell
+														342 text @deepseek-ai/dsh-bash-sandbox
+													343 cell
+														344 text install
+													345 cell
+														346 text 2026-10-08T22:24:58.676Z
+													347 cell
+														348 text loader 未知 @deepseek-ai/dsh-bash-sandbox@0.2.0-rc.2
+													349 cell
+														350 text 成功 · Ed25519 校验通过
+													351 cell
+														352 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												353 row
+													354 cell
+														355 text ae69ede4-cf3d-50c5-b9de-47ec73d6844b
+													356 cell
+														357 text @deepseek-ai/dsh-client-connection
+													358 cell
+														359 text install
+													360 cell
+														361 text 2026-10-08T22:24:58.676Z
+													362 cell
+														363 text loader 未知 @deepseek-ai/dsh-client-connection@0.2.0-rc.2
+													364 cell
+														365 text 成功 · Ed25519 校验通过
+													366 cell
+														367 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												368 row
+													369 cell
+														370 text 2896c225-523f-5236-a10b-ab788814c9f0
+													371 cell
+														372 text @deepseek-ai/dsh-client-file-upload
+													373 cell
+														374 text install
+													375 cell
+														376 text 2026-10-08T22:24:58.676Z
+													377 cell
+														378 text loader 未知 @deepseek-ai/dsh-client-file-upload@0.2.0-rc.2
+													379 cell
+														380 text 成功 · Ed25519 校验通过
+													381 cell
+														382 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												383 row
+													384 cell
+														385 text ca5ae22d-bd12-56cb-8b33-4703f38d3c9a
+													386 cell
+														387 text @deepseek-ai/dsh-client-hmr
+													388 cell
+														389 text install
+													390 cell
+														391 text 2026-10-08T22:24:58.676Z
+													392 cell
+														393 text loader 未知 @deepseek-ai/dsh-client-hmr@0.2.0-rc.2
+													394 cell
+														395 text 成功 · Ed25519 校验通过
+													396 cell
+														397 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												398 row
+													399 cell
+														400 text 3ddffd20-ad3b-5399-87d7-bdc91944cddc
+													401 cell
+														402 text @deepseek-ai/dsh-client-locale
+													403 cell
+														404 text install
+													405 cell
+														406 text 2026-10-08T22:24:58.676Z
+													407 cell
+														408 text loader 未知 @deepseek-ai/dsh-client-locale@0.2.0-rc.2
+													409 cell
+														410 text 成功 · Ed25519 校验通过
+													411 cell
+														412 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												413 row
+													414 cell
+														415 text cf747b4d-894a-58e2-a913-c75bdb030281
+													416 cell
+														417 text @deepseek-ai/dsh-client-modules
+													418 cell
+														419 text install
+													420 cell
+														421 text 2026-10-08T22:24:58.676Z
+													422 cell
+														423 text loader 未知 @deepseek-ai/dsh-client-modules@0.2.0-rc.2
+													424 cell
+														425 text 成功 · Ed25519 校验通过
+													426 cell
+														427 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												428 row
+													429 cell
+														430 text 41072e8b-7e61-545c-9bca-ab41340bd2f7
+													431 cell
+														432 text @deepseek-ai/dsh-client-product-analytics
+													433 cell
+														434 text install
+													435 cell
+														436 text 2026-10-08T22:24:58.676Z
+													437 cell
+														438 text loader 未知 @deepseek-ai/dsh-client-product-analytics@0.2.0-rc.2
+													439 cell
+														440 text 成功 · Ed25519 校验通过
+													441 cell
+														442 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												443 row
+													444 cell
+														445 text 9f943488-a286-5ced-8241-ab4838ab46b3
+													446 cell
+														447 text @deepseek-ai/dsh-client-resources
+													448 cell
+														449 text install
+													450 cell
+														451 text 2026-10-08T22:24:58.676Z
+													452 cell
+														453 text loader 未知 @deepseek-ai/dsh-client-resources@0.2.0-rc.2
+													454 cell
+														455 text 成功 · Ed25519 校验通过
+													456 cell
+														457 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												458 row
+													459 cell
+														460 text 04695aa1-8eaa-562a-9502-bf73f50506e3
+													461 cell
+														462 text @deepseek-ai/dsh-client-shortcuts
+													463 cell
+														464 text install
+													465 cell
+														466 text 2026-10-08T22:24:58.676Z
+													467 cell
+														468 text loader 未知 @deepseek-ai/dsh-client-shortcuts@0.2.0-rc.2
+													469 cell
+														470 text 成功 · Ed25519 校验通过
+													471 cell
+														472 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												473 row
+													474 cell
+														475 text 4b9f3f71-1aa2-5972-984b-678800001860
+													476 cell
+														477 text @deepseek-ai/dsh-client-ui-agent-preset
+													478 cell
+														479 text install
+													480 cell
+														481 text 2026-10-08T22:24:58.676Z
+													482 cell
+														483 text loader 未知 @deepseek-ai/dsh-client-ui-agent-preset@0.2.0-rc.2
+													484 cell
+														485 text 成功 · Ed25519 校验通过
+													486 cell
+														487 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												488 row
+													489 cell
+														490 text 4b28ae71-2779-501e-9210-1952515707ac
+													491 cell
+														492 text @deepseek-ai/dsh-client-ui-approval
+													493 cell
+														494 text install
+													495 cell
+														496 text 2026-10-08T22:24:58.676Z
+													497 cell
+														498 text loader 未知 @deepseek-ai/dsh-client-ui-approval@0.2.0-rc.2
+													499 cell
+														500 text 成功 · Ed25519 校验通过
+													501 cell
+														502 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												503 row
+													504 cell
+														505 text 298f3f09-f480-568b-9dc6-7bb5a4593ab5
+													506 cell
+														507 text @deepseek-ai/dsh-client-ui-attachment
+													508 cell
+														509 text install
+													510 cell
+														511 text 2026-10-08T22:24:58.676Z
+													512 cell
+														513 text loader 未知 @deepseek-ai/dsh-client-ui-attachment@0.2.0-rc.2
+													514 cell
+														515 text 成功 · Ed25519 校验通过
+													516 cell
+														517 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												518 row
+													519 cell
+														520 text d271e1a2-5932-5a01-9e69-ec62937a081c
+													521 cell
+														522 text @deepseek-ai/dsh-client-ui-brand-official
+													523 cell
+														524 text install
+													525 cell
+														526 text 2026-10-08T22:24:58.676Z
+													527 cell
+														528 text loader 未知 @deepseek-ai/dsh-client-ui-brand-official@0.2.0-rc.2
+													529 cell
+														530 text 成功 · Ed25519 校验通过
+													531 cell
+														532 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												533 row
+													534 cell
+														535 text 02a31d64-c928-5e58-81f7-51579f23efb1
+													536 cell
+														537 text @deepseek-ai/dsh-client-ui-chat
+													538 cell
+														539 text install
+													540 cell
+														541 text 2026-10-08T22:24:58.676Z
+													542 cell
+														543 text loader 未知 @deepseek-ai/dsh-client-ui-chat@0.2.0-rc.2
+													544 cell
+														545 text 成功 · Ed25519 校验通过
+													546 cell
+														547 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												548 row
+													549 cell
+														550 text b619c435-0946-5e39-84d4-94e94d858ada
+													551 cell
+														552 text @deepseek-ai/dsh-client-ui-commands
+													553 cell
+														554 text install
+													555 cell
+														556 text 2026-10-08T22:24:58.676Z
+													557 cell
+														558 text loader 未知 @deepseek-ai/dsh-client-ui-commands@0.2.0-rc.2
+													559 cell
+														560 text 成功 · Ed25519 校验通过
+													561 cell
+														562 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												563 row
+													564 cell
+														565 text 2211e48b-9a91-5ba5-868b-eda03b334b59
+													566 cell
+														567 text @deepseek-ai/dsh-client-ui-conversation
+													568 cell
+														569 text install
+													570 cell
+														571 text 2026-10-08T22:24:58.676Z
+													572 cell
+														573 text loader 未知 @deepseek-ai/dsh-client-ui-conversation@0.2.0-rc.2
+													574 cell
+														575 text 成功 · Ed25519 校验通过
+													576 cell
+														577 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												578 row
+													579 cell
+														580 text 95a13112-3f59-5381-947a-d86c87c5935d
+													581 cell
+														582 text @deepseek-ai/dsh-client-ui-cordis
+													583 cell
+														584 text install
+													585 cell
+														586 text 2026-10-08T22:24:58.676Z
+													587 cell
+														588 text loader 未知 @deepseek-ai/dsh-client-ui-cordis@0.2.0-rc.2
+													589 cell
+														590 text 成功 · Ed25519 校验通过
+													591 cell
+														592 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												593 row
+													594 cell
+														595 text 97d53858-13b2-5a0a-8cba-5ac3ff0a003c
+													596 cell
+														597 text @deepseek-ai/dsh-client-ui-deliverables
+													598 cell
+														599 text install
+													600 cell
+														601 text 2026-10-08T22:24:58.676Z
+													602 cell
+														603 text loader 未知 @deepseek-ai/dsh-client-ui-deliverables@0.2.0-rc.2
+													604 cell
+														605 text 成功 · Ed25519 校验通过
+													606 cell
+														607 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												608 row
+													609 cell
+														610 text b78dfd7e-5a4b-5238-ac3b-d49a2ef9c523
+													611 cell
+														612 text @deepseek-ai/dsh-client-ui-directory-picker-native
+													613 cell
+														614 text install
+													615 cell
+														616 text 2026-10-08T22:24:58.676Z
+													617 cell
+														618 text loader 未知 @deepseek-ai/dsh-client-ui-directory-picker-native@0.2.0-rc.2
+													619 cell
+														620 text 成功 · Ed25519 校验通过
+													621 cell
+														622 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												623 row
+													624 cell
+														625 text 83222f6d-5dcb-5e80-b49b-cf20666047cb
+													626 cell
+														627 text @deepseek-ai/dsh-client-ui-goal
+													628 cell
+														629 text install
+													630 cell
+														631 text 2026-10-08T22:24:58.676Z
+													632 cell
+														633 text loader 未知 @deepseek-ai/dsh-client-ui-goal@0.2.0-rc.2
+													634 cell
+														635 text 成功 · Ed25519 校验通过
+													636 cell
+														637 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												638 row
+													639 cell
+														640 text 9829a100-c395-5c66-8438-476f48f712f0
+													641 cell
+														642 text @deepseek-ai/dsh-client-ui-input-trigger
+													643 cell
+														644 text install
+													645 cell
+														646 text 2026-10-08T22:24:58.676Z
+													647 cell
+														648 text loader 未知 @deepseek-ai/dsh-client-ui-input-trigger@0.2.0-rc.2
+													649 cell
+														650 text 成功 · Ed25519 校验通过
+													651 cell
+														652 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												653 row
+													654 cell
+														655 text b3e8a9a1-71d8-52ac-aacd-f5822a018e38
+													656 cell
+														657 text @deepseek-ai/dsh-client-ui-jobs
+													658 cell
+														659 text install
+													660 cell
+														661 text 2026-10-08T22:24:58.676Z
+													662 cell
+														663 text loader 未知 @deepseek-ai/dsh-client-ui-jobs@0.2.0-rc.2
+													664 cell
+														665 text 成功 · Ed25519 校验通过
+													666 cell
+														667 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												668 row
+													669 cell
+														670 text 79d90f8f-7b34-5362-ab6f-68bdd9e68021
+													671 cell
+														672 text @deepseek-ai/dsh-client-ui-layout
+													673 cell
+														674 text install
+													675 cell
+														676 text 2026-10-08T22:24:58.676Z
+													677 cell
+														678 text loader 未知 @deepseek-ai/dsh-client-ui-layout@0.2.0-rc.2
+													679 cell
+														680 text 成功 · Ed25519 校验通过
+													681 cell
+														682 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												683 row
+													684 cell
+														685 text c213bb2f-16f9-5382-9f4b-fd4dd1b4ad01
+													686 cell
+														687 text @deepseek-ai/dsh-client-ui-message-feedback
+													688 cell
+														689 text install
+													690 cell
+														691 text 2026-10-08T22:24:58.676Z
+													692 cell
+														693 text loader 未知 @deepseek-ai/dsh-client-ui-message-feedback@0.2.0-rc.2
+													694 cell
+														695 text 成功 · Ed25519 校验通过
+													696 cell
+														697 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												698 row
+													699 cell
+														700 text 6284919c-80f9-56d4-8529-b7f9c01dd99a
+													701 cell
+														702 text @deepseek-ai/dsh-client-ui-model-selection
+													703 cell
+														704 text install
+													705 cell
+														706 text 2026-10-08T22:24:58.676Z
+													707 cell
+														708 text loader 未知 @deepseek-ai/dsh-client-ui-model-selection@0.2.0-rc.2
+													709 cell
+														710 text 成功 · Ed25519 校验通过
+													711 cell
+														712 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												713 row
+													714 cell
+														715 text 2f541fa8-d478-5c7e-848d-2451347720f8
+													716 cell
+														717 text @deepseek-ai/dsh-client-ui-open-in-app
+													718 cell
+														719 text install
+													720 cell
+														721 text 2026-10-08T22:24:58.676Z
+													722 cell
+														723 text loader 未知 @deepseek-ai/dsh-client-ui-open-in-app@0.2.0-rc.2
+													724 cell
+														725 text 成功 · Ed25519 校验通过
+													726 cell
+														727 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												728 row
+													729 cell
+														730 text 0ad6f499-5dcf-5c4b-8198-10c1201f8d74
+													731 cell
+														732 text @deepseek-ai/dsh-client-ui-permission-presets
+													733 cell
+														734 text install
+													735 cell
+														736 text 2026-10-08T22:24:58.676Z
+													737 cell
+														738 text loader 未知 @deepseek-ai/dsh-client-ui-permission-presets@0.2.0-rc.2
+													739 cell
+														740 text 成功 · Ed25519 校验通过
+													741 cell
+														742 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												743 row
+													744 cell
+														745 text ec07d543-b393-506f-9ff2-9d9aa10c3039
+													746 cell
+														747 text @deepseek-ai/dsh-client-ui-plan
+													748 cell
+														749 text install
+													750 cell
+														751 text 2026-10-08T22:24:58.676Z
+													752 cell
+														753 text loader 未知 @deepseek-ai/dsh-client-ui-plan@0.2.0-rc.2
+													754 cell
+														755 text 成功 · Ed25519 校验通过
+													756 cell
+														757 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												758 row
+													759 cell
+														760 text 71f9700b-5f28-565a-9789-1048caa76a07
+													761 cell
+														762 text @deepseek-ai/dsh-client-ui-plugin-manager
+													763 cell
+														764 text install
+													765 cell
+														766 text 2026-10-08T22:24:58.676Z
+													767 cell
+														768 text loader 未知 @deepseek-ai/dsh-client-ui-plugin-manager@0.2.0-rc.2
+													769 cell
+														770 text 成功 · Ed25519 校验通过
+													771 cell
+														772 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												773 row
+													774 cell
+														775 text 93d5d244-5b10-562a-a256-eddd9100baba
+													776 cell
+														777 text @deepseek-ai/dsh-client-ui-reference
+													778 cell
+														779 text install
+													780 cell
+														781 text 2026-10-08T22:24:58.676Z
+													782 cell
+														783 text loader 未知 @deepseek-ai/dsh-client-ui-reference@0.2.0-rc.2
+													784 cell
+														785 text 成功 · Ed25519 校验通过
+													786 cell
+														787 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												788 row
+													789 cell
+														790 text a20f360b-c8b2-5403-8361-06868245f9d8
+													791 cell
+														792 text @deepseek-ai/dsh-client-ui-renderer
+													793 cell
+														794 text install
+													795 cell
+														796 text 2026-10-08T22:24:58.676Z
+													797 cell
+														798 text loader 未知 @deepseek-ai/dsh-client-ui-renderer@0.2.0-rc.2
+													799 cell
+														800 text 成功 · Ed25519 校验通过
+													801 cell
+														802 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												803 row
+													804 cell
+														805 text 983fdee8-11e9-55ce-8161-fe4dce2c9b4f
+													806 cell
+														807 text @deepseek-ai/dsh-client-ui-session
+													808 cell
+														809 text install
+													810 cell
+														811 text 2026-10-08T22:24:58.676Z
+													812 cell
+														813 text loader 未知 @deepseek-ai/dsh-client-ui-session@0.2.0-rc.2
+													814 cell
+														815 text 成功 · Ed25519 校验通过
+													816 cell
+														817 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												818 row
+													819 cell
+														820 text 86565c20-d995-58f2-94e8-799b14c48ec3
+													821 cell
+														822 text @deepseek-ai/dsh-client-ui-settings
+													823 cell
+														824 text install
+													825 cell
+														826 text 2026-10-08T22:24:58.676Z
+													827 cell
+														828 text loader 未知 @deepseek-ai/dsh-client-ui-settings@0.2.0-rc.2
+													829 cell
+														830 text 成功 · Ed25519 校验通过
+													831 cell
+														832 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												833 row
+													834 cell
+														835 text 47d21db2-809a-559d-8bc9-bb0726e01a23
+													836 cell
+														837 text @deepseek-ai/dsh-client-ui-settings-account
+													838 cell
+														839 text install
+													840 cell
+														841 text 2026-10-08T22:24:58.676Z
+													842 cell
+														843 text loader 未知 @deepseek-ai/dsh-client-ui-settings-account@0.2.0-rc.2
+													844 cell
+														845 text 成功 · Ed25519 校验通过
+													846 cell
+														847 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												848 row
+													849 cell
+														850 text 557ad6b6-24af-5a8f-bcb8-b8d00834b3be
+													851 cell
+														852 text @deepseek-ai/dsh-client-ui-settings-agent-loop
+													853 cell
+														854 text install
+													855 cell
+														856 text 2026-10-08T22:24:58.676Z
+													857 cell
+														858 text loader 未知 @deepseek-ai/dsh-client-ui-settings-agent-loop@0.2.0-rc.2
+													859 cell
+														860 text 成功 · Ed25519 校验通过
+													861 cell
+														862 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												863 row
+													864 cell
+														865 text 04850751-bba0-58c5-82f1-abfc4864c7d3
+													866 cell
+														867 text @deepseek-ai/dsh-client-ui-settings-general
+													868 cell
+														869 text install
+													870 cell
+														871 text 2026-10-08T22:24:58.676Z
+													872 cell
+														873 text loader 未知 @deepseek-ai/dsh-client-ui-settings-general@0.2.0-rc.2
+													874 cell
+														875 text 成功 · Ed25519 校验通过
+													876 cell
+														877 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												878 row
+													879 cell
+														880 text 9fbf94e3-9ea0-5d10-8dca-404308a76ad3
+													881 cell
+														882 text @deepseek-ai/dsh-client-ui-settings-models
+													883 cell
+														884 text install
+													885 cell
+														886 text 2026-10-08T22:24:58.676Z
+													887 cell
+														888 text loader 未知 @deepseek-ai/dsh-client-ui-settings-models@0.2.0-rc.2
+													889 cell
+														890 text 成功 · Ed25519 校验通过
+													891 cell
+														892 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												893 row
+													894 cell
+														895 text c9bd8cef-1c9d-5e3e-a1f3-8398a9f6fd8c
+													896 cell
+														897 text @deepseek-ai/dsh-client-ui-settings-plugin-inventory
+													898 cell
+														899 text install
+													900 cell
+														901 text 2026-10-08T22:24:58.676Z
+													902 cell
+														903 text loader 未知 @deepseek-ai/dsh-client-ui-settings-plugin-inventory@0.2.0-rc.2
+													904 cell
+														905 text 成功 · Ed25519 校验通过
+													906 cell
+														907 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												908 row
+													909 cell
+														910 text 269d8105-bbc7-5114-8453-aef9a7508f61
+													911 cell
+														912 text @deepseek-ai/dsh-client-ui-settings-plugins
+													913 cell
+														914 text install
+													915 cell
+														916 text 2026-10-08T22:24:58.676Z
+													917 cell
+														918 text loader 未知 @deepseek-ai/dsh-client-ui-settings-plugins@0.2.0-rc.2
+													919 cell
+														920 text 成功 · Ed25519 校验通过
+													921 cell
+														922 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												923 row
+													924 cell
+														925 text ccfd4901-0a09-5836-85fb-79751bbaad3c
+													926 cell
+														927 text @deepseek-ai/dsh-client-ui-settings-session-log
+													928 cell
+														929 text install
+													930 cell
+														931 text 2026-10-08T22:24:58.676Z
+													932 cell
+														933 text loader 未知 @deepseek-ai/dsh-client-ui-settings-session-log@0.2.0-rc.2
+													934 cell
+														935 text 成功 · Ed25519 校验通过
+													936 cell
+														937 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												938 row
+													939 cell
+														940 text f21c17a5-06b2-55d7-bf28-70685e2e8350
+													941 cell
+														942 text @deepseek-ai/dsh-client-ui-settings-shell
+													943 cell
+														944 text install
+													945 cell
+														946 text 2026-10-08T22:24:58.676Z
+													947 cell
+														948 text loader 未知 @deepseek-ai/dsh-client-ui-settings-shell@0.2.0-rc.2
+													949 cell
+														950 text 成功 · Ed25519 校验通过
+													951 cell
+														952 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												953 row
+													954 cell
+														955 text 3f615096-a44b-5c3b-b182-be3fe38903a0
+													956 cell
+														957 text @deepseek-ai/dsh-client-ui-settings-subagent
+													958 cell
+														959 text install
+													960 cell
+														961 text 2026-10-08T22:24:58.676Z
+													962 cell
+														963 text loader 未知 @deepseek-ai/dsh-client-ui-settings-subagent@0.2.0-rc.2
+													964 cell
+														965 text 成功 · Ed25519 校验通过
+													966 cell
+														967 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												968 row
+													969 cell
+														970 text 2f75f60d-a913-56d7-8f35-b6f6a1ad5adc
+													971 cell
+														972 text @deepseek-ai/dsh-client-ui-settings-web-search
+													973 cell
+														974 text install
+													975 cell
+														976 text 2026-10-08T22:24:58.676Z
+													977 cell
+														978 text loader 未知 @deepseek-ai/dsh-client-ui-settings-web-search@0.2.0-rc.2
+													979 cell
+														980 text 成功 · Ed25519 校验通过
+													981 cell
+														982 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												983 row
+													984 cell
+														985 text 34421c0d-f7fd-5b1a-9b63-af041151ec8d
+													986 cell
+														987 text @deepseek-ai/dsh-client-ui-shortcuts
+													988 cell
+														989 text install
+													990 cell
+														991 text 2026-10-08T22:24:58.676Z
+													992 cell
+														993 text loader 未知 @deepseek-ai/dsh-client-ui-shortcuts@0.2.0-rc.2
+													994 cell
+														995 text 成功 · Ed25519 校验通过
+													996 cell
+														997 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												998 row
+													999 cell
+														1000 text 78cecb3e-2175-5caa-a925-30c16dc9794f
+													1001 cell
+														1002 text @deepseek-ai/dsh-client-ui-sidebar
+													1003 cell
+														1004 text install
+													1005 cell
+														1006 text 2026-10-08T22:24:58.676Z
+													1007 cell
+														1008 text loader 未知 @deepseek-ai/dsh-client-ui-sidebar@0.2.0-rc.2
+													1009 cell
+														1010 text 成功 · Ed25519 校验通过
+													1011 cell
+														1012 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1013 row
+													1014 cell
+														1015 text 0ac45180-7b2f-5999-ad01-961220312841
+													1016 cell
+														1017 text @deepseek-ai/dsh-client-ui-sidebar-browser
+													1018 cell
+														1019 text install
+													1020 cell
+														1021 text 2026-10-08T22:24:58.676Z
+													1022 cell
+														1023 text loader 未知 @deepseek-ai/dsh-client-ui-sidebar-browser@0.2.0-rc.2
+													1024 cell
+														1025 text 成功 · Ed25519 校验通过
+													1026 cell
+														1027 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1028 row
+													1029 cell
+														1030 text 0a79e72d-88fc-5e71-93de-1c8176873e2a
+													1031 cell
+														1032 text @deepseek-ai/dsh-client-ui-sidebar-documentpreview
+													1033 cell
+														1034 text install
+													1035 cell
+														1036 text 2026-10-08T22:24:58.676Z
+													1037 cell
+														1038 text loader 未知 @deepseek-ai/dsh-client-ui-sidebar-documentpreview@0.2.0-rc.2
+													1039 cell
+														1040 text 成功 · Ed25519 校验通过
+													1041 cell
+														1042 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1043 row
+													1044 cell
+														1045 text b3eb4110-86a2-54d2-8b01-f8b967e1fd77
+													1046 cell
+														1047 text @deepseek-ai/dsh-client-ui-sidebar-files
+													1048 cell
+														1049 text install
+													1050 cell
+														1051 text 2026-10-08T22:24:58.676Z
+													1052 cell
+														1053 text loader 未知 @deepseek-ai/dsh-client-ui-sidebar-files@0.2.0-rc.2
+													1054 cell
+														1055 text 成功 · Ed25519 校验通过
+													1056 cell
+														1057 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1058 row
+													1059 cell
+														1060 text 341a02ff-826c-5c4a-8f0e-aad6ff6e31b4
+													1061 cell
+														1062 text @deepseek-ai/dsh-client-ui-sidebar-right
+													1063 cell
+														1064 text install
+													1065 cell
+														1066 text 2026-10-08T22:24:58.676Z
+													1067 cell
+														1068 text loader 未知 @deepseek-ai/dsh-client-ui-sidebar-right@0.2.0-rc.2
+													1069 cell
+														1070 text 成功 · Ed25519 校验通过
+													1071 cell
+														1072 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1073 row
+													1074 cell
+														1075 text 953054be-ffe0-5d88-844a-3328647d39b8
+													1076 cell
+														1077 text @deepseek-ai/dsh-client-ui-sidebar-terminal
+													1078 cell
+														1079 text install
+													1080 cell
+														1081 text 2026-10-08T22:24:58.676Z
+													1082 cell
+														1083 text loader 未知 @deepseek-ai/dsh-client-ui-sidebar-terminal@0.2.0-rc.2
+													1084 cell
+														1085 text 成功 · Ed25519 校验通过
+													1086 cell
+														1087 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1088 row
+													1089 cell
+														1090 text 7bec7938-2c3d-5939-ad1f-669817618595
+													1091 cell
+														1092 text @deepseek-ai/dsh-client-ui-skill
+													1093 cell
+														1094 text install
+													1095 cell
+														1096 text 2026-10-08T22:24:58.676Z
+													1097 cell
+														1098 text loader 未知 @deepseek-ai/dsh-client-ui-skill@0.2.0-rc.2
+													1099 cell
+														1100 text 成功 · Ed25519 校验通过
+													1101 cell
+														1102 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1103 row
+													1104 cell
+														1105 text 7a8a0886-2dd6-554c-826b-136e8dc5d2c5
+													1106 cell
+														1107 text @deepseek-ai/dsh-client-ui-subagent
+													1108 cell
+														1109 text install
+													1110 cell
+														1111 text 2026-10-08T22:24:58.676Z
+													1112 cell
+														1113 text loader 未知 @deepseek-ai/dsh-client-ui-subagent@0.2.0-rc.2
+													1114 cell
+														1115 text 成功 · Ed25519 校验通过
+													1116 cell
+														1117 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1118 row
+													1119 cell
+														1120 text c4397042-e554-5c21-8fad-96ad018a7b11
+													1121 cell
+														1122 text @deepseek-ai/dsh-client-ui-theme
+													1123 cell
+														1124 text install
+													1125 cell
+														1126 text 2026-10-08T22:24:58.676Z
+													1127 cell
+														1128 text loader 未知 @deepseek-ai/dsh-client-ui-theme@0.2.0-rc.2
+													1129 cell
+														1130 text 成功 · Ed25519 校验通过
+													1131 cell
+														1132 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1133 row
+													1134 cell
+														1135 text e2c31708-2660-5033-90c5-3bdde91f63cc
+													1136 cell
+														1137 text @deepseek-ai/dsh-client-ui-tool
+													1138 cell
+														1139 text install
+													1140 cell
+														1141 text 2026-10-08T22:24:58.676Z
+													1142 cell
+														1143 text loader 未知 @deepseek-ai/dsh-client-ui-tool@0.2.0-rc.2
+													1144 cell
+														1145 text 成功 · Ed25519 校验通过
+													1146 cell
+														1147 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1148 row
+													1149 cell
+														1150 text fdb1f025-cccc-571b-bc92-c29f5393600a
+													1151 cell
+														1152 text @deepseek-ai/dsh-client-ui-trajectory
+													1153 cell
+														1154 text install
+													1155 cell
+														1156 text 2026-10-08T22:24:58.676Z
+													1157 cell
+														1158 text loader 未知 @deepseek-ai/dsh-client-ui-trajectory@0.2.0-rc.2
+													1159 cell
+														1160 text 成功 · Ed25519 校验通过
+													1161 cell
+														1162 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1163 row
+													1164 cell
+														1165 text 61cbc4d2-aab0-5179-a6a3-7ed8898a9c37
+													1166 cell
+														1167 text @deepseek-ai/dsh-client-ui-user-questions
+													1168 cell
+														1169 text install
+													1170 cell
+														1171 text 2026-10-08T22:24:58.676Z
+													1172 cell
+														1173 text loader 未知 @deepseek-ai/dsh-client-ui-user-questions@0.2.0-rc.2
+													1174 cell
+														1175 text 成功 · Ed25519 校验通过
+													1176 cell
+														1177 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1178 row
+													1179 cell
+														1180 text 3a33a1af-b620-59b1-8019-2a1c32847718
+													1181 cell
+														1182 text @deepseek-ai/dsh-client-ui-workflow-run
+													1183 cell
+														1184 text install
+													1185 cell
+														1186 text 2026-10-08T22:24:58.676Z
+													1187 cell
+														1188 text loader 未知 @deepseek-ai/dsh-client-ui-workflow-run@0.2.0-rc.2
+													1189 cell
+														1190 text 成功 · Ed25519 校验通过
+													1191 cell
+														1192 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1193 row
+													1194 cell
+														1195 text 73b89274-9eab-5912-9ea9-4edb62d4a6a1
+													1196 cell
+														1197 text @deepseek-ai/dsh-client-ui-workspace
+													1198 cell
+														1199 text install
+													1200 cell
+														1201 text 2026-10-08T22:24:58.676Z
+													1202 cell
+														1203 text loader 未知 @deepseek-ai/dsh-client-ui-workspace@0.2.0-rc.2
+													1204 cell
+														1205 text 成功 · Ed25519 校验通过
+													1206 cell
+														1207 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1208 row
+													1209 cell
+														1210 text 8bf722c4-0234-540a-a00f-1ce3669991a6
+													1211 cell
+														1212 text @deepseek-ai/dsh-command-compact
+													1213 cell
+														1214 text install
+													1215 cell
+														1216 text 2026-10-08T22:24:58.676Z
+													1217 cell
+														1218 text loader 未知 @deepseek-ai/dsh-command-compact@0.2.0-rc.2
+													1219 cell
+														1220 text 成功 · Ed25519 校验通过
+													1221 cell
+														1222 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1223 row
+													1224 cell
+														1225 text 21a5da48-65e5-5c31-a9fc-c235e7bbd666
+													1226 cell
+														1227 text @deepseek-ai/dsh-command-feedback
+													1228 cell
+														1229 text install
+													1230 cell
+														1231 text 2026-10-08T22:24:58.676Z
+													1232 cell
+														1233 text loader 未知 @deepseek-ai/dsh-command-feedback@0.2.0-rc.2
+													1234 cell
+														1235 text 成功 · Ed25519 校验通过
+													1236 cell
+														1237 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1238 row
+													1239 cell
+														1240 text 066fb161-e229-568f-b002-c851e29252f7
+													1241 cell
+														1242 text @deepseek-ai/dsh-command-goal
+													1243 cell
+														1244 text install
+													1245 cell
+														1246 text 2026-10-08T22:24:58.676Z
+													1247 cell
+														1248 text loader 未知 @deepseek-ai/dsh-command-goal@0.2.0-rc.2
+													1249 cell
+														1250 text 成功 · Ed25519 校验通过
+													1251 cell
+														1252 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1253 row
+													1254 cell
+														1255 text 4d34b7d5-f986-5100-8419-e228ea5529ab
+													1256 cell
+														1257 text @deepseek-ai/dsh-commands
+													1258 cell
+														1259 text install
+													1260 cell
+														1261 text 2026-10-08T22:24:58.676Z
+													1262 cell
+														1263 text loader 未知 @deepseek-ai/dsh-commands@0.2.0-rc.2
+													1264 cell
+														1265 text 成功 · Ed25519 校验通过
+													1266 cell
+														1267 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1268 row
+													1269 cell
+														1270 text 5acd2469-3cc6-5436-b7b1-7b6e57eac83e
+													1271 cell
+														1272 text @deepseek-ai/dsh-compaction-basic
+													1273 cell
+														1274 text install
+													1275 cell
+														1276 text 2026-10-08T22:24:58.676Z
+													1277 cell
+														1278 text loader 未知 @deepseek-ai/dsh-compaction-basic@0.2.0-rc.2
+													1279 cell
+														1280 text 成功 · Ed25519 校验通过
+													1281 cell
+														1282 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1283 row
+													1284 cell
+														1285 text aeca2afb-d2b0-5058-a257-c7da9392cda2
+													1286 cell
+														1287 text @deepseek-ai/dsh-compaction-image-offload
+													1288 cell
+														1289 text install
+													1290 cell
+														1291 text 2026-10-08T22:24:58.676Z
+													1292 cell
+														1293 text loader 未知 @deepseek-ai/dsh-compaction-image-offload@0.2.0-rc.2
+													1294 cell
+														1295 text 成功 · Ed25519 校验通过
+													1296 cell
+														1297 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1298 row
+													1299 cell
+														1300 text df553049-5a3c-5915-a8a8-f73353c93b30
+													1301 cell
+														1302 text @deepseek-ai/dsh-compaction-tool-result-pruner
+													1303 cell
+														1304 text install
+													1305 cell
+														1306 text 2026-10-08T22:24:58.676Z
+													1307 cell
+														1308 text loader 未知 @deepseek-ai/dsh-compaction-tool-result-pruner@0.2.0-rc.2
+													1309 cell
+														1310 text 成功 · Ed25519 校验通过
+													1311 cell
+														1312 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1313 row
+													1314 cell
+														1315 text 6003b83f-523c-55f5-ab9e-b3e919825858
+													1316 cell
+														1317 text @deepseek-ai/dsh-config-editor
+													1318 cell
+														1319 text install
+													1320 cell
+														1321 text 2026-10-08T22:24:58.676Z
+													1322 cell
+														1323 text loader 未知 @deepseek-ai/dsh-config-editor@0.2.0-rc.2
+													1324 cell
+														1325 text 成功 · Ed25519 校验通过
+													1326 cell
+														1327 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1328 row
+													1329 cell
+														1330 text c81e56c4-2621-5f8e-b183-1e304d2b3631
+													1331 cell
+														1332 text @deepseek-ai/dsh-cordis-client-runner
+													1333 cell
+														1334 text install
+													1335 cell
+														1336 text 2026-10-08T22:24:58.676Z
+													1337 cell
+														1338 text loader 未知 @deepseek-ai/dsh-cordis-client-runner@0.2.0-rc.2
+													1339 cell
+														1340 text 成功 · Ed25519 校验通过
+													1341 cell
+														1342 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1343 row
+													1344 cell
+														1345 text 780b0e56-b35d-5dee-8621-7481b04ec2e9
+													1346 cell
+														1347 text @deepseek-ai/dsh-cordis-host-runner
+													1348 cell
+														1349 text install
+													1350 cell
+														1351 text 2026-10-08T22:24:58.676Z
+													1352 cell
+														1353 text loader 未知 @deepseek-ai/dsh-cordis-host-runner@0.2.0-rc.2
+													1354 cell
+														1355 text 成功 · Ed25519 校验通过
+													1356 cell
+														1357 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1358 row
+													1359 cell
+														1360 text a01a4549-5cdb-5ebf-b8f4-1178f0e6191b
+													1361 cell
+														1362 text @deepseek-ai/dsh-credentials-local
+													1363 cell
+														1364 text install
+													1365 cell
+														1366 text 2026-10-08T22:24:58.676Z
+													1367 cell
+														1368 text loader 未知 @deepseek-ai/dsh-credentials-local@0.2.0-rc.2
+													1369 cell
+														1370 text 成功 · Ed25519 校验通过
+													1371 cell
+														1372 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1373 row
+													1374 cell
+														1375 text 00cacd71-eb74-5f7a-8a8d-a5e3a803a75b
+													1376 cell
+														1377 text @deepseek-ai/dsh-deepseek-account-platform
+													1378 cell
+														1379 text install
+													1380 cell
+														1381 text 2026-10-08T22:24:58.676Z
+													1382 cell
+														1383 text loader 未知 @deepseek-ai/dsh-deepseek-account-platform@0.2.0-rc.2
+													1384 cell
+														1385 text 成功 · Ed25519 校验通过
+													1386 cell
+														1387 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1388 row
+													1389 cell
+														1390 text 1cefb64f-bb05-591a-a49f-4cd0bad37011
+													1391 cell
+														1392 text @deepseek-ai/dsh-deepseek-llm-api-extensions
+													1393 cell
+														1394 text install
+													1395 cell
+														1396 text 2026-10-08T22:24:58.676Z
+													1397 cell
+														1398 text loader 未知 @deepseek-ai/dsh-deepseek-llm-api-extensions@0.2.0-rc.2
+													1399 cell
+														1400 text 成功 · Ed25519 校验通过
+													1401 cell
+														1402 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1403 row
+													1404 cell
+														1405 text cda92a49-db36-54b5-9961-1ceb8dc7d830
+													1406 cell
+														1407 text @deepseek-ai/dsh-file-reference-local
+													1408 cell
+														1409 text install
+													1410 cell
+														1411 text 2026-10-08T22:24:58.676Z
+													1412 cell
+														1413 text loader 未知 @deepseek-ai/dsh-file-reference-local@0.2.0-rc.2
+													1414 cell
+														1415 text 成功 · Ed25519 校验通过
+													1416 cell
+														1417 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1418 row
+													1419 cell
+														1420 text 017073a0-11d9-50c3-8e4d-e0f9b50a2e30
+													1421 cell
+														1422 text @deepseek-ai/dsh-fs-observation-policy
+													1423 cell
+														1424 text install
+													1425 cell
+														1426 text 2026-10-08T22:24:58.676Z
+													1427 cell
+														1428 text loader 未知 @deepseek-ai/dsh-fs-observation-policy@0.2.0-rc.2
+													1429 cell
+														1430 text 成功 · Ed25519 校验通过
+													1431 cell
+														1432 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1433 row
+													1434 cell
+														1435 text bcd22708-f67a-5a5b-9767-780620b6816f
+													1436 cell
+														1437 text @deepseek-ai/dsh-fs-sandbox
+													1438 cell
+														1439 text install
+													1440 cell
+														1441 text 2026-10-08T22:24:58.676Z
+													1442 cell
+														1443 text loader 未知 @deepseek-ai/dsh-fs-sandbox@0.2.0-rc.2
+													1444 cell
+														1445 text 成功 · Ed25519 校验通过
+													1446 cell
+														1447 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1448 row
+													1449 cell
+														1450 text 7a1a09e2-0f33-57d9-a3b0-096956bf5115
+													1451 cell
+														1452 text @deepseek-ai/dsh-goal
+													1453 cell
+														1454 text install
+													1455 cell
+														1456 text 2026-10-08T22:24:58.676Z
+													1457 cell
+														1458 text loader 未知 @deepseek-ai/dsh-goal@0.2.0-rc.2
+													1459 cell
+														1460 text 成功 · Ed25519 校验通过
+													1461 cell
+														1462 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1463 row
+													1464 cell
+														1465 text e2f7a432-1712-5b0e-b23e-288046d5f7eb
+													1466 cell
+														1467 text @deepseek-ai/dsh-goal-round-driver
+													1468 cell
+														1469 text install
+													1470 cell
+														1471 text 2026-10-08T22:24:58.676Z
+													1472 cell
+														1473 text loader 未知 @deepseek-ai/dsh-goal-round-driver@0.2.0-rc.2
+													1474 cell
+														1475 text 成功 · Ed25519 校验通过
+													1476 cell
+														1477 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1478 row
+													1479 cell
+														1480 text e91ab6c7-95d1-5afb-9611-e371bf600cf4
+													1481 cell
+														1482 text @deepseek-ai/dsh-hmr
+													1483 cell
+														1484 text install
+													1485 cell
+														1486 text 2026-10-08T22:24:58.676Z
+													1487 cell
+														1488 text loader 未知 @deepseek-ai/dsh-hmr@0.2.0-rc.2
+													1489 cell
+														1490 text 成功 · Ed25519 校验通过
+													1491 cell
+														1492 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1493 row
+													1494 cell
+														1495 text dda4892c-1192-51eb-85fb-b2ebc58e2b0c
+													1496 cell
+														1497 text @deepseek-ai/dsh-host-directory-picker-auto
+													1498 cell
+														1499 text install
+													1500 cell
+														1501 text 2026-10-08T22:24:58.676Z
+													1502 cell
+														1503 text loader 未知 @deepseek-ai/dsh-host-directory-picker-auto@0.2.0-rc.2
+													1504 cell
+														1505 text 成功 · Ed25519 校验通过
+													1506 cell
+														1507 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1508 row
+													1509 cell
+														1510 text 282d3f07-b212-5d1f-8408-ad7dac3751ca
+													1511 cell
+														1512 text @deepseek-ai/dsh-host-directory-picker-native
+													1513 cell
+														1514 text install
+													1515 cell
+														1516 text 2026-10-08T22:24:58.676Z
+													1517 cell
+														1518 text loader 未知 @deepseek-ai/dsh-host-directory-picker-native@0.2.0-rc.2
+													1519 cell
+														1520 text 成功 · Ed25519 校验通过
+													1521 cell
+														1522 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1523 row
+													1524 cell
+														1525 text 00c4f97e-5db5-568e-897f-1793677b82ad
+													1526 cell
+														1527 text @deepseek-ai/dsh-host-open-in-app
+													1528 cell
+														1529 text install
+													1530 cell
+														1531 text 2026-10-08T22:24:58.676Z
+													1532 cell
+														1533 text loader 未知 @deepseek-ai/dsh-host-open-in-app@0.2.0-rc.2
+													1534 cell
+														1535 text 成功 · Ed25519 校验通过
+													1536 cell
+														1537 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1538 row
+													1539 cell
+														1540 text cfea94d4-dd26-5628-ae73-51fa81c3d200
+													1541 cell
+														1542 text @deepseek-ai/dsh-host-plugin-inventory
+													1543 cell
+														1544 text install
+													1545 cell
+														1546 text 2026-10-08T22:24:58.676Z
+													1547 cell
+														1548 text loader 未知 @deepseek-ai/dsh-host-plugin-inventory@0.2.0-rc.2
+													1549 cell
+														1550 text 成功 · Ed25519 校验通过
+													1551 cell
+														1552 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1553 row
+													1554 cell
+														1555 text 17b7d5eb-6f58-5834-98b7-65e101081565
+													1556 cell
+														1557 text @deepseek-ai/dsh-host-product-telemetry-otel
+													1558 cell
+														1559 text install
+													1560 cell
+														1561 text 2026-10-08T22:24:58.676Z
+													1562 cell
+														1563 text loader 未知 @deepseek-ai/dsh-host-product-telemetry-otel@0.2.0-rc.2
+													1564 cell
+														1565 text 成功 · Ed25519 校验通过
+													1566 cell
+														1567 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1568 row
+													1569 cell
+														1570 text 84a7dc2b-1146-5041-a156-e9d3bf392be5
+													1571 cell
+														1572 text @deepseek-ai/dsh-host-webserver
+													1573 cell
+														1574 text install
+													1575 cell
+														1576 text 2026-10-08T22:24:58.676Z
+													1577 cell
+														1578 text loader 未知 @deepseek-ai/dsh-host-webserver@0.2.0-rc.2
+													1579 cell
+														1580 text 成功 · Ed25519 校验通过
+													1581 cell
+														1582 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1583 row
+													1584 cell
+														1585 text 1e2ba5f4-b61d-5b91-912e-fda4144f567b
+													1586 cell
+														1587 text @deepseek-ai/dsh-jobs-local
+													1588 cell
+														1589 text install
+													1590 cell
+														1591 text 2026-10-08T22:24:58.676Z
+													1592 cell
+														1593 text loader 未知 @deepseek-ai/dsh-jobs-local@0.2.0-rc.2
+													1594 cell
+														1595 text 成功 · Ed25519 校验通过
+													1596 cell
+														1597 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1598 row
+													1599 cell
+														1600 text 6931672b-01b6-5918-b186-2675f3cd4ac3
+													1601 cell
+														1602 text @deepseek-ai/dsh-llm
+													1603 cell
+														1604 text install
+													1605 cell
+														1606 text 2026-10-08T22:24:58.676Z
+													1607 cell
+														1608 text loader 未知 @deepseek-ai/dsh-llm@0.2.0-rc.2
+													1609 cell
+														1610 text 成功 · Ed25519 校验通过
+													1611 cell
+														1612 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1613 row
+													1614 cell
+														1615 text c944b95a-5c7c-5a9c-8854-5cc77d6cf246
+													1616 cell
+														1617 text @deepseek-ai/dsh-llm-deepseek-account
+													1618 cell
+														1619 text install
+													1620 cell
+														1621 text 2026-10-08T22:24:58.676Z
+													1622 cell
+														1623 text loader 未知 @deepseek-ai/dsh-llm-deepseek-account@0.2.0-rc.2
+													1624 cell
+														1625 text 成功 · Ed25519 校验通过
+													1626 cell
+														1627 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1628 row
+													1629 cell
+														1630 text 86dafb9d-35c1-52b4-b7fb-536d246d4e14
+													1631 cell
+														1632 text @deepseek-ai/dsh-llm-pi-ai
+													1633 cell
+														1634 text install
+													1635 cell
+														1636 text 2026-10-08T22:24:58.676Z
+													1637 cell
+														1638 text loader 未知 @deepseek-ai/dsh-llm-pi-ai@0.2.0-rc.2
+													1639 cell
+														1640 text 成功 · Ed25519 校验通过
+													1641 cell
+														1642 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1643 row
+													1644 cell
+														1645 text d67e2ea0-72f8-5976-be1c-80a224d94dd3
+													1646 cell
+														1647 text @deepseek-ai/dsh-llm-retry
+													1648 cell
+														1649 text install
+													1650 cell
+														1651 text 2026-10-08T22:24:58.676Z
+													1652 cell
+														1653 text loader 未知 @deepseek-ai/dsh-llm-retry@0.2.0-rc.2
+													1654 cell
+														1655 text 成功 · Ed25519 校验通过
+													1656 cell
+														1657 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1658 row
+													1659 cell
+														1660 text a821e13f-c0a9-5d4d-b01b-da546f5525f6
+													1661 cell
+														1662 text @deepseek-ai/dsh-mcp-resources
+													1663 cell
+														1664 text install
+													1665 cell
+														1666 text 2026-10-08T22:24:58.676Z
+													1667 cell
+														1668 text loader 未知 @deepseek-ai/dsh-mcp-resources@0.2.0-rc.2
+													1669 cell
+														1670 text 成功 · Ed25519 校验通过
+													1671 cell
+														1672 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1673 row
+													1674 cell
+														1675 text 323a8aa1-efa0-52ab-9240-d32cb62e8066
+													1676 cell
+														1677 text @deepseek-ai/dsh-message-feedback
+													1678 cell
+														1679 text install
+													1680 cell
+														1681 text 2026-10-08T22:24:58.676Z
+													1682 cell
+														1683 text loader 未知 @deepseek-ai/dsh-message-feedback@0.2.0-rc.2
+													1684 cell
+														1685 text 成功 · Ed25519 校验通过
+													1686 cell
+														1687 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1688 row
+													1689 cell
+														1690 text 2b94addf-8d18-59c1-b823-da78b74768a3
+													1691 cell
+														1692 text @deepseek-ai/dsh-office-to-pdf
+													1693 cell
+														1694 text install
+													1695 cell
+														1696 text 2026-10-08T22:24:58.676Z
+													1697 cell
+														1698 text loader 未知 @deepseek-ai/dsh-office-to-pdf@0.2.0-rc.2
+													1699 cell
+														1700 text 成功 · Ed25519 校验通过
+													1701 cell
+														1702 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1703 row
+													1704 cell
+														1705 text f37bf194-192d-52ee-a591-9e8165f56855
+													1706 cell
+														1707 text @deepseek-ai/dsh-otel
+													1708 cell
+														1709 text install
+													1710 cell
+														1711 text 2026-10-08T22:24:58.676Z
+													1712 cell
+														1713 text loader 未知 @deepseek-ai/dsh-otel@0.2.0-rc.2
+													1714 cell
+														1715 text 成功 · Ed25519 校验通过
+													1716 cell
+														1717 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1718 row
+													1719 cell
+														1720 text 8757f70b-489d-52b4-9a62-bdb0f1f8b6af
+													1721 cell
+														1722 text @deepseek-ai/dsh-permission-presets
+													1723 cell
+														1724 text install
+													1725 cell
+														1726 text 2026-10-08T22:24:58.676Z
+													1727 cell
+														1728 text loader 未知 @deepseek-ai/dsh-permission-presets@0.2.0-rc.2
+													1729 cell
+														1730 text 成功 · Ed25519 校验通过
+													1731 cell
+														1732 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1733 row
+													1734 cell
+														1735 text 4cb8863c-845c-56e8-91ca-2a723e6a3834
+													1736 cell
+														1737 text @deepseek-ai/dsh-plan-mode
+													1738 cell
+														1739 text install
+													1740 cell
+														1741 text 2026-10-08T22:24:58.676Z
+													1742 cell
+														1743 text loader 未知 @deepseek-ai/dsh-plan-mode@0.2.0-rc.2
+													1744 cell
+														1745 text 成功 · Ed25519 校验通过
+													1746 cell
+														1747 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1748 row
+													1749 cell
+														1750 text 1773dd9b-4fe5-53ca-80cb-b3af4db6e7a6
+													1751 cell
+														1752 text @deepseek-ai/dsh-plugin-manager
+													1753 cell
+														1754 text install
+													1755 cell
+														1756 text 2026-10-08T22:24:58.676Z
+													1757 cell
+														1758 text loader 未知 @deepseek-ai/dsh-plugin-manager@0.2.0-rc.2
+													1759 cell
+														1760 text 成功 · Ed25519 校验通过
+													1761 cell
+														1762 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1763 row
+													1764 cell
+														1765 text a7dc6579-025a-571c-a232-818a89a0ff26
+													1766 cell
+														1767 text @deepseek-ai/dsh-plugin-package-inventory-deepseek
+													1768 cell
+														1769 text install
+													1770 cell
+														1771 text 2026-10-08T22:24:58.676Z
+													1772 cell
+														1773 text loader 未知 @deepseek-ai/dsh-plugin-package-inventory-deepseek@0.2.0-rc.2
+													1774 cell
+														1775 text 成功 · Ed25519 校验通过
+													1776 cell
+														1777 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1778 row
+													1779 cell
+														1780 text 16b825bc-44e0-52c0-9adb-933499e84b40
+													1781 cell
+														1782 text @deepseek-ai/dsh-ptc-runtime-node
+													1783 cell
+														1784 text install
+													1785 cell
+														1786 text 2026-10-08T22:24:58.676Z
+													1787 cell
+														1788 text loader 未知 @deepseek-ai/dsh-ptc-runtime-node@0.2.0-rc.2
+													1789 cell
+														1790 text 成功 · Ed25519 校验通过
+													1791 cell
+														1792 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1793 row
+													1794 cell
+														1795 text 328cb610-2d9d-5e44-806f-2a36a5e2ea10
+													1796 cell
+														1797 text @deepseek-ai/dsh-pwsh-sandbox
+													1798 cell
+														1799 text install
+													1800 cell
+														1801 text 2026-10-08T22:24:58.676Z
+													1802 cell
+														1803 text loader 未知 @deepseek-ai/dsh-pwsh-sandbox@0.2.0-rc.2
+													1804 cell
+														1805 text 成功 · Ed25519 校验通过
+													1806 cell
+														1807 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1808 row
+													1809 cell
+														1810 text e8ac53c1-2dfe-56e2-8791-24e3bb867c04
+													1811 cell
+														1812 text @deepseek-ai/dsh-repeat-tool-reminder
+													1813 cell
+														1814 text install
+													1815 cell
+														1816 text 2026-10-08T22:24:58.676Z
+													1817 cell
+														1818 text loader 未知 @deepseek-ai/dsh-repeat-tool-reminder@0.2.0-rc.2
+													1819 cell
+														1820 text 成功 · Ed25519 校验通过
+													1821 cell
+														1822 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1823 row
+													1824 cell
+														1825 text 6e4b43c0-02eb-54b5-8ffe-8d24095d8cb4
+													1826 cell
+														1827 text @deepseek-ai/dsh-sandbox-local
+													1828 cell
+														1829 text install
+													1830 cell
+														1831 text 2026-10-08T22:24:58.676Z
+													1832 cell
+														1833 text loader 未知 @deepseek-ai/dsh-sandbox-local@0.2.0-rc.2
+													1834 cell
+														1835 text 成功 · Ed25519 校验通过
+													1836 cell
+														1837 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1838 row
+													1839 cell
+														1840 text ef37018f-adf2-51dc-87c2-35bca56d1a3c
+													1841 cell
+														1842 text @deepseek-ai/dsh-sandbox-policy
+													1843 cell
+														1844 text install
+													1845 cell
+														1846 text 2026-10-08T22:24:58.676Z
+													1847 cell
+														1848 text loader 未知 @deepseek-ai/dsh-sandbox-policy@0.2.0-rc.2
+													1849 cell
+														1850 text 成功 · Ed25519 校验通过
+													1851 cell
+														1852 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1853 row
+													1854 cell
+														1855 text 739ebe8c-b089-52a0-a27c-a1ac5b69b401
+													1856 cell
+														1857 text @deepseek-ai/dsh-session
+													1858 cell
+														1859 text install
+													1860 cell
+														1861 text 2026-10-08T22:24:58.676Z
+													1862 cell
+														1863 text loader 未知 @deepseek-ai/dsh-session@0.2.0-rc.2
+													1864 cell
+														1865 text 成功 · Ed25519 校验通过
+													1866 cell
+														1867 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1868 row
+													1869 cell
+														1870 text a355c52d-bb5e-5430-9710-5bb1d7cb2441
+													1871 cell
+														1872 text @deepseek-ai/dsh-session-checkpoint-policy
+													1873 cell
+														1874 text install
+													1875 cell
+														1876 text 2026-10-08T22:24:58.676Z
+													1877 cell
+														1878 text loader 未知 @deepseek-ai/dsh-session-checkpoint-policy@0.2.0-rc.2
+													1879 cell
+														1880 text 成功 · Ed25519 校验通过
+													1881 cell
+														1882 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1883 row
+													1884 cell
+														1885 text 15cabdb7-e1a7-5ec8-9cf3-94aaa0a7a6e0
+													1886 cell
+														1887 text @deepseek-ai/dsh-session-log-deepseek
+													1888 cell
+														1889 text install
+													1890 cell
+														1891 text 2026-10-08T22:24:58.676Z
+													1892 cell
+														1893 text loader 未知 @deepseek-ai/dsh-session-log-deepseek@0.2.0-rc.2
+													1894 cell
+														1895 text 成功 · Ed25519 校验通过
+													1896 cell
+														1897 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1898 row
+													1899 cell
+														1900 text 81b9c04e-24b3-58c7-80f5-4c9affa865c6
+													1901 cell
+														1902 text @deepseek-ai/dsh-session-log-export
+													1903 cell
+														1904 text install
+													1905 cell
+														1906 text 2026-10-08T22:24:58.676Z
+													1907 cell
+														1908 text loader 未知 @deepseek-ai/dsh-session-log-export@0.2.0-rc.2
+													1909 cell
+														1910 text 成功 · Ed25519 校验通过
+													1911 cell
+														1912 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1913 row
+													1914 cell
+														1915 text 794ea7cb-54ba-5321-8b4e-fc7c946f8bbe
+													1916 cell
+														1917 text @deepseek-ai/dsh-session-persistence-jsonl
+													1918 cell
+														1919 text install
+													1920 cell
+														1921 text 2026-10-08T22:24:58.676Z
+													1922 cell
+														1923 text loader 未知 @deepseek-ai/dsh-session-persistence-jsonl@0.2.0-rc.2
+													1924 cell
+														1925 text 成功 · Ed25519 校验通过
+													1926 cell
+														1927 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1928 row
+													1929 cell
+														1930 text 7bb642de-8906-5a21-b8c7-1e8ec530593f
+													1931 cell
+														1932 text @deepseek-ai/dsh-session-projection
+													1933 cell
+														1934 text install
+													1935 cell
+														1936 text 2026-10-08T22:24:58.676Z
+													1937 cell
+														1938 text loader 未知 @deepseek-ai/dsh-session-projection@0.2.0-rc.2
+													1939 cell
+														1940 text 成功 · Ed25519 校验通过
+													1941 cell
+														1942 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1943 row
+													1944 cell
+														1945 text aec918c9-bef3-553e-a5ad-c8b8754eb70b
+													1946 cell
+														1947 text @deepseek-ai/dsh-session-projection-cache
+													1948 cell
+														1949 text install
+													1950 cell
+														1951 text 2026-10-08T22:24:58.676Z
+													1952 cell
+														1953 text loader 未知 @deepseek-ai/dsh-session-projection-cache@0.2.0-rc.2
+													1954 cell
+														1955 text 成功 · Ed25519 校验通过
+													1956 cell
+														1957 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1958 row
+													1959 cell
+														1960 text e65d29d2-cb8c-5742-bcbc-19e38cda8751
+													1961 cell
+														1962 text @deepseek-ai/dsh-session-query-sqlite
+													1963 cell
+														1964 text install
+													1965 cell
+														1966 text 2026-10-08T22:24:58.676Z
+													1967 cell
+														1968 text loader 未知 @deepseek-ai/dsh-session-query-sqlite@0.2.0-rc.2
+													1969 cell
+														1970 text 成功 · Ed25519 校验通过
+													1971 cell
+														1972 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1973 row
+													1974 cell
+														1975 text 9517751f-c856-5d66-b11a-d9c84007c52d
+													1976 cell
+														1977 text @deepseek-ai/dsh-session-reference
+													1978 cell
+														1979 text install
+													1980 cell
+														1981 text 2026-10-08T22:24:58.676Z
+													1982 cell
+														1983 text loader 未知 @deepseek-ai/dsh-session-reference@0.2.0-rc.2
+													1984 cell
+														1985 text 成功 · Ed25519 校验通过
+													1986 cell
+														1987 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												1988 row
+													1989 cell
+														1990 text c29a013d-0a64-544a-8db6-8105ebf6cdc6
+													1991 cell
+														1992 text @deepseek-ai/dsh-session-stats
+													1993 cell
+														1994 text install
+													1995 cell
+														1996 text 2026-10-08T22:24:58.676Z
+													1997 cell
+														1998 text loader 未知 @deepseek-ai/dsh-session-stats@0.2.0-rc.2
+													1999 cell
+														2000 text 成功 · Ed25519 校验通过
+													2001 cell
+														2002 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2003 row
+													2004 cell
+														2005 text 0f0af1d5-0bd6-55e2-8703-0dde4dc4d43b
+													2006 cell
+														2007 text @deepseek-ai/dsh-session-telemetry-otel
+													2008 cell
+														2009 text install
+													2010 cell
+														2011 text 2026-10-08T22:24:58.676Z
+													2012 cell
+														2013 text loader 未知 @deepseek-ai/dsh-session-telemetry-otel@0.2.0-rc.2
+													2014 cell
+														2015 text 成功 · Ed25519 校验通过
+													2016 cell
+														2017 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2018 row
+													2019 cell
+														2020 text 299f4c6a-a141-5161-81b9-6e5681b75b56
+													2021 cell
+														2022 text @deepseek-ai/dsh-session-title
+													2023 cell
+														2024 text install
+													2025 cell
+														2026 text 2026-10-08T22:24:58.676Z
+													2027 cell
+														2028 text loader 未知 @deepseek-ai/dsh-session-title@0.2.0-rc.2
+													2029 cell
+														2030 text 成功 · Ed25519 校验通过
+													2031 cell
+														2032 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2033 row
+													2034 cell
+														2035 text 79a9f63e-c12f-53e7-8f9e-90c350fc41d3
+													2036 cell
+														2037 text @deepseek-ai/dsh-session-title-first-prompt-llm
+													2038 cell
+														2039 text install
+													2040 cell
+														2041 text 2026-10-08T22:24:58.676Z
+													2042 cell
+														2043 text loader 未知 @deepseek-ai/dsh-session-title-first-prompt-llm@0.2.0-rc.2
+													2044 cell
+														2045 text 成功 · Ed25519 校验通过
+													2046 cell
+														2047 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2048 row
+													2049 cell
+														2050 text 8518e868-e956-5459-8f93-ea351cd3d6b9
+													2051 cell
+														2052 text @deepseek-ai/dsh-session-turn-outline
+													2053 cell
+														2054 text install
+													2055 cell
+														2056 text 2026-10-08T22:24:58.676Z
+													2057 cell
+														2058 text loader 未知 @deepseek-ai/dsh-session-turn-outline@0.2.0-rc.2
+													2059 cell
+														2060 text 成功 · Ed25519 校验通过
+													2061 cell
+														2062 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2063 row
+													2064 cell
+														2065 text a3b5332e-d2e4-5811-bb6c-5bba7f658279
+													2066 cell
+														2067 text @deepseek-ai/dsh-settings
+													2068 cell
+														2069 text install
+													2070 cell
+														2071 text 2026-10-08T22:24:58.676Z
+													2072 cell
+														2073 text loader 未知 @deepseek-ai/dsh-settings@0.2.0-rc.2
+													2074 cell
+														2075 text 成功 · Ed25519 校验通过
+													2076 cell
+														2077 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2078 row
+													2079 cell
+														2080 text 169760d7-6b3a-5c57-8a21-27df81832fc6
+													2081 cell
+														2082 text @deepseek-ai/dsh-shell-env
+													2083 cell
+														2084 text install
+													2085 cell
+														2086 text 2026-10-08T22:24:58.676Z
+													2087 cell
+														2088 text loader 未知 @deepseek-ai/dsh-shell-env@0.2.0-rc.2
+													2089 cell
+														2090 text 成功 · Ed25519 校验通过
+													2091 cell
+														2092 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2093 row
+													2094 cell
+														2095 text 6b942be6-24dc-5d4d-befd-aa006004f534
+													2096 cell
+														2097 text @deepseek-ai/dsh-skill
+													2098 cell
+														2099 text install
+													2100 cell
+														2101 text 2026-10-08T22:24:58.676Z
+													2102 cell
+														2103 text loader 未知 @deepseek-ai/dsh-skill@0.2.0-rc.2
+													2104 cell
+														2105 text 成功 · Ed25519 校验通过
+													2106 cell
+														2107 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2108 row
+													2109 cell
+														2110 text 262045dc-0b2f-5760-bbfc-d77e72786f24
+													2111 cell
+														2112 text @deepseek-ai/dsh-skill-badge
+													2113 cell
+														2114 text install
+													2115 cell
+														2116 text 2026-10-08T22:24:58.676Z
+													2117 cell
+														2118 text loader 未知 @deepseek-ai/dsh-skill-badge@0.2.0-rc.2
+													2119 cell
+														2120 text 成功 · Ed25519 校验通过
+													2121 cell
+														2122 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2123 row
+													2124 cell
+														2125 text 12021e8f-6ad5-5653-be3a-52ab5008902b
+													2126 cell
+														2127 text @deepseek-ai/dsh-skill-filesystem
+													2128 cell
+														2129 text install
+													2130 cell
+														2131 text 2026-10-08T22:24:58.676Z
+													2132 cell
+														2133 text loader 未知 @deepseek-ai/dsh-skill-filesystem@0.2.0-rc.2
+													2134 cell
+														2135 text 成功 · Ed25519 校验通过
+													2136 cell
+														2137 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2138 row
+													2139 cell
+														2140 text fa06812f-833b-58a6-b4c6-cc31a306f33e
+													2141 cell
+														2142 text @deepseek-ai/dsh-spill-local
+													2143 cell
+														2144 text install
+													2145 cell
+														2146 text 2026-10-08T22:24:58.676Z
+													2147 cell
+														2148 text loader 未知 @deepseek-ai/dsh-spill-local@0.2.0-rc.2
+													2149 cell
+														2150 text 成功 · Ed25519 校验通过
+													2151 cell
+														2152 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2153 row
+													2154 cell
+														2155 text a58e64c6-cb99-5d22-9d03-59acf4b16a55
+													2156 cell
+														2157 text @deepseek-ai/dsh-spill-policy
+													2158 cell
+														2159 text install
+													2160 cell
+														2161 text 2026-10-08T22:24:58.676Z
+													2162 cell
+														2163 text loader 未知 @deepseek-ai/dsh-spill-policy@0.2.0-rc.2
+													2164 cell
+														2165 text 成功 · Ed25519 校验通过
+													2166 cell
+														2167 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2168 row
+													2169 cell
+														2170 text 9fc4e6dd-44c4-506b-a052-7b9af6fef437
+													2171 cell
+														2172 text @deepseek-ai/dsh-storage
+													2173 cell
+														2174 text install
+													2175 cell
+														2176 text 2026-10-08T22:24:58.676Z
+													2177 cell
+														2178 text loader 未知 @deepseek-ai/dsh-storage@0.2.0-rc.2
+													2179 cell
+														2180 text 成功 · Ed25519 校验通过
+													2181 cell
+														2182 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2183 row
+													2184 cell
+														2185 text aa360541-25da-5f1a-9831-aed5d8c26deb
+													2186 cell
+														2187 text @deepseek-ai/dsh-storage-domain
+													2188 cell
+														2189 text install
+													2190 cell
+														2191 text 2026-10-08T22:24:58.676Z
+													2192 cell
+														2193 text loader 未知 @deepseek-ai/dsh-storage-domain@0.2.0-rc.2
+													2194 cell
+														2195 text 成功 · Ed25519 校验通过
+													2196 cell
+														2197 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2198 row
+													2199 cell
+														2200 text 46269e68-70af-561c-99a0-0dfb41db0517
+													2201 cell
+														2202 text @deepseek-ai/dsh-storage-json
+													2203 cell
+														2204 text install
+													2205 cell
+														2206 text 2026-10-08T22:24:58.676Z
+													2207 cell
+														2208 text loader 未知 @deepseek-ai/dsh-storage-json@0.2.0-rc.2
+													2209 cell
+														2210 text 成功 · Ed25519 校验通过
+													2211 cell
+														2212 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2213 row
+													2214 cell
+														2215 text 13b2450d-2c3f-5f17-a7f8-1adf5e2335a8
+													2216 cell
+														2217 text @deepseek-ai/dsh-subagent
+													2218 cell
+														2219 text install
+													2220 cell
+														2221 text 2026-10-08T22:24:58.676Z
+													2222 cell
+														2223 text loader 未知 @deepseek-ai/dsh-subagent@0.2.0-rc.2
+													2224 cell
+														2225 text 成功 · Ed25519 校验通过
+													2226 cell
+														2227 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2228 row
+													2229 cell
+														2230 text f4d33240-4ecd-571f-8077-8ab0e5eb9c71
+													2231 cell
+														2232 text @deepseek-ai/dsh-subagent-fork-in-process
+													2233 cell
+														2234 text install
+													2235 cell
+														2236 text 2026-10-08T22:24:58.676Z
+													2237 cell
+														2238 text loader 未知 @deepseek-ai/dsh-subagent-fork-in-process@0.2.0-rc.2
+													2239 cell
+														2240 text 成功 · Ed25519 校验通过
+													2241 cell
+														2242 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2243 row
+													2244 cell
+														2245 text 5cbe70e5-f30b-5068-a5f4-2da8d0135b57
+													2246 cell
+														2247 text @deepseek-ai/dsh-subagent-spawn-in-process
+													2248 cell
+														2249 text install
+													2250 cell
+														2251 text 2026-10-08T22:24:58.676Z
+													2252 cell
+														2253 text loader 未知 @deepseek-ai/dsh-subagent-spawn-in-process@0.2.0-rc.2
+													2254 cell
+														2255 text 成功 · Ed25519 校验通过
+													2256 cell
+														2257 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2258 row
+													2259 cell
+														2260 text d41c7e08-d2a6-526f-a0d0-e36d7da41511
+													2261 cell
+														2262 text @deepseek-ai/dsh-subprocess-local
+													2263 cell
+														2264 text install
+													2265 cell
+														2266 text 2026-10-08T22:24:58.676Z
+													2267 cell
+														2268 text loader 未知 @deepseek-ai/dsh-subprocess-local@0.2.0-rc.2
+													2269 cell
+														2270 text 成功 · Ed25519 校验通过
+													2271 cell
+														2272 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2273 row
+													2274 cell
+														2275 text db507721-b5cc-594f-88a4-1a59a3d4c41f
+													2276 cell
+														2277 text @deepseek-ai/dsh-system-prompt
+													2278 cell
+														2279 text install
+													2280 cell
+														2281 text 2026-10-08T22:24:58.676Z
+													2282 cell
+														2283 text loader 未知 @deepseek-ai/dsh-system-prompt@0.2.0-rc.2
+													2284 cell
+														2285 text 成功 · Ed25519 校验通过
+													2286 cell
+														2287 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2288 row
+													2289 cell
+														2290 text 003f7d13-f335-52da-a039-f00b60b550d8
+													2291 cell
+														2292 text @deepseek-ai/dsh-token-meter
+													2293 cell
+														2294 text install
+													2295 cell
+														2296 text 2026-10-08T22:24:58.676Z
+													2297 cell
+														2298 text loader 未知 @deepseek-ai/dsh-token-meter@0.2.0-rc.2
+													2299 cell
+														2300 text 成功 · Ed25519 校验通过
+													2301 cell
+														2302 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2303 row
+													2304 cell
+														2305 text 18e27c3f-f6d0-54a1-91cf-355aa67932cd
+													2306 cell
+														2307 text @deepseek-ai/dsh-tool-bash
+													2308 cell
+														2309 text install
+													2310 cell
+														2311 text 2026-10-08T22:24:58.676Z
+													2312 cell
+														2313 text loader 未知 @deepseek-ai/dsh-tool-bash@0.2.0-rc.2
+													2314 cell
+														2315 text 成功 · Ed25519 校验通过
+													2316 cell
+														2317 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2318 row
+													2319 cell
+														2320 text 836345c1-e074-5f47-a17a-796ae9b4bcca
+													2321 cell
+														2322 text @deepseek-ai/dsh-tool-call-timeout-policy
+													2323 cell
+														2324 text install
+													2325 cell
+														2326 text 2026-10-08T22:24:58.676Z
+													2327 cell
+														2328 text loader 未知 @deepseek-ai/dsh-tool-call-timeout-policy@0.2.0-rc.2
+													2329 cell
+														2330 text 成功 · Ed25519 校验通过
+													2331 cell
+														2332 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2333 row
+													2334 cell
+														2335 text f5023f0a-cfeb-5952-b988-b316202265ca
+													2336 cell
+														2337 text @deepseek-ai/dsh-tool-fs
+													2338 cell
+														2339 text install
+													2340 cell
+														2341 text 2026-10-08T22:24:58.676Z
+													2342 cell
+														2343 text loader 未知 @deepseek-ai/dsh-tool-fs@0.2.0-rc.2
+													2344 cell
+														2345 text 成功 · Ed25519 校验通过
+													2346 cell
+														2347 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2348 row
+													2349 cell
+														2350 text 66aa9c30-93eb-574e-89c2-adf6fe27bdf1
+													2351 cell
+														2352 text @deepseek-ai/dsh-tool-fs-search
+													2353 cell
+														2354 text install
+													2355 cell
+														2356 text 2026-10-08T22:24:58.676Z
+													2357 cell
+														2358 text loader 未知 @deepseek-ai/dsh-tool-fs-search@0.2.0-rc.2
+													2359 cell
+														2360 text 成功 · Ed25519 校验通过
+													2361 cell
+														2362 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2363 row
+													2364 cell
+														2365 text e08e8da5-55a4-5571-a36f-48e895915a76
+													2366 cell
+														2367 text @deepseek-ai/dsh-tool-goal
+													2368 cell
+														2369 text install
+													2370 cell
+														2371 text 2026-10-08T22:24:58.676Z
+													2372 cell
+														2373 text loader 未知 @deepseek-ai/dsh-tool-goal@0.2.0-rc.2
+													2374 cell
+														2375 text 成功 · Ed25519 校验通过
+													2376 cell
+														2377 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2378 row
+													2379 cell
+														2380 text cb473c73-68d4-54e1-9bf5-78c7cda655ed
+													2381 cell
+														2382 text @deepseek-ai/dsh-tool-jobs
+													2383 cell
+														2384 text install
+													2385 cell
+														2386 text 2026-10-08T22:24:58.676Z
+													2387 cell
+														2388 text loader 未知 @deepseek-ai/dsh-tool-jobs@0.2.0-rc.2
+													2389 cell
+														2390 text 成功 · Ed25519 校验通过
+													2391 cell
+														2392 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2393 row
+													2394 cell
+														2395 text efd0fa7c-d9fb-52ce-bd7d-1496b1384449
+													2396 cell
+														2397 text @deepseek-ai/dsh-tool-pwsh
+													2398 cell
+														2399 text install
+													2400 cell
+														2401 text 2026-10-08T22:24:58.676Z
+													2402 cell
+														2403 text loader 未知 @deepseek-ai/dsh-tool-pwsh@0.2.0-rc.2
+													2404 cell
+														2405 text 成功 · Ed25519 校验通过
+													2406 cell
+														2407 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2408 row
+													2409 cell
+														2410 text bf2ee2e2-79e9-52e6-ba6d-197464810038
+													2411 cell
+														2412 text @deepseek-ai/dsh-tool-ralph
+													2413 cell
+														2414 text install
+													2415 cell
+														2416 text 2026-10-08T22:24:58.676Z
+													2417 cell
+														2418 text loader 未知 @deepseek-ai/dsh-tool-ralph@0.2.0-rc.2
+													2419 cell
+														2420 text 成功 · Ed25519 校验通过
+													2421 cell
+														2422 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2423 row
+													2424 cell
+														2425 text 1b25434d-91fe-5bc6-b123-bb8e3e00ed52
+													2426 cell
+														2427 text @deepseek-ai/dsh-tool-skill
+													2428 cell
+														2429 text install
+													2430 cell
+														2431 text 2026-10-08T22:24:58.676Z
+													2432 cell
+														2433 text loader 未知 @deepseek-ai/dsh-tool-skill@0.2.0-rc.2
+													2434 cell
+														2435 text 成功 · Ed25519 校验通过
+													2436 cell
+														2437 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2438 row
+													2439 cell
+														2440 text 1837b048-75ad-528b-81d0-dd1e8b9f64f3
+													2441 cell
+														2442 text @deepseek-ai/dsh-tool-subagent
+													2443 cell
+														2444 text install
+													2445 cell
+														2446 text 2026-10-08T22:24:58.676Z
+													2447 cell
+														2448 text loader 未知 @deepseek-ai/dsh-tool-subagent@0.2.0-rc.2
+													2449 cell
+														2450 text 成功 · Ed25519 校验通过
+													2451 cell
+														2452 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2453 row
+													2454 cell
+														2455 text f4a997f6-a0dd-5d36-b999-5b0cf2936464
+													2456 cell
+														2457 text @deepseek-ai/dsh-tool-subagent-control
+													2458 cell
+														2459 text install
+													2460 cell
+														2461 text 2026-10-08T22:24:58.676Z
+													2462 cell
+														2463 text loader 未知 @deepseek-ai/dsh-tool-subagent-control@0.2.0-rc.2
+													2464 cell
+														2465 text 成功 · Ed25519 校验通过
+													2466 cell
+														2467 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2468 row
+													2469 cell
+														2470 text a3e60fb2-8255-5c99-a827-e505bf2583bd
+													2471 cell
+														2472 text @deepseek-ai/dsh-tool-todo
+													2473 cell
+														2474 text install
+													2475 cell
+														2476 text 2026-10-08T22:24:58.676Z
+													2477 cell
+														2478 text loader 未知 @deepseek-ai/dsh-tool-todo@0.2.0-rc.2
+													2479 cell
+														2480 text 成功 · Ed25519 校验通过
+													2481 cell
+														2482 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2483 row
+													2484 cell
+														2485 text dc9ed488-a16c-5006-915d-b54307741a93
+													2486 cell
+														2487 text @deepseek-ai/dsh-tool-web
+													2488 cell
+														2489 text install
+													2490 cell
+														2491 text 2026-10-08T22:24:58.676Z
+													2492 cell
+														2493 text loader 未知 @deepseek-ai/dsh-tool-web@0.2.0-rc.2
+													2494 cell
+														2495 text 成功 · Ed25519 校验通过
+													2496 cell
+														2497 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2498 row
+													2499 cell
+														2500 text 940dd333-d503-560f-885c-3e70249666e9
+													2501 cell
+														2502 text @deepseek-ai/dsh-tool-workflow
+													2503 cell
+														2504 text install
+													2505 cell
+														2506 text 2026-10-08T22:24:58.676Z
+													2507 cell
+														2508 text loader 未知 @deepseek-ai/dsh-tool-workflow@0.2.0-rc.2
+													2509 cell
+														2510 text 成功 · Ed25519 校验通过
+													2511 cell
+														2512 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2513 row
+													2514 cell
+														2515 text b3871909-36f8-5581-b4b1-07a22569bc30
+													2516 cell
+														2517 text @deepseek-ai/dsh-tools
+													2518 cell
+														2519 text install
+													2520 cell
+														2521 text 2026-10-08T22:24:58.676Z
+													2522 cell
+														2523 text loader 未知 @deepseek-ai/dsh-tools@0.2.0-rc.2
+													2524 cell
+														2525 text 成功 · Ed25519 校验通过
+													2526 cell
+														2527 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2528 row
+													2529 cell
+														2530 text ca3b6577-280e-5b77-8868-596beb96fcc4
+													2531 cell
+														2532 text @deepseek-ai/dsh-typert-loader
+													2533 cell
+														2534 text install
+													2535 cell
+														2536 text 2026-10-08T22:24:58.676Z
+													2537 cell
+														2538 text loader 未知 @deepseek-ai/dsh-typert-loader@0.2.0-rc.2
+													2539 cell
+														2540 text 成功 · Ed25519 校验通过
+													2541 cell
+														2542 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2543 row
+													2544 cell
+														2545 text ca8c7c4a-1628-5691-998e-b3962535653e
+													2546 cell
+														2547 text @deepseek-ai/dsh-typert-registry
+													2548 cell
+														2549 text install
+													2550 cell
+														2551 text 2026-10-08T22:24:58.676Z
+													2552 cell
+														2553 text loader 未知 @deepseek-ai/dsh-typert-registry@0.2.0-rc.2
+													2554 cell
+														2555 text 成功 · Ed25519 校验通过
+													2556 cell
+														2557 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2558 row
+													2559 cell
+														2560 text cfaffdf7-8d19-5eed-b894-6b7a321af833
+													2561 cell
+														2562 text @deepseek-ai/dsh-user-approval
+													2563 cell
+														2564 text install
+													2565 cell
+														2566 text 2026-10-08T22:24:58.676Z
+													2567 cell
+														2568 text loader 未知 @deepseek-ai/dsh-user-approval@0.2.0-rc.2
+													2569 cell
+														2570 text 成功 · Ed25519 校验通过
+													2571 cell
+														2572 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2573 row
+													2574 cell
+														2575 text c6a0b79c-e352-5db7-8293-35cf1df67b6c
+													2576 cell
+														2577 text @deepseek-ai/dsh-user-questions
+													2578 cell
+														2579 text install
+													2580 cell
+														2581 text 2026-10-08T22:24:58.676Z
+													2582 cell
+														2583 text loader 未知 @deepseek-ai/dsh-user-questions@0.2.0-rc.2
+													2584 cell
+														2585 text 成功 · Ed25519 校验通过
+													2586 cell
+														2587 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2588 row
+													2589 cell
+														2590 text 6ecfc95b-a5bf-5246-bf11-d1462f8af303
+													2591 cell
+														2592 text @deepseek-ai/dsh-web
+													2593 cell
+														2594 text install
+													2595 cell
+														2596 text 2026-10-08T22:24:58.676Z
+													2597 cell
+														2598 text loader 未知 @deepseek-ai/dsh-web@0.2.0-rc.2
+													2599 cell
+														2600 text 成功 · Ed25519 校验通过
+													2601 cell
+														2602 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2603 row
+													2604 cell
+														2605 text c08e464a-5678-5696-9210-e12ad807ce6b
+													2606 cell
+														2607 text @deepseek-ai/dsh-web-app
+													2608 cell
+														2609 text install
+													2610 cell
+														2611 text 2026-10-08T22:24:58.676Z
+													2612 cell
+														2613 text loader 未知 @deepseek-ai/dsh-web-app@0.2.0-rc.2
+													2614 cell
+														2615 text 成功 · Ed25519 校验通过
+													2616 cell
+														2617 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2618 row
+													2619 cell
+														2620 text f21e8695-2369-5f6f-954a-eaadad742cef
+													2621 cell
+														2622 text @deepseek-ai/dsh-web-fetch-http
+													2623 cell
+														2624 text install
+													2625 cell
+														2626 text 2026-10-08T22:24:58.676Z
+													2627 cell
+														2628 text loader 未知 @deepseek-ai/dsh-web-fetch-http@0.2.0-rc.2
+													2629 cell
+														2630 text 成功 · Ed25519 校验通过
+													2631 cell
+														2632 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2633 row
+													2634 cell
+														2635 text c80ed9f2-ae6c-535b-bd28-80add7fc4ab4
+													2636 cell
+														2637 text @deepseek-ai/dsh-web-search-deepseek
+													2638 cell
+														2639 text install
+													2640 cell
+														2641 text 2026-10-08T22:24:58.676Z
+													2642 cell
+														2643 text loader 未知 @deepseek-ai/dsh-web-search-deepseek@0.2.0-rc.2
+													2644 cell
+														2645 text 成功 · Ed25519 校验通过
+													2646 cell
+														2647 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2648 row
+													2649 cell
+														2650 text 6c76dc26-a896-50a3-b083-72ebf28d6590
+													2651 cell
+														2652 text @deepseek-ai/dsh-workflow-ptc
+													2653 cell
+														2654 text install
+													2655 cell
+														2656 text 2026-10-08T22:24:58.676Z
+													2657 cell
+														2658 text loader 未知 @deepseek-ai/dsh-workflow-ptc@0.2.0-rc.2
+													2659 cell
+														2660 text 成功 · Ed25519 校验通过
+													2661 cell
+														2662 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2663 row
+													2664 cell
+														2665 text b3b5e7a4-2b22-51eb-848a-e97b0951ffec
+													2666 cell
+														2667 text @deepseek-ai/dsh-workspace
+													2668 cell
+														2669 text install
+													2670 cell
+														2671 text 2026-10-08T22:24:58.676Z
+													2672 cell
+														2673 text loader 未知 @deepseek-ai/dsh-workspace@0.2.0-rc.2
+													2674 cell
+														2675 text 成功 · Ed25519 校验通过
+													2676 cell
+														2677 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2678 row
+													2679 cell
+														2680 text 59cc528a-3d92-5f97-b3fc-b359a44917d2
+													2681 cell
+														2682 text @deepseek-ai/dsh-workspace-changes
+													2683 cell
+														2684 text install
+													2685 cell
+														2686 text 2026-10-08T22:24:58.676Z
+													2687 cell
+														2688 text loader 未知 @deepseek-ai/dsh-workspace-changes@0.2.0-rc.2
+													2689 cell
+														2690 text 成功 · Ed25519 校验通过
+													2691 cell
+														2692 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2693 row
+													2694 cell
+														2695 text 90849a7b-66bc-5a7e-b90a-8e660c5c1909
+													2696 cell
+														2697 text dsh-update-notifier
+													2698 cell
+														2699 text install
+													2700 cell
+														2701 text 2026-10-08T22:24:58.676Z
+													2702 cell
+														2703 text loader 未知 dsh-update-notifier@0.2.1
+													2704 cell
+														2705 text 成功 · Ed25519 校验通过
+													2706 cell
+														2707 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2708 row
+													2709 cell
+														2710 text f6de6fe8-c473-50d8-b119-ea03646b7518
+													2711 cell
+														2712 text hanamesh-core
+													2713 cell
+														2714 text install
+													2715 cell
+														2716 text 2026-10-08T22:24:58.676Z
+													2717 cell
+														2718 text loader 未知 hanamesh-core@0.2.0-rc.56
+													2719 cell
+														2720 text 成功 · Ed25519 校验通过
+													2721 cell
+														2722 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2723 row
+													2724 cell
+														2725 text 802eb66a-b592-58ce-8ac6-85b85361d610
+													2726 cell
+														2727 text hanamesh-usage
+													2728 cell
+														2729 text install
+													2730 cell
+														2731 text 2026-10-08T22:24:58.676Z
+													2732 cell
+														2733 text loader 未知 hanamesh-usage@0.2.0-rc.17
+													2734 cell
+														2735 text 成功 · Ed25519 校验通过
+													2736 cell
+														2737 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:25:04.021Z
+												2738 row
+													2739 cell
+														2740 text 42a363c1-6e1a-5d0e-ab7a-6f0077dc9b82
+													2741 cell
+														2742 text @deepseek-ai/dsh-permission-presets
+													2743 cell
+														2744 text use
+													2745 cell
+														2746 text 2026-10-08T22:33:51.084Z
+													2747 cell
+														2748 text seat @deepseek-ai/dsh-permission-presets command:cmd-bed28d52-2:succeeded
+													2749 cell
+														2750 text 成功 · Ed25519 校验通过
+													2751 cell
+														2752 text 成功 · 接收端已确认 尝试 1 · 2026-10-08T22:33:52.977Z
+			2753 container Infobar Container
+				2754 container Infobar
+					2755 container
+						2756 text Continue where you left off: Chrome can restore your tabs every time you restart. To turn this on, go to
+						2757 link Settings, opens in new tab.
+					2758 button Close
+			2759 pop up button Tab search
+			2760 container
+				2761 tab group
+					2762 tab (settable, boolean) Session 与 World · HanaWorlds - Memory usage - 73.0 MB, Value: off
+						2763 button Close
+					2764 tab (settable, boolean) DeepSeek Harness - Memory usage - 158 MB, Value: off
+						2765 button Close
+					2766 tab (settable, boolean) DeepSeek Harness - Memory usage - 154 MB, Value: off
+						2767 button Close
+					2768 tab (settable, boolean) DeepSeek Harness - Memory usage - 121 MB, Value: off
+						2769 button Close
+					2770 tab (selected, settable, boolean) DeepSeek Harness - Memory usage - 137 MB, Value: on
+						2771 button Close
+			2772 button New Tab
+			2773 button Open Gemini in Chrome
+	2774 close button
+	2775 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	2776 minimize button
+2777 menu bar
+	2778 Chrome
+	2779 File
+	2780 Edit
+	2781 View
+	2782 History
+	2783 Bookmarks
+	2784 Profiles
+	2785 Tab
+	2786 Window
+	2787 Help
+
+The focused UI element is 28 button Usage 开发小面板

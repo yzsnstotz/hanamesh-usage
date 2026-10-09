@@ -1,0 +1,71 @@
+[
+  {
+    "type": "command/run",
+    "seq": 5,
+    "time": 1791498323628,
+    "data": {
+      "commandId": "cmd-9d91ca65-2",
+      "name": "goal",
+      "args": " ",
+      "source": {
+        "kind": "user"
+      }
+    }
+  },
+  {
+    "type": "command/done",
+    "seq": 6,
+    "time": 1791498323637,
+    "data": {
+      "commandId": "cmd-9d91ca65-2",
+      "kind": "success",
+      "text": "No goal is currently set.\nUsage: /goal [<objective>|clear|edit <objective>|pause|resume]"
+    }
+  },
+  {
+    "type": "command/run",
+    "seq": 8,
+    "time": 1791498664876,
+    "data": {
+      "commandId": "cmd-bed28d52-1",
+      "name": "goal",
+      "args": " ",
+      "source": {
+        "kind": "user"
+      }
+    }
+  },
+  {
+    "type": "command/done",
+    "seq": 9,
+    "time": 1791498664892,
+    "data": {
+      "commandId": "cmd-bed28d52-1",
+      "kind": "success",
+      "text": "No goal is currently set.\nUsage: /goal [<objective>|clear|edit <objective>|pause|resume]"
+    }
+  },
+  {
+    "type": "command/run",
+    "seq": 10,
+    "time": 1791498831079,
+    "data": {
+      "commandId": "cmd-bed28d52-2",
+      "name": "permission",
+      "args": " ",
+      "source": {
+        "kind": "user"
+      }
+    }
+  },
+  {
+    "type": "command/done",
+    "seq": 11,
+    "time": 1791498831084,
+    "data": {
+      "commandId": "cmd-bed28d52-2",
+      "kind": "success",
+      "text": "current preset workspace-write (available: read-only, workspace-write, danger-full-access)"
+    }
+  }
+]

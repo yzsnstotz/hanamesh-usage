@@ -1,0 +1,84 @@
+{
+  "coreSession": {
+    "protocolVersion": "1",
+    "deviceId": "GlddWEuTPx1eM81_a8pYNt9byskcX8KoM4GEG0sf2Cg",
+    "registration": "registered",
+    "principalId": "0b763a08-3651-48bb-9a53-4baf22a546c1",
+    "bound": false,
+    "serverReachable": true,
+    "checkedAt": "2026-10-08T21:54:34.420Z",
+    "reason": null
+  },
+  "consent": "withheld",
+  "usageHealth": {
+    "pending": 0,
+    "recoveryComplete": true,
+    "failures": {
+      "INVENTORY_ENTRY_UNREADABLE": 7
+    },
+    "consent": "withheld",
+    "core": "present",
+    "deviceId": "GlddWEuTPx1eM81_a8pYNt9byskcX8KoM4GEG0sf2Cg",
+    "outbox": {
+      "state": "stopped",
+      "pending": 0,
+      "sent": 0,
+      "duplicate": 0,
+      "rejected": 0,
+      "lastUploadAt": null,
+      "nextAttemptAt": null,
+      "lastError": null
+    },
+    "derive": {
+      "skipped": {
+        "consentWithheld": 0,
+        "executorUnavailable": 0,
+        "timeUnavailable": 0,
+        "noDevice": 0
+      }
+    },
+    "withdrawal": null,
+    "inventory": {
+      "available": true,
+      "source": "loader",
+      "lastScanAt": "2026-10-08T21:54:34.385Z",
+      "detail": {
+        "package": "@deepseek-ai/cordis",
+        "serviceKey": "loader",
+        "methods": [
+          "entries"
+        ]
+      }
+    }
+  },
+  "panel": {
+    "subject": {
+      "deviceId": "GlddWEuTPx1eM81_a8pYNt9byskcX8KoM4GEG0sf2Cg",
+      "principalId": "0b763a08-3651-48bb-9a53-4baf22a546c1",
+      "reason": null
+    },
+    "testSupply": {
+      "identity": false,
+      "receiver": false
+    },
+    "consent": "withheld",
+    "core": "present",
+    "total": 0,
+    "outbox": {
+      "state": "stopped",
+      "pending": 0,
+      "sent": 0,
+      "duplicate": 0,
+      "rejected": 0,
+      "lastUploadAt": null,
+      "nextAttemptAt": null,
+      "lastError": null
+    },
+    "failures": {
+      "INVENTORY_ENTRY_UNREADABLE": 7
+    },
+    "events": []
+  },
+  "modelRequests": 0,
+  "facts": []
+}

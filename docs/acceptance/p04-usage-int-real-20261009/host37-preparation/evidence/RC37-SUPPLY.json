@@ -1,0 +1,35 @@
+{
+  "card": "P04-HOST-IDENTITY10-USAGE14-SUPPLY-01",
+  "writer": "94abb749-4da4-48a1-a33f-d6a97798e723",
+  "run": "5fefaad7-c0f6-49fc-8960-eeba144e0908",
+  "atUTC": "2026-10-08T23:41:06.844035+00:00",
+  "state": "rc.37 supplied; TEST hook fault endpoint resident; FIXTURE readiness PASS; real Core 503 gate NOT_RUN (Usage writer 01a11db1)",
+  "rc37": {
+    "tag": "v0.2.0-rc.37",
+    "tagObject": "0fac79bb8fec9a3297beae8f50accf98d0c802f2",
+    "target": "6248733df26c39710d49e74c9c4b375276907f63",
+    "sourceCommit": "f877facec77d2506419b9292ba0244aaacd3ebc7",
+    "mainBefore": "878a43193170ab43ad5f88d1dccd4c21cc69f30d",
+    "mainAfter": "6248733df26c39710d49e74c9c4b375276907f63",
+    "mainPush": "ordinary atomic fast-forward with the tag; no force",
+    "tgzPathInTag": "artifacts/hanamesh-server-0.2.0-rc.37.tgz",
+    "runCopy": "/Users/yzliu/.cache/hanamesh-runs/P04-HOST-IDENTITY10-USAGE14-SUPPLY-01/5fefaad7-c0f6-49fc-8960-eeba144e0908/candidate/hanamesh-server-0.2.0-rc.37.tgz",
+    "sha256": "bbd943d092fb7210e6ae62cee2131920a19efdb07a612221c6af053f95e84409",
+    "bytes": 1470677,
+    "entries": 300,
+    "freshCloneSameBytes": true,
+    "rc4Unchanged": {
+      "provider-registry": "70b3941875747eb9b8cb0df56abe98c1e292fa33e700c9c6403f38adb7492b23",
+      "revenue-router": "1f621dfd16a3fdb23d37caf7731108177c8213f5420a0d1421f3e953db4912d0"
+    },
+    "peersUnchanged": "same 11 exact peer tgz bytes as rc.36 (formal Identity11/Registry12/Claim12/Custody21/Usage14/Indexer17, chain/semantic/probe)"
+  },
+  "locator": "/Users/yzliu/.cache/hanamesh-runs/P04-HOST-IDENTITY10-USAGE14-SUPPLY-01/5fefaad7-c0f6-49fc-8960-eeba144e0908/supply/LOCATOR.json",
+  "hostUrl": "http://127.0.0.1:53307",
+  "controlUrl": "http://127.0.0.1:53309",
+  "pid": 39742,
+  "container": "hm-p04-usage-hook-fault-59afe8edd30f787f",
+  "pgLoopbackPort": 32868,
+  "fixtureGate": "/Users/yzliu/.cache/hanamesh-runs/P04-HOST-IDENTITY10-USAGE14-SUPPLY-01/5fefaad7-c0f6-49fc-8960-eeba144e0908/_evidence/installed-fixture-gate.json",
+  "preserveUntil": "P04-USAGE-INT-01 验收 (or PM stop)"
+}

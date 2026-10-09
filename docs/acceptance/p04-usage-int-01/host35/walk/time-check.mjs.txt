@@ -1,0 +1,61 @@
+// P04-USAGE-INT-01 self-check after Host rc.35 (bug-locating evidence, not acceptance).
+// 1) Through the page's own API: grant, run the ordinary command, read Usage's remote() readback.
+// 2) Compare local occurredAt, Usage readback occurredAt/receivedAt and the DB's stored millisecond values.
+// 3) Page the public route with limit=5 (fixture self device key) across the same-millisecond install events:
+//    the id sequence must equal the DB order (occurred_at,event_id) with no duplicate and no gap.
+// 4) Withdraw through the page API and read back 0.
+//   node time-check.mjs <run> <out.json>
+import {createHash, createPrivateKey, randomBytes, sign} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+import {readFileSync, writeFileSync} from 'node:fs';
+const [run, out] = process.argv.slice(2);
+const UI = 'http://127.0.0.1:48671', HOST = 'http://127.0.0.1:48670';
+const api = async (method, path, body) => {
+  const r = await fetch(UI + path, {method, headers: method === 'POST' ? {'content-type': 'application/json', origin: UI} : {}, body: method === 'POST' ? JSON.stringify(body ?? {}) : undefined});
+  if (!r.ok) throw new Error(`${method} ${path} -> ${r.status}`); return r.json();
+};
+const sql = q => execFileSync('docker', ['exec', '-i', 'hanamesh-p04-usage-int-01-pg', 'psql', '-h', '127.0.0.1', '-qAt', '-U', 'postgres', '-d', 'hm_local', '-v', 'ON_ERROR_STOP=1'],
+  {input: `BEGIN READ ONLY;\n${q};\nROLLBACK;\n`, encoding: 'utf8'}).trim().split('\n').filter(Boolean).map(l => l.split('|'));
+const result = {scope: 'SELF_CHECK_NOT_ACCEPTANCE'};
+await api('POST', '/api/consent', {state: 'granted'});
+const action = await api('POST', '/api/action');
+result.action = action;
+const state = await api('GET', '/api/state');
+const self = state.self.deviceId;
+const local = new Map(state.panel.events.map(e => [e.eventId, e]));
+const remote = await api('GET', '/api/remote');
+const db = new Map(sql(`SELECT event_id, to_char(occurred_at AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.MS"Z"'), to_char(received_at AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') FROM usage.events WHERE device_id='${self}' ORDER BY occurred_at, event_id`).map(([id, o, r]) => [id, {o, r}]));
+const mismatch = [];
+for (const e of remote.events) {
+  const row = db.get(e.eventId), l = local.get(e.eventId);
+  if (!row || row.o !== e.occurredAt || row.r !== e.receivedAt || !l || l.occurredAt !== e.occurredAt) mismatch.push({id: e.eventId, remote: [e.occurredAt, e.receivedAt], db: row ?? null, local: l?.occurredAt ?? null});
+}
+const ms = s => s.slice(20, 23);
+result.readback = {local: local.size, remote: remote.total, db: db.size, remoteState: remote.state, mismatches: mismatch.length, mismatch: mismatch.slice(0, 5),
+  distinctOccurredMs: [...new Set(remote.events.map(e => e.occurredAt))].length, nonZeroOccurredMs: remote.events.filter(e => ms(e.occurredAt) !== '000').length,
+  nonZeroReceivedMs: remote.events.filter(e => ms(e.receivedAt) !== '000').length, sample: remote.events.filter(e => e.action === 'use').concat(remote.events.slice(0, 2))};
+// Same-millisecond paging through the public route, signed with this card's fixture self-device key.
+const device = JSON.parse(readFileSync(`${run}/state/fixture-core.json`, 'utf8')).devices.self;
+const key = createPrivateKey({key: Buffer.from(device.privateKey, 'base64url'), format: 'der', type: 'pkcs8'});
+const path = `/v1/usage/me/devices/${self}/events`;
+const to = new Date(Date.now() + 300000), from = new Date(to.getTime() - 90 * 86400000);
+const pages = [], ids = [];
+let after = null;
+do {
+  const url = new URL(path, HOST); url.searchParams.set('from', from.toISOString()); url.searchParams.set('to', to.toISOString()); url.searchParams.set('limit', '5'); if (after) url.searchParams.set('after', after);
+  const ts = String(Date.now()), nonce = randomBytes(16).toString('base64url');
+  const sig = sign(null, Buffer.from(`GET|${path}|${ts}|${nonce}|${createHash('sha256').update('').digest('hex')}`), key).toString('base64url');
+  const r = await fetch(url, {headers: {'x-hm-device-id': self, 'x-hm-timestamp': ts, 'x-hm-nonce': nonce, 'x-hm-signature': sig, origin: HOST}});
+  const body = await r.json();
+  if (r.status !== 200) throw new Error(`page ${pages.length} -> ${r.status}`);
+  pages.push(body.items.length); ids.push(...body.items.map(i => i.eventId)); after = body.nextAfter;
+} while (after !== null);
+const dbOrder = [...db.keys()];
+result.paging = {limit: 5, pages: pages.length, items: ids.length, duplicates: ids.length - new Set(ids).size, missing: dbOrder.filter(id => !ids.includes(id)).length,
+  orderEqualsDb: JSON.stringify(ids) === JSON.stringify(dbOrder), largestSameMsGroup: Math.max(...Object.values([...db.values()].reduce((a, v) => (a[v.o] = (a[v.o] ?? 0) + 1, a), {})))};
+await api('POST', '/api/consent', {state: 'withheld'});
+const after2 = await api('GET', '/api/remote'), fin = await api('GET', '/api/state');
+result.withdraw = {withdrawal: fin.withdrawal, local: fin.panel.total, remote: after2.total, db: sql(`SELECT count(*) FROM usage.events WHERE device_id='${self}'`)[0][0]};
+result.ok = result.readback.mismatches === 0 && result.readback.remote === result.readback.db && result.paging.duplicates === 0 && result.paging.missing === 0 && result.paging.orderEqualsDb && result.withdraw.remote === 0;
+writeFileSync(out, JSON.stringify(result, null, 1) + '\n');
+console.log(JSON.stringify({ok: result.ok, readback: {...result.readback, sample: undefined, mismatch: undefined}, paging: result.paging, withdraw: result.withdraw}));

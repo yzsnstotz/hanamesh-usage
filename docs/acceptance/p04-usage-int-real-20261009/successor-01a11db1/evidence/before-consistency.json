@@ -1,0 +1,11 @@
+{
+  "local": 180,
+  "remote": 180,
+  "PG": 180,
+  "setsEqual": true,
+  "fieldMismatch": [],
+  "wirePrecision": "milliseconds; PG raw microseconds preserved",
+  "newSinceHandoff": "3ac71430-3a1f-546a-95ea-c171269f0532 genuine page open at 22:35:17Z",
+  "otherPG": 178,
+  "useEvent": "42a363c1-6e1a-5d0e-ab7a-6f0077dc9b82"
+}

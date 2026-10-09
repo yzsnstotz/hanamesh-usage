@@ -1,0 +1,728 @@
+[
+  {
+    "path": "/Users/yzliu/.cache/hanamesh-runs/CONTRACT-IDENTITY-PORT-SUITES-01/FORMAL-DELIVERY.json",
+    "receiptSHA256": "d94f9afb855934939274ac46e0181952e3b7ac90d045929f066cd0b21ed73f3c",
+    "fields": {
+      "card": "CONTRACT-IDENTITY-PORT-SUITES-01",
+      "writer": "3d128347-5487-4cb9-8278-7b0cfdf2bb1a (serial successor of 01a11b8a-92f4-7942-9fe3-2e0d2d7836d6)",
+      "atUTC": "2026-10-08T22:36:13.600936+00:00",
+      "state": "FORMAL_SUPPLIED (contract TEST API); product gates NOT_RUN",
+      "package": "@hanamesh/server-identity@0.2.0-rc.11",
+      "remote": "https://github.com/yzsnstotz/hanamesh-server-identity.git",
+      "preflight": {
+        "mainBefore": "ed5d5dd02e36dda061b157ebc3b374127395a846",
+        "formalTagAbsentBefore": true,
+        "candidate3Object": "36f2fe816222e835250a3dea716ef5724ba5032a",
+        "candidate3Target": "17ba1181041b0b0789f7ffb6373c66e2abb34e77",
+        "sourceClean": true,
+        "mainIsAncestor": true,
+        "candidateTgzSHA256": "b27181d59e912959db22a7941e74542c575c07883c0c5ba7bbc8a19d23edecb1",
+        "lsRemote": "evidence/LS-REMOTE-PRE.txt"
+      },
+      "mainPush": "ed5d5dd..17ba118 fast-forward, no force (evidence/01-push-main.txt)",
+      "formalTag": "v0.2.0-rc.11",
+      "formalTagObject": "2da3d7a88cb59adcf06d9ef3c5e8f587fd361c26",
+      "formalTagTarget": "17ba1181041b0b0789f7ffb6373c66e2abb34e77",
+      "freshRemote": "17ba1181041b0b0789f7ffb6373c66e2abb34e77\trefs/heads/main\n2da3d7a88cb59adcf06d9ef3c5e8f587fd361c26\trefs/tags/v0.2.0-rc.11\n17ba1181041b0b0789f7ffb6373c66e2abb34e77\trefs/tags/v0.2.0-rc.11^{}\nbc78ee15312f8b46b7769496af33541637efa8f8\trefs/tags/v0.2.0-rc.11-candidate.1\nac03ef089117b3895eb5575286a1ceb11f7d0f39\trefs/tags/v0.2.0-rc.11-candidate.1^{}\n7f7dd18a8345f9e5cc5767a032a2cc3ebbd486b6\trefs/tags/v0.2.0-rc.11-candidate.2\n6bde4ee711750817ecadad36ca4ae127df5a28a8\trefs/tags/v0.2.0-rc.11-candidate.2^{}\n36f2fe816222e835250a3dea716ef5724ba5032a\trefs/tags/v0.2.0-rc.11-candidate.3\n17ba1181041b0b0789f7ffb6373c66e2abb34e77\trefs/tags/v0.2.0-rc.11-candidate.3^{}",
+      "freshTagPack": {
+        "commands": [
+          "git clone --depth 1 --branch v0.2.0-rc.11 <remote> freshclone",
+          "pnpm install --frozen-lockfile --ignore-scripts --store-dir ~/.cache/hanamesh-deps/pnpm-store",
+          "pnpm run build",
+          "pnpm run pack:local"
+        ],
+        "exitCodes": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "node": "v24.13.1",
+        "pnpm": "10.33.0",
+        "tgz": "/Users/yzliu/.cache/hanamesh-runs/CONTRACT-IDENTITY-PORT-SUITES-01/3d128347-5487-4cb9-8278-7b0cfdf2bb1a/freshclone/artifacts/hanamesh-server-identity-0.2.0-rc.11.tgz",
+        "sha256": "b27181d59e912959db22a7941e74542c575c07883c0c5ba7bbc8a19d23edecb1",
+        "bytes": 123002,
+        "entries": 87,
+        "byteEqualToCandidate3": true,
+        "candidate3Tgz": "/Users/yzliu/.cache/hanamesh-runs/CONTRACT-IDENTITY-PORT-SUITES-01/47adbfa8-20d7-4d46-bc81-260d8b13b69b/candidate/hanamesh-server-identity-0.2.0-rc.11.tgz"
+      },
+      "candidateTagsPreserved": [
+        "v0.2.0-rc.11-candidate.1",
+        "v0.2.0-rc.11-candidate.2",
+        "v0.2.0-rc.11-candidate.3"
+      ],
+      "gatesRerun": "none (no input change; same bytes)",
+      "boundariesKept": [
+        "Custody getDevicePublicKey/presenter NOT_CHECKED",
+        "ServerUsage MemoryPool UNIT/FIXTURE actualInteractions=false errorHandling=false NOT_CHECKED",
+        "Host full-root70 Drizzle FAIL separate from A/B",
+        "Usage product use/replay/fail/owner gates NOT_RUN, not PASS"
+      ],
+      "publicRelease": false,
+      "npmPublish": false,
+      "deploy": false,
+      "preserveUntil": "P04-USAGE-INT-01 验收",
+      "deleted": [],
+      "docs": {
+        "commit": "47b0dfbf87c6a4a897bbacf1c21d5323cc0d67b0",
+        "branch": "codex/contract-identity-port-suites-01-rc11-report",
+        "freshRemoteMainAndBranch": "47b0dfbf87c6a4a897bbacf1c21d5323cc0d67b0",
+        "canonicalHead": "47b0dfbf87c6a4a897bbacf1c21d5323cc0d67b0",
+        "reportBlob": "ad8abf97956a98bfd4ac43adeec1bd4316e3be56",
+        "cleanupBlob": "3fd0ad489b9bbe578a0e000fa44a3c7e960ea78d",
+        "docsTaskClean": true,
+        "canonicalOwnCardClean": true,
+        "canonicalWholeTreeClean": false
+      }
+    }
+  },
+  {
+    "path": "/Users/yzliu/.cache/hanamesh-runs/P04-REGISTRY-IDENTITY10-ADAPT-01/FORMAL-DELIVERY.json",
+    "receiptSHA256": "5a658a599aa0030fb167b0558a0461a63aacb5ba8f1803cfa59e591bd719ceeb",
+    "fields": {
+      "cardId": "P04-REGISTRY-IDENTITY10-ADAPT-01",
+      "writer": "01a11b3c-3468-7eb2-92cc-45321bcbe8cd",
+      "atUTC": "2026-10-08T22:41:46.386409+00:00",
+      "state": "FORMAL_SUPPLIED; product/owner NOT_RUN",
+      "origin": "hanamesh-server-registry",
+      "package": "@hanamesh/server-registry",
+      "version": "0.1.0-rc.12",
+      "privateOrigin": "https://github.com/yzsnstotz/hanamesh-server-registry.git",
+      "formalTag": "v0.1.0-rc.12",
+      "formalTagObject": "e5afdab9d8adfaceeedfc8710b1f43e9d110187e",
+      "formalTagTarget": "e10463c8c3b3474faea9e1161da7b22f63bdb8da",
+      "sourceBranch": "codex/p04-registry-identity10-adapt-01",
+      "sourceWorktree": "/Users/yzliu/.cache/hanamesh-runs/P04-REGISTRY-IDENTITY10-ADAPT-01/4a68ef7b-09fa-4192-87f0-926dc111f045/source/hanamesh-server-registry",
+      "sourceWorktreeClean": true,
+      "mainBefore": "c17edfbdb93071b36a02b3190ac293db3c19b85d",
+      "mainAfter": "e10463c8c3b3474faea9e1161da7b22f63bdb8da",
+      "mainAdvance": "ordinary fast-forward, atomic private main/tag push; no force",
+      "candidate3Tag": "v0.1.0-rc.12-candidate.3",
+      "candidate3Target": "e10463c8c3b3474faea9e1161da7b22f63bdb8da",
+      "freshRemote": "e10463c8c3b3474faea9e1161da7b22f63bdb8da\trefs/heads/codex/p04-registry-identity10-adapt-01\ne10463c8c3b3474faea9e1161da7b22f63bdb8da\trefs/heads/main\ne5afdab9d8adfaceeedfc8710b1f43e9d110187e\trefs/tags/v0.1.0-rc.12\ne10463c8c3b3474faea9e1161da7b22f63bdb8da\trefs/tags/v0.1.0-rc.12^{}\n4cdd4fb1ca1d729a46fd5cc5a03b1f8c9148777f\trefs/tags/v0.1.0-rc.12-candidate.1\nb7939dd49a44cec4381be8ca9e5da7e1ad9afcc4\trefs/tags/v0.1.0-rc.12-candidate.1^{}\n78d58f1b2c2f99226003e95907cb3cc7170ce817\trefs/tags/v0.1.0-rc.12-candidate.2\n1da18abfa9dc0da76c9fa577e95e5feefcd37133\trefs/tags/v0.1.0-rc.12-candidate.2^{}\n0cf134a3bbc75b432aede5a6161796c1d96a3089\trefs/tags/v0.1.0-rc.12-candidate.3\ne10463c8c3b3474faea9e1161da7b22f63bdb8da\trefs/tags/v0.1.0-rc.12-candidate.3^{}",
+      "formalFreshClone": "/Users/yzliu/.cache/hanamesh-runs/P04-REGISTRY-IDENTITY10-ADAPT-01/a63c9854-72a2-48d6-9603-c84d3f183935/fresh-tag/hanamesh-server-registry",
+      "normalPackPath": "/Users/yzliu/.cache/hanamesh-runs/P04-REGISTRY-IDENTITY10-ADAPT-01/a63c9854-72a2-48d6-9603-c84d3f183935/fresh-tag/hanamesh-server-registry/artifacts/hanamesh-server-registry-0.1.0-rc.12.tgz",
+      "supplyPath": "/Users/yzliu/.cache/hanamesh-runs/P04-REGISTRY-IDENTITY10-ADAPT-01/a63c9854-72a2-48d6-9603-c84d3f183935/supply/hanamesh-server-registry-0.1.0-rc.12.tgz",
+      "sha256": "90710c8e572358f3acaa56b3cdfd6774c620be0e62ec4a2974bd6315d4e91720",
+      "bytes": 37270,
+      "files": 35,
+      "normalFreshFormalPackEqualsCandidate3": true,
+      "all35PayloadsEqualActualFormalTag": true,
+      "formalFreshTreeClean": true,
+      "upstreamFormalTag": "v0.2.0-rc.11",
+      "upstreamFormalObject": "2da3d7a88cb59adcf06d9ef3c5e8f587fd361c26",
+      "upstreamFormalTarget": "17ba1181041b0b0789f7ffb6373c66e2abb34e77",
+      "upstreamSHA256": "b27181d59e912959db22a7941e74542c575c07883c0c5ba7bbc8a19d23edecb1",
+      "upstream87SameBytes": true,
+      "upstreamFreshRemote": "17ba1181041b0b0789f7ffb6373c66e2abb34e77\trefs/heads/main\n2da3d7a88cb59adcf06d9ef3c5e8f587fd361c26\trefs/tags/v0.2.0-rc.11\n17ba1181041b0b0789f7ffb6373c66e2abb34e77\trefs/tags/v0.2.0-rc.11^{}",
+      "productionPeerVersion": "0.2.0-rc.11",
+      "vendorPinUnchanged": "file:vendor/hanamesh-server-identity-0.2.0-rc.11-candidate.3.tgz",
+      "pinAction": "Formal Identity tag recorded over existing exact rc11 peer and unchanged b271 original vendor; no filename/manifest/lock/source/package edits",
+      "sourcePackageLocksUnchanged": true,
+      "sourceCommitCreated": false,
+      "candidateTagsPreserved": true,
+      "oldRunsPreserved": true,
+      "gatesRerun": "none; candidate.3 SOURCE63/PACKAGE63 strictTS normal119peer/unmet0/singleIdentity11/35+87 exact-byte evidence remains same-byte valid",
+      "exportCommands": "fresh formal clone; normal frozen strict install/build/normal pack only; six steps exit0",
+      "ownConsumerErrorCoverage": "original current32/future true retained; no new coverage",
+      "otherOriginNOTCHECKEDAndFalse": "unchanged; no conclusion here",
+      "productGates": "NOT_RUN",
+      "ownerAcceptance": "NOT_RUN",
+      "publicRelease": false,
+      "npmPublish": false,
+      "deploy": false,
+      "deleted": [],
+      "preserveUntil": "P04-USAGE-INT-01 验收",
+      "run": "/Users/yzliu/.cache/hanamesh-runs/P04-REGISTRY-IDENTITY10-ADAPT-01/a63c9854-72a2-48d6-9603-c84d3f183935",
+      "docs": {
+        "path": "/Users/yzliu/work/Docs/Projects/hanamesh/bluemap/cards/P04-REGISTRY-IDENTITY10-ADAPT-01/REPORT.md",
+        "owningPath": "/Users/yzliu/.cache/hanamesh-runs/P04-REGISTRY-IDENTITY10-ADAPT-01/41758a68-a562-486e-bff6-fb2a90fd7265/docs-worktree/bluemap/cards/P04-REGISTRY-IDENTITY10-ADAPT-01/REPORT.md",
+        "repo": "https://github.com/yzsnstotz/hanamesh-docs.git",
+        "branch": "codex/p04-registry-identity10-adapt-01-report",
+        "commit": "8bf78452db0dfe91fe5c4cd5ae43a58243483e82",
+        "canonicalHead": "9d70727b2de4dee3548d0aaba167d9d581f966f1",
+        "sha256": "c3b80ace7f8e9e5a2e073395106a0a261a6686fcb419812b3aac5c22eceea14b",
+        "marker": "REPORT@f18d645c5d54bf5d9996286480fe2f9971ec07fd",
+        "pushed": true,
+        "mainPushed": true,
+        "freshRemote": "8bf78452db0dfe91fe5c4cd5ae43a58243483e82\trefs/heads/codex/p04-registry-identity10-adapt-01-report\n9d70727b2de4dee3548d0aaba167d9d581f966f1\trefs/heads/main",
+        "freshRemoteBranchEqualsHead": true,
+        "freshRemoteMainEqualsHead": false,
+        "freshRemoteMainContainsDelivery": true,
+        "worktreeClean": true,
+        "canonicalCommitted": true,
+        "canonicalScopeClean": true,
+        "canonicalWholeTreeClean": false
+      },
+      "freshRemoteFinal": "e10463c8c3b3474faea9e1161da7b22f63bdb8da\trefs/heads/codex/p04-registry-identity10-adapt-01\ne10463c8c3b3474faea9e1161da7b22f63bdb8da\trefs/heads/main\ne5afdab9d8adfaceeedfc8710b1f43e9d110187e\trefs/tags/v0.1.0-rc.12\ne10463c8c3b3474faea9e1161da7b22f63bdb8da\trefs/tags/v0.1.0-rc.12^{}\n4cdd4fb1ca1d729a46fd5cc5a03b1f8c9148777f\trefs/tags/v0.1.0-rc.12-candidate.1\nb7939dd49a44cec4381be8ca9e5da7e1ad9afcc4\trefs/tags/v0.1.0-rc.12-candidate.1^{}\n78d58f1b2c2f99226003e95907cb3cc7170ce817\trefs/tags/v0.1.0-rc.12-candidate.2\n1da18abfa9dc0da76c9fa577e95e5feefcd37133\trefs/tags/v0.1.0-rc.12-candidate.2^{}\n0cf134a3bbc75b432aede5a6161796c1d96a3089\trefs/tags/v0.1.0-rc.12-candidate.3\ne10463c8c3b3474faea9e1161da7b22f63bdb8da\trefs/tags/v0.1.0-rc.12-candidate.3^{}",
+      "cleanupCoverage": {
+        "uncovered": [],
+        "deletedPathsResurrected": [],
+        "newUUIDDirectChildren": 5
+      },
+      "finalReceiptCheckedAt": "2026-10-08T22:44:32.590939+00:00"
+    }
+  },
+  {
+    "path": "/Users/yzliu/.cache/hanamesh-runs/P04-SRV-USAGE-IDENTITY10-ADAPT-01/6d3a73e6-45e9-478c-a1a5-0cac6795bbbe/FORMAL-DELIVERY.json",
+    "receiptSHA256": "f9d274931df554d3e43cba2e80d77464ae3bfb77e9375f3f5ec8ef114d54d95b",
+    "fields": {
+      "card": "P04-SRV-USAGE-IDENTITY10-ADAPT-01",
+      "writer": "01a11b21-e545-7c33-88f2-5c583aa1b790",
+      "atUTC": "2026-10-08T22:44:33.554983+00:00",
+      "package": "@hanamesh/server-usage",
+      "version": "0.2.0-rc.14",
+      "formalTag": "v0.2.0-rc.14",
+      "formalTagObject": "b6053e44c1426ab6ac879b8b590552e8af59ded5",
+      "formalTagTarget": "4144a4d2813e2ef581dbac49c31f1e0a7a9b60eb",
+      "sourceMain": "4144a4d2813e2ef581dbac49c31f1e0a7a9b60eb",
+      "sourceTaskBranch": "codex/p04-srv-usage-identity10-adapt-01",
+      "sourceTaskHead": "4144a4d2813e2ef581dbac49c31f1e0a7a9b60eb",
+      "privateOrigin": "https://github.com/yzsnstotz/hanamesh-server-usage.git",
+      "tagURL": "https://github.com/yzsnstotz/hanamesh-server-usage/tree/v0.2.0-rc.14",
+      "normalPackPath": "/Users/yzliu/.cache/hanamesh-runs/P04-SRV-USAGE-IDENTITY10-ADAPT-01/6d3a73e6-45e9-478c-a1a5-0cac6795bbbe/formal-round/candidate/hanamesh-server-usage-0.2.0-rc.14.tgz",
+      "normalPackSHA256": "7f5d019c7e765c19965216f3cf69b12da37859ebe5168b1f2cf27ad154948287",
+      "bytes": 84133,
+      "files": 56,
+      "candidate3Tag": "v0.2.0-rc.14-candidate.3",
+      "candidate3Target": "576592f6f8151c157efa41f6edef069cb92d4132",
+      "byteEqualToCandidate3": true,
+      "identityFormalTag": "v0.2.0-rc.11",
+      "identityTagObject": "2da3d7a88cb59adcf06d9ef3c5e8f587fd361c26",
+      "identityTagTarget": "17ba1181041b0b0789f7ffb6373c66e2abb34e77",
+      "identitySHA256": "b27181d59e912959db22a7941e74542c575c07883c0c5ba7bbc8a19d23edecb1",
+      "identityFormalPackEqualsVendor": true,
+      "productionPeer": "0.2.0-rc.11",
+      "productionVendor": "file:vendor/hanamesh-server-identity-0.2.0-rc.11.tgz",
+      "sourceProductionInputCommit": "097022a97e1edb2ae62f46e069e069df7fff1b1d",
+      "ordinaryPrivateMainTagPush": true,
+      "atomic": true,
+      "force": false,
+      "sourceClean": true,
+      "freshRemote": "4144a4d2813e2ef581dbac49c31f1e0a7a9b60eb\trefs/heads/codex/p04-srv-usage-identity10-adapt-01\n4144a4d2813e2ef581dbac49c31f1e0a7a9b60eb\trefs/heads/main\nb6053e44c1426ab6ac879b8b590552e8af59ded5\trefs/tags/v0.2.0-rc.14\n4144a4d2813e2ef581dbac49c31f1e0a7a9b60eb\trefs/tags/v0.2.0-rc.14^{}\ncefb785e732b2ba56c779eb29981fe044ce741cb\trefs/tags/v0.2.0-rc.14-candidate.3\n576592f6f8151c157efa41f6edef069cb92d4132\trefs/tags/v0.2.0-rc.14-candidate.3^{}",
+      "normalPackFromFormalTagByteEqual": true,
+      "change": "excluded release manifest formal ref only; no package/src/dist/type/schema/checker/dependency/config byte change",
+      "gatesRerun": "none: prior admitted source/normal installed/strict/frozen Services gates reused on unchanged 7f5d/b271 bytes",
+      "coverage": {
+        "publicABI": true,
+        "actualInteractions": false,
+        "errorHandling": false
+      },
+      "installedAdmissionDatabase": "UNIT/FIXTURE original MemoryPool",
+      "interactionHandling": "NOT_CHECKED",
+      "errorHandling": "NOT_CHECKED",
+      "productOwnerGates": "NOT_RUN/NOT_ACCEPTED",
+      "publicReleaseNpmDeploy": false,
+      "preservedUntil": "P04-USAGE-INT-01 验收",
+      "deleted": [],
+      "pm": "01a11d47-6ac0-7eb0-9faf-0f5e0e594bcc"
+    }
+  },
+  {
+    "path": "/Users/yzliu/.cache/hanamesh-runs/P04-CUSTODY-IDENTITY10-ADAPT-01/FORMAL-DELIVERY.json",
+    "receiptSHA256": "257618722aa1d66e5dee4a76a831f1e7f9df574e3eab481c2c21405de3687aba",
+    "fields": {
+      "package": "@hanamesh/server-custody",
+      "version": "0.1.0-rc.21",
+      "filename": "hanamesh-server-custody-0.1.0-rc.21.tgz",
+      "normalPackPath": "/Users/yzliu/.cache/hanamesh-runs/P04-CUSTODY-IDENTITY10-ADAPT-01/2f11e565-d760-47d3-ba31-cdd1142b056e/fresh-tag/hanamesh-server-custody/artifacts/hanamesh-server-custody-0.1.0-rc.21.tgz",
+      "sha256": "75d39b92c2fbd46095784cd07af5f1215586d14016278fe3d5d21bf74c630cff",
+      "bytes": 436112,
+      "files": 277,
+      "candidateTag": "v0.1.0-rc.21-candidate.1",
+      "annotatedTagObject": "85493510748b52a75f43406f1241591312b74519",
+      "targetCommit": "5aec553c34638800a32ce9acbf5bfbbf4f6a6c22",
+      "packSourceCommit": "9847a8132a4fae41cc793c6c02a636fe83be1a32",
+      "privateOrigin": "https://github.com/yzsnstotz/hanamesh-server-custody.git",
+      "sourceBranch": "codex/p04-custody-identity10-adapt-01",
+      "freshCloneReproduced": true,
+      "ordinaryPrivatePush": true,
+      "upstream": [
+        {
+          "module": "identity",
+          "target": "17ba1181041b0b0789f7ffb6373c66e2abb34e77",
+          "sha256": "b27181d59e912959db22a7941e74542c575c07883c0c5ba7bbc8a19d23edecb1",
+          "sourcePath": "/Users/yzliu/.cache/hanamesh-runs/CONTRACT-IDENTITY-PORT-SUITES-01/47adbfa8-20d7-4d46-bc81-260d8b13b69b/candidate/hanamesh-server-identity-0.2.0-rc.11.tgz",
+          "vendor": "hanamesh-server-identity-0.2.0-rc.11-candidate.3.tgz",
+          "freshRemote": "36f2fe816222e835250a3dea716ef5724ba5032a\trefs/tags/v0.2.0-rc.11-candidate.3\n17ba1181041b0b0789f7ffb6373c66e2abb34e77\trefs/tags/v0.2.0-rc.11-candidate.3^{}\n",
+          "candidateTag": "v0.2.0-rc.11-candidate.3",
+          "tag": "v0.2.0-rc.11",
+          "formalTagObject": "2da3d7a88cb59adcf06d9ef3c5e8f587fd361c26",
+          "formalTagTarget": "17ba1181041b0b0789f7ffb6373c66e2abb34e77",
+          "formalPinStatus": "READ_BACK_SAME_BYTES",
+          "normalFormalPackPath": "/Users/yzliu/.cache/hanamesh-runs/CONTRACT-IDENTITY-PORT-SUITES-01/3d128347-5487-4cb9-8278-7b0cfdf2bb1a/freshclone/artifacts/hanamesh-server-identity-0.2.0-rc.11.tgz"
+        },
+        {
+          "module": "registry",
+          "target": "e10463c8c3b3474faea9e1161da7b22f63bdb8da",
+          "sha256": "90710c8e572358f3acaa56b3cdfd6774c620be0e62ec4a2974bd6315d4e91720",
+          "sourcePath": "/Users/yzliu/.cache/hanamesh-runs/P04-REGISTRY-IDENTITY10-ADAPT-01/4a68ef7b-09fa-4192-87f0-926dc111f045/candidate/hanamesh-server-registry-0.1.0-rc.12.tgz",
+          "vendor": "hanamesh-server-registry-0.1.0-rc.12-candidate.3.tgz",
+          "freshRemote": "0cf134a3bbc75b432aede5a6161796c1d96a3089\trefs/tags/v0.1.0-rc.12-candidate.3\ne10463c8c3b3474faea9e1161da7b22f63bdb8da\trefs/tags/v0.1.0-rc.12-candidate.3^{}\n",
+          "candidateTag": "v0.1.0-rc.12-candidate.3",
+          "tag": "v0.1.0-rc.12",
+          "formalTagObject": "e5afdab9d8adfaceeedfc8710b1f43e9d110187e",
+          "formalTagTarget": "e10463c8c3b3474faea9e1161da7b22f63bdb8da",
+          "formalPinStatus": "READ_BACK_SAME_BYTES",
+          "normalFormalPackPath": "/Users/yzliu/.cache/hanamesh-runs/P04-REGISTRY-IDENTITY10-ADAPT-01/a63c9854-72a2-48d6-9603-c84d3f183935/fresh-tag/hanamesh-server-registry/artifacts/hanamesh-server-registry-0.1.0-rc.12.tgz"
+        },
+        {
+          "module": "claim",
+          "target": "810f12fa6c933067b26693897f43374d6350ff7c",
+          "sha256": "c073e0d183351ed7f2aa4fbdc0ec427adb9adab60e04b6541e3863c0fac08691",
+          "sourcePath": "/Users/yzliu/.cache/hanamesh-runs/P04-CLAIM-IDENTITY10-ADAPT-01/75421fdd-03d0-45b3-af73-5b68f9a035a4/candidate/hanamesh-server-claim-0.1.0-rc.12.tgz",
+          "vendor": "hanamesh-server-claim-0.1.0-rc.12-candidate.2.tgz",
+          "freshRemote": "498152d82460605d2f586229261c4275bf169c4a\trefs/tags/v0.1.0-rc.12-candidate.2\n810f12fa6c933067b26693897f43374d6350ff7c\trefs/tags/v0.1.0-rc.12-candidate.2^{}\n",
+          "candidateTag": "v0.1.0-rc.12-candidate.2",
+          "tag": "v0.1.0-rc.12",
+          "formalTag": "v0.1.0-rc.12",
+          "formalPinStatus": "READ_BACK_SAME_BYTES",
+          "formalTagObject": "696688caa34bf3fdaf794ba2616bdfb04a4e9901",
+          "formalTagTarget": "810f12fa6c933067b26693897f43374d6350ff7c",
+          "normalFormalPackPath": "/Users/yzliu/.cache/hanamesh-runs/P04-CLAIM-IDENTITY10-ADAPT-01/control-pm-01a11d47-formal/fresh-tag/artifacts/hanamesh-server-claim-0.1.0-rc.12.tgz",
+          "formalPinFinalReceipt": {
+            "atUTC": "2026-10-08T22:56:29.299924+00:00",
+            "formalTag": "v0.1.0-rc.12",
+            "formalTagObject": "696688caa34bf3fdaf794ba2616bdfb04a4e9901",
+            "formalTagTarget": "810f12fa6c933067b26693897f43374d6350ff7c",
+            "main": "810f12fa6c933067b26693897f43374d6350ff7c",
+            "sha256": "c073e0d183351ed7f2aa4fbdc0ec427adb9adab60e04b6541e3863c0fac08691",
+            "bytes": 45294,
+            "files": 60,
+            "formalNormalPackPath": "/Users/yzliu/.cache/hanamesh-runs/P04-CLAIM-IDENTITY10-ADAPT-01/control-pm-01a11d47-formal/fresh-tag/artifacts/hanamesh-server-claim-0.1.0-rc.12.tgz",
+            "wholeTgzEqualsOriginalCandidateAndCustodyVendor": true,
+            "candidateTagPreserved": true,
+            "packageVersion": "0.1.0-rc.12",
+            "sourceHeadBefore": "c32f996cca23c353e274c4eadb926e96cdc34934",
+            "sourceCleanBefore": true,
+            "sourceChanged": false,
+            "gatesRerun": false
+          }
+        }
+      ],
+      "gates": {
+        "sourceUnit": "120/120",
+        "sourceCompoundSuite": "94/94",
+        "installedCompoundSuite": "94/94",
+        "realDbApiSigkill": "29/29",
+        "strictTS": "source+installed skipLibCheck=false/exactOptionalPropertyTypes",
+        "privateExactPeerRows": "source12/installed6 (2optional absent), unmet0; actual utils0.4.2",
+        "singleIdentity": "0.2.0-rc.11 b271, source+installed",
+        "actualCommands": "13 per lane:7 required+6 signed device; getOwnPoints actual canonical ledger7 + device pending3 total10",
+        "installedBytes": "Custody277/Identity87 same; sourceRegistry35/Claim60 same"
+      },
+      "getDevicePublicKey": "NOT_CHECKED/shape only",
+      "errorHandling": "NOT_CHECKED/false",
+      "formalTag": "v0.1.0-rc.21",
+      "sourceMainAdvanced": true,
+      "fullBatchProductOwnerAcceptance": "NOT_CERTIFIED",
+      "atUTC": "2026-10-08T22:45:03.095215+00:00",
+      "state": "FORMAL_SUPPLIED; product/owner NOT_RUN",
+      "origin": "hanamesh-server-custody",
+      "formalTagObject": "d2881cbae81f6b9aff8c5cd20061f6addb5f2973",
+      "formalTagTarget": "5aec553c34638800a32ce9acbf5bfbbf4f6a6c22",
+      "mainBefore": "b3d369fe29d9d0f02557815ee5041bae3a38eb44",
+      "mainAfter": "5aec553c34638800a32ce9acbf5bfbbf4f6a6c22",
+      "mainPush": "ordinary atomic fast-forward; no force",
+      "candidateNormalPackPath": "/Users/yzliu/.cache/hanamesh-runs/P04-CUSTODY-IDENTITY10-ADAPT-01/9df44192-d175-4356-af67-ce2fe7c8a5b0/candidate/hanamesh-server-custody-0.1.0-rc.21.tgz",
+      "normalFormalPackWholeByteEqual": true,
+      "formalFreshPack": {
+        "formalTag": "v0.1.0-rc.21",
+        "target": "5aec553c34638800a32ce9acbf5bfbbf4f6a6c22",
+        "commands": [
+          {
+            "label": "02-versions",
+            "args": [
+              "node",
+              "--version"
+            ],
+            "exit": 0
+          },
+          {
+            "label": "03-pnpm-version",
+            "args": [
+              "pnpm",
+              "--version"
+            ],
+            "exit": 0
+          },
+          {
+            "label": "04-formal-frozen",
+            "args": [
+              "pnpm",
+              "install",
+              "--frozen-lockfile",
+              "--strict-peer-dependencies",
+              "--ignore-scripts",
+              "--store-dir",
+              "/Users/yzliu/.cache/hanamesh-deps/pnpm-10.33"
+            ],
+            "exit": 0
+          },
+          {
+            "label": "05-formal-normal-pack",
+            "args": [
+              "pnpm",
+              "run",
+              "pack:local"
+            ],
+            "exit": 0
+          }
+        ],
+        "node": "v24.13.1",
+        "pnpm": "10.33.0",
+        "strictPeerCLI": true,
+        "npmrcCommittedValue": "strict-peer-dependencies=false (unchanged; CLI strict true takes precedence)",
+        "tgz": "/Users/yzliu/.cache/hanamesh-runs/P04-CUSTODY-IDENTITY10-ADAPT-01/2f11e565-d760-47d3-ba31-cdd1142b056e/fresh-tag/hanamesh-server-custody/artifacts/hanamesh-server-custody-0.1.0-rc.21.tgz",
+        "sha256": "75d39b92c2fbd46095784cd07af5f1215586d14016278fe3d5d21bf74c630cff",
+        "bytes": 436112,
+        "files": 277,
+        "wholeTgzByteEqual": true,
+        "packageVersion": "0.1.0-rc.21",
+        "productionIdentityPeer": "0.2.0-rc.11",
+        "freshTreeClean": true,
+        "generatedManifestSavedBeforeOwnRestore": true
+      },
+      "sourceBranchHead": "c32f996cca23c353e274c4eadb926e96cdc34934",
+      "sourceWorktreeClean": true,
+      "sourcePackageLocksUnchanged": true,
+      "sourceCommitCreated": false,
+      "pinAction": "Existing exact Identity rc11 production peer and original b271/907/c073 vendor/lock remain unchanged; formal tag facts recorded only, no filename/manifest edits",
+      "gatesRerun": "none; same bytes, accepted source/installed/strict/suite evidence retained",
+      "run": "/Users/yzliu/.cache/hanamesh-runs/P04-CUSTODY-IDENTITY10-ADAPT-01/2f11e565-d760-47d3-ba31-cdd1142b056e",
+      "preserveUntil": "P04-USAGE-INT-01 验收",
+      "deleted": [],
+      "publicRelease": false,
+      "npmPublish": false,
+      "deploy": false,
+      "cardId": "P04-CUSTODY-IDENTITY10-ADAPT-01",
+      "writer": "01a11b3c-3a5d-7c02-8b89-89e6bb63d7ec",
+      "docs": {
+        "commit": "029087261a0a6776313cd5c874e961a002ac5fb3",
+        "branch": "codex/p04-custody-identity10-adapt-01-report",
+        "clean": true,
+        "mainAtPush": "029087261a0a6776313cd5c874e961a002ac5fb3",
+        "changedOnly": [
+          "bluemap/cards/P04-CUSTODY-IDENTITY10-ADAPT-01/REPORT.md",
+          "bluemap/cards/P04-CUSTODY-IDENTITY10-ADAPT-01/CLEANUP.json",
+          "bluemap/cards/P04-CUSTODY-IDENTITY10-ADAPT-01/FORMAL-DELIVERY.json"
+        ],
+        "originalFormalReportCommit": "af4332f06f44727e6b401d4a75d157491a3655db",
+        "followupChangedOnly": [
+          "bluemap/cards/P04-CUSTODY-IDENTITY10-ADAPT-01/CLEANUP.json"
+        ],
+        "controlReceipt": "retention named in notes; physical location pending PM readback",
+        "freshRemote": {
+          "refs/heads/codex/p04-custody-identity10-adapt-01-report": "029087261a0a6776313cd5c874e961a002ac5fb3",
+          "refs/heads/main": "1d72c9724cb5a190d786b0c9f12d2808174833e6"
+        },
+        "canonicalOwnPathsClean": true,
+        "canonicalMainContainsOwnCommit": true,
+        "canonicalWholeTreeClean": false
+      },
+      "finalVerification": {
+        "atUTC": "2026-10-08T22:50:39.695663+00:00",
+        "main": "5aec553c34638800a32ce9acbf5bfbbf4f6a6c22",
+        "formalTag": "v0.1.0-rc.21",
+        "formalTagObject": "d2881cbae81f6b9aff8c5cd20061f6addb5f2973",
+        "formalTagTarget": "5aec553c34638800a32ce9acbf5bfbbf4f6a6c22",
+        "sourceBranch": "c32f996cca23c353e274c4eadb926e96cdc34934",
+        "sourceClean": true,
+        "formalCloneClean": true,
+        "docsCommit": "029087261a0a6776313cd5c874e961a002ac5fb3",
+        "docsFresh": {
+          "refs/heads/codex/p04-custody-identity10-adapt-01-report": "029087261a0a6776313cd5c874e961a002ac5fb3",
+          "refs/heads/main": "1d72c9724cb5a190d786b0c9f12d2808174833e6"
+        },
+        "docsRemoteMainContainsOwnCommit": true,
+        "docsClean": true,
+        "canonicalMainContainsOwnCommit": true,
+        "canonicalOwnPathsClean": true,
+        "canonicalOwnPathsEqualCommit": true,
+        "preexisting39ItemsStatChanges": [
+          "PROCEDURE.md",
+          "bluemap/COORDINATOR.md"
+        ],
+        "allRetainedItems": 40,
+        "cleanupCoverageExact": true,
+        "controlReceiptRetention": "named in CLEANUP notes; physical path not seen, no original fabricated",
+        "normalWholeTgzByteEqual": true,
+        "sha256": "75d39b92c2fbd46095784cd07af5f1215586d14016278fe3d5d21bf74c630cff",
+        "productGates": "NOT_RUN",
+        "getDevicePublicKey": "NOT_CHECKED",
+        "errorHandling": false,
+        "noRunDeleted": true
+      },
+      "allUpstreamFormalPinsReadBack": true,
+      "claimFinalPinAtUTC": "2026-10-08T22:56:29.299924+00:00"
+    }
+  },
+  {
+    "path": "/Users/yzliu/.cache/hanamesh-runs/P04-INDEXER-REGISTRY12-SUPPLY-01/FORMAL-DELIVERY.json",
+    "receiptSHA256": "f277f825c1749c8a97113cd937028c3c827e3ca6c02cf13cd1be1c84e0e25d54",
+    "fields": {
+      "cardId": "P04-INDEXER-REGISTRY12-SUPPLY-01",
+      "writer": "f98d4a7f-9c21-48f6-a6c3-e444fe424971",
+      "atUTC": "2026-10-08T22:49:29.601213+00:00",
+      "state": "FORMAL_SUPPLIED; product/owner NOT_RUN",
+      "origin": "hanamesh-server-indexer",
+      "package": "@hanamesh/server-indexer",
+      "version": "0.1.0-rc.17",
+      "privateOrigin": "git@github.com:yzsnstotz/hanamesh-server-indexer.git",
+      "formalTag": "v0.1.0-rc.17",
+      "formalTagObject": "df5ef967d23b14dad114047be3dd386411de027d",
+      "formalTagTarget": "f38acd0537bc21514c637f5f34de6e9006c6314f",
+      "candidateTag": "v0.1.0-rc.17-candidate.1",
+      "candidateTagObject": "b9138f8cc8c7884c4e0b06ebb83db850bc38460f",
+      "candidateTarget": "f38acd0537bc21514c637f5f34de6e9006c6314f",
+      "packageBytesSourceCommit": "d04e313b6e690fd6ffc5fd999f0ababd686375fc",
+      "mainBefore": "7bad9ccc935f85d6efa9e809fd4713f0ff1a5ffe",
+      "mainAfter": "f38acd0537bc21514c637f5f34de6e9006c6314f",
+      "mainAdvance": "ordinary fast-forward (merge-base --is-ancestor true), atomic main+tag push, no force",
+      "normalPackPath": "/Users/yzliu/.cache/hanamesh-runs/P04-INDEXER-REGISTRY12-SUPPLY-01/f98d4a7f-9c21-48f6-a6c3-e444fe424971/latest/hanamesh-server-indexer-0.1.0-rc.17.tgz",
+      "formalExportPackPath": "/Users/yzliu/.cache/hanamesh-runs/P04-INDEXER-REGISTRY12-SUPPLY-01/f98d4a7f-9c21-48f6-a6c3-e444fe424971/formal-export/hanamesh-server-indexer/artifacts/hanamesh-server-indexer-0.1.0-rc.17.tgz",
+      "sha256": "fcb04ac73207bb9d69c5dc9d3cf31783aa86d9f9a0459713623be457b10156a4",
+      "bytes": 30232,
+      "members": 36,
+      "formalFreshExportByteEqualCandidate": true,
+      "formalFreshTreeClean": true,
+      "formalPins": {
+        "registry": {
+          "tag": "v0.1.0-rc.12",
+          "object": "e5afdab9d8adfaceeedfc8710b1f43e9d110187e",
+          "target": "e10463c8c3b3474faea9e1161da7b22f63bdb8da",
+          "sha256": "90710c8e572358f3acaa56b3cdfd6774c620be0e62ec4a2974bd6315d4e91720",
+          "formalSupplyCmpVendor": "equal"
+        },
+        "identity": {
+          "tag": "v0.2.0-rc.11",
+          "object": "2da3d7a88cb59adcf06d9ef3c5e8f587fd361c26",
+          "target": "17ba1181041b0b0789f7ffb6373c66e2abb34e77",
+          "sha256": "b27181d59e912959db22a7941e74542c575c07883c0c5ba7bbc8a19d23edecb1",
+          "formalFreshPackCmpVendor": "equal"
+        }
+      },
+      "pinAction": "Formal Registry/Identity tags recorded over existing exact peer Registry 0.1.0-rc.12 and unchanged byte-identical vendors (file names keep -candidate.3); no filename/manifest/lock/source/package edits, matching Registry formal precedent",
+      "productionPeerVersion": "@hanamesh/server-registry 0.1.0-rc.12",
+      "sourceCommitCreated": false,
+      "sourcePackageLocksUnchanged": true,
+      "gatesRerun": "none; candidate.1 source check 46/46+mutations 5/5+preflight, source/installed main 14/14 real PG, installed strictTS, pnpm10.33 strict/frozen unmet0/single Identity remain same-byte valid",
+      "productGates": "NOT_RUN",
+      "ownerAcceptance": "NOT_RUN",
+      "hostFullGates": "NOT_RUN (Host writer)",
+      "publicRelease": false,
+      "npmPublish": false,
+      "deploy": false,
+      "deleted": [
+        "/Users/yzliu/.cache/hanamesh-runs/P04-INDEXER-REGISTRY12-SUPPLY-01/f98d4a7f-9c21-48f6-a6c3-e444fe424971/formal-env (isolated npm cache/TMPDIR/DSH_HOME, regenerable)"
+      ],
+      "preserveUntil": "P04-USAGE-INT-01 验收",
+      "evidence": "/Users/yzliu/.cache/hanamesh-runs/P04-INDEXER-REGISTRY12-SUPPLY-01/f98d4a7f-9c21-48f6-a6c3-e444fe424971/_evidence/formal"
+    }
+  },
+  {
+    "path": "/Users/yzliu/.cache/hanamesh-runs/P04-HOST-IDENTITY10-USAGE14-SUPPLY-01/FORMAL-DELIVERY.json",
+    "receiptSHA256": "d41c1bcbfd7976df6ec4a1c840a9e62d0a3b40b4983d50b2fa436b34abb1ec70",
+    "fields": {
+      "cardId": "P04-HOST-IDENTITY10-USAGE14-SUPPLY-01",
+      "writer": "94abb749-4da4-48a1-a33f-d6a97798e723",
+      "pm": "01a11d47-6ac0-7eb0-9faf-0f5e0e594bcc",
+      "atUTC": "2026-10-08T22:50:58.670588+00:00",
+      "state": "FORMAL_SUPPLIED (own Host36 + two rc4, same bytes as candidate.1); full-root70 Drizzle FAIL kept; product/owner NOT_RUN",
+      "origin": "hanamesh-server",
+      "privateOrigin": "https://github.com/yzsnstotz/hanamesh-server.git",
+      "preflight": {
+        "mainBefore": "9a64824ba438e6535f9e117bd1aa5ec42eefd2b2",
+        "mainIsAncestorOfTarget": true,
+        "formalTagsAbsentBefore": true,
+        "sourceWorktreeClean": true,
+        "productionVersions": {
+          "hanamesh-server": "0.2.0-rc.36",
+          "provider-registry": "0.1.0-rc.4",
+          "revenue-router": "0.1.0-rc.4"
+        }
+      },
+      "mainAfter": "878a43193170ab43ad5f88d1dccd4c21cc69f30d",
+      "mainPush": "ordinary atomic fast-forward 9a64824..878a431 with three tags; no force (_evidence/formal-push.log)",
+      "sourceCommitCreated": false,
+      "packageSourceCommit": "0baf4a39ef9c1a7ff36635d22263dd0edaf45a82",
+      "formalTags": {
+        "v0.2.0-rc.36": {
+          "object": "8dde09766416f2f65315a747238bffc7b3693635",
+          "target": "878a43193170ab43ad5f88d1dccd4c21cc69f30d",
+          "candidate": "v0.2.0-rc.36-candidate.1",
+          "sha256": "f096b88b098a3372f827c0c827386de6ac91445d23d3807d5393c57cd20d4e08",
+          "bytes": 1465592,
+          "entries": 298,
+          "pathInTag": "artifacts/hanamesh-server-0.2.0-rc.36.tgz"
+        },
+        "server-provider-registry-v0.1.0-rc.4": {
+          "object": "bbc50d93bee309098bdac2fba326a06882062c3b",
+          "target": "878a43193170ab43ad5f88d1dccd4c21cc69f30d",
+          "candidate": "server-provider-registry-v0.1.0-rc.4-candidate.1",
+          "sha256": "70b3941875747eb9b8cb0df56abe98c1e292fa33e700c9c6403f38adb7492b23",
+          "bytes": 17991,
+          "files": 45
+        },
+        "server-revenue-router-v0.1.0-rc.4": {
+          "object": "12e712570a9f4724ea8475f85b26fa9752389a24",
+          "target": "878a43193170ab43ad5f88d1dccd4c21cc69f30d",
+          "candidate": "server-revenue-router-v0.1.0-rc.4-candidate.1",
+          "sha256": "1f621dfd16a3fdb23d37caf7731108177c8213f5420a0d1421f3e953db4912d0",
+          "bytes": 22979,
+          "files": 53
+        }
+      },
+      "freshFormalExport": {
+        "clone": "/Users/yzliu/.cache/hanamesh-runs/P04-HOST-IDENTITY10-USAGE14-SUPPLY-01/94abb749-4da4-48a1-a33f-d6a97798e723/formal-export/hanamesh-server",
+        "commands": [
+          "git clone --no-local --depth 1 --branch v0.2.0-rc.36",
+          "pnpm install --frozen-lockfile --strict-peer-dependencies",
+          "pnpm run build",
+          "npm pack --ignore-scripts (root, modules/provider-registry, modules/revenue-router)"
+        ],
+        "exitCodes": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "allThreeSameBytes": true,
+        "treeClean": true,
+        "evidence": "_evidence/formal-*.json/.log"
+      },
+      "candidateTagsPreserved": true,
+      "upstreamPins": {
+        "@hanamesh/server-identity@0.2.0-rc.11": {
+          "vendorSha256": "b27181d59e912959db22a7941e74542c575c07883c0c5ba7bbc8a19d23edecb1",
+          "formal": "v0.2.0-rc.11 2da3d7a8->17ba1181",
+          "owningReceipt": "/Users/yzliu/.cache/hanamesh-runs/CONTRACT-IDENTITY-PORT-SUITES-01/FORMAL-DELIVERY.json",
+          "pin": "FORMAL (same bytes)"
+        },
+        "@hanamesh/server-registry@0.1.0-rc.12": {
+          "vendorSha256": "90710c8e572358f3acaa56b3cdfd6774c620be0e62ec4a2974bd6315d4e91720",
+          "formal": "v0.1.0-rc.12 e5afdab9->e10463c8",
+          "owningReceipt": "/Users/yzliu/.cache/hanamesh-runs/P04-REGISTRY-IDENTITY10-ADAPT-01/FORMAL-DELIVERY.json",
+          "pin": "FORMAL (same bytes)"
+        },
+        "@hanamesh/server-custody@0.1.0-rc.21": {
+          "vendorSha256": "75d39b92c2fbd46095784cd07af5f1215586d14016278fe3d5d21bf74c630cff",
+          "formal": "v0.1.0-rc.21 d2881cba->5aec553c (= candidate.1 target)",
+          "owningReceipt": "/Users/yzliu/.cache/hanamesh-runs/P04-CUSTODY-IDENTITY10-ADAPT-01/FORMAL-DELIVERY.json",
+          "pin": "FORMAL (same bytes 75d39b92/436112B/277; PM received, docs 02908726/REPORT af4332f0; getDevicePublicKey shape-only/NOT_CHECKED, presenter false kept)"
+        },
+        "@hanamesh/server-usage@0.2.0-rc.14": {
+          "vendorSha256": "7f5d019c7e765c19965216f3cf69b12da37859ebe5168b1f2cf27ad154948287",
+          "formal": "v0.2.0-rc.14 b6053e44->4144a4d2 (candidate.3 576592f6 is ancestor)",
+          "readback": "diff 576592f6..4144a4d2 = 3 files under docs/acceptance only; none in package files list",
+          "owningReceipt": "/Users/yzliu/.cache/hanamesh-runs/P04-SRV-USAGE-IDENTITY10-ADAPT-01/6d3a73e6-45e9-478c-a1a5-0cac6795bbbe/FORMAL-DELIVERY.json",
+          "pin": "FORMAL (same bytes 7f5d019c/84133B/56 per owning receipt and PM; MemoryPool UNIT/FIXTURE/NOT_CHECKED kept, not Usage product evidence)"
+        },
+        "@hanamesh/server-claim@0.1.0-rc.12": {
+          "vendorSha256": "c073e0d183351ed7f2aa4fbdc0ec427adb9adab60e04b6541e3863c0fac08691",
+          "formal": "v0.1.0-rc.12 696688ca->810f12fa (= candidate target)",
+          "pin": "FORMAL (same target/bytes per owning receipt)",
+          "owningReceipt": "/Users/yzliu/.cache/hanamesh-runs/P04-CLAIM-IDENTITY10-ADAPT-01/FORMAL-DELIVERY.json"
+        },
+        "@hanamesh/server-indexer@0.1.0-rc.17": {
+          "vendorSha256": "fcb04ac73207bb9d69c5dc9d3cf31783aa86d9f9a0459713623be457b10156a4",
+          "formal": "v0.1.0-rc.17 df5ef967->f38acd05 (= candidate target)",
+          "pin": "FORMAL (same target/bytes per owning receipt)",
+          "owningReceipt": "/Users/yzliu/.cache/hanamesh-runs/P04-INDEXER-REGISTRY12-SUPPLY-01/FORMAL-DELIVERY.json"
+        },
+        "chain rc11 / semantic rc3 / probe 0.1.0": {
+          "pin": "pre-existing vendor bytes unchanged; not in this batch"
+        }
+      },
+      "hostBytesChange": false,
+      "gatesRerun": "none (no input change); formal export/normal pack receipt only",
+      "boundariesKept": [
+        "full-root tsc skipLibCheck=false 70 Drizzle0.45.2 diagnostics FAIL",
+        "gates A/B do not certify the whole declaration graph",
+        "installed Host real PG/write transaction/user/UI/owner NOT_RUN",
+        "errorHandling NOT_CHECKED/false retained"
+      ],
+      "publicRelease": false,
+      "npmPublish": false,
+      "deploy": false,
+      "deleted": [],
+      "preserveUntil": "P04-USAGE-INT-01 验收",
+      "docsCommit": "4d93fb45f844cb85764cc0cc9785a01f6208d776"
+    }
+  },
+  {
+    "path": "/Users/yzliu/.cache/hanamesh-runs/P04-CLAIM-IDENTITY10-ADAPT-01/FORMAL-DELIVERY.json",
+    "receiptSHA256": "2d40e737327db45e45fe8637b5ab3ae81a388afdba2a059cf340fa169b3641d3",
+    "fields": {
+      "cardId": "P04-CLAIM-IDENTITY10-ADAPT-01",
+      "writer": "22883681-a0ac-4609-aa62-8535cda915aa",
+      "state": "FORMAL_SUPPLIED; product/owner NOT_RUN",
+      "origin": "hanamesh-server-claim",
+      "package": "@hanamesh/server-claim",
+      "version": "0.1.0-rc.12",
+      "privateOrigin": "https://github.com/yzsnstotz/hanamesh-server-claim.git",
+      "formalTag": "v0.1.0-rc.12",
+      "formalTagObject": "696688caa34bf3fdaf794ba2616bdfb04a4e9901",
+      "formalTagTarget": "810f12fa6c933067b26693897f43374d6350ff7c",
+      "candidateTag": "v0.1.0-rc.12-candidate.2",
+      "candidateTarget": "810f12fa6c933067b26693897f43374d6350ff7c",
+      "candidateTagsPreserved": [
+        "v0.1.0-rc.12-candidate.1",
+        "v0.1.0-rc.12-candidate.2"
+      ],
+      "mainBefore": "d563b59f5e30bbb2654555ef0651d36452236040",
+      "mainAfter": "810f12fa6c933067b26693897f43374d6350ff7c",
+      "mainAdvance": "ordinary fast-forward (24 commits), atomic private main+tag push, no force",
+      "preflight": {
+        "formalTagAbsentBefore": true,
+        "mainAncestorOfTarget": true,
+        "branchEqualsTarget": true,
+        "sourceWorktreeClean": true
+      },
+      "packSourceCommit": "88343ce87d74920d36ef50771687366c83ef06c2",
+      "sourceCommitCreated": false,
+      "sha256": "c073e0d183351ed7f2aa4fbdc0ec427adb9adab60e04b6541e3863c0fac08691",
+      "bytes": 45294,
+      "files": 60,
+      "formalFreshClone": "/Users/yzliu/.cache/hanamesh-runs/P04-CLAIM-IDENTITY10-ADAPT-01/control-pm-01a11d47-formal/fresh-tag",
+      "normalPackPath": "/Users/yzliu/.cache/hanamesh-runs/P04-CLAIM-IDENTITY10-ADAPT-01/control-pm-01a11d47-formal/fresh-tag/artifacts/hanamesh-server-claim-0.1.0-rc.12.tgz",
+      "supplyPath": "/Users/yzliu/.cache/hanamesh-runs/P04-CLAIM-IDENTITY10-ADAPT-01/control-pm-01a11d47-formal/supply/hanamesh-server-claim-0.1.0-rc.12.tgz",
+      "candidatePath": "/Users/yzliu/.cache/hanamesh-runs/P04-CLAIM-IDENTITY10-ADAPT-01/75421fdd-03d0-45b3-af73-5b68f9a035a4/candidate/hanamesh-server-claim-0.1.0-rc.12.tgz",
+      "normalFreshFormalPackEqualsCandidate2": true,
+      "all60PayloadsEqual": true,
+      "exportCommands": "git clone --depth 1 --branch v0.1.0-rc.12; pnpm install --frozen-lockfile strict-peer; pnpm run build; pnpm pack:local — all exit 0, no peer issues",
+      "pins": {
+        "identity": {
+          "exactPeer": "0.2.0-rc.11",
+          "formalTag": "v0.2.0-rc.11",
+          "formalObject": "2da3d7a88cb59adcf06d9ef3c5e8f587fd361c26",
+          "formalTarget": "17ba1181041b0b0789f7ffb6373c66e2abb34e77",
+          "sha256": "b27181d59e912959db22a7941e74542c575c07883c0c5ba7bbc8a19d23edecb1",
+          "vendor": "vendor/hanamesh-server-identity-0.2.0-rc.11-candidate.3.tgz",
+          "sameBytesAsFormal": true
+        },
+        "registry": {
+          "exactPeer": "0.1.0-rc.12",
+          "formalTag": "v0.1.0-rc.12",
+          "formalObject": "e5afdab9d8adfaceeedfc8710b1f43e9d110187e",
+          "formalTarget": "e10463c8c3b3474faea9e1161da7b22f63bdb8da",
+          "sha256": "90710c8e572358f3acaa56b3cdfd6774c620be0e62ec4a2974bd6315d4e91720",
+          "vendor": "vendor/hanamesh-server-registry-0.1.0-rc.12-candidate.3.tgz",
+          "sameBytesAsFormal": true
+        }
+      },
+      "pinAction": "Formal Identity/Registry tags recorded over the unchanged exact peers and byte-identical vendor files; no filename/manifest/lock/source/package edits (any edit would change Claim bytes)",
+      "gatesRerun": "none; candidate.2 Pick source/installed 87/87, strict frozen single identity b271, test 39/39, package-real 15/15, strict TS remain same-byte valid",
+      "notChecked": "errors.handling NOT_CHECKED (no presenter); HTTP mapping of passed-through IDENTITY_INPUT_INVALID/IDENTITY_NOT_READY not tested",
+      "productGates": "NOT_RUN",
+      "ownerAcceptance": "NOT_RUN",
+      "publicRelease": false,
+      "npmPublish": false,
+      "deploy": false,
+      "deleted": [],
+      "preserveUntil": "P04-USAGE-INT-01 验收",
+      "atUTC": "2026-10-08T22:49:04.836122+00:00"
+    }
+  }
+]

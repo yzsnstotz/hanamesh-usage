@@ -2,9 +2,9 @@ TAP version 13
 # Subtest: T6 EventStore dedup identity includes attribution and receipt (root-aware copy for mutation)
 not ok 1 - T6 EventStore dedup identity includes attribution and receipt (root-aware copy for mutation)
   ---
-  duration_ms: 2.068791
+  duration_ms: 7.759083
   type: 'test'
-  location: '/Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/core.test.mjs:141:1'
+  location: '/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/source/hanamesh-usage/tests/core.test.mjs:153:1'
   failureType: 'testCodeFailure'
   error: 'Missing expected rejection.'
   code: 'ERR_ASSERTION'
@@ -13,7 +13,7 @@ not ok 1 - T6 EventStore dedup identity includes attribution and receipt (root-a
     code: 'EVENT_IDENTITY_CONFLICT'
   operator: 'rejects'
   stack: |-
-    async TestContext.<anonymous> (file:///Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/core.test.mjs:147:3)
+    async TestContext.<anonymous> (file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/source/hanamesh-usage/tests/core.test.mjs:159:3)
     async Test.run (node:internal/test_runner/test:1110:7)
     async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
   ...
@@ -25,4 +25,4 @@ not ok 1 - T6 EventStore dedup identity includes attribution and receipt (root-a
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 37.9745
+# duration_ms 99.11875

@@ -1,0 +1,105 @@
+Window: "DeepSeek Harness", App: Google Chrome.
+0 standard window DeepSeek Harness - Google Chrome - snstotz, URL: 127.0.0.1:56000/, Secondary Actions: Raise
+	1 container DeepSeek Harness - Google Chrome - snstotz, URL: 127.0.0.1:56000/
+		2 container
+			3 toolbar
+				4 button (disabled) Back
+				5 button (disabled) Forward
+				6 button Reload
+				7 container
+					8 pop up button View site information
+					9 text field (settable) Address and search bar, Value: 127.0.0.1:56000, Placeholder: Search Google or type a URL
+					10 button Install DeepSeek Harness
+					11 button Bookmark this tab
+				12 container
+					13 pop up button MetaMask
+Has access to this site
+					14 pop up button Extensions
+				15 button Enter Passphrase
+				16 pop up button Chrome
+			17 container
+				18 scroll area
+					19 HTML content DeepSeek Harness, URL: 127.0.0.1:56000/
+						20 container
+							21 button 新建会话
+							22 button 收起侧边栏
+							23 button 新建会话
+							24 container 全局面板
+								25 button 插件
+							26 text 工作区
+							27 container
+								28 button 搜索会话
+								29 text field (settable) 搜索会话名称
+							30 button 视图选项
+							31 button 添加工作区
+							32 outline 会话
+								33 container
+									34 row 默认工作区
+										35 text 默认工作区
+									36 row (selected) 新会话
+										37 text 新会话
+							38 button 打开 HanaMesh 设置
+							39 pop up button 设置
+							40 container
+								41 container 会话层级
+									42 text default-workspace
+								43 text 标准模式
+								44 button 用 访达 打开
+								45 pop up button 更多打开方式
+								46 pop up button 更多操作
+								47 button 打开右侧边栏
+								48 tab group
+									49 tab (selected) 对话, Value: 1
+									50 tab (settable, integer) 轨迹, Value: 0
+							51 container
+								52 container
+									53 text 失败 check-updates the registry could not be reached (3 plugins unchecked)
+									54 container 指令输入
+										55 text /goal
+									56 button goal No goal is currently set. Usage: /goal [<objective>|clear|edit <objective>|pause|resume]
+									57 container 指令输入
+										58 text /goal
+									59 button goal No goal is currently set. Usage: /goal [<objective>|clear|edit <objective>|pause|resume]
+								60 container
+									61 text entry area (settable) 发消息或创建任务, / 调用指令, @ 文件或对话
+									62 pop up button 添加文件或调用指令
+									63 button 访问模式，当前：工作区内修改
+									64 pop up button 选择模型，当前 DeepSeek-V41-Flash，推理等级 High, Help: DeepSeek-V41-Flash · High
+									65 button (disabled) 发送消息
+			66 container Infobar Container
+				67 container Infobar
+					68 container
+						69 text Continue where you left off: Chrome can restore your tabs every time you restart. To turn this on, go to
+						70 link Settings, opens in new tab.
+					71 button Close
+			72 pop up button Tab search
+			73 container
+				74 tab group
+					75 tab (settable, boolean) Session 与 World · HanaWorlds - Memory usage - 73.0 MB, Value: off
+						76 button Close
+					77 tab (settable, boolean) DeepSeek Harness - Memory usage - 158 MB, Value: off
+						78 button Close
+					79 tab (settable, boolean) DeepSeek Harness - Memory usage - 154 MB, Value: off
+						80 button Close
+					81 tab (settable, boolean) DeepSeek Harness - Memory usage - 121 MB, Value: off
+						82 button Close
+					83 tab (selected, settable, boolean) DeepSeek Harness - Memory usage - 137 MB, Value: on
+						84 button Close
+			85 button New Tab
+			86 button Open Gemini in Chrome
+	87 close button
+	88 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	89 minimize button
+90 menu bar
+	91 Chrome
+	92 File
+	93 Edit
+	94 View
+	95 History
+	96 Bookmarks
+	97 Profiles
+	98 Tab
+	99 Window
+	100 Help
+
+The focused UI element is 19 HTML content DeepSeek Harness, URL: 127.0.0.1:56000/

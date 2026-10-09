@@ -1,0 +1,52 @@
+{
+  "label": "PREPARED ONLY · fresh nonaccepted Core/Usage scene; not resident or owner entry",
+  "card": "P04-USAGE-INT-01",
+  "run": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60",
+  "packages": [
+    {
+      "name": "hanamesh-core",
+      "version": "0.2.0-rc.56",
+      "files": 106,
+      "differences": [],
+      "installedRoot": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60/dsh-home/profiles/web/node_modules/hanamesh-core",
+      "tgzSHA256": "7342a2ab95b78a83d74a4c927039b4998f0dd76f3c7e8ed9b09c31700e642e28"
+    },
+    {
+      "name": "hanamesh-usage",
+      "version": "0.2.0-rc.17",
+      "files": 50,
+      "differences": [],
+      "installedRoot": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60/dsh-home/profiles/web/node_modules/hanamesh-usage",
+      "tgzSHA256": "063ae9b40a183de1ece5086300fe01fdbd29d9b478148e8053fb7c59b5c962b9"
+    }
+  ],
+  "DSH_HOME": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60/dsh-home",
+  "profile": "web",
+  "publicOverrideFile": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60/dsh-home/profiles/web/cordis.patch.yml",
+  "websiteOrigin": "http://127.0.0.1:51026",
+  "serverOrigin": null,
+  "normalHostIdentityLocator": "WAITING_P04-HOST-IDENTITY10-USAGE14-SUPPLY-01",
+  "CoreLocalURL": null,
+  "bindLinkPublicOperation": {
+    "method": "POST",
+    "path": "/api/hanamesh/core/bind-link",
+    "status": "NOT_RUN; creates Identity challenge, requires normal Host locator and lawful CUA"
+  },
+  "boundAccountPublicReadback": {
+    "Core": "refreshContributions -> signed GET /v1/usage/me/contributions",
+    "ServerUsage": "same normal Identity principalLinks.resolveCanonical",
+    "status": "NOT_RUN"
+  },
+  "hostDependencyRequired": [
+    "normal Host/Identity exact package and public origin",
+    "exact provider callback/baseURL routing receipt",
+    "trusted websiteOrigin51026 and website return origin consistency",
+    "normal official OAuth/API upstream applicability",
+    "same Identity principalLinks readback chain"
+  ],
+  "normalCompositionReadiness": "CLI installed, public config prepared; profile not started",
+  "CUA": "header-policy blocker unchanged; no call this turn",
+  "sourceRepairOrNewProtocolNeeded": false,
+  "privacy": "no deviceId/nonce/signature proof URL/private profile copied",
+  "oldScenes": "56000/54399 and accepted62787 unchanged"
+}

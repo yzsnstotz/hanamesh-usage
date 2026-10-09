@@ -23,6 +23,8 @@
 | `POST` | `/api/hanamesh/usage/export` | 本地 Declaration 导出；需 `allowExport:true` |
 | `GET` | `/api/hanamesh/usage/health` | `HealthSnapshot` |
 | `GET` | `/api/hanamesh/usage/events?state&limit&after` | 逐字段重建的本地事件页 |
+| `GET` | `/api/hanamesh/usage/panel` · `/panel/view` | 当前设备的只读面板投影 / 无脚本 HTML（rc.15） |
+| `GET` | `/api/hanamesh/usage/panel/remote` | rc.16：本设备服务端记录读回 `RemoteSnapshot`；读不到为 `unknown`/`offline`，`total:null`，不当作 0 |
 
 所有响应为 `cache-control: no-store`；HTML 使用 `content-security-policy: default-src 'none'` 且不含脚本。
 
@@ -56,6 +58,10 @@ deviceId, hanaRef, action, occurredAt, eventId, nonce, signature [, sourceHanaRe
 6. 2xx 的 `accepted`、`duplicates` 与 `rejected[{eventId,code}]` 转为本地终态；`pending-host-commit` 也视为远端已接收。401/403、5xx 与网络错误保持 pending、增加 attempts 并进入 1/2/4/8/15 分钟退避。
 
 O1 当前用计数返回 `accepted` / `duplicates`，没有逐条成功 id；客户端按请求顺序把未 rejected 的前 `accepted` 条记为 sent、其余记为 duplicate。P1/O1 真件联调时若契约补充逐条 id，只在上报适配层调整。
+
+## 服务端读回（rc.16）
+
+`remote()` 用 `hanameshCore.signRequest({method:'GET',path,body:null})` 对 `GET {serverOrigin}/v1/usage/me/devices/:deviceId/events` 签名（`path` 不含查询串，与 identity 设备鉴权的签名路径一致），查询串 `from`/`to`（`to`=当前+5 分钟，`from`=`to`−90 天，毫秒 ISO）、`limit=200`、服务端给的 `after`，翻页到 `nextAfter:null`。每页新的请求 nonce。401/403 → `REMOTE_UNAUTHORIZED`，其他非 2xx 或网络失败 → `REMOTE_UNAVAILABLE`，结构不符或含别的设备 → `REMOTE_RESPONSE_INVALID`；都返回 `state:'unknown'`。不写本地状态。
 
 ## 撤回时序
 

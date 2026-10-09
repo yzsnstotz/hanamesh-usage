@@ -1,0 +1,25 @@
+[
+  {
+    "type": "command/run",
+    "seq": 3,
+    "time": 1791497189963,
+    "data": {
+      "commandId": "cmd-9d91ca65-1",
+      "name": "check-updates",
+      "args": "",
+      "source": {
+        "kind": "user"
+      }
+    }
+  },
+  {
+    "type": "command/done",
+    "seq": 4,
+    "time": 1791497219978,
+    "data": {
+      "commandId": "cmd-9d91ca65-1",
+      "kind": "error",
+      "text": "the registry could not be reached (3 plugins unchecked)"
+    }
+  }
+]

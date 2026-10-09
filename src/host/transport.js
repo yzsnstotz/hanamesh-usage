@@ -41,7 +41,7 @@ function parseEventFilter(url) {
  */
 export function mountTransport(ctx, api) {
   const base = '/api/hanamesh/usage';
-  for (const [path,method] of [[base,'GET'],[`${base}/view`,'GET'],[`${base}/export`,'POST'],[`${base}/health`,'GET'],[`${base}/events`,'GET'],[`${base}/panel`,'GET'],[`${base}/panel/view`,'GET']]) {
+  for (const [path,method] of [[base,'GET'],[`${base}/view`,'GET'],[`${base}/export`,'POST'],[`${base}/health`,'GET'],[`${base}/events`,'GET'],[`${base}/panel`,'GET'],[`${base}/panel/view`,'GET'],[`${base}/panel/remote`,'GET']]) {
     const dispose = ctx.connection.fetch.register({
       path: /** @type {string} */ (path), methods: [/** @type {'GET'|'POST'} */ (method)], requestBody: 'buffered',
       fetch: async request => {
@@ -49,6 +49,11 @@ export function mountTransport(ctx, api) {
         if (request.method !== method) return new Response('{"error":"METHOD_NOT_ALLOWED"}', { status:405, headers });
         try {
           const url = new URL(request.url);
+          if(path===`${base}/panel/remote`){
+            if([...url.searchParams].length!==0)throw new UsageError('INVALID_FILTER');
+            // Read-only; an unreachable or refusing server is reported in the body as unknown, never as zero.
+            return new Response(JSON.stringify(await api.remote()),{headers});
+          }
           if(path===`${base}/panel`||path===`${base}/panel/view`){
             if([...url.searchParams].length!==0)throw new UsageError('INVALID_FILTER');
             const panel=api.panel();

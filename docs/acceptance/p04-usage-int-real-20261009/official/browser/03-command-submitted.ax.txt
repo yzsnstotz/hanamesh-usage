@@ -1,0 +1,84 @@
+Window: "DeepSeek Harness", App: Google Chrome.
+0 standard window DeepSeek Harness - Google Chrome - snstotz, URL: 127.0.0.1:55128/, Secondary Actions: Raise
+	1 container DeepSeek Harness - Google Chrome - snstotz, URL: 127.0.0.1:55128/
+		2 container
+			3 toolbar
+				4 button (disabled) Back
+				5 button (disabled) Forward
+				6 button Reload
+				7 container
+					8 pop up button View site information
+					9 text field (settable) Address and search bar, Value: 127.0.0.1:55128, Placeholder: Search Google or type a URL
+					10 button Install DeepSeek Harness
+					11 button Bookmark this tab
+				12 container
+					13 pop up button MetaMask
+Has access to this site
+					14 pop up button Extensions
+				15 button Enter Passphrase
+				16 pop up button Chrome
+			17 container
+				18 scroll area
+					19 HTML content DeepSeek Harness, URL: 127.0.0.1:55128/
+						20 container
+							21 button 新建会话
+							22 button 收起侧边栏
+							23 button 新建会话
+							24 container 全局面板
+								25 button 插件
+							26 text 工作区
+							27 container
+								28 button 搜索会话
+								29 text field (settable) 搜索会话名称
+							30 button 视图选项
+							31 button 添加工作区
+							32 outline 会话
+								33 container
+									34 row 默认工作区
+										35 text 默认工作区
+									36 row (selected) 新会话
+										37 text 新会话
+							38 button 打开 HanaMesh 设置
+							39 pop up button 设置
+							40 button 打开右侧边栏
+							41 container
+								42 text 探索未至之境 预览版
+								43 pop up button 选择工作区
+								44 pop up button 标准模式, Help: 选择新任务使用的 Agent 预设
+								45 text entry area (settable) 描述你想要构建的内容, / 调用指令, @ 文件或对话, Value: 
+
+								46 pop up button 添加文件或调用指令
+								47 button 访问模式，当前：工作区内修改
+								48 pop up button 选择模型，当前 DeepSeek-V41-Flash，推理等级 High, Help: DeepSeek-V41-Flash · High
+								49 button (disabled) 发送消息
+			50 container Infobar Container
+				51 container Infobar
+					52 container
+						53 text Continue where you left off: Chrome can restore your tabs every time you restart. To turn this on, go to
+						54 link Settings, opens in new tab.
+					55 button Close
+			56 pop up button Tab search
+			57 container
+				58 tab group
+					59 tab (settable, boolean) Session 与 World · HanaWorlds - Memory usage - 73.0 MB, Value: off
+						60 button Close
+					61 tab (selected, settable, boolean) DeepSeek Harness - Memory usage - 152 MB, Value: on
+						62 button Close
+			63 button New Tab
+			64 button Open Gemini in Chrome
+	65 close button
+	66 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	67 minimize button
+68 menu bar
+	69 Chrome
+	70 File
+	71 Edit
+	72 View
+	73 History
+	74 Bookmarks
+	75 Profiles
+	76 Tab
+	77 Window
+	78 Help
+
+The focused UI element is 45 text entry area (settable) 描述你想要构建的内容, / 调用指令, @ 文件或对话, Value: 

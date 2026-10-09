@@ -1,0 +1,18 @@
+{
+  "package": "hanamesh-usage",
+  "version": "0.2.0-rc.17",
+  "sourceCommit": "643ed5b88b0b0d3225261baa24d14c81c7f0196a",
+  "sha256": "063ae9b40a183de1ece5086300fe01fdbd29d9b478148e8053fb7c59b5c962b9",
+  "candidate": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/final-01a11b0f/candidate/hanamesh-usage-0.2.0-rc.17.tgz",
+  "installation": {
+    "path": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/final-01a11b0f/consumer/node_modules/hanamesh-usage",
+    "command": "npm install --omit=peer --ignore-scripts",
+    "scope": "one-package source conformance consumer; no DSH runtime",
+    "filesCompared": 50,
+    "different": []
+  },
+  "addedDependencies": 0,
+  "addedPeerDependencies": 0,
+  "publicPublish": false,
+  "formalTag": false
+}

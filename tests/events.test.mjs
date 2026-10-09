@@ -9,7 +9,7 @@ test('U05 core exports the usage event contract surface', () => {
 });
 
 const base = () => ({
-  deviceId: 'device_A',
+  deviceId: 'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk',
   hanaRef: '@scope/example-plugin',
   action: 'use',
   occurredAt: '2026-09-19T00:00:00.000Z',
@@ -28,9 +28,9 @@ test('U05 canonical JSON sorts the six signed keys and wire event has exactly se
   const wire = core.wireEvent(event);
   assert.deepEqual(Object.keys(wire), ['deviceId','hanaRef','action','occurredAt','eventId','nonce','signature']);
   const { signature: _signature, ...signed } = wire;
-  assert.equal(core.canonicalJSON(signed), '{"action":"use","deviceId":"device_A","eventId":"018f08f6-2d0c-5b61-8f5f-678f12294e87","hanaRef":"@scope/example-plugin","nonce":"AQIDBAUGBwgJCgsMDQ4PEA","occurredAt":"2026-09-19T00:00:00.000Z"}');
+  assert.equal(core.canonicalJSON(signed), '{"action":"use","deviceId":"If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk","eventId":"018f08f6-2d0c-5b61-8f5f-678f12294e87","hanaRef":"@scope/example-plugin","nonce":"AQIDBAUGBwgJCgsMDQ4PEA","occurredAt":"2026-09-19T00:00:00.000Z"}');
   // O1 signing input: fixed key order, six fields (hanamesh-server-usage docs/API.md)
-  assert.equal(core.signingJSON(signed), '{"deviceId":"device_A","hanaRef":"@scope/example-plugin","action":"use","occurredAt":"2026-09-19T00:00:00.000Z","eventId":"018f08f6-2d0c-5b61-8f5f-678f12294e87","nonce":"AQIDBAUGBwgJCgsMDQ4PEA"}');
+  assert.equal(core.signingJSON(signed), '{"deviceId":"If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk","hanaRef":"@scope/example-plugin","action":"use","occurredAt":"2026-09-19T00:00:00.000Z","eventId":"018f08f6-2d0c-5b61-8f5f-678f12294e87","nonce":"AQIDBAUGBwgJCgsMDQ4PEA"}');
   assert.equal(event.sourceHanaRef, null);
   assert.equal(event.targetRef, null);
 });
@@ -41,7 +41,7 @@ test('U05 event schema is closed and refuses unsafe Hana references', () => {
   assert.throws(() => core.createUsageEvent({ ...base(), hanaRef: '/Users/example' }), { code: 'INVALID_USAGE_EVENT' });
   assert.throws(() => core.createUsageEvent({ ...base(), action: 'reward' }), { code: 'INVALID_USAGE_EVENT' });
   assert.throws(() => core.createUsageEvent({ ...base(), occurredAt: 'not-a-date' }), { code: 'INVALID_USAGE_EVENT' });
-  assert.throws(() => core.createUsageEvent({ ...base(), nonce: '1234567890123456' }), { code: 'INVALID_USAGE_EVENT' });
+  assert.throws(() => core.createUsageEvent({ ...base(), nonce: 'invalid nonce' }), { code: 'INVALID_USAGE_EVENT' });
 });
 
 test('U05 event export is rebuilt field by field and preserves exactly the local contract', () => {
@@ -51,12 +51,12 @@ test('U05 event export is rebuilt field by field and preserves exactly the local
 });
 
 test('U07 event identities are deterministic UUIDv5 values separated by source semantics', () => {
-  const sessionA = core.eventIdForSession('device_A', 'session-1', 4);
-  assert.equal(sessionA, core.eventIdForSession('device_A', 'session-1', 4));
+  const sessionA = core.eventIdForSession('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'session-1', 4);
+  assert.equal(sessionA, core.eventIdForSession('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'session-1', 4));
   assert.match(sessionA, /^[0-9a-f]{8}-[0-9a-f]{4}-5[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
-  assert.notEqual(sessionA, core.eventIdForSession('device_A', 'session-1', 5));
-  assert.notEqual(core.eventIdForLoader('device_A', 'install', 'pkg', '1.0.0'), core.eventIdForLoader('device_A', 'uninstall', 'pkg', '1.0.0'));
-  assert.equal(core.eventIdForSeat('device_A', 'app-host', 'open-1'), core.eventIdForSeat('device_A', 'app-host', 'open-1'));
+  assert.notEqual(sessionA, core.eventIdForSession('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'session-1', 5));
+  assert.notEqual(core.eventIdForLoader('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'install', 'pkg', '1.0.0'), core.eventIdForLoader('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'uninstall', 'pkg', '1.0.0'));
+  assert.equal(core.eventIdForSeat('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'app-host', 'open-1'), core.eventIdForSeat('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'app-host', 'open-1'));
 });
 
 class EventGlobal {
@@ -80,7 +80,7 @@ test('U08 EventStore never evicts pending events at capacity', async () => {
   const store = new core.EventStore(new EventGlobal(), 1);
   const first = core.createUsageEvent(base());
   await store.put(first);
-  const second = core.createUsageEvent({ ...base(), eventId:core.eventIdForSeat('device_A','app-host','next'), nonce:'QkJCQkJCQkJCQkJCQkJCQg' });
+  const second = core.createUsageEvent({ ...base(), eventId:core.eventIdForSeat('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk','app-host','next'), nonce:'QkJCQkJCQkJCQkJCQkJCQg' });
   await assert.rejects(store.put(second), { code:'EVENTS_CAPACITY_REACHED' });
   assert.equal(store.query().events[0].eventId, first.eventId);
 });
@@ -91,7 +91,7 @@ test('U08 EventStore prunes only terminal events older than 90 days', async () =
   const old = core.createUsageEvent(base());
   old.upload = { state:'sent', code:null, attempts:1, sentAt:'2026-06-01T00:00:00.000Z' };
   await store.put(old);
-  const current = core.createUsageEvent({ ...base(), eventId:core.eventIdForSeat('device_A','app-host','current'), nonce:'Q0NDQ0NDQ0NDQ0NDQ0NDQw' });
+  const current = core.createUsageEvent({ ...base(), eventId:core.eventIdForSeat('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk','app-host','current'), nonce:'Q0NDQ0NDQ0NDQ0NDQ0NDQw' });
   assert.equal(await store.put(current), 'inserted');
   assert.deepEqual(store.query().events.map(event => event.eventId), [current.eventId]);
 });
@@ -105,7 +105,7 @@ test('U12 EventStore signs all legacy pending events in one publication', async 
 test('U13 EventStore applies accepted, duplicate and rejected batch outcomes atomically', async () => {
   const global=new EventGlobal();const store=new core.EventStore(global);const events=[];
   for(const [index,nonce] of ['AQIDBAUGBwgJCgsMDQ4PEA','QkJCQkJCQkJCQkJCQkJCQg','Q0NDQ0NDQ0NDQ0NDQ0NDQw'].entries()){
-    const event=core.createUsageEvent({...base(),eventId:core.eventIdForSeat('device_A','app-host',`batch-${index}`),nonce,signature:'c2lnbmF0dXJl'});events.push(event);await store.put(event);
+    const event=core.createUsageEvent({...base(),eventId:core.eventIdForSeat('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk','app-host',`batch-${index}`),nonce,signature:'c2lnbmF0dXJl'});events.push(event);await store.put(event);
   }
   const before=global.writes;await store.applyUpload(events.map(event=>event.eventId),{accepted:1,duplicates:1,rejected:[{eventId:events[2].eventId,code:'USAGE_INPUT_INVALID'}],durability:'committed'},'2026-09-19T00:01:00.000Z');
   assert.equal(global.writes,before+1);assert.deepEqual(store.query().events.map(event=>[event.upload.state,event.upload.code,event.upload.attempts]),[['sent',null,1],['duplicate',null,1],['rejected','USAGE_INPUT_INVALID',1]]);
@@ -113,7 +113,7 @@ test('U13 EventStore applies accepted, duplicate and rejected batch outcomes ato
 
 test('U15 EventStore withdrawal clears all events in one publication before remote work', async () => {
   const global=new EventGlobal();const store=new core.EventStore(global);await store.put(core.createUsageEvent(base()));const before=global.writes;
-  await store.withdrawLocal('2026-09-19T00:02:00.000Z','device_A');assert.equal(global.writes,before+1);assert.equal(store.query().total,0);assert.equal(store.getSnapshot().withdrawal.state,'pending');
+  await store.withdrawLocal('2026-09-19T00:02:00.000Z','If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk');assert.equal(global.writes,before+1);assert.equal(store.query().total,0);assert.equal(store.getSnapshot().withdrawal.state,'pending');
   await store.markWithdrawal({state:'sent',deletedEvents:3,lastError:null});assert.equal(store.getSnapshot().withdrawal.attempts,1);assert.equal(store.getSnapshot().withdrawal.deletedEvents,3);
   await store.clearWithdrawal();assert.equal(store.getSnapshot().withdrawal,null);
 });
@@ -167,7 +167,7 @@ test('T6 legacy snapshot without receipt keys loads and later events coexist', a
   const legacy = core.createUsageEvent(base()); delete legacy.receipt;
   const store = new core.EventStore(new EventGlobal({ schemaVersion:1, events:[legacy], withdrawal:null, inventory:{ last:null } }), 10);
   assert.equal(store.query().total, 1);
-  const next = core.createUsageEvent({ ...attributed(), eventId:core.eventIdForSeat('device_A','app-host','next'), nonce:'QkJCQkJCQkJCQkJCQkJCQg' });
+  const next = core.createUsageEvent({ ...attributed(), eventId:core.eventIdForSeat('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk','app-host','next'), nonce:'QkJCQkJCQkJCQkJCQkJCQg' });
   assert.equal(await store.put(next), 'inserted');
   assert.deepEqual(store.query().events.map(e => e.receipt ?? null), [null, next.receipt]);
 });

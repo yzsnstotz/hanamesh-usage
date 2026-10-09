@@ -1,0 +1,29 @@
+{
+  "scope": "P04-USAGE-INT-01 only · normal consumer preparation and future TEST gate",
+  "hostPackage": {
+    "name": "hanamesh-server",
+    "version": "0.2.0-rc.37",
+    "tag": "v0.2.0-rc.37",
+    "tagObject": "0fac79bb8fec9a3297beae8f50accf98d0c802f2",
+    "tagTarget": "6248733df26c39710d49e74c9c4b375276907f63",
+    "source": "f877facec77d2506419b9292ba0244aaacd3ebc7",
+    "tgzSHA256": "bbd943d092fb7210e6ae62cee2131920a19efdb07a612221c6af053f95e84409",
+    "bytes": 1470677,
+    "entries": 300
+  },
+  "normalInstalledConsumer": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/host37-prep-3f4f03b6-5e2b-4f69-8461-dbbc5c38bd5c/consumer",
+  "supplierLocator": "/Users/yzliu/.cache/hanamesh-runs/P04-HOST-IDENTITY10-USAGE14-SUPPLY-01/5fefaad7-c0f6-49fc-8960-eeba144e0908/supply/LOCATOR.json",
+  "testHost": "http://127.0.0.1:53307",
+  "control": "http://127.0.0.1:53309",
+  "testSupplyLabel": "TEST ONLY; FakeChain / Semantic stub; not production or owner acceptance",
+  "receiptScope": "12 normal package byte closure and changed installed fixture types plus read-only endpoint availability",
+  "futureRealCore503": "NOT_RUN · native CUA policy unavailable; no new fact supplied",
+  "preservedOldScene": {
+    "runtime": "http://127.0.0.1:56000",
+    "host": "http://127.0.0.1:54399",
+    "HostVersion": "0.2.0-rc.36",
+    "PG359Rows": "unchanged",
+    "profileDevice": "unchanged"
+  },
+  "otherProjectOrAcceptedPins": "unchanged"
+}

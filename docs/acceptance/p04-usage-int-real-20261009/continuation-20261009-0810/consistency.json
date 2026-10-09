@@ -1,0 +1,20 @@
+{
+  "mainLocal": 181,
+  "mainRemote": 181,
+  "mainPG": 181,
+  "idSetsEqual": true,
+  "remoteVsPGWireFieldDifferences": [],
+  "allPGRowsExactlyUnchangedSincePriorFinal": true,
+  "otherRows": 178,
+  "otherRowsExactlyUnchanged": true,
+  "consent": "granted",
+  "bound": false,
+  "pending": 0,
+  "facts": 0,
+  "modelRequests": 0,
+  "withdrawal": null,
+  "nativeChrome": "Page Unresponsive returned after one Wait; no Exit Page/reload/restart. Dialog title alone does not identify exact hung tab.",
+  "newRejectBatchCalled": false,
+  "currentCycleWithdrawal": "NOT_RUN",
+  "sourceChanges": "evidence only"
+}
