@@ -1,0 +1,18 @@
+{
+  "name": "dsh-profile-web",
+  "private": true,
+  "dependencies": {
+    "hanamesh-core": "file:/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60/supply/hanamesh-core-0.2.0-rc.56.tgz",
+    "hanamesh-usage": "file:/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-bind-6a684752-46c0-4e50-9a31-8b537effdc60/supply/hanamesh-usage-0.2.0-rc.17.tgz"
+  },
+  "dsh": {
+    "profile": {
+      "bundles": [
+        "@deepseek-ai/dsh-base",
+        "@deepseek-ai/dsh-web-app",
+        "hanamesh-core",
+        "hanamesh-usage"
+      ]
+    }
+  }
+}
