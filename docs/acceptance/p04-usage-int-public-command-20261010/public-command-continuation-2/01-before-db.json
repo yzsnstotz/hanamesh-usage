@@ -1,0 +1,67 @@
+{
+  "usage.events": {
+    "count": 3,
+    "sha256": "137b122707f69f1d8e595ac150b09bda5bf9b909d91d988798f3381a77354328",
+    "rows": [
+      {
+        "deployment_id": "p04-hook-fault-59afe8edd30f787f",
+        "device_id": "Idt_pKxopAmW9OH_jBpWnQ-m-VbOy_kv5QHMxsARBN0",
+        "event_id": "7de4a8d5-0c2c-4184-9dab-df7478571fef",
+        "nonce": "<REDACTED_PUBLIC_PROOF>",
+        "principal_id": "cbd1b333-6705-4784-811a-5b14121f9dff",
+        "hana_ref": "@hanamesh-test/p04-hook-fault",
+        "action": "use",
+        "occurred_at": "2026-10-08T23:40:35.199+00:00",
+        "received_at": "2026-10-08T23:40:35.219949+00:00",
+        "signature": "<REDACTED_PUBLIC_PROOF>",
+        "source_hana_ref": null,
+        "target_ref": null,
+        "payload_hash": "6ec90fc0a6f754bd709890a90a6b2210d409dafef6019d22dd355046a9656d74",
+        "receipt_provider_id": null,
+        "receipt_model": null,
+        "receipt_count": null
+      },
+      {
+        "deployment_id": "p04-hook-fault-59afe8edd30f787f",
+        "device_id": "nLPSyIzhDQDzpCvrxlmU3AYW69GoANq2nESRehCR6Qc",
+        "event_id": "2ccc0285-30c4-4f0d-b6e0-6e3a634564c5",
+        "nonce": "<REDACTED_PUBLIC_PROOF>",
+        "principal_id": "f6cc7270-895a-4aae-9d5a-3f4063ee6681",
+        "hana_ref": "@hanamesh-test/p04-hook-fault",
+        "action": "open",
+        "occurred_at": "2026-10-08T23:40:35.18+00:00",
+        "received_at": "2026-10-08T23:40:35.191165+00:00",
+        "signature": "<REDACTED_PUBLIC_PROOF>",
+        "source_hana_ref": null,
+        "target_ref": null,
+        "payload_hash": "6da296b808b611ebc9864351f180604b9b72f230acb1fadc52a52c313c92858f",
+        "receipt_provider_id": null,
+        "receipt_model": null,
+        "receipt_count": null
+      },
+      {
+        "deployment_id": "p04-hook-fault-59afe8edd30f787f",
+        "device_id": "nLPSyIzhDQDzpCvrxlmU3AYW69GoANq2nESRehCR6Qc",
+        "event_id": "89950f63-9ec5-40a9-ab05-15d325bf94be",
+        "nonce": "<REDACTED_PUBLIC_PROOF>",
+        "principal_id": "f6cc7270-895a-4aae-9d5a-3f4063ee6681",
+        "hana_ref": "@hanamesh-test/p04-hook-fault",
+        "action": "use",
+        "occurred_at": "2026-10-08T23:40:35.181+00:00",
+        "received_at": "2026-10-08T23:40:35.193042+00:00",
+        "signature": "<REDACTED_PUBLIC_PROOF>",
+        "source_hana_ref": null,
+        "target_ref": null,
+        "payload_hash": "9455ff08f9f3e9675b6aeedbe98371ad0fc9d17c4c8446ad1f7a7c59ed370a04",
+        "receipt_provider_id": null,
+        "receipt_model": null,
+        "receipt_count": null
+      }
+    ]
+  },
+  "custody.points_events": {
+    "count": 0,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "rows": []
+  }
+}

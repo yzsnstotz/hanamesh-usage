@@ -1,0 +1,152 @@
+{
+  "scope": "Implementation engineering self-check only; public Session API ordinary use; owner/native composer path/final source R6/independent VERIFY NOT_RUN",
+  "files": [
+    {
+      "path": "public-command-continuation/00-ui.json",
+      "rawPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51/evidence/public-command-continuation/00-ui.json",
+      "rawSha256": "e2504afb3986a68460cbda9b13f72d65069a4ba5904ccf92a4b4cd363f7f3ea2",
+      "sha256": "e2504afb3986a68460cbda9b13f72d65069a4ba5904ccf92a4b4cd363f7f3ea2",
+      "treatment": "public nonce/signature strings redacted only; raw full-row SHA retained"
+    },
+    {
+      "path": "public-command-continuation/FAIL-ui.json",
+      "rawPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51/evidence/public-command-continuation/FAIL-ui.json",
+      "rawSha256": "3ec82e8dd43b24726e7620d9ee17d27810dacb960a6435fa6e7f26897e632cfc",
+      "sha256": "3ec82e8dd43b24726e7620d9ee17d27810dacb960a6435fa6e7f26897e632cfc",
+      "treatment": "public nonce/signature strings redacted only; raw full-row SHA retained"
+    },
+    {
+      "path": "public-command-continuation/FAIL.json",
+      "rawPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51/evidence/public-command-continuation/FAIL.json",
+      "rawSha256": "5a1b3b669474e101198409d0985e1e38ed293bf164ac8942aa2f35cb66757f08",
+      "sha256": "5a1b3b669474e101198409d0985e1e38ed293bf164ac8942aa2f35cb66757f08",
+      "treatment": "public nonce/signature strings redacted only; raw full-row SHA retained"
+    },
+    {
+      "path": "public-command-continuation/FAIL.png",
+      "rawPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51/evidence/public-command-continuation/FAIL.png",
+      "rawSha256": "5a51edd6504d411ce91e117c178888b54a2831705fe3b7c8f58e64c0641939c3",
+      "sha256": "5a51edd6504d411ce91e117c178888b54a2831705fe3b7c8f58e64c0641939c3",
+      "treatment": "unaltered"
+    },
+    {
+      "path": "public-command-continuation-2/00-ui.json",
+      "rawPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51/evidence/public-command-continuation-2/00-ui.json",
+      "rawSha256": "c4ac7e43bd1a1e8360c1665512a3ea9a628432cd5d3cd5795b6448e2adf1543d",
+      "sha256": "c4ac7e43bd1a1e8360c1665512a3ea9a628432cd5d3cd5795b6448e2adf1543d",
+      "treatment": "public nonce/signature strings redacted only; raw full-row SHA retained"
+    },
+    {
+      "path": "public-command-continuation-2/01-before-db.json",
+      "rawPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51/evidence/public-command-continuation-2/01-before-db.json",
+      "rawSha256": "6c0a1a466c2594f2d779e35e999c4126b436b3e7674f455c3db0eda03b9e271f",
+      "sha256": "f7250df3cee1e4a53706cff06afdadc01bc0ecd93d96b488b39c6cacf61cceea",
+      "treatment": "public nonce/signature strings redacted only; raw full-row SHA retained"
+    },
+    {
+      "path": "public-command-continuation-2/01-before-state.json",
+      "rawPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51/evidence/public-command-continuation-2/01-before-state.json",
+      "rawSha256": "7dfb11f55b3ea822b244cc5f745f8790755a598fa595bea0317ebb77d0ef5d7a",
+      "sha256": "7dfb11f55b3ea822b244cc5f745f8790755a598fa595bea0317ebb77d0ef5d7a",
+      "treatment": "public nonce/signature strings redacted only; raw full-row SHA retained"
+    },
+    {
+      "path": "public-command-continuation-2/02-public-command-catalog.json",
+      "rawPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51/evidence/public-command-continuation-2/02-public-command-catalog.json",
+      "rawSha256": "473c4629a7db843e43416a70f431accfe9882093b0f9f59ea1f6d5bd146ed392",
+      "sha256": "473c4629a7db843e43416a70f431accfe9882093b0f9f59ea1f6d5bd146ed392",
+      "treatment": "public nonce/signature strings redacted only; raw full-row SHA retained"
+    },
+    {
+      "path": "public-command-continuation-2/03-granted-state.json",
+      "rawPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51/evidence/public-command-continuation-2/03-granted-state.json",
+      "rawSha256": "6073a73e1de2d4de49374d76072d0f1b3cd20ab2c00fb9e84496e4f690d937c8",
+      "sha256": "6073a73e1de2d4de49374d76072d0f1b3cd20ab2c00fb9e84496e4f690d937c8",
+      "treatment": "public nonce/signature strings redacted only; raw full-row SHA retained"
+    },
+    {
+      "path": "public-command-continuation-2/04-invocation.json",
+      "rawPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51/evidence/public-command-continuation-2/04-invocation.json",
+      "rawSha256": "81783b327d8e179152f5569c8c1cd104fbce2786e3868e0d1a8945a1bb17094e",
+      "sha256": "81783b327d8e179152f5569c8c1cd104fbce2786e3868e0d1a8945a1bb17094e",
+      "treatment": "public nonce/signature strings redacted only; raw full-row SHA retained"
+    },
+    {
+      "path": "public-command-continuation-2/05-command-result.json",
+      "rawPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51/evidence/public-command-continuation-2/05-command-result.json",
+      "rawSha256": "1878992cf701ca354147ab98f1554359df354d28f07afee5905183dbb6214f96",
+      "sha256": "1878992cf701ca354147ab98f1554359df354d28f07afee5905183dbb6214f96",
+      "treatment": "public nonce/signature strings redacted only; raw full-row SHA retained"
+    },
+    {
+      "path": "public-command-continuation-2/06-local-state.json",
+      "rawPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51/evidence/public-command-continuation-2/06-local-state.json",
+      "rawSha256": "a5a6510363c06598a9373a4505a7dad3c888399bd8b9094473947b55b9f7e86d",
+      "sha256": "a5a6510363c06598a9373a4505a7dad3c888399bd8b9094473947b55b9f7e86d",
+      "treatment": "public nonce/signature strings redacted only; raw full-row SHA retained"
+    },
+    {
+      "path": "public-command-continuation-2/07-remote.json",
+      "rawPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51/evidence/public-command-continuation-2/07-remote.json",
+      "rawSha256": "5c6cfa79b4baab8e48f86024a53f006acac5aab90cab54b16c68cfd1c032ccf8",
+      "sha256": "5c6cfa79b4baab8e48f86024a53f006acac5aab90cab54b16c68cfd1c032ccf8",
+      "treatment": "public nonce/signature strings redacted only; raw full-row SHA retained"
+    },
+    {
+      "path": "public-command-continuation-2/08-after-db.json",
+      "rawPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51/evidence/public-command-continuation-2/08-after-db.json",
+      "rawSha256": "c79cd2d82d44b27a371c882083b94d25aa4ec92b8769e3c542c9048cf61c5771",
+      "sha256": "18210eb9f8be288f4fa73aeb07f2ab1e2513d12e40dcf0edc48a26004b5a7024",
+      "treatment": "public nonce/signature strings redacted only; raw full-row SHA retained"
+    },
+    {
+      "path": "public-command-continuation-2/09-results.json",
+      "rawPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51/evidence/public-command-continuation-2/09-results.json",
+      "rawSha256": "ca7a55edfb648b76d5b8376a96b7555081cc59e8ff771cce2fb3300c03bf4029",
+      "sha256": "022734ed045864f88b2b75585c9bf3721a0791a662d6e18b2d47703d28614a16",
+      "treatment": "public nonce/signature strings redacted only; raw full-row SHA retained"
+    },
+    {
+      "path": "public-command-continuation-2/10-ordinary-usage.png",
+      "rawPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51/evidence/public-command-continuation-2/10-ordinary-usage.png",
+      "rawSha256": "82ff8ec5fd76dcdef54ff728fb2c72fa17e24da49477b51da74f17a4111c07c3",
+      "sha256": "82ff8ec5fd76dcdef54ff728fb2c72fa17e24da49477b51da74f17a4111c07c3",
+      "treatment": "unaltered"
+    },
+    {
+      "path": "public-command-continuation-2/10-renderer.json",
+      "rawPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51/evidence/public-command-continuation-2/10-renderer.json",
+      "rawSha256": "9529b04934e6ce9804b73bd76c426465571ccdb558af9dbb7df662913c571dff",
+      "sha256": "9529b04934e6ce9804b73bd76c426465571ccdb558af9dbb7df662913c571dff",
+      "treatment": "public nonce/signature strings redacted only; raw full-row SHA retained"
+    },
+    {
+      "path": "public-command-continuation-2/11-restored-state.json",
+      "rawPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51/evidence/public-command-continuation-2/11-restored-state.json",
+      "rawSha256": "dc0745d2ecdb7e70651e5183ef5919b7fb058bcfcff44d29a01d6474cd68e12c",
+      "sha256": "dc0745d2ecdb7e70651e5183ef5919b7fb058bcfcff44d29a01d6474cd68e12c",
+      "treatment": "public nonce/signature strings redacted only; raw full-row SHA retained"
+    },
+    {
+      "path": "public-command-continuation-2/12-restored-remote.json",
+      "rawPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51/evidence/public-command-continuation-2/12-restored-remote.json",
+      "rawSha256": "919e0431499f7e3c1ac4d8658b5712baf8b9ac0e2e181810328ce0b1110512af",
+      "sha256": "919e0431499f7e3c1ac4d8658b5712baf8b9ac0e2e181810328ce0b1110512af",
+      "treatment": "public nonce/signature strings redacted only; raw full-row SHA retained"
+    },
+    {
+      "path": "public-command-continuation-2/13-restored-db.json",
+      "rawPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51/evidence/public-command-continuation-2/13-restored-db.json",
+      "rawSha256": "6c0a1a466c2594f2d779e35e999c4126b436b3e7674f455c3db0eda03b9e271f",
+      "sha256": "f7250df3cee1e4a53706cff06afdadc01bc0ecd93d96b488b39c6cacf61cceea",
+      "treatment": "public nonce/signature strings redacted only; raw full-row SHA retained"
+    },
+    {
+      "path": "public-command-continuation.mjs",
+      "rawPath": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51/state/public-command-continuation.mjs",
+      "rawSha256": "abbd742364c0ab1509e94269d9dca7cda2a101199e1a8c08fb641b7c639bf638",
+      "sha256": "abbd742364c0ab1509e94269d9dca7cda2a101199e1a8c08fb641b7c639bf638",
+      "treatment": "unaltered final driver; first preparation failure retained separately"
+    }
+  ]
+}

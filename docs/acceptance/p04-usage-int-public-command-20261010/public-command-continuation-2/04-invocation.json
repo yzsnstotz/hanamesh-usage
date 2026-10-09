@@ -1,0 +1,9 @@
+{
+  "method": "commands/execute",
+  "args": {
+    "agentId": "session-978414e2-7444-4b9c-8e36-be32894dd508",
+    "line": "/permission ",
+    "submittedAttachments": []
+  },
+  "via": "Existing generated Session.command public Remote contract; browser same-origin authenticated Connection HTTP; no direct Host service/fact injection"
+}

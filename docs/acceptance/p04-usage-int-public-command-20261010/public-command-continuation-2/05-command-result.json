@@ -1,0 +1,17 @@
+{
+  "http": 200,
+  "body": {
+    "type": "server-response",
+    "rpcId": "b86bb570-4150-4240-8dd8-34b2bf2f14db",
+    "result": {
+      "ok": true,
+      "value": {
+        "commandId": "cmd-56c06830-1",
+        "result": {
+          "kind": "success",
+          "text": "current preset workspace-write (available: read-only, workspace-write, danger-full-access)"
+        }
+      }
+    }
+  }
+}
