@@ -1,0 +1,6 @@
+{
+  "initialFailure": "list-order equality assertion failed; snapshot SQL row ordering differs",
+  "correctedCheck": "sorted complete row JSON includes all fields; 359 rows, additions0/removals0/fieldChanges0",
+  "factsType": "array; actual []; modelRequests is integer0",
+  "productMutation": false
+}

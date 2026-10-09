@@ -1,0 +1,10 @@
+[
+  {
+    "id": "hanamesh-core",
+    "config": {
+      "serverOrigin": "http://127.0.0.1:55915",
+      "websiteOrigin": "http://127.0.0.1:51026",
+      "allowSystemBrowser": false
+    }
+  }
+]

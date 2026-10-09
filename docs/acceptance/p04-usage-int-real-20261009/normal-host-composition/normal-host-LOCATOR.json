@@ -1,0 +1,44 @@
+{
+  "label": "P04 self-bind normal Host/Identity instance (isolated, run-only launcher; real GitHub DEV OAuth App, official upstream)",
+  "card": "P04-HOST-IDENTITY10-USAGE14-SUPPLY-01",
+  "startedAt": "2026-10-08T23:59:39.644Z",
+  "launcherPid": 50994,
+  "hostPid": 51020,
+  "package": {
+    "name": "hanamesh-server",
+    "version": "0.2.0-rc.36",
+    "tag": "v0.2.0-rc.36",
+    "root": "/Users/yzliu/.cache/hanamesh-runs/P04-HOST-IDENTITY10-USAGE14-SUPPLY-01/82e78c02-6ea2-4e95-a969-5f5a99d7f008/instance/node_modules/.pnpm/hanamesh-server@file+vendor+hanamesh-server-0.2.0-rc.36.tgz_7ce5cb8873d527398356057121c206b8/node_modules/hanamesh-server",
+    "entry": "dist/start.js"
+  },
+  "hostUrl": "http://127.0.0.1:55915",
+  "identityBaseUrl": "http://127.0.0.1:55915",
+  "providerCallback": "http://127.0.0.1:55915/api/auth/callback/github",
+  "trustedOrigins": [
+    "http://127.0.0.1:55915",
+    "http://127.0.0.1:51026"
+  ],
+  "github": {
+    "oauthBase": "https://github.com",
+    "apiBase": "https://api.github.com",
+    "app": "HanaMesh development OAuth App (D-2026-10-05-04)",
+    "credentialSource": "/Users/yzliu/.hanamesh-server/github-oauth-dev.env (IDENTITY_GITHUB_DEV_* mapped to IDENTITY_GITHUB_CLIENT_*; values not recorded)",
+    "registeredCallback": "NOT_CHECKED"
+  },
+  "registration": "IDENTITY_ALLOW_REGISTRATION=true (isolated instance, so a first GitHub login can create its user)",
+  "explicitTestSupplies": [
+    "CUSTODY_CHAIN_EXECUTOR=fake",
+    "SEMANTIC_EMBEDDING_PROVIDER=stub",
+    "generated isolated secrets"
+  ],
+  "postgres": {
+    "version": "17.11 (Debian 17.11-1.pgdg12+2)",
+    "container": "hm-p04-selfbind-8ee10572d0801353",
+    "image": "sha256:cf134a767f474095eeba57e0117be8e568e011a63f33fbf252f14c9b760f8e6f",
+    "loopbackPort": 32869,
+    "database": "hm_selfbind",
+    "tmpfs": true,
+    "runtimeRole": "hm_runtime"
+  },
+  "stop": "kill -TERM 50994"
+}

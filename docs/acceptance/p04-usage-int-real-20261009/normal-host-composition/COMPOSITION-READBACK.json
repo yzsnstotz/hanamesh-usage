@@ -1,0 +1,55 @@
+{
+  "at": "2026-10-09T00:06:08.901960+00:00",
+  "normalHostSupplyConsumed": "/Users/yzliu/.cache/hanamesh-runs/P04-HOST-IDENTITY10-USAGE14-SUPPLY-01/82e78c02-6ea2-4e95-a969-5f5a99d7f008/selfbind/LOCATOR.json",
+  "packageReadback": [
+    {
+      "name": "hanamesh-server",
+      "version": "0.2.0-rc.36",
+      "files": 298,
+      "installedRoot": "/Users/yzliu/.cache/hanamesh-runs/P04-HOST-IDENTITY10-USAGE14-SUPPLY-01/82e78c02-6ea2-4e95-a969-5f5a99d7f008/instance/node_modules/.pnpm/hanamesh-server@file+vendor+hanamesh-server-0.2.0-rc.36.tgz_7ce5cb8873d527398356057121c206b8/node_modules/hanamesh-server",
+      "tgzSHA256": "f096b88b098a3372f827c0c827386de6ac91445d23d3807d5393c57cd20d4e08",
+      "payloadDifferences": []
+    },
+    {
+      "name": "@hanamesh/server-identity",
+      "version": "0.2.0-rc.11",
+      "files": 87,
+      "installedRoot": "/Users/yzliu/.cache/hanamesh-runs/P04-HOST-IDENTITY10-USAGE14-SUPPLY-01/82e78c02-6ea2-4e95-a969-5f5a99d7f008/instance/node_modules/.pnpm/@hanamesh+server-identity@file+vendor+hanamesh-server-identity-0.2.0-rc.11.tgz_@better-_edf9013d49b865b79c208dc90c81de0a/node_modules/@hanamesh/server-identity",
+      "tgzSHA256": "b27181d59e912959db22a7941e74542c575c07883c0c5ba7bbc8a19d23edecb1",
+      "payloadDifferences": []
+    }
+  ],
+  "configurationReadback": [
+    {
+      "id": "hanamesh-core",
+      "config": {
+        "serverOrigin": "http://127.0.0.1:55915",
+        "websiteOrigin": "http://127.0.0.1:51026",
+        "allowSystemBrowser": false
+      }
+    }
+  ],
+  "HTTP": [
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:55915/health",
+      "status": 200,
+      "bodySHA256": "ef9448fb3bf9f846fbb2ed0a599947f13b9d896d276fde681a9cf8e300443872",
+      "availabilityOnly": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:51026/me",
+      "status": 200,
+      "bodySHA256": "8617482e3203f056c9481f9181d88de4aab56e484567f59b7d5ae5b7c32ffce6",
+      "availabilityOnly": true
+    }
+  ],
+  "profileStarted": false,
+  "registrationChallengeOrOAuthPOSTs": 0,
+  "GUIOrCUACalls": 0,
+  "registeredCallback": "NOT_CHECKED",
+  "callbackConclusion": "not proven registered or mismatched",
+  "canonicalChain": "source assembly only; no principalLinks/account actual result",
+  "initialCheckerFailure": "wrong nonexistent package/node_modules peer path; original failure preserved, corrected pnpm adjacent peer path"
+}
