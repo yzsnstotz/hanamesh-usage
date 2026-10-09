@@ -1,7 +1,8 @@
 import { fileURLToPath } from 'node:url';
 process.chdir(fileURLToPath(new URL('../', import.meta.url)));
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, copyFileSync, readdirSync } from 'node:fs';
+import { mkdirSync, copyFileSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import ts from 'typescript';
 import { createRequire } from 'node:module';
 import { installedPeer, satisfies } from './pins.mjs';
 const offline = process.argv.includes('--offline');
@@ -23,6 +24,12 @@ if (!offline) {
 }
 const compile = spawnSync('tsc',['-p','tsconfig.core.json'],{stdio:'inherit'});
 if (compile.status !== 0) process.exit(compile.status ?? 1);
+const client=spawnSync('tsc',['-p','tsconfig.client.json'],{stdio:'inherit'});
+if(client.status!==0)process.exit(client.status??1);
+// One source file, transpiled by the already pinned TypeScript compiler into
+// the platform's public lazy-CJS registration format. React stays host-shared.
+const bundle=ts.transpileModule(readFileSync('src/client/index.ts','utf8'),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS}}).outputText;
+writeFileSync('lib/client.js',`window.__ModuleLoader__.load({id:'hanamesh-usage',factory:(require)=>{const module={exports:{}};const exports=module.exports;\n${bundle}\nreturn module.exports;}});\n`);
 mkdirSync('lib/host',{recursive:true});
 for (const file of readdirSync('src/host')) copyFileSync(`src/host/${file}`,`lib/host/${file}`);
 copyFileSync('types/host-index.d.ts','lib/host/index.d.ts');

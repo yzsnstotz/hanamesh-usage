@@ -7,7 +7,7 @@ const read = path => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8'
 test('U04 package is the standalone hanamesh-usage DSH bundle', () => {
   const pkg = JSON.parse(read('package.json'));
   assert.equal(pkg.name, 'hanamesh-usage');
-  assert.equal(pkg.version, '0.2.0-rc.10');
+  assert.equal(pkg.version, '0.2.0-rc.15');
   for (const [name, version] of Object.entries(pkg.peerDependencies)) {
     if (name.startsWith('@deepseek-ai/dsh-')) assert.equal(version, '0.2.0-rc.2', name);
   }
@@ -15,9 +15,9 @@ test('U04 package is the standalone hanamesh-usage DSH bundle', () => {
   assert.equal(pkg.devDependencies['@deepseek-ai/dsh-storage-domain'], '0.2.0-rc.2');
   assert.equal(pkg.devDependencies['@deepseek-ai/cordis'], '4.0.4');
   assert.match(read('src/core/pins.ts'), /DSH_VERSION = '0\.2\.0-rc\.2'/);
-  assert.deepEqual(pkg.dsh, { bundle: { patch: './profile/cordis.patch.yml' } });
+  assert.deepEqual(pkg.dsh.bundle, {patch:'./profile/cordis.patch.yml'});
   assert.equal(pkg.files.includes('profile'), true);
-  assert.equal(pkg.dsh.client, undefined);
+  assert.equal(pkg.dsh.client.platform, 'web');assert.equal(pkg.exports['./client'].default,'./lib/client.js');
   assert.deepEqual(pkg.dependencies ?? {}, {});
   assert.deepEqual(
     Object.keys(pkg.peerDependencies).filter(name => name.startsWith('@hanamesh/') || name.startsWith('hanamesh-')),

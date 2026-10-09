@@ -1,5 +1,6 @@
 // @ts-check
 import { UsageError, exportEventProjection, renderUsage, validateFilter } from '../core/index.js';
+import { renderUsagePanel } from './panel.js';
 /** @param {URL} url @returns {import('../core/index.js').Filter} */
 function parseFilter(url) {
   /** @type {Record<string, string | number>} */
@@ -40,7 +41,7 @@ function parseEventFilter(url) {
  */
 export function mountTransport(ctx, api) {
   const base = '/api/hanamesh/usage';
-  for (const [path,method] of [[base,'GET'],[`${base}/view`,'GET'],[`${base}/export`,'POST'],[`${base}/health`,'GET'],[`${base}/events`,'GET']]) {
+  for (const [path,method] of [[base,'GET'],[`${base}/view`,'GET'],[`${base}/export`,'POST'],[`${base}/health`,'GET'],[`${base}/events`,'GET'],[`${base}/panel`,'GET'],[`${base}/panel/view`,'GET']]) {
     const dispose = ctx.connection.fetch.register({
       path: /** @type {string} */ (path), methods: [/** @type {'GET'|'POST'} */ (method)], requestBody: 'buffered',
       fetch: async request => {
@@ -48,6 +49,12 @@ export function mountTransport(ctx, api) {
         if (request.method !== method) return new Response('{"error":"METHOD_NOT_ALLOWED"}', { status:405, headers });
         try {
           const url = new URL(request.url);
+          if(path===`${base}/panel`||path===`${base}/panel/view`){
+            if([...url.searchParams].length!==0)throw new UsageError('INVALID_FILTER');
+            const panel=api.panel();
+            if(path.endsWith('/view'))return new Response(renderUsagePanel(panel),{headers:{...headers,'content-type':'text/html; charset=utf-8','content-security-policy':"default-src 'none'; style-src 'unsafe-inline'; form-action 'none'; base-uri 'none'; frame-ancestors 'self'"}});
+            return new Response(JSON.stringify(panel),{headers});
+          }
           if (path === `${base}/health`) {
             if ([...url.searchParams].length !== 0) throw new UsageError('INVALID_FILTER');
             return new Response(JSON.stringify(api.health()), { headers });

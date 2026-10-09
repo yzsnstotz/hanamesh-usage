@@ -5,9 +5,9 @@ const pkg=JSON.parse(read('package.json')),lock=JSON.parse(read('package-lock.js
 validateConsistency(JSON.parse(read('consistency.json')));
 assert.deepEqual(lock.packages[''].peerDependencies,pkg.peerDependencies);
 assert.deepEqual(lock.packages[''].devDependencies,pkg.devDependencies);
-assert.equal(pkg.name,'hanamesh-usage');assert.equal(pkg.version,'0.2.0-rc.10');assert.equal(pkg.private,undefined);assert.equal(pkg.license,'MIT');
+assert.equal(pkg.name,'hanamesh-usage');assert.equal(pkg.version,'0.2.0-rc.15');assert.equal(pkg.private,undefined);assert.equal(pkg.license,'MIT');
 assert.deepEqual(pkg.dependencies??{},{});assert.equal(Object.keys(pkg.peerDependencies).filter(name=>name.startsWith('@hanamesh/')||name.startsWith('hanamesh-')).length,0);
-assert.equal(pkg.dsh?.bundle?.patch,'./profile/cordis.patch.yml');assert.equal(pkg.dsh?.client,undefined);assert(pkg.files.includes('profile'));assert(existsSync(pkg.dsh.bundle.patch));
+assert.equal(pkg.dsh?.bundle?.patch,'./profile/cordis.patch.yml');assert.equal(pkg.dsh?.client?.platform,'web');assert.equal(pkg.exports['./client'].default,'./lib/client.js');assert(pkg.files.includes('profile'));assert(existsSync(pkg.dsh.bundle.patch));
 const dependencies=JSON.parse(read('docs/contracts/dependencies.json')),coreContract=read(dependencies.hanameshCore.contract);assert.equal(createHash('sha256').update(coreContract).digest('hex'),dependencies.hanameshCore.sha256);assert.equal(dependencies.hanameshCore.standin,true);
 const patch=read(pkg.dsh.bundle.patch);assert.equal((patch.match(/^\s*- id:/gm)??[]).length,1);assert.match(patch,/^\s*- id: hanamesh-usage$/m);assert.match(patch,/^\s*name: hanamesh-usage$/m);
 const walk=dir=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(join(dir,e.name)):[join(dir,e.name)]);
@@ -22,6 +22,10 @@ for(const p of sources){
  assert.doesNotMatch(s,forbiddenSibling,`sibling import ${p}`);
  if(p.endsWith('src/host/upload.js')){
    assert.match(s,/getServerOrigin/);assert.match(s,/new URL\(/);
+ }else if(p==='src/client/index.ts'){
+   const calls=[...s.matchAll(/\bfetch\s*\(([^,]+),/g)].map(match=>match[1]);
+   assert.deepEqual(calls,["'api/hanamesh/usage/panel/view'","'api/hanamesh/usage/panel/view'"],`client only reads its own authenticated panel ${p}`);
+   assert.match(s,/method:'GET'/);assert.doesNotMatch(s,/https?:|ctx\.get\(/);
  }else assert.doesNotMatch(s,/\bfetch\s*\(/,`outbound fetch ${p}`);
  assert.doesNotMatch(s,/\bconsole\.(?:log|error|warn)\s*\(/,`boundary ${p}`);
 }

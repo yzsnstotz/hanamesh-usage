@@ -10,6 +10,19 @@ export interface Config {
   uploadIntervalMs?: number;
   uploadBatchSize?: number;
   inventoryIntervalMs?: number;
+  /** Display provenance only; does not supply identities or produce facts. */
+  panelTestSupply?: PanelTestSupply;
+}
+export interface PanelTestSupply { identity:boolean; receiver:boolean }
+export interface PanelEvent {
+  eventId:string; deviceId:string; hanaRef:string; action:UsageEvent['action']; occurredAt:string;
+  source:UsageEvent['source']; sourcePlugin:string|null; evidenceRef:string|null;
+  signature:{state:'success'|'failure'|'unknown';code:string|null}; upload:UsageEvent['upload'];
+}
+export interface PanelSnapshot {
+  subject:{deviceId:string|null;principalId:string|null;reason:string|null};
+  testSupply:PanelTestSupply;consent:HealthSnapshot['consent'];core:HealthSnapshot['core'];
+  total:number;events:PanelEvent[];outbox:HealthSnapshot['outbox'];failures:Record<string,number>;
 }
 /** rc.7：`sourceHanaRef` / `targetRef` / `receipt` 可选；`receipt` 只允许配 `action:'use'`。 */
 export interface RecordInput { hanaRef:string; action:'open'|'use'; occurredAt?:string; idempotencyKey:string; sourcePlugin:string; sourceHanaRef?:string|null; targetRef?:string|null; receipt?:UsageReceipt|null }
@@ -32,6 +45,7 @@ export interface UsageService {
   events(filter?: {state?: UploadState; limit?: number; after?: string}): {total:number;events:UsageEvent[]};
   record(input: RecordInput): Promise<RecordResult>;
   health(): HealthSnapshot;
+  panel(): PanelSnapshot;
   drain(): Promise<void>;
   reconcile(): Promise<void>;
 }

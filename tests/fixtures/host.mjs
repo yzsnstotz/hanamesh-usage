@@ -3,14 +3,15 @@ import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
 const {mountUsage}=await import(pathToFileURL(resolve(root,'lib/host/mount.js')).href);
 /** Strictly a FIXTURE of the documented calls, not Cordis/Registry/DSH itself. */
-export async function fixtureHost({live=true,participated=true,persisted=true,bound=true,snapshot,eventSnapshot,allowExport=false,inheritedEventCount=0,throwRead=false,consent='withheld',deviceId='device_A',coreStatus='present'}={}) {
+export async function fixtureHost({live=true,participated=true,persisted=true,bound=true,snapshot,eventSnapshot,allowExport=false,inheritedEventCount=0,throwRead=false,consent='withheld',deviceId='device_A',coreStatus='present',loaderEntries=[],packageOf,pluginInventory,pluginManager,publicKey='',panelTestSupply={identity:false,receiver:false}}={}) {
   const input=session({inheritedEventCount}), log=[], handlers=new Map(), g=new MemoryGlobal(snapshot),eg=new MemoryGlobal(eventSnapshot??{schemaVersion:1,events:[],withdrawal:null,inventory:{last:null}});
   const originalSet=g.set.bind(g);g.set=async next=>{log.push('summary.set');await originalSet(next);};
   const originalEventSet=eg.set.bind(eg);eg.set=async next=>{log.push('event.set');await originalEventSet(next);};
   const s={id:input.sessionId,header:{id:input.sessionId},inheritedEventCount, snapshotEvents:()=>structuredClone(input.events),isOwnSeq:seq=>seq>=inheritedEventCount};
   let closes=0,handleCloses=0;
   const ctx={
-    loader:{entries:()=>[].values()},
+    loader:{entries:()=>loaderEntries.values()},
+    get(name){return name==='pluginPackages'&&packageOf?{packageOf}:name==='pluginInventory'?pluginInventory:name==='pluginManager'?pluginManager:undefined;},
     on(name,fn){handlers.set(name,fn);return ()=>handlers.delete(name);},
     provide(name,value){ctx[name]=value;},
     inject(names,fn){log.push('optional-connection');return ()=>{};},
@@ -26,7 +27,8 @@ export async function fixtureHost({live=true,participated=true,persisted=true,bo
   let currentConsent=consent,status=coreStatus,linked=status==='present'?{protocolVersion:'1',getDeviceId:()=>deviceId,getPublicKey:()=>'',sign:()=>Buffer.alloc(64),signRequest:async()=>({'x-hm-device-id':deviceId,'x-hm-timestamp':'1','x-hm-nonce':'nonce','x-hm-signature':'signature'}),getConsent:()=>currentConsent,onConsentChange:listener=>{consentListeners.add(listener);return()=>consentListeners.delete(listener);},getSession:()=>({}),getServerOrigin:()=>null,getHealth:()=>({})}:null;
   const linkListeners=new Set(),consentListeners=new Set();
   const coreLink={status:()=>status,get:()=>linked,onChange:listener=>{linkListeners.add(listener);return()=>linkListeners.delete(listener);},close:()=>linkListeners.clear()};
-  const mounted=mountUsage(ctx,registry,domain,eventDomain,{maxRecords:5000,maxPending:128,allowExport,maxEvents:5000,uploadIntervalMs:60000,uploadBatchSize:200,inventoryIntervalMs:300000},coreLink);
+  if(linked)linked.getPublicKey=()=>publicKey;
+  const mounted=mountUsage(ctx,registry,domain,eventDomain,{maxRecords:5000,maxPending:128,allowExport,maxEvents:5000,uploadIntervalMs:60000,uploadBatchSize:200,inventoryIntervalMs:300000,panelTestSupply},coreLink);
   await mounted.ready;
   return {...mounted,log,g,eg,input,s,ctx,handlers,setConsent(value,changedAt='2026-09-19T00:00:00.000Z'){currentConsent=value;for(const listener of consentListeners)listener(value,changedAt);},attachCore(){status='present';if(linked===null)linked={protocolVersion:'1',getDeviceId:()=>deviceId,getPublicKey:()=>'',sign:()=>Buffer.alloc(64),signRequest:async()=>({'x-hm-device-id':deviceId,'x-hm-timestamp':'1','x-hm-nonce':'nonce','x-hm-signature':'signature'}),getConsent:()=>currentConsent,onConsentChange:listener=>{consentListeners.add(listener);return()=>consentListeners.delete(listener);},getSession:()=>({}),getServerOrigin:()=>null,getHealth:()=>({})};for(const listener of linkListeners)listener(status,linked);},get domainCloses(){return closes;},get handleCloses(){return handleCloses;}};
 }

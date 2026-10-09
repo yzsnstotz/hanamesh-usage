@@ -14,7 +14,7 @@ function fixture({allowExport=false,fail=false}={}){
   }};
 }
 test('authenticated exact route registry only; lifecycle removes all routes',async()=>{
-  const f=fixture();assert.equal(f.routes.size,5);for(const r of f.routes.values()){assert(r.path.startsWith('/api/'));assert.equal(r.requestBody,'buffered');}await f.close();assert.equal(f.routes.size,0);
+  const f=fixture();assert.equal(f.routes.size,7);for(const r of f.routes.values()){assert(r.path.startsWith('/api/'));assert.equal(r.requestBody,'buffered');}await f.close();assert.equal(f.routes.size,0);
 });
 test('query API uses no-store headers; HTML has distinct unavailable label',async()=>{
   const f=fixture(),r=await f.request('/api/hanamesh/usage?result=completed&limit=1');assert.equal(r.status,200);assert.equal(r.headers.get('cache-control'),'no-store');assert.equal((await r.json()).total,1);
