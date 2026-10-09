@@ -1,14 +1,23 @@
-import {readFileSync,readdirSync,existsSync} from 'node:fs';import {join} from 'node:path';import {fileURLToPath} from 'node:url';import {createHash} from 'node:crypto';import assert from 'node:assert/strict';import {validateConsistency} from './consistency-schema.mjs';
+import {readFileSync,readdirSync,existsSync} from 'node:fs';import {join} from 'node:path';import {fileURLToPath} from 'node:url';import assert from 'node:assert/strict';import {validateConsistency} from './consistency-schema.mjs';
 process.chdir(fileURLToPath(new URL('../',import.meta.url)));
 const read=p=>readFileSync(p,'utf8');
 const pkg=JSON.parse(read('package.json')),lock=JSON.parse(read('package-lock.json'));
 validateConsistency(JSON.parse(read('consistency.json')));
 assert.deepEqual(lock.packages[''].peerDependencies,pkg.peerDependencies);
 assert.deepEqual(lock.packages[''].devDependencies,pkg.devDependencies);
-assert.equal(pkg.name,'hanamesh-usage');assert.equal(pkg.version,'0.2.0-rc.17');assert.equal(pkg.private,undefined);assert.equal(pkg.license,'MIT');
+assert.equal(pkg.name,'hanamesh-usage');assert.equal(pkg.version,'0.2.0-rc.18');assert.equal(pkg.private,undefined);assert.equal(pkg.license,'MIT');
 assert.deepEqual(pkg.dependencies??{},{});assert.equal(Object.keys(pkg.peerDependencies).filter(name=>name.startsWith('@hanamesh/')||name.startsWith('hanamesh-')).length,0);
 assert.equal(pkg.dsh?.bundle?.patch,'./profile/cordis.patch.yml');assert.equal(pkg.dsh?.client?.platform,'web');assert.equal(pkg.exports['./client'].default,'./lib/client.js');assert(pkg.files.includes('profile'));assert(existsSync(pkg.dsh.bundle.patch));
-const dependencies=JSON.parse(read('docs/contracts/dependencies.json')),coreContract=read(dependencies.hanameshCore.contract);assert.equal(createHash('sha256').update(coreContract).digest('hex'),dependencies.hanameshCore.sha256);assert.equal(dependencies.hanameshCore.standin,true);
+const dependencies=JSON.parse(read('docs/contracts/dependencies.json'));
+assert.equal(pkg.devDependencies['hanamesh-core'],dependencies.hanameshCore.source);
+assert.equal(pkg.devDependencies['@hanamesh/server-usage'],dependencies.serverUsage.source);
+assert.equal(existsSync('docs/contracts/hanamesh-core'),false);
+for(const name of ['hanamesh-core','@hanamesh/server-usage']) {
+ assert.match(pkg.devDependencies[name],/^git\+https:\/\/github\.com\/yzsnstotz\/[^#]+#semver:\^0\.2\.0-rc\.\d+$/);
+ assert.match(lock.packages[`node_modules/${name}`].resolved,/#[0-9a-f]{40}$/);
+}
+await import('hanamesh-core/contract/suite');
+await import('@hanamesh/server-usage/conformance');
 const patch=read(pkg.dsh.bundle.patch);assert.equal((patch.match(/^\s*- id:/gm)??[]).length,1);assert.match(patch,/^\s*- id: hanamesh-usage$/m);assert.match(patch,/^\s*name: hanamesh-usage$/m);
 const walk=dir=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(join(dir,e.name)):[join(dir,e.name)]);
 const sources=walk('src').filter(p=>/\.(ts|js)$/.test(p));
