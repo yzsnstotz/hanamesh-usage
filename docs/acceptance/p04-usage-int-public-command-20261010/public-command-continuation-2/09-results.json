@@ -1,0 +1,66 @@
+{
+  "scope": "NEW ORDINARY FUNCTION through mature public Session Remote API; isolated engineering device; normal Core56/Usage19 and TEST Host37/PG; native UI command submit not rerun; owner NOT_RUN",
+  "commandId": "cmd-56c06830-1",
+  "fact": {
+    "commandId": "cmd-56c06830-1",
+    "phase": "succeeded",
+    "source": {
+      "entryId": "include:permission",
+      "moduleName": "@deepseek-ai/dsh-permission-presets"
+    },
+    "occurredAt": 1791567208438
+  },
+  "event": {
+    "eventId": "b92de01f-f8c0-5a3a-b64b-10cff450785e",
+    "deviceId": "m7ucQqLMc5c9ncSl3qIzfUmg4CM3rYPEyMtFvh8HZ9I",
+    "hanaRef": "@deepseek-ai/dsh-permission-presets",
+    "action": "use",
+    "occurredAt": "2026-10-09T17:33:28.438Z",
+    "source": "seat",
+    "sourcePlugin": "@deepseek-ai/dsh-permission-presets",
+    "evidenceRef": "command:cmd-56c06830-1:succeeded",
+    "signature": {
+      "state": "success",
+      "code": null
+    },
+    "upload": {
+      "state": "sent",
+      "code": null,
+      "attempts": 1,
+      "sentAt": "2026-10-09T17:33:33.707Z"
+    }
+  },
+  "returned": {
+    "eventId": "b92de01f-f8c0-5a3a-b64b-10cff450785e",
+    "hanaRef": "@deepseek-ai/dsh-permission-presets",
+    "action": "use",
+    "occurredAt": "2026-10-09T17:33:28.438Z",
+    "receivedAt": "2026-10-09T17:33:33.667Z"
+  },
+  "persisted": {
+    "deployment_id": "p04-hook-fault-59afe8edd30f787f",
+    "device_id": "m7ucQqLMc5c9ncSl3qIzfUmg4CM3rYPEyMtFvh8HZ9I",
+    "event_id": "b92de01f-f8c0-5a3a-b64b-10cff450785e",
+    "nonce": "<REDACTED_PUBLIC_PROOF>",
+    "principal_id": "00e7fede-2617-4c8d-b3fd-70da4bc2b44c",
+    "hana_ref": "@deepseek-ai/dsh-permission-presets",
+    "action": "use",
+    "occurred_at": "2026-10-09T17:33:28.438+00:00",
+    "received_at": "2026-10-09T17:33:33.667817+00:00",
+    "signature": "<REDACTED_PUBLIC_PROOF>",
+    "source_hana_ref": null,
+    "target_ref": null,
+    "payload_hash": "e95c76315756483320e816c0d37c7592f74acd84307b933ffc9d1411946401d2",
+    "receipt_provider_id": null,
+    "receipt_model": null,
+    "receipt_count": null
+  },
+  "remoteDevice": "m7ucQqLMc5c9ncSl3qIzfUmg4CM3rYPEyMtFvh8HZ9I",
+  "signatureSuccess": true,
+  "sent": true,
+  "matchedReturned": true,
+  "newPGRow": true,
+  "otherRowsUnchanged": true,
+  "modelsBefore": 0,
+  "modelsAfter": 0
+}

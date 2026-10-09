@@ -1,0 +1,94 @@
+{
+  "http": 200,
+  "body": {
+    "coreSession": {
+      "protocolVersion": "1",
+      "deviceId": "m7ucQqLMc5c9ncSl3qIzfUmg4CM3rYPEyMtFvh8HZ9I",
+      "registration": "registered",
+      "principalId": "00e7fede-2617-4c8d-b3fd-70da4bc2b44c",
+      "bound": false,
+      "serverReachable": true,
+      "checkedAt": "2026-10-09T16:42:28.497Z",
+      "reason": null
+    },
+    "consent": "withheld",
+    "usageHealth": {
+      "pending": 0,
+      "recoveryComplete": true,
+      "failures": {
+        "INVENTORY_ENTRY_UNREADABLE": 105
+      },
+      "consent": "withheld",
+      "core": "present",
+      "deviceId": "m7ucQqLMc5c9ncSl3qIzfUmg4CM3rYPEyMtFvh8HZ9I",
+      "outbox": {
+        "state": "stopped",
+        "pending": 0,
+        "sent": 0,
+        "duplicate": 0,
+        "rejected": 0,
+        "lastUploadAt": "2026-10-09T16:59:43.288Z",
+        "nextAttemptAt": null,
+        "lastError": null
+      },
+      "derive": {
+        "skipped": {
+          "consentWithheld": 0,
+          "executorUnavailable": 0,
+          "timeUnavailable": 0,
+          "noDevice": 0
+        }
+      },
+      "withdrawal": {
+        "requestedAt": "2026-10-09T16:59:44.093Z",
+        "deviceId": "m7ucQqLMc5c9ncSl3qIzfUmg4CM3rYPEyMtFvh8HZ9I",
+        "state": "sent",
+        "attempts": 1,
+        "deletedEvents": 179,
+        "lastError": null
+      },
+      "inventory": {
+        "available": true,
+        "source": "loader",
+        "lastScanAt": "2026-10-09T17:32:28.520Z",
+        "detail": {
+          "package": "@deepseek-ai/cordis",
+          "serviceKey": "loader",
+          "methods": [
+            "entries"
+          ]
+        }
+      }
+    },
+    "panel": {
+      "subject": {
+        "deviceId": "m7ucQqLMc5c9ncSl3qIzfUmg4CM3rYPEyMtFvh8HZ9I",
+        "principalId": "00e7fede-2617-4c8d-b3fd-70da4bc2b44c",
+        "reason": null
+      },
+      "testSupply": {
+        "identity": true,
+        "receiver": true
+      },
+      "consent": "withheld",
+      "core": "present",
+      "total": 0,
+      "outbox": {
+        "state": "stopped",
+        "pending": 0,
+        "sent": 0,
+        "duplicate": 0,
+        "rejected": 0,
+        "lastUploadAt": "2026-10-09T16:59:43.288Z",
+        "nextAttemptAt": null,
+        "lastError": null
+      },
+      "failures": {
+        "INVENTORY_ENTRY_UNREADABLE": 105
+      },
+      "events": []
+    },
+    "modelRequests": 0,
+    "facts": []
+  }
+}
