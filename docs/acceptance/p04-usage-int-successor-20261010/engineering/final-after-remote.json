@@ -1,0 +1,12 @@
+{
+  "http": 200,
+  "body": {
+    "state": "available",
+    "deviceId": "m7ucQqLMc5c9ncSl3qIzfUmg4CM3rYPEyMtFvh8HZ9I",
+    "total": 0,
+    "events": [],
+    "code": null,
+    "httpStatus": 200,
+    "checkedAt": "2026-10-09T16:54:45.643Z"
+  }
+}

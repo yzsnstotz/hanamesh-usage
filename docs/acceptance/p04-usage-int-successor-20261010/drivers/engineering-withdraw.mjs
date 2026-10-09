@@ -1,0 +1,19 @@
+import {createRequire} from 'node:module';import {readFile,writeFile} from 'node:fs/promises';import {createHash} from 'node:crypto';
+const require=createRequire('/Users/yzliu/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/package.json');const {chromium}=require('playwright');
+const hostReq=createRequire('/Users/yzliu/.cache/hanamesh-runs/P04-HOST-IDENTITY10-USAGE14-SUPPLY-01/5fefaad7-c0f6-49fc-8960-eeba144e0908/consumer/package.json');const {Client}=hostReq('pg');
+const run=process.argv[2],e=run+'/evidence';const launch=JSON.parse(await readFile(run+'/state/LAUNCH.json','utf8'));const urls=JSON.parse(await readFile(run+'/state/runtime-urls-private.json','utf8'));const auth=urls.find(u=>u.startsWith(launch.origin+'/?'));
+const locator=JSON.parse(await readFile('/Users/yzliu/.cache/hanamesh-runs/P04-HOST-IDENTITY10-USAGE14-SUPPLY-01/5fefaad7-c0f6-49fc-8960-eeba144e0908/supply/LOCATOR.json','utf8'));
+const reader=await readFile(locator.postgres.readerEnvFile,'utf8');const pg=new Client({connectionString:reader.trim().slice('DATABASE_URL='.length)});await pg.connect();
+const save=async(n,v)=>{await writeFile(e+'/'+n+'.json',JSON.stringify(v,null,2)+'\n');return v;};
+async function db(n){await pg.query('BEGIN READ ONLY');try{const view={};for(const table of ['usage.events','custody.points_events']){const rows=(await pg.query('SELECT row_to_json(t) AS row FROM '+table+' t')).rows.map(x=>x.row).sort((a,b)=>JSON.stringify(a).localeCompare(JSON.stringify(b)));view[table]={count:rows.length,sha256:createHash('sha256').update(JSON.stringify(rows)).digest('hex'),rows};}return await save(n,view);}finally{await pg.query('ROLLBACK');}}
+const obs=async(path,method='GET')=>{const res=await fetch('http://127.0.0.1:'+launch.observerPort+'/'+path,{method});return {http:res.status,body:await res.json()};};
+const context=await chromium.launchPersistentContext(run+'/browser-profile',{headless:true,executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',viewport:{width:1440,height:1100}});
+try{const page=await context.newPage();await page.goto(auth,{waitUntil:'networkidle'});const skip=page.getByRole('button',{name:'Configure later',exact:true});await skip.waitFor();await skip.click();await skip.waitFor({state:'hidden'});await page.getByRole('button',{name:'Settings',exact:true}).click();await page.getByRole('button',{name:'HanaMesh',exact:true}).click();
+await page.getByRole('checkbox').waitFor();const before=await save('withdraw-before-state',await obs('state'));const dbBefore=await db('withdraw-before-db');
+await page.getByRole('checkbox').click();await page.getByText('当前：已关闭',{exact:true}).waitFor();
+const after=await save('withdraw-after-state',await obs('state'));const remote=await save('withdraw-after-remote',await obs('remote'));const dbAfter=await db('withdraw-after-db');
+const device=before.body.coreSession.deviceId;const filtered=db=>Object.fromEntries(Object.entries(db).map(([t,v])=>[t,v.rows.filter(row=>JSON.stringify(row).includes(device)===false)]));
+await save('withdraw-results',{localBefore:before.body.panel.total,localAfter:after.body.panel.total,withdrawal:after.body.usageHealth.withdrawal,remoteAfter:remote.body.total,otherRowsUnchanged:JSON.stringify(filtered(dbBefore))===JSON.stringify(filtered(dbAfter)),consentAfter:after.body.consent,scope:'ENGINEERING DEVICE ONLY; owner NOT_RUN'});
+await page.screenshot({path:e+'/withdraw-core.png',fullPage:true});
+console.log(JSON.stringify({localBefore:before.body.panel.total,localAfter:after.body.panel.total,withdrawal:after.body.usageHealth.withdrawal,remote:remote.body.total,otherRowsUnchanged:JSON.stringify(filtered(dbBefore))===JSON.stringify(filtered(dbAfter))}));
+}catch(err){await save('WITHDRAW-GATE-FAIL',{code:err.code??null,name:err.name,message:String(err.message).replace(/http[^\s]+/g,'<URL>')});throw Error('ENGINEERING_GATE_FAILED_SEE_LOCAL_EVIDENCE');}finally{await context.close();await pg.end();}

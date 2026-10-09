@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "/Users/yzliu/.local/share/fnm/node-versions/v24.13.1/installation/bin/node",
+    "/Users/yzliu/work/projects/hanamesh/hanamesh-desktop/apps/cli/lib/bin.js",
+    "plugin",
+    "--profile",
+    "web",
+    "add",
+    "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51/supply/dsh-update-notifier-0.2.1.tgz",
+    "--registry=https://registry.npmjs.org/"
+  ],
+  "exit": 0,
+  "sha256": "00b40831eceb86e0b105d502a5ce4bfe72246543fab53f372612ad9d4e6c3448",
+  "scope": "NORMAL ORDINARY TRIAL PLUGIN in engineering profile only",
+  "license": "MIT \u00b7 0.2.1 \u00b7 existing normal package supply \u00b7 ordinary inventory action"
+}

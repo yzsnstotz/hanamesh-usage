@@ -1,0 +1,16 @@
+{
+  "localBefore": 178,
+  "localAfter": 0,
+  "withdrawal": {
+    "requestedAt": "2026-10-09T16:52:41.787Z",
+    "deviceId": "m7ucQqLMc5c9ncSl3qIzfUmg4CM3rYPEyMtFvh8HZ9I",
+    "state": "sent",
+    "attempts": 1,
+    "deletedEvents": 177,
+    "lastError": null
+  },
+  "remoteAfter": 0,
+  "otherRowsUnchanged": true,
+  "consentAfter": "withheld",
+  "scope": "ENGINEERING DEVICE ONLY; owner NOT_RUN"
+}

@@ -1,0 +1,182 @@
+{
+  "response": 200,
+  "text": "New Session\n⌥\n⌘\nN\nPlugins\nWorkspaces\nDefault workspace\nNew Session\nHanaMesh\nSettings\nInto the Unknown\nPreview\nDefault workspace\nStandard mode\nRead Only\nWorkspace Write\nFull access\n\n/permission\n\nWorkspace Write\nDeepSeek-V41-Flash\nHigh",
+  "controls": [
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "New session",
+      "title": null,
+      "role": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Collapse sidebar",
+      "title": null,
+      "role": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "New Session⌥⌘N",
+      "aria": "New session",
+      "title": null,
+      "role": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Plugins",
+      "aria": "Plugins",
+      "title": null,
+      "role": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Search sessions",
+      "title": null,
+      "role": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "View options",
+      "title": null,
+      "role": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Add workspace",
+      "title": null,
+      "role": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Workspace actions for Default workspace",
+      "title": null,
+      "role": null,
+      "visible": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "New session in Default workspace",
+      "title": null,
+      "role": null,
+      "visible": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "HanaMesh",
+      "aria": "打开 HanaMesh 设置",
+      "title": "HanaMesh",
+      "role": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Settings",
+      "aria": "Settings",
+      "title": null,
+      "role": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Open right sidebar",
+      "title": null,
+      "role": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Default workspace",
+      "aria": "Choose workspace",
+      "title": null,
+      "role": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Standard mode",
+      "aria": null,
+      "title": "Choose the agent preset for your new task",
+      "role": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Add files or run commands",
+      "title": null,
+      "role": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Workspace Write",
+      "aria": "Access mode, current: Workspace Write",
+      "title": null,
+      "role": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "DeepSeek-V41-FlashHigh",
+      "aria": "Select model, current DeepSeek-V41-Flash, reasoning effort High",
+      "title": "DeepSeek-V41-Flash · High",
+      "role": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Send message",
+      "title": null,
+      "role": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "New tab",
+      "title": null,
+      "role": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Split",
+      "title": null,
+      "role": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Fullscreen",
+      "title": null,
+      "role": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Collapse right sidebar",
+      "title": null,
+      "role": null,
+      "visible": true
+    }
+  ]
+}

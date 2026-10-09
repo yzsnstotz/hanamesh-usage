@@ -1,0 +1,18 @@
+{
+  "scope": "ENGINEERING DEVICE normal runtime; TEST Host/PG, owner NOT_RUN",
+  "local": 179,
+  "remote": 0,
+  "fieldsEqual": false,
+  "signatureSuccess": 179,
+  "replay": {
+    "httpStatus": 200,
+    "body": {
+      "accepted": 179,
+      "duplicates": 0,
+      "rejected": [],
+      "durability": "committed"
+    }
+  },
+  "dbUnchanged": false,
+  "modelRequests": 0
+}

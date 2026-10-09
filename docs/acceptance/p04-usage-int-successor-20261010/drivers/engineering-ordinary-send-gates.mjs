@@ -1,0 +1,23 @@
+import {createRequire} from 'node:module';import {readFile,writeFile} from 'node:fs/promises';import {createHash} from 'node:crypto';
+const require=createRequire('/Users/yzliu/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/package.json');const {chromium}=require('playwright');
+const hostReq=createRequire('/Users/yzliu/.cache/hanamesh-runs/P04-HOST-IDENTITY10-USAGE14-SUPPLY-01/5fefaad7-c0f6-49fc-8960-eeba144e0908/consumer/package.json');const {Client}=hostReq('pg');
+const run=process.argv[2],e=run+'/evidence';const launch=JSON.parse(await readFile(run+'/state/LAUNCH.json','utf8'));const urls=JSON.parse(await readFile(run+'/state/runtime-urls-private.json','utf8'));const auth=urls.find(u=>u.startsWith(launch.origin+'/?'));
+const locator=JSON.parse(await readFile('/Users/yzliu/.cache/hanamesh-runs/P04-HOST-IDENTITY10-USAGE14-SUPPLY-01/5fefaad7-c0f6-49fc-8960-eeba144e0908/supply/LOCATOR.json','utf8'));
+const reader=await readFile(locator.postgres.readerEnvFile,'utf8');const pg=new Client({connectionString:reader.trim().slice('DATABASE_URL='.length)});await pg.connect();
+const save=async(n,v)=>{await writeFile(e+'/'+n+'.json',JSON.stringify(v,null,2)+'\n');return v;};
+async function db(n){await pg.query('BEGIN READ ONLY');try{const view={};for(const table of ['usage.events','custody.points_events']){const rows=(await pg.query('SELECT row_to_json(t) AS row FROM '+table+' t')).rows.map(x=>x.row).sort((a,b)=>JSON.stringify(a).localeCompare(JSON.stringify(b)));view[table]={count:rows.length,sha256:createHash('sha256').update(JSON.stringify(rows)).digest('hex'),rows};}return await save(n,view);}finally{await pg.query('ROLLBACK');}}
+const obs=async(path,method='GET')=>{const res=await fetch('http://127.0.0.1:'+launch.observerPort+'/'+path,{method});return {http:res.status,body:await res.json()};};
+const context=await chromium.launchPersistentContext(run+'/browser-profile',{headless:true,executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',viewport:{width:1440,height:1100}});
+try{const page=await context.newPage();await page.goto(auth,{waitUntil:'networkidle'});const skip=page.getByRole('button',{name:'Configure later',exact:true});await skip.waitFor();await skip.click();await skip.waitFor({state:'hidden'});
+await save('ordinary-before-state',await obs('state'));const before=await db('ordinary-before-db');
+const editor=page.getByRole('textbox',{name:'Describe what you want to build, / commands, @ files or sessions',exact:true});await editor.fill('/permission');await page.getByRole('button',{name:'Send message',exact:true}).click();
+await page.getByText(/current preset/).first().waitFor();
+await save('ordinary-pending',await obs('batch'));const reject=await save('ordinary-401',await obs('rejectBatch','POST'));const after=await db('ordinary-after-401-db');
+const arm=await fetch(locator.control.url+'/arm',{method:'POST',headers:{'content-type':'application/json'},body:'{}'});await save('ordinary-arm',{http:arm.status,body:await arm.json()});
+const fail=await save('ordinary-503',await obs('sendPending','POST'));const rolled=await db('ordinary-after-503-db');await save('ordinary-control',await (await fetch(locator.control.url+'/state')).json());
+await save('ordinary-gate-results',{scope:'REAL NEW NATIVE /permission read-only command event; normal Core/Usage, TEST Host37 hook and PG; owner binding/signature NOT_RUN',reject,fail,zeroWrite401:Object.keys(before).every(t=>before[t].sha256===after[t].sha256),realTxRollback503:Object.keys(before).every(t=>before[t].sha256===rolled[t].sha256)});
+await page.screenshot({path:e+'/ordinary-command.png',fullPage:true});await save('ordinary-command-ui',{text:await page.locator('body').innerText()});
+await page.getByRole('button',{name:'Settings',exact:true}).click();
+await page.getByRole('button',{name:'Usage 开发小面板',exact:true}).click();await page.frameLocator('iframe').getByRole('heading',{name:'当前设备与采集',exact:true}).waitFor();await page.screenshot({path:e+'/10-engineering-usage.png',fullPage:true});
+console.log(JSON.stringify({status401:reject.body.server?.httpStatus,status503:fail.body.server?.httpStatus,zeroWrite401:Object.keys(before).every(t=>before[t].sha256===after[t].sha256),realTxRollback503:Object.keys(before).every(t=>before[t].sha256===rolled[t].sha256),newEvents:reject.body.count-1}));
+}catch(err){await save('ORDINARY-SEND-GATE-FAIL',{code:err.code??null,name:err.name,message:String(err.message).replace(/http[^\s]+/g,'<URL>')});throw Error('ENGINEERING_GATE_FAILED_SEE_LOCAL_EVIDENCE');}finally{await context.close();await pg.end();}

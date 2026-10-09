@@ -1,0 +1,9 @@
+{
+  "label": "TEST ONLY · P04 usage hook fault supply · not a production Host",
+  "hostUrl": "http://127.0.0.1:53307",
+  "armed": false,
+  "armedAt": "2026-10-09T16:53:55.921Z",
+  "batchesSeen": 5,
+  "failuresFired": 2,
+  "lastFiredAt": "2026-10-09T16:53:56.124Z"
+}

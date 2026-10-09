@@ -1,0 +1,15 @@
+{
+  "http": 200,
+  "body": {
+    "count": 180,
+    "server": {
+      "httpStatus": 200,
+      "body": {
+        "accepted": 1,
+        "duplicates": 179,
+        "rejected": [],
+        "durability": "committed"
+      }
+    }
+  }
+}

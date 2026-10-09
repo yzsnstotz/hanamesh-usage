@@ -1,0 +1,16 @@
+{
+  "scope": "CORRECTION OF LOCAL CHECKER ONLY; public RemoteSnapshot scopes deviceId on parent and omits deviceId in projected item",
+  "localTotal": 179,
+  "remoteTotal": 179,
+  "sameEventIds": true,
+  "sameScopedDevice": true,
+  "mismatches": [],
+  "keysChecked": [
+    "eventId",
+    "hanaRef",
+    "action",
+    "occurredAt"
+  ],
+  "rawUnchanged": true,
+  "initialFieldsEqualFalsePreserved": true
+}

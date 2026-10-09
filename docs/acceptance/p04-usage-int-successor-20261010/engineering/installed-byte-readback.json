@@ -1,0 +1,14 @@
+[
+  {
+    "package": "hanamesh-core",
+    "files": 106,
+    "differences": [],
+    "tgzSHA256": "7342a2ab95b78a83d74a4c927039b4998f0dd76f3c7e8ed9b09c31700e642e28"
+  },
+  {
+    "package": "hanamesh-usage",
+    "files": 50,
+    "differences": [],
+    "tgzSHA256": "3bfab04bd2fc6a84ac22472d1820a8db0b62f8aae72ce6c779da4313718296c3"
+  }
+]

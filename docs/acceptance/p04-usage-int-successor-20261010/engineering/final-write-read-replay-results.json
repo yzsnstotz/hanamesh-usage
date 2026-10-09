@@ -1,0 +1,25 @@
+{
+  "local": 180,
+  "remote": 179,
+  "fieldsEqual": false,
+  "signatureSuccess": 180,
+  "replay": {
+    "http": 200,
+    "body": {
+      "count": 180,
+      "server": {
+        "httpStatus": 200,
+        "body": {
+          "accepted": 1,
+          "duplicates": 179,
+          "rejected": [],
+          "durability": "committed"
+        }
+      }
+    }
+  },
+  "replayDBUnchanged": false,
+  "otherOriginalUnchanged": true,
+  "modelRequests": 0,
+  "facts": []
+}
