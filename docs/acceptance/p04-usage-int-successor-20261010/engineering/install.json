@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "/Users/yzliu/.local/share/fnm/node-versions/v24.13.1/installation/bin/node",
+    "/Users/yzliu/work/projects/hanamesh/hanamesh-desktop/apps/cli/lib/bin.js",
+    "plugin",
+    "--profile",
+    "web",
+    "add",
+    "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51/supply/hanamesh-core-0.2.0-rc.56.tgz",
+    "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51/supply/hanamesh-usage-0.2.0-rc.19.tgz",
+    "--registry=https://registry.npmjs.org/"
+  ],
+  "exit": 0,
+  "run": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-eng-9fda5f5a-198c-4c75-adb2-1ea4b31f1f51",
+  "isolated": true
+}

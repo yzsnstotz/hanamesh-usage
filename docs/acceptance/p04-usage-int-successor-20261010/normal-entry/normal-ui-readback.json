@@ -1,0 +1,106 @@
+{
+  "atUTC": "2026-10-09T16:41:10.200Z",
+  "frameText": "Usage 开发小面板\n\n身份真实性：未知（未提供本次产品门证据）\n接收端真实性：未知（未提供本次产品门证据）\n\n当前设备与采集\n\n设备 DJWbTMPnYICpj6L3l5Z6GLEzeY_s_3ga6SpUvP3dwUw；主体 397f4649-7a72-4a9c-924b-abf28ec3a69d；。\n\n同意 withheld；Core present；本设备事件 0 条。\n\n只读刷新不会采集事件。open 来自公开页面呈现事实；use 来自成功命令；目录和任意按钮不会冒充 use。\n\n签名与上报分别判断\n\n签名成功只说明当前设备公钥下的密码学校验；接收端成功只说明已收到确认，不证明生产身份或数据库。pending/未知不是成功。\n\n上报 stopped；pending 0；sent 0；duplicate 0；rejected 0。\n\n最近错误 无；最近上报 未知；采集/签名诊断 INVENTORY_ENTRY_UNREADABLE × 35。\n\n本机当前设备的最小事件与 owning 来源\n事件 ID\t插件\t动作\tISO 时间\t来源 / 插件 / 事实引用\t签名\t上报\n当前设备没有事件；未同意或设备未知时不会新采集。",
+  "reads": {
+    "/api/hanamesh/usage/panel": {
+      "http": 200,
+      "body": {
+        "subject": {
+          "deviceId": "DJWbTMPnYICpj6L3l5Z6GLEzeY_s_3ga6SpUvP3dwUw",
+          "principalId": "397f4649-7a72-4a9c-924b-abf28ec3a69d",
+          "reason": null
+        },
+        "testSupply": {
+          "identity": false,
+          "receiver": false
+        },
+        "consent": "withheld",
+        "core": "present",
+        "total": 0,
+        "outbox": {
+          "state": "stopped",
+          "pending": 0,
+          "sent": 0,
+          "duplicate": 0,
+          "rejected": 0,
+          "lastUploadAt": null,
+          "nextAttemptAt": null,
+          "lastError": null
+        },
+        "failures": {
+          "INVENTORY_ENTRY_UNREADABLE": 35
+        },
+        "events": []
+      }
+    },
+    "/api/hanamesh/usage/health": {
+      "http": 200,
+      "body": {
+        "pending": 0,
+        "recoveryComplete": true,
+        "failures": {
+          "INVENTORY_ENTRY_UNREADABLE": 35
+        },
+        "consent": "withheld",
+        "core": "present",
+        "deviceId": "DJWbTMPnYICpj6L3l5Z6GLEzeY_s_3ga6SpUvP3dwUw",
+        "outbox": {
+          "state": "stopped",
+          "pending": 0,
+          "sent": 0,
+          "duplicate": 0,
+          "rejected": 0,
+          "lastUploadAt": null,
+          "nextAttemptAt": null,
+          "lastError": null
+        },
+        "derive": {
+          "skipped": {
+            "consentWithheld": 0,
+            "executorUnavailable": 0,
+            "timeUnavailable": 0,
+            "noDevice": 0
+          }
+        },
+        "withdrawal": null,
+        "inventory": {
+          "available": true,
+          "source": "loader",
+          "lastScanAt": "2026-10-09T16:39:52.384Z",
+          "detail": {
+            "package": "@deepseek-ai/cordis",
+            "serviceKey": "loader",
+            "methods": [
+              "entries"
+            ]
+          }
+        }
+      }
+    },
+    "/api/hanamesh/usage/panel/remote": {
+      "http": 200,
+      "body": {
+        "state": "available",
+        "deviceId": "DJWbTMPnYICpj6L3l5Z6GLEzeY_s_3ga6SpUvP3dwUw",
+        "total": 0,
+        "events": [],
+        "code": null,
+        "httpStatus": 200,
+        "checkedAt": "2026-10-09T16:41:09.041Z"
+      }
+    }
+  },
+  "normalUI": {
+    "button": "去网站绑定",
+    "origin": "http://127.0.0.1:51026",
+    "path": "/me/bind",
+    "queryKeys": [
+      "deviceId",
+      "nonce",
+      "signature"
+    ],
+    "text": "H\nHanaMesh\nDirectory\nTokenized\nCommunity\nMy points\nAuthor rewards\nMy contributions\n中\nEN\n日本語\n◐\n06.B\n\nHANAMESH MARKET · DEVICE LINK\n\nBind device\n\nSign in first, then return to the same binding link.\n\n⌁\nDEVICE FINGERPRINT\nDJWbTMPnYICp\nDJWbTMPnYICpj6L3l5Z6GLEzeY_s_3ga6SpUvP3dwUw\n\nSign in first, then return to the same binding link.\n\nSign in with GitHub →\nHanaMesh · Living Protocol\nLive services\nListing does not imply review or endorsement."
+  },
+  "ownerLogin": 0,
+  "ownerConfirm": 0
+}

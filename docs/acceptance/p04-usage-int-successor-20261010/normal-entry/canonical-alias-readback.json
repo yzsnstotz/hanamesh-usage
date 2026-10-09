@@ -1,0 +1,274 @@
+{
+  "atUTC": "2026-10-09T16:55:22.724Z",
+  "scope": "Normal published transport token/cookie handshake for both trusted loopback hosts; no auth changes, no credential copied to another profile",
+  "entryHTTP": 200,
+  "refresh": {
+    "http": 200,
+    "body": {
+      "deviceId": "DJWbTMPnYICpj6L3l5Z6GLEzeY_s_3ga6SpUvP3dwUw",
+      "publicKey": "wi2UCo14rQYUc1iuBlHAbsqRecyhbx-gU46YoTwIUbg",
+      "registration": {
+        "status": "registered",
+        "principalId": "397f4649-7a72-4a9c-924b-abf28ec3a69d",
+        "registeredAt": "2026-10-09T16:19:52.408Z",
+        "lastError": null,
+        "attempts": 1
+      },
+      "consent": {
+        "state": "withheld",
+        "changedAt": null
+      },
+      "session": {
+        "protocolVersion": "1",
+        "deviceId": "DJWbTMPnYICpj6L3l5Z6GLEzeY_s_3ga6SpUvP3dwUw",
+        "registration": "registered",
+        "principalId": "397f4649-7a72-4a9c-924b-abf28ec3a69d",
+        "bound": false,
+        "serverReachable": true,
+        "checkedAt": "2026-10-09T16:19:52.408Z",
+        "reason": null
+      },
+      "account": null,
+      "serverOrigin": "http://127.0.0.1:55915",
+      "websiteOrigin": "http://127.0.0.1:51026",
+      "health": {
+        "mode": "normal",
+        "fault": null
+      },
+      "components": [
+        {
+          "id": "usage",
+          "moduleName": "hanamesh-usage",
+          "label": "使用记录",
+          "requiredRange": "0.2.0-rc.10",
+          "onFailure": "notice",
+          "status": "incompatible",
+          "reason": "实际组件版本不在 profile 要求的范围内。",
+          "impact": "不采集、不上报使用记录；设备身份与同意开关不受影响",
+          "version": "0.2.0-rc.19",
+          "phase": "active",
+          "stagedVersion": null,
+          "nextStep": "restore-pinned-component",
+          "serviceReady": true
+        },
+        {
+          "id": "app-host",
+          "moduleName": "@hanamesh/dsh-app-host",
+          "label": "应用容器",
+          "requiredRange": "0.2.0-rc.2",
+          "onFailure": "notice",
+          "status": "missing",
+          "reason": "当前加载配置中找不到此必需组件。",
+          "impact": "无法打开 HanaMesh 应用；设备身份与同意开关不受影响",
+          "version": null,
+          "phase": "unavailable",
+          "stagedVersion": null,
+          "nextStep": "restore-pinned-component"
+        }
+      ],
+      "contributions": {
+        "status": "ready",
+        "windowDays": 90,
+        "actions": {
+          "install": 0,
+          "open": 0,
+          "use": 0,
+          "uninstall": 0
+        }
+      }
+    }
+  },
+  "state": {
+    "http": 200,
+    "body": {
+      "deviceId": "DJWbTMPnYICpj6L3l5Z6GLEzeY_s_3ga6SpUvP3dwUw",
+      "publicKey": "wi2UCo14rQYUc1iuBlHAbsqRecyhbx-gU46YoTwIUbg",
+      "registration": {
+        "status": "registered",
+        "principalId": "397f4649-7a72-4a9c-924b-abf28ec3a69d",
+        "registeredAt": "2026-10-09T16:19:52.408Z",
+        "lastError": null,
+        "attempts": 1
+      },
+      "consent": {
+        "state": "withheld",
+        "changedAt": null
+      },
+      "session": {
+        "protocolVersion": "1",
+        "deviceId": "DJWbTMPnYICpj6L3l5Z6GLEzeY_s_3ga6SpUvP3dwUw",
+        "registration": "registered",
+        "principalId": "397f4649-7a72-4a9c-924b-abf28ec3a69d",
+        "bound": false,
+        "serverReachable": true,
+        "checkedAt": "2026-10-09T16:19:52.408Z",
+        "reason": null
+      },
+      "account": null,
+      "serverOrigin": "http://127.0.0.1:55915",
+      "websiteOrigin": "http://127.0.0.1:51026",
+      "health": {
+        "mode": "normal",
+        "fault": null
+      },
+      "components": [
+        {
+          "id": "usage",
+          "moduleName": "hanamesh-usage",
+          "label": "使用记录",
+          "requiredRange": "0.2.0-rc.10",
+          "onFailure": "notice",
+          "status": "incompatible",
+          "reason": "实际组件版本不在 profile 要求的范围内。",
+          "impact": "不采集、不上报使用记录；设备身份与同意开关不受影响",
+          "version": "0.2.0-rc.19",
+          "phase": "active",
+          "stagedVersion": null,
+          "nextStep": "restore-pinned-component",
+          "serviceReady": true
+        },
+        {
+          "id": "app-host",
+          "moduleName": "@hanamesh/dsh-app-host",
+          "label": "应用容器",
+          "requiredRange": "0.2.0-rc.2",
+          "onFailure": "notice",
+          "status": "missing",
+          "reason": "当前加载配置中找不到此必需组件。",
+          "impact": "无法打开 HanaMesh 应用；设备身份与同意开关不受影响",
+          "version": null,
+          "phase": "unavailable",
+          "stagedVersion": null,
+          "nextStep": "restore-pinned-component"
+        }
+      ],
+      "contributions": {
+        "status": "ready",
+        "windowDays": 90,
+        "actions": {
+          "install": 0,
+          "open": 0,
+          "use": 0,
+          "uninstall": 0
+        }
+      }
+    }
+  },
+  "alias": {
+    "http": 200,
+    "origin": "http://localhost:56454",
+    "path": "/",
+    "secretQueryRemoved": true,
+    "reads": {
+      "/api/hanamesh/core/state": {
+        "http": 200,
+        "body": {
+          "deviceId": "DJWbTMPnYICpj6L3l5Z6GLEzeY_s_3ga6SpUvP3dwUw",
+          "publicKey": "wi2UCo14rQYUc1iuBlHAbsqRecyhbx-gU46YoTwIUbg",
+          "registration": {
+            "status": "registered",
+            "principalId": "397f4649-7a72-4a9c-924b-abf28ec3a69d",
+            "registeredAt": "2026-10-09T16:19:52.408Z",
+            "lastError": null,
+            "attempts": 1
+          },
+          "consent": {
+            "state": "withheld",
+            "changedAt": null
+          },
+          "session": {
+            "protocolVersion": "1",
+            "deviceId": "DJWbTMPnYICpj6L3l5Z6GLEzeY_s_3ga6SpUvP3dwUw",
+            "registration": "registered",
+            "principalId": "397f4649-7a72-4a9c-924b-abf28ec3a69d",
+            "bound": false,
+            "serverReachable": true,
+            "checkedAt": "2026-10-09T16:19:52.408Z",
+            "reason": null
+          },
+          "account": null,
+          "serverOrigin": "http://127.0.0.1:55915",
+          "websiteOrigin": "http://127.0.0.1:51026",
+          "health": {
+            "mode": "normal",
+            "fault": null
+          },
+          "components": [
+            {
+              "id": "usage",
+              "moduleName": "hanamesh-usage",
+              "label": "使用记录",
+              "requiredRange": "0.2.0-rc.10",
+              "onFailure": "notice",
+              "status": "incompatible",
+              "reason": "实际组件版本不在 profile 要求的范围内。",
+              "impact": "不采集、不上报使用记录；设备身份与同意开关不受影响",
+              "version": "0.2.0-rc.19",
+              "phase": "active",
+              "stagedVersion": null,
+              "nextStep": "restore-pinned-component",
+              "serviceReady": true
+            },
+            {
+              "id": "app-host",
+              "moduleName": "@hanamesh/dsh-app-host",
+              "label": "应用容器",
+              "requiredRange": "0.2.0-rc.2",
+              "onFailure": "notice",
+              "status": "missing",
+              "reason": "当前加载配置中找不到此必需组件。",
+              "impact": "无法打开 HanaMesh 应用；设备身份与同意开关不受影响",
+              "version": null,
+              "phase": "unavailable",
+              "stagedVersion": null,
+              "nextStep": "restore-pinned-component"
+            }
+          ],
+          "contributions": {
+            "status": "ready",
+            "windowDays": 90,
+            "actions": {
+              "install": 0,
+              "open": 0,
+              "use": 0,
+              "uninstall": 0
+            }
+          }
+        }
+      },
+      "/api/hanamesh/usage/panel": {
+        "http": 200,
+        "body": {
+          "subject": {
+            "deviceId": "DJWbTMPnYICpj6L3l5Z6GLEzeY_s_3ga6SpUvP3dwUw",
+            "principalId": "397f4649-7a72-4a9c-924b-abf28ec3a69d",
+            "reason": null
+          },
+          "testSupply": {
+            "identity": false,
+            "receiver": false
+          },
+          "consent": "withheld",
+          "core": "present",
+          "total": 0,
+          "outbox": {
+            "state": "stopped",
+            "pending": 0,
+            "sent": 0,
+            "duplicate": 0,
+            "rejected": 0,
+            "lastUploadAt": null,
+            "nextAttemptAt": null,
+            "lastError": null
+          },
+          "failures": {
+            "INVENTORY_ENTRY_UNREADABLE": 56
+          },
+          "events": []
+        }
+      }
+    }
+  },
+  "ownerLogin": 0,
+  "ownerConfirm": 0
+}

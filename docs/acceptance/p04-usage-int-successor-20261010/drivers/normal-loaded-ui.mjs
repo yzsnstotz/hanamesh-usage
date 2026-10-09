@@ -1,0 +1,34 @@
+import {createRequire} from 'node:module';
+import {readFile,writeFile} from 'node:fs/promises';
+const require=createRequire('/Users/yzliu/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/package.json');
+const {chromium}=require('playwright');
+const run=process.argv[2], out=run+'/evidence/successor-01a12186';
+const launch=JSON.parse(await readFile(run+'/state/LAUNCH.json','utf8'));
+const urls=JSON.parse(await readFile(run+'/state/runtime-urls-private.json','utf8'));
+const authURL=urls.find(x=>x.startsWith(launch.origin));
+if(!authURL)throw Error('NORMAL_CLI_ENTRY_MISSING');
+const context=await chromium.launchPersistentContext(run+'/browser-profile',{headless:true,executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',viewport:{width:1440,height:1100}});
+const safe=t=>t.replace(/https?:\/\/\S+/g,'<URL>');
+try{
+ const page=await context.newPage(); const res=await page.goto(authURL,{waitUntil:'networkidle'});
+ const setup=page.getByRole('button',{name:'Configure later',exact:true}); if(await setup.isVisible())await setup.click();
+ await page.getByRole('button',{name:'Settings',exact:true}).click();
+ await page.getByRole('button',{name:'HanaMesh',exact:true}).click();
+ await page.screenshot({path:out+'/01-hanamesh.png',fullPage:true});
+ const controls=await page.locator('button,a,[role=button]').evaluateAll(es=>es.filter(e=>e.offsetWidth||e.offsetHeight).map(e=>({tag:e.tagName,text:e.textContent,aria:e.getAttribute('aria-label'),title:e.getAttribute('title')})));
+ const coreText=safe(await page.locator('body').innerText());
+ await page.getByRole('button',{name:'Usage 开发小面板',exact:true}).click();
+ await page.screenshot({path:out+'/02-usage.png',fullPage:true}); const usageText=safe(await page.locator('body').innerText());
+ const frame=page.frameLocator('iframe[title="本机 Usage 事件、签名与上报状态"]');
+ await frame.getByRole('heading',{name:'当前设备与采集',exact:true}).waitFor();
+ const frameText=await frame.locator('body').innerText();
+ await page.screenshot({path:out+'/04-usage-loaded.png',fullPage:true});
+ const reads=await page.evaluate(async()=>{const result={};for(const path of ['/api/hanamesh/usage/panel','/api/hanamesh/usage/health','/api/hanamesh/usage/panel/remote']){const r=await fetch(path);result[path]={http:r.status,body:await r.json()};}return result;});
+ await page.getByRole('button',{name:'HanaMesh',exact:true}).click();
+ const popupEvent=page.waitForEvent('popup');await page.getByRole('button',{name:'去网站绑定',exact:true}).click();const popup=await popupEvent;
+ await popup.waitForLoadState('networkidle');
+ const current=new URL(popup.url());
+ await popup.screenshot({path:out+'/05-normal-ui-bind.png',fullPage:true});
+ const result={atUTC:new Date().toISOString(),frameText,reads,normalUI:{button:'去网站绑定',origin:current.origin,path:current.pathname,queryKeys:[...current.searchParams.keys()],text:safe(await popup.locator('body').innerText())},ownerLogin:0,ownerConfirm:0};
+ await writeFile(out+'/normal-ui-readback.json',JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));
+}finally{await context.close();}

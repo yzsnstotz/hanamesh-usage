@@ -1,0 +1,319 @@
+{
+  "atUTC": "2026-10-09T16:39:02.522Z",
+  "entryHTTP": 200,
+  "coreText": "New Session\n⌥\n⌘\nN\nPlugins\nWorkspaces\nDefault workspace\nNew Session\nHanaMesh\nSettings\nInto the Unknown\nPreview\nDefault workspace\nStandard mode\nDescribe what you want to build, / commands, @ files or sessions\nWorkspace Write\nDeepSeek-V41-Flash\nHigh\nSettings\nGeneral\nModels\nBuilt-in plugins\nAgent presets\nHanaMesh\nUsage 开发小面板\nOpen configuration file\nClose\nHanaMesh\n\nCore 只安装设备身份与同意设置。使用记录和应用容器可分别安装；缺少组件时，下方会显示原因，设备身份与同意开关仍可使用。\n\n设备身份\n设备 id：DJWbTMPn…　注册：已注册\n数据授权\n允许 HanaMesh 记录并上报本设备的使用事件（安装/打开/使用/卸载；不含内容与对话）\n当前：已关闭\n撤回后本地缓冲清空并向服务端发起删除；原始记录服务端保留 90 天。\n账号\n未绑定：绑定后网站才能把本设备的贡献记到你的账号\n去网站绑定\n邮箱绑定\n我的Hana\n未开启数据授权，本设备不上报事件，因此没有分\n分不是代币：分只记录贡献，兑换比例与发币另行公布；创作者镜像按 5% 计。\n去网站\n贡献事件\n本设备近 90 天贡献事件\n活跃小时按授权视图的应用网关请求计算，可能包含页面后台请求，不代表模型调用次数；事件不等于逐笔积分。积分以“我的 Hana”账本汇总为准。\n未开启数据授权，本设备不上报事件，因此没有分\n刷新事件\n本设备贡献累计\ninstall 0 · open 0 · use 0 · uninstall 0　窗口：近 90 天\nHanaMesh套件\n使用记录：版本不匹配 0.2.0-rc.19 ≠ 0.2.0-rc.10\n应用容器：未安装\n重新检查\n关于\nhanamesh-core 0.2.0-rc.56 · DSH 0.2.0-rc.2\n去网站",
+  "usageText": "New Session\n⌥\n⌘\nN\nPlugins\nWorkspaces\nDefault workspace\nNew Session\nHanaMesh\nSettings\nInto the Unknown\nPreview\nDefault workspace\nStandard mode\nDescribe what you want to build, / commands, @ files or sessions\nWorkspace Write\nDeepSeek-V41-Flash\nHigh\nSettings\nGeneral\nModels\nBuilt-in plugins\nAgent presets\nHanaMesh\nUsage 开发小面板\nOpen configuration file\nClose\nUsage 开发小面板\n刷新本机记录",
+  "controls": [
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "New session",
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Collapse sidebar",
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "New Session⌥⌘N",
+      "aria": "New session",
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Plugins",
+      "aria": "Plugins",
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Search sessions",
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "View options",
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Add workspace",
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "HanaMesh",
+      "aria": "打开 HanaMesh 设置",
+      "title": "HanaMesh"
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Settings",
+      "aria": "Settings",
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Open right sidebar",
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Default workspace",
+      "aria": "Choose workspace",
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Standard mode",
+      "aria": null,
+      "title": "Choose the agent preset for your new task"
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Add files or run commands",
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Workspace Write",
+      "aria": "Access mode, current: Workspace Write",
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "DeepSeek-V41-FlashHigh",
+      "aria": "Select model, current DeepSeek-V41-Flash, reasoning effort High",
+      "title": "DeepSeek-V41-Flash · High"
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Send message",
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "New tab",
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Split",
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Fullscreen",
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Collapse right sidebar",
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "General",
+      "aria": null,
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Models",
+      "aria": null,
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Built-in plugins",
+      "aria": null,
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Agent presets",
+      "aria": null,
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "HanaMesh",
+      "aria": null,
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Usage 开发小面板",
+      "aria": null,
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Open configuration file",
+      "aria": null,
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Close",
+      "aria": null,
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "去网站绑定",
+      "aria": null,
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "邮箱绑定",
+      "aria": null,
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "去网站",
+      "aria": null,
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "刷新事件",
+      "aria": null,
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "重新检查",
+      "aria": null,
+      "title": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "去网站",
+      "aria": null,
+      "title": null
+    }
+  ],
+  "coreState": {
+    "status": 200,
+    "body": {
+      "deviceId": "DJWbTMPnYICpj6L3l5Z6GLEzeY_s_3ga6SpUvP3dwUw",
+      "publicKey": "wi2UCo14rQYUc1iuBlHAbsqRecyhbx-gU46YoTwIUbg",
+      "registration": {
+        "status": "registered",
+        "principalId": "397f4649-7a72-4a9c-924b-abf28ec3a69d",
+        "registeredAt": "2026-10-09T16:19:52.408Z",
+        "lastError": null,
+        "attempts": 1
+      },
+      "consent": {
+        "state": "withheld",
+        "changedAt": null
+      },
+      "session": {
+        "protocolVersion": "1",
+        "deviceId": "DJWbTMPnYICpj6L3l5Z6GLEzeY_s_3ga6SpUvP3dwUw",
+        "registration": "registered",
+        "principalId": "397f4649-7a72-4a9c-924b-abf28ec3a69d",
+        "bound": false,
+        "serverReachable": true,
+        "checkedAt": "2026-10-09T16:19:52.408Z",
+        "reason": null
+      },
+      "account": null,
+      "serverOrigin": "http://127.0.0.1:55915",
+      "websiteOrigin": "http://127.0.0.1:51026",
+      "health": {
+        "mode": "normal",
+        "fault": null
+      },
+      "components": [
+        {
+          "id": "usage",
+          "moduleName": "hanamesh-usage",
+          "label": "使用记录",
+          "requiredRange": "0.2.0-rc.10",
+          "onFailure": "notice",
+          "status": "incompatible",
+          "reason": "实际组件版本不在 profile 要求的范围内。",
+          "impact": "不采集、不上报使用记录；设备身份与同意开关不受影响",
+          "version": "0.2.0-rc.19",
+          "phase": "active",
+          "stagedVersion": null,
+          "nextStep": "restore-pinned-component",
+          "serviceReady": true
+        },
+        {
+          "id": "app-host",
+          "moduleName": "@hanamesh/dsh-app-host",
+          "label": "应用容器",
+          "requiredRange": "0.2.0-rc.2",
+          "onFailure": "notice",
+          "status": "missing",
+          "reason": "当前加载配置中找不到此必需组件。",
+          "impact": "无法打开 HanaMesh 应用；设备身份与同意开关不受影响",
+          "version": null,
+          "phase": "unavailable",
+          "stagedVersion": null,
+          "nextStep": "restore-pinned-component"
+        }
+      ],
+      "contributions": {
+        "status": "ready",
+        "windowDays": 90,
+        "actions": {
+          "install": 0,
+          "open": 0,
+          "use": 0,
+          "uninstall": 0
+        }
+      }
+    }
+  },
+  "bindLink": {
+    "status": 200,
+    "keys": [
+      "url",
+      "expiresAt"
+    ],
+    "origin": "http://127.0.0.1:51026",
+    "path": "/me/bind",
+    "queryKeys": [
+      "deviceId",
+      "nonce",
+      "signature"
+    ],
+    "expiresAt": "2026-10-09T16:44:02.000Z",
+    "privateLocator": "/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/real-c0f2439f-2b2a-4036-932b-ef0b85728101/state/successor-01a12186/bind-link-private.json"
+  },
+  "ownerLogin": 0,
+  "ownerConfirm": 0,
+  "web": {
+    "http": 200,
+    "origin": "http://127.0.0.1:51026",
+    "path": "/me/bind",
+    "text": "H\nHanaMesh\nDirectory\nTokenized\nCommunity\nMy points\nAuthor rewards\nMy contributions\n中\nEN\n日本語\n◐\n06.B\n\nHANAMESH MARKET · DEVICE LINK\n\nBind device\n\nSign in first, then return to the same binding link.\n\n⌁\nDEVICE FINGERPRINT\nDJWbTMPnYICp\nDJWbTMPnYICpj6L3l5Z6GLEzeY_s_3ga6SpUvP3dwUw\n\nSign in first, then return to the same binding link.\n\nSign in with GitHub →\nHanaMesh · Living Protocol\nLive services\nListing does not imply review or endorsement.",
+    "buttons": [
+      "中",
+      "EN",
+      "日本語",
+      "◐",
+      "Sign in with GitHub →"
+    ]
+  }
+}

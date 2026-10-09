@@ -1,0 +1,8 @@
+{
+  "method": "standard macOS open of unchanged normal CLI authenticated URL, same mechanism as product web-app launcher",
+  "exit": 0,
+  "origin": "http://127.0.0.1:56454",
+  "tokenPrinted": false,
+  "noAuthChange": true,
+  "actualOwnerWindowReadback": "NOT_RUN"
+}
