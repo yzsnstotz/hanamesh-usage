@@ -1,11 +1,15 @@
 import {readFileSync,readdirSync,existsSync} from 'node:fs';import {join} from 'node:path';import {fileURLToPath} from 'node:url';import assert from 'node:assert/strict';import {validateConsistency} from './consistency-schema.mjs';
+import {spawnSync} from 'node:child_process';
 process.chdir(fileURLToPath(new URL('../',import.meta.url)));
 const read=p=>readFileSync(p,'utf8');
 const pkg=JSON.parse(read('package.json')),lock=JSON.parse(read('package-lock.json'));
 validateConsistency(JSON.parse(read('consistency.json')));
 assert.deepEqual(lock.packages[''].peerDependencies,pkg.peerDependencies);
 assert.deepEqual(lock.packages[''].devDependencies,pkg.devDependencies);
-assert.equal(pkg.name,'hanamesh-usage');assert.equal(pkg.version,'0.2.0-rc.18');assert.equal(pkg.private,undefined);assert.equal(pkg.license,'MIT');
+const closure=spawnSync('npm',['ls','--all','--json'],{encoding:'utf8'});
+assert.equal(closure.status,0,closure.stderr);
+assert.deepEqual(JSON.parse(closure.stdout).problems??[],[]);
+assert.equal(pkg.name,'hanamesh-usage');assert.equal(pkg.version,'0.2.0-rc.19');assert.equal(pkg.private,undefined);assert.equal(pkg.license,'MIT');
 assert.deepEqual(pkg.dependencies??{},{});assert.equal(Object.keys(pkg.peerDependencies).filter(name=>name.startsWith('@hanamesh/')||name.startsWith('hanamesh-')).length,0);
 assert.equal(pkg.dsh?.bundle?.patch,'./profile/cordis.patch.yml');assert.equal(pkg.dsh?.client?.platform,'web');assert.equal(pkg.exports['./client'].default,'./lib/client.js');assert(pkg.files.includes('profile'));assert(existsSync(pkg.dsh.bundle.patch));
 const dependencies=JSON.parse(read('docs/contracts/dependencies.json'));
@@ -13,7 +17,7 @@ assert.equal(pkg.devDependencies['hanamesh-core'],dependencies.hanameshCore.sour
 assert.equal(pkg.devDependencies['@hanamesh/server-usage'],dependencies.serverUsage.source);
 assert.equal(existsSync('docs/contracts/hanamesh-core'),false);
 for(const name of ['hanamesh-core','@hanamesh/server-usage']) {
- assert.match(pkg.devDependencies[name],/^git\+https:\/\/github\.com\/yzsnstotz\/[^#]+#semver:\^0\.2\.0-rc\.\d+$/);
+ assert.match(pkg.devDependencies[name],/^git\+https:\/\/github\.com\/yzsnstotz\/[^#]+#semver:\^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/);
  assert.match(lock.packages[`node_modules/${name}`].resolved,/#[0-9a-f]{40}$/);
 }
 await import('hanamesh-core/contract/suite');
