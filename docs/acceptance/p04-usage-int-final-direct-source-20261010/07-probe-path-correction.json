@@ -1,0 +1,9 @@
+{
+  "initialReadOnlyComparison": {
+    "previousConsumerRoot": "/Users/yzliu/.cache/hanamesh-runs/MERGE-USAGE-MAIN-01/srv03-0f07fcbb-afe9-4b50-b429-8ee5314ff8b1/consumer/node_modules/@hanamesh/server-usage",
+    "existingNow": false,
+    "apparentEqualFiles": 0,
+    "interpretation": "Missing retained install tree, not 56 changed business files; no PASS from this probe"
+  },
+  "resolvedComparison": "Compare unchanged published v0.3.0-rc.1 tag to actual current normal pack and current tag; 53 business/contract files equal and 3 metadata changes; original successful consumer receipt remains referenced"
+}

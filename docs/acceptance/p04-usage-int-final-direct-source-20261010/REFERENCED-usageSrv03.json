@@ -1,0 +1,174 @@
+{
+  "scope": "SOURCE/FIXTURE only; normal installed Usage19 and ServerUsage0.3; public reference device fixture; Core provider NOT_RUN",
+  "contract": {
+    "package": "@hanamesh/server-usage",
+    "version": "0.3.0-rc.1",
+    "protocolVersion": "1"
+  },
+  "result": {
+    "ok": true,
+    "contract": {
+      "package": "@hanamesh/server-usage",
+      "version": "0.3.0-rc.1",
+      "protocolVersion": "1"
+    },
+    "side": "consumer",
+    "checks": [
+      {
+        "id": "C-canonical",
+        "ok": true,
+        "observations": {
+          "vectors": 3
+        }
+      },
+      {
+        "id": "C-sign",
+        "ok": true,
+        "observations": {
+          "vectors": 3
+        }
+      },
+      {
+        "id": "C-device-id",
+        "ok": true,
+        "observations": {
+          "accept": 5,
+          "reject": 8
+        }
+      },
+      {
+        "id": "C-events",
+        "ok": true,
+        "observations": {
+          "events": 1
+        }
+      }
+    ]
+  },
+  "sourceExport": "file:///Users/yzliu/.cache/hanamesh-runs/MERGE-USAGE-MAIN-01/srv03-0f07fcbb-afe9-4b50-b429-8ee5314ff8b1/consumer/node_modules/@hanamesh/server-usage/dist/conformance/index.js",
+  "usagePackage": {
+    "name": "hanamesh-usage",
+    "version": "0.2.0-rc.19",
+    "description": "Consent-gated, device-signed HanaMesh usage events for DSH",
+    "type": "module",
+    "main": "lib/host/index.js",
+    "types": "lib/host/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./lib/host/index.d.ts",
+        "default": "./lib/host/index.js"
+      },
+      "./core": {
+        "types": "./lib/core/index.d.ts",
+        "default": "./lib/core/index.js"
+      },
+      "./package.json": "./package.json",
+      "./client": {
+        "types": "./lib/client/index.d.ts",
+        "default": "./lib/client.js"
+      }
+    },
+    "files": [
+      "lib",
+      "profile",
+      "README.md",
+      "LICENSE",
+      "consistency.json"
+    ],
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/yzsnstotz/hanamesh-usage.git"
+    },
+    "dsh": {
+      "bundle": {
+        "patch": "./profile/cordis.patch.yml"
+      },
+      "client": {
+        "platform": "web",
+        "inject": [
+          "@deepseek-ai/dsh-client-ui-settings-general"
+        ],
+        "external": [
+          "react"
+        ]
+      }
+    },
+    "engines": {
+      "node": ">=24.13.1 <25"
+    },
+    "packageManager": "pnpm@10.33.0",
+    "peerDependencies": {
+      "@deepseek-ai/cordis": "4.0.4",
+      "@deepseek-ai/dsh-agent": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-attachment": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-client-connection": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-llm": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-session": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-session-persistence": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-storage": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-storage-domain": "0.2.0-rc.2",
+      "zod": "4.5.4"
+    },
+    "peerDependenciesMeta": {
+      "@deepseek-ai/dsh-client-connection": {
+        "optional": true
+      }
+    },
+    "overrides": {
+      "@deepseek-ai/cordis": "4.0.4",
+      "@deepseek-ai/dsh-agent": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-session": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-session-persistence": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-storage": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-storage-domain": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-client-connection": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-llm": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-attachment": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-scope": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-brand": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-session-projection": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-system-prompt": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-invariants": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-typert-protocol": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-util-values": "0.2.0-rc.2"
+    },
+    "scripts": {
+      "build": "node tools/build.mjs",
+      "build:offline": "node tools/build.mjs --offline",
+      "test": "node --test --test-reporter=tap tests/*.test.mjs tests/crash/*.test.mjs",
+      "test:mutations": "node tools/mutations.mjs",
+      "check": "node tools/check.mjs",
+      "preflight:host": "node tools/preflight.mjs",
+      "samples": "node tools/samples.mjs",
+      "test:detached": "node tools/detached.mjs"
+    },
+    "devDependencies": {
+      "@deepseek-ai/cordis": "4.0.4",
+      "@deepseek-ai/dsh-agent": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-attachment": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-client-connection": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-llm": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-scope": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-session": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-session-persistence": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-storage": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-storage-domain": "0.2.0-rc.2",
+      "@deepseek-ai/dsh-system-prompt": "0.2.0-rc.2",
+      "@deepseek-ai/schemastery": "3.18.4",
+      "@types/node": "24.13.4",
+      "@types/react": "18.3.1",
+      "react": "18.3.1",
+      "typescript": "5.9.3",
+      "zod": "4.5.4",
+      "hanamesh-core": "git+https://github.com/yzsnstotz/hanamesh-core.git#semver:^0.2.0-rc.55",
+      "@hanamesh/server-usage": "git+https://github.com/yzsnstotz/hanamesh-server-usage.git#semver:^0.2.0-rc.14"
+    }
+  },
+  "notRun": [
+    "C-request-message",
+    "provider HTTP/package suites",
+    "real Core or product facts",
+    "GUI/person/401/503/withdrawal/owner acceptance"
+  ]
+}

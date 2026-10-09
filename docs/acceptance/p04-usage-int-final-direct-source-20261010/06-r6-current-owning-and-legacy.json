@@ -1,0 +1,39 @@
+{
+  "owningOrigin": "hanamesh-core",
+  "currentOwningCard": "MERGE-CORE-MAIN-01",
+  "currentPublishedSource": {
+    "tag": "v0.3.2",
+    "tagObject": "f8bd539f5390cdd1614eb6bf95d3866ead86ab9d",
+    "target": "00b936fcff8c3bff462fcfa14ce4f1729704f215",
+    "freshRemote": "f8bd539f5390cdd1614eb6bf95d3866ead86ab9d\trefs/tags/v0.3.2\n00b936fcff8c3bff462fcfa14ce4f1729704f215\trefs/tags/v0.3.2^{}\n"
+  },
+  "currentR6OldIdentityCopyPaths": [],
+  "currentPackFilesExcludesCopy": true,
+  "currentOwningGateReceipt": {
+    "path": "/Users/yzliu/.cache/hanamesh-pm-1921-docs-merge/bluemap/cards/MERGE-CORE-MAIN-01/REPORT.md",
+    "sha256": "34b4a1b4c74daff1e6a75b717a9f8680bdba9446415eced43e9b09b8f1005440"
+  },
+  "currentCR": {
+    "path": "/Users/yzliu/.cache/hanamesh-pm-1921-docs-merge/bluemap/cards/MERGE-CORE-MAIN-01/CR-CORE-HTTP-URL-SUPPLY-01.md",
+    "sha256": "3ca7749a6abcbd5873412d47c9784f35b4a9cb814f698f6a5665870d29a8c5c4"
+  },
+  "currentMissingSupply": null,
+  "reason": "Current Core source closure removed active copy; existing DeviceBindInput source and actual query gate already delivered; wider HTTP-only DTO/suite was explicitly not a current hard prerequisite. Usage consumes Core Services ABI and ServerUsage signed HTTP, not Identity Services/types directly.",
+  "legacyRuntime": {
+    "version": "0.2.0-rc.56",
+    "oldCopyPaths": [
+      "vendor/srv-identity/API.md",
+      "vendor/srv-identity/contracts.d.ts"
+    ],
+    "action": "Preserve original runtime/accepted boundaries; current source R6 does not certify or rewrite historical package"
+  },
+  "futureOnlyIfScoped": {
+    "origin": "hanamesh-core",
+    "card": "MERGE-CORE-MAIN-01 / CR-CORE-HTTP-URL-SUPPLY-01",
+    "items": [
+      "HTTP-only POST /api/hanamesh/core/bind-link response wrapper {url,expiresAt}",
+      "GET /api/hanamesh/core/state full wrapper"
+    ],
+    "currentP04DirectConsumerNeed": "N/A; no new missing named method/field/version"
+  }
+}

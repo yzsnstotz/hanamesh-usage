@@ -1,0 +1,14 @@
+{
+  "core": {
+    "tag": "v0.3.2",
+    "tagObject": "f8bd539f5390cdd1614eb6bf95d3866ead86ab9d",
+    "target": "00b936fcff8c3bff462fcfa14ce4f1729704f215",
+    "freshRemote": "f8bd539f5390cdd1614eb6bf95d3866ead86ab9d\trefs/tags/v0.3.2\n00b936fcff8c3bff462fcfa14ce4f1729704f215\trefs/tags/v0.3.2^{}\n"
+  },
+  "serverUsage": {
+    "tag": "v0.3.1-rc.1",
+    "tagObject": "1a5eca5fbfa4b0113ebf19162d3bebc6f70d06bc",
+    "target": "24299fb8f8ed22edb3200b4871cc2f11041c0b61",
+    "freshRemote": "1a5eca5fbfa4b0113ebf19162d3bebc6f70d06bc\trefs/tags/v0.3.1-rc.1\n24299fb8f8ed22edb3200b4871cc2f11041c0b61\trefs/tags/v0.3.1-rc.1^{}\n"
+  }
+}

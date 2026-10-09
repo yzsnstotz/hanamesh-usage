@@ -1,0 +1,35 @@
+{
+  "scope": "Five actual directly consumed public contract inputs; not whole Core package equality",
+  "files": [
+    {
+      "file": "lib/contract.js",
+      "publishedSHA256": "f4069304bf63da08487223d373f7a444c953e25daf7e05b140abb6e5541ee079",
+      "actualCore56SHA256": "f4069304bf63da08487223d373f7a444c953e25daf7e05b140abb6e5541ee079",
+      "equal": true
+    },
+    {
+      "file": "lib/contract-suite.js",
+      "publishedSHA256": "c0e68e1046122ac83b2354e19d52622d47b18043096b6d12a201a410f350f378",
+      "actualCore56SHA256": "c0e68e1046122ac83b2354e19d52622d47b18043096b6d12a201a410f350f378",
+      "equal": true
+    },
+    {
+      "file": "lib/contract-fixtures.js",
+      "publishedSHA256": "f321d56ae62263da6b922aa76517a0914a5def80a1084695c88b71fda7cad359",
+      "actualCore56SHA256": "f321d56ae62263da6b922aa76517a0914a5def80a1084695c88b71fda7cad359",
+      "equal": true
+    },
+    {
+      "file": "contract/hanamesh-core.v1.schema.json",
+      "publishedSHA256": "ca75432db05d347d966c6d8dcd8dd01fd9f150f2789112afc610f6ee48954151",
+      "actualCore56SHA256": "ca75432db05d347d966c6d8dcd8dd01fd9f150f2789112afc610f6ee48954151",
+      "equal": true
+    },
+    {
+      "file": "lib/contract.d.ts",
+      "publishedSHA256": "02e42115ea4bdbcfbfa763b89e6fe7c546d537a8eae04455e3bd33bff6ecb43b",
+      "actualCore56SHA256": "02e42115ea4bdbcfbfa763b89e6fe7c546d537a8eae04455e3bd33bff6ecb43b",
+      "equal": true
+    }
+  ]
+}

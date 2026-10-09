@@ -1,0 +1,75 @@
+{
+  "scope": "Direct source receipts only; inherited passed suites were not rerun; no product/owner/independent VERIFY claim",
+  "files": [
+    {
+      "path": "00-SUMMARY.json",
+      "sha256": "24e75031bd2ec72d643555d363d5b143bfb5fadb1d8cbb81699d1cc3a603fa7a",
+      "bytes": 910
+    },
+    {
+      "path": "01-current-direct-source-pins.json",
+      "sha256": "18278f4f330e569af8a917891de14a85a10775495a1511b527af194c38e99b32",
+      "bytes": 629
+    },
+    {
+      "path": "02-core-public-contract-byte-reuse.json",
+      "sha256": "88ef478678d0fd1fde9c45810d3444bbe1f4467bf3f3b9f6ec46c87cc539b82e",
+      "bytes": 1434
+    },
+    {
+      "path": "03-server-usage-normal-tag-and-reuse.json",
+      "sha256": "18c60e57e708a7df940438b9ed1decf882e6e7066c57fef5bea92b57dc8cc6fc",
+      "bytes": 23206
+    },
+    {
+      "path": "04-usage-normal-source-inputs.json",
+      "sha256": "2069ed3baeee9e482aca38f4e670e9d7dd5ddfaa7dcd4d6e7529fed854891f89",
+      "bytes": 12693
+    },
+    {
+      "path": "05-direct-consumer-gate-reuse.json",
+      "sha256": "0d8071e42bda9cc11ec02a7a94fc166016003b8f284e1ad1980a884c5b230e58",
+      "bytes": 1824
+    },
+    {
+      "path": "06-r6-current-owning-and-legacy.json",
+      "sha256": "957d71bc5e4c0ed13ad167d7196424fbc6103f63fcd4358127388716d291354d",
+      "bytes": 1938
+    },
+    {
+      "path": "07-probe-path-correction.json",
+      "sha256": "77edbd2ccf0241ad0a654e1c7ccbdf6246249dec18a5b669b6368a14157768ff",
+      "bytes": 610
+    },
+    {
+      "path": "REFERENCED-coreCRScope.md",
+      "sha256": "3ca7749a6abcbd5873412d47c9784f35b4a9cb814f698f6a5665870d29a8c5c4",
+      "bytes": 1868
+    },
+    {
+      "path": "REFERENCED-coreCurrentGate.md",
+      "sha256": "34b4a1b4c74daff1e6a75b717a9f8680bdba9446415eced43e9b09b8f1005440",
+      "bytes": 12498
+    },
+    {
+      "path": "REFERENCED-srvCurrentGate.md",
+      "sha256": "c2efd36105c475e8ee93ecd12f7597ebd58e08317d07227eedcca2f3b81a60f5",
+      "bytes": 31541
+    },
+    {
+      "path": "REFERENCED-usageCore19.json",
+      "sha256": "bd74f90eadf105d02f740f4d4c9c7f3cb20821dd004bae116c6112581753ebd4",
+      "bytes": 17422
+    },
+    {
+      "path": "REFERENCED-usageSrv03.json",
+      "sha256": "259601fe7bace18e00031f017bdd8fdaab4d89535a81c0d5558f231c71ad3932",
+      "bytes": 5484
+    },
+    {
+      "path": "final-direct-source-audit.py",
+      "sha256": "a5351d48811964eead20c72ef016af96054b65a0d678bfcb5b2ba1689e9f578c",
+      "bytes": 9565
+    }
+  ]
+}

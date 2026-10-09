@@ -1,0 +1,22 @@
+{
+  "atUTC": "2026-10-09T18:00:11.096050+00:00",
+  "scope": "CURRENT DIRECT SOURCE CONSISTENCY RECEIPT; engineering self-check; no 17-repo re-audit, no new source suite run",
+  "directOrigins": [
+    "hanamesh-core",
+    "hanamesh-server-usage"
+  ],
+  "coreSource": "v0.3.2 exact5 public contract reused Usage19 13/13",
+  "serverUsageSource": "v0.3.1-rc.1 normal56 exact tag, prior business+suite53 exact reused Usage19 four checks",
+  "usage": "normal rc19/source main closure all50 unchanged",
+  "R6": "Current owning Core source gate already collected; no current missing supply; legacy rc56 profile remains a historical runtime",
+  "remaining": [
+    "owner binding/canonical account and person consent/use/withdraw",
+    "final native client submit path",
+    "one final independent VERIFY"
+  ],
+  "newProductCode": 0,
+  "newDependencies": 0,
+  "runtimeMutation": 0,
+  "suiteReruns": 0,
+  "deleted": []
+}

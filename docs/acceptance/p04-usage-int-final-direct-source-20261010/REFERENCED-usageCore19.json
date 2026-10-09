@@ -1,0 +1,572 @@
+{
+  "scope": "SOURCE_CONFORMANCE_ONLY; normal packages, in-memory Core and synthetic event",
+  "packages": {
+    "core": {
+      "name": "hanamesh-core",
+      "version": "0.2.0-rc.55",
+      "description": "HanaMesh Core: device identity, consent, component health, and suite entrypoint.",
+      "type": "module",
+      "main": "./lib/dsh.mjs",
+      "types": "./types/index.d.ts",
+      "exports": {
+        ".": {
+          "types": "./types/index.d.ts",
+          "default": "./lib/dsh.mjs"
+        },
+        "./contract": {
+          "types": "./lib/contract.d.ts",
+          "default": "./lib/contract.js"
+        },
+        "./contract/fixtures": {
+          "types": "./lib/contract-fixtures.d.ts",
+          "default": "./lib/contract-fixtures.js"
+        },
+        "./contract/suite": {
+          "types": "./lib/contract-suite.d.ts",
+          "default": "./lib/contract-suite.js"
+        },
+        "./contract/schema.json": "./contract/hanamesh-core.v1.schema.json",
+        "./client": {
+          "types": "./lib/client/index.d.ts",
+          "default": "./lib/client.js"
+        },
+        "./package.json": "./package.json"
+      },
+      "bin": {
+        "hanamesh-core-contract-suite": "./lib/contract-cli.js"
+      },
+      "files": [
+        "lib",
+        "contract",
+        "types",
+        "profile",
+        "profile.schema.json",
+        "consistency.json",
+        "docs/CORE_CONTRACT.md",
+        "docs/API.md",
+        "docs/SECURITY.md",
+        "vendor/semver",
+        "vendor/SHA256SUMS",
+        "vendor/srv-identity"
+      ],
+      "engines": {
+        "node": "24.13.1"
+      },
+      "packageManager": "pnpm@10.33.0",
+      "scripts": {
+        "build": "node scripts/build.mjs --target",
+        "build:offline": "node scripts/build.mjs --offline",
+        "test": "node --test --test-reporter=tap test/*.test.mjs",
+        "test:mutations": "node scripts/mutation.mjs",
+        "test:contract": "node lib/contract-cli.js",
+        "test:crash": "node --test --test-reporter=tap test/crash.test.mjs",
+        "verify:inputs": "node scripts/verify-inputs.mjs",
+        "preflight": "node scripts/preflight.mjs",
+        "check:contracts": "tsc --noEmit --strict --skipLibCheck false --target ES2022 --module NodeNext --moduleResolution NodeNext test/public-contracts.ts",
+        "check:toolchain": "hanamesh-devkit check-toolchain",
+        "verify:pack": "node scripts/check-package.mjs",
+        "pack": "npm pack --pack-destination artifacts",
+        "check": "pnpm check:toolchain && pnpm verify:inputs && pnpm check:contracts && pnpm preflight"
+      },
+      "peerDependencies": {
+        "@deepseek-ai/cordis": "4.0.4",
+        "@deepseek-ai/dsh-client-connection": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-storage-domain": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-client-ui-settings": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-client-ui-sidebar": "0.2.0-rc.2",
+        "react": "18.3.1",
+        "zod": "4.5.4",
+        "@hanamesh/devkit": "0.1.0-rc.1"
+      },
+      "devDependencies": {
+        "@deepseek-ai/cordis": "4.0.4",
+        "@deepseek-ai/dsh-client-connection": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-storage-domain": "0.2.0-rc.2",
+        "@types/node": "24.13.4",
+        "@types/react": "18.3.12",
+        "react": "18.3.1",
+        "typescript": "5.9.3",
+        "zod": "4.5.4",
+        "@deepseek-ai/dsh-typert-protocol": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-client-ui-settings": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-client-ui-sidebar": "0.2.0-rc.2",
+        "@hanamesh/devkit": "file:vendor/hanamesh-devkit-0.1.0-rc.1.tgz"
+      },
+      "pnpm": {
+        "overrides": {
+          "@deepseek-ai/cordis": "4.0.4",
+          "@deepseek-ai/dsh-client-connection": "0.2.0-rc.2",
+          "@deepseek-ai/dsh-storage-domain": "0.2.0-rc.2",
+          "@deepseek-ai/dsh-client-ui-settings": "0.2.0-rc.2",
+          "@deepseek-ai/dsh-client-ui-sidebar": "0.2.0-rc.2",
+          "@deepseek-ai/dsh-storage": "0.2.0-rc.2",
+          "@deepseek-ai/dsh-invariants": "0.2.0-rc.2",
+          "@deepseek-ai/dsh-credentials": "0.2.0-rc.2"
+        }
+      },
+      "dsh": {
+        "bundle": {
+          "patch": "./profile/cordis.patch.yml"
+        },
+        "client": {
+          "inject": [
+            "@deepseek-ai/dsh-client-ui-settings",
+            "@deepseek-ai/dsh-client-ui-sidebar"
+          ],
+          "platform": "web",
+          "external": [
+            "react"
+          ]
+        }
+      },
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/yzsnstotz/hanamesh-core.git"
+      },
+      "license": "MIT",
+      "peerDependenciesMeta": {
+        "@hanamesh/devkit": {
+          "optional": true
+        }
+      }
+    },
+    "serverUsage": {
+      "name": "@hanamesh/server-usage",
+      "version": "0.2.0-rc.14",
+      "description": "HanaMesh SRV-05: permissioned private execution summaries, idempotency and honest usage aggregation",
+      "private": true,
+      "license": "UNLICENSED",
+      "type": "module",
+      "packageManager": "pnpm@10.33.0",
+      "engines": {
+        "node": ">=24.13.1 <25"
+      },
+      "exports": {
+        ".": {
+          "types": "./dist/index.d.ts",
+          "import": "./dist/index.js"
+        },
+        "./contracts": {
+          "types": "./dist/contracts.d.ts",
+          "import": "./dist/contracts.js"
+        },
+        "./server-contracts": {
+          "types": "./dist/server-contracts.d.ts",
+          "import": "./dist/server-contracts.js"
+        },
+        "./schema": {
+          "types": "./dist/database/schema.d.ts",
+          "import": "./dist/database/schema.js"
+        },
+        "./migrations": {
+          "types": "./dist/migrations.d.ts",
+          "import": "./dist/migrations.js"
+        },
+        "./conformance": {
+          "types": "./dist/conformance/index.d.ts",
+          "import": "./dist/conformance/index.js"
+        },
+        "./contract/schema.json": "./contract/usage-contract.schema.json",
+        "./contract/fixtures.json": "./contract/fixtures.json"
+      },
+      "files": [
+        "dist",
+        "contract",
+        "migrations",
+        "consistency.json",
+        "README.md",
+        "AGENTS.md",
+        "docs/API.md",
+        "docs/SECURITY.md",
+        "docs/DEVKIT_LICENSE_RECORD.md"
+      ],
+      "scripts": {
+        "build": "node scripts/build.mjs",
+        "build:offline": "node scripts/build.mjs --offline-evidence",
+        "test": "node --test --test-reporter=tap test/*.test.mjs",
+        "test:mutations": "node scripts/mutations.mjs",
+        "test:real": "node scripts/o1-real-acceptance.mjs",
+        "preflight": "node scripts/preflight.mjs",
+        "pack:local": "npm pack --ignore-scripts --pack-destination artifacts",
+        "verify:pack": "node scripts/verify-pack.mjs",
+        "verify:release": "node scripts/verify-release-manifest.mjs",
+        "check": "node scripts/check-toolchain.mjs",
+        "contract:fixtures": "node scripts/generate-contract-fixtures.mjs",
+        "test:contract": "node scripts/contract-conformance.mjs"
+      },
+      "peerDependencies": {
+        "@hanamesh/server-identity": "0.2.0-rc.11",
+        "fastify": "5.12.3",
+        "drizzle-orm": "0.45.2",
+        "pg": "8.23.0",
+        "@hanamesh/devkit": "0.1.0-rc.2"
+      },
+      "peerDependenciesMeta": {
+        "@hanamesh/server-identity": {
+          "optional": true
+        },
+        "fastify": {
+          "optional": true
+        },
+        "drizzle-orm": {
+          "optional": true
+        },
+        "pg": {
+          "optional": true
+        },
+        "@hanamesh/devkit": {
+          "optional": true
+        }
+      },
+      "devDependencies": {
+        "@hanamesh/server-identity": "file:vendor/hanamesh-server-identity-0.2.0-rc.11.tgz",
+        "@types/node": "24.13.4",
+        "@types/pg": "8.23.1",
+        "drizzle-orm": "0.45.2",
+        "fastify": "5.12.3",
+        "pg": "8.23.0",
+        "typescript": "5.9.3",
+        "@hanamesh/devkit": "file:vendor/hanamesh-devkit-0.1.0-rc.2.tgz"
+      },
+      "hanamesh": {
+        "module": "srv-usage",
+        "protocolVersion": "1",
+        "toolchain": {
+          "node": "24.13.1",
+          "pnpm": "10.33.0",
+          "typescript": "5.9.3",
+          "@types/node": "24.13.4"
+        },
+        "identityArtifact": {
+          "path": "vendor/hanamesh-server-identity-0.2.0-rc.11.tgz",
+          "sha256": "b27181d59e912959db22a7941e74542c575c07883c0c5ba7bbc8a19d23edecb1"
+        },
+        "contract": {
+          "version": "0.2.0-rc.13",
+          "schema": "./contract/schema.json",
+          "fixtures": "./contract/fixtures.json",
+          "suite": "./conformance"
+        }
+      }
+    },
+    "usage": {
+      "name": "hanamesh-usage",
+      "version": "0.2.0-rc.19",
+      "description": "Consent-gated, device-signed HanaMesh usage events for DSH",
+      "type": "module",
+      "main": "lib/host/index.js",
+      "types": "lib/host/index.d.ts",
+      "exports": {
+        ".": {
+          "types": "./lib/host/index.d.ts",
+          "default": "./lib/host/index.js"
+        },
+        "./core": {
+          "types": "./lib/core/index.d.ts",
+          "default": "./lib/core/index.js"
+        },
+        "./package.json": "./package.json",
+        "./client": {
+          "types": "./lib/client/index.d.ts",
+          "default": "./lib/client.js"
+        }
+      },
+      "files": [
+        "lib",
+        "profile",
+        "README.md",
+        "LICENSE",
+        "consistency.json"
+      ],
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "git+https://github.com/yzsnstotz/hanamesh-usage.git"
+      },
+      "dsh": {
+        "bundle": {
+          "patch": "./profile/cordis.patch.yml"
+        },
+        "client": {
+          "platform": "web",
+          "inject": [
+            "@deepseek-ai/dsh-client-ui-settings-general"
+          ],
+          "external": [
+            "react"
+          ]
+        }
+      },
+      "engines": {
+        "node": ">=24.13.1 <25"
+      },
+      "packageManager": "pnpm@10.33.0",
+      "peerDependencies": {
+        "@deepseek-ai/cordis": "4.0.4",
+        "@deepseek-ai/dsh-agent": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-attachment": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-client-connection": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-llm": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-session": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-session-persistence": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-storage": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-storage-domain": "0.2.0-rc.2",
+        "zod": "4.5.4"
+      },
+      "peerDependenciesMeta": {
+        "@deepseek-ai/dsh-client-connection": {
+          "optional": true
+        }
+      },
+      "overrides": {
+        "@deepseek-ai/cordis": "4.0.4",
+        "@deepseek-ai/dsh-agent": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-session": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-session-persistence": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-storage": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-storage-domain": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-client-connection": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-llm": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-attachment": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-scope": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-brand": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-session-projection": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-system-prompt": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-invariants": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-typert-protocol": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-util-values": "0.2.0-rc.2"
+      },
+      "scripts": {
+        "build": "node tools/build.mjs",
+        "build:offline": "node tools/build.mjs --offline",
+        "test": "node --test --test-reporter=tap tests/*.test.mjs tests/crash/*.test.mjs",
+        "test:mutations": "node tools/mutations.mjs",
+        "check": "node tools/check.mjs",
+        "preflight:host": "node tools/preflight.mjs",
+        "samples": "node tools/samples.mjs",
+        "test:detached": "node tools/detached.mjs"
+      },
+      "devDependencies": {
+        "@deepseek-ai/cordis": "4.0.4",
+        "@deepseek-ai/dsh-agent": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-attachment": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-client-connection": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-llm": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-scope": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-session": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-session-persistence": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-storage": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-storage-domain": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-system-prompt": "0.2.0-rc.2",
+        "@deepseek-ai/schemastery": "3.18.4",
+        "@types/node": "24.13.4",
+        "@types/react": "18.3.1",
+        "react": "18.3.1",
+        "typescript": "5.9.3",
+        "zod": "4.5.4",
+        "hanamesh-core": "git+https://github.com/yzsnstotz/hanamesh-core.git#semver:^0.2.0-rc.55",
+        "@hanamesh/server-usage": "git+https://github.com/yzsnstotz/hanamesh-server-usage.git#semver:^0.2.0-rc.14"
+      }
+    }
+  },
+  "sourcePaths": {
+    "coreRoot": "/Users/yzliu/.cache/hanamesh-runs/MERGE-USAGE-MAIN-01/source/node_modules/hanamesh-core",
+    "serverRoot": "/Users/yzliu/.cache/hanamesh-runs/MERGE-USAGE-MAIN-01/source/node_modules/@hanamesh/server-usage",
+    "usage": "/Users/yzliu/.cache/hanamesh-runs/MERGE-USAGE-MAIN-01/consumer/node_modules/hanamesh-usage"
+  },
+  "coreConsumer": {
+    "suite": "hanamesh-core/contract",
+    "protocolVersion": "1",
+    "side": "consumer",
+    "subject": "normally installed Usage duckCore",
+    "ok": true,
+    "results": [
+      {
+        "id": "handshake.match",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "id": "handshake.absent-undefined",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "id": "handshake.absent-null",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "id": "handshake.not-object",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "id": "handshake.protocol-2",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "id": "handshake.protocol-missing",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "id": "handshake.missing-getDeviceId",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "id": "handshake.missing-sign",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "id": "handshake.missing-signRequest",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "id": "handshake.missing-getConsent",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "id": "handshake.missing-onConsentChange",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "id": "handshake.missing-getSession",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "id": "handshake.missing-getServerOrigin",
+        "ok": true,
+        "detail": "ok"
+      }
+    ]
+  },
+  "coreProvider": {
+    "suite": "hanamesh-core/contract",
+    "protocolVersion": "1",
+    "side": "provider",
+    "subject": "normally installed Core SessionController; memory/offline",
+    "ok": true,
+    "results": [
+      {
+        "id": "handshake.present",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "id": "handshake.rejects-other-version",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "id": "surface.closed",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "id": "identity.deviceId",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "id": "identity.publicKey",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "id": "sign.ed25519",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "id": "signRequest.canonical",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "id": "signRequest.rejects-invalid",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "id": "consent.state",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "id": "consent.subscribe",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "id": "session.schema",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "id": "serverOrigin",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "id": "health.schema",
+        "ok": true,
+        "detail": "ok"
+      }
+    ]
+  },
+  "serverConsumer": {
+    "ok": true,
+    "contract": {
+      "package": "@hanamesh/server-usage",
+      "version": "0.2.0-rc.13",
+      "protocolVersion": "1"
+    },
+    "side": "consumer",
+    "checks": [
+      {
+        "id": "C-canonical",
+        "ok": true,
+        "observations": {
+          "vectors": 3
+        }
+      },
+      {
+        "id": "C-sign",
+        "ok": true,
+        "observations": {
+          "vectors": 3
+        }
+      },
+      {
+        "id": "C-device-id",
+        "ok": true,
+        "observations": {
+          "accept": 5,
+          "reject": 8
+        }
+      },
+      {
+        "id": "C-events",
+        "ok": true,
+        "observations": {
+          "events": 1
+        }
+      }
+    ]
+  },
+  "notRun": [
+    "C-request-message consumer",
+    "ServerUsage provider HTTP and package suites",
+    "Identity HTTP consumer",
+    "renderer, real person, server persistence, 401/503 transaction, withdrawal, owner product acceptance"
+  ],
+  "ok": true
+}
