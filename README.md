@@ -1,4 +1,8 @@
-# hanamesh-usage · 0.2.0-rc.25
+# hanamesh-usage · 0.2.0-rc.26
+
+rc.26 消费项目批准的官方 `d743267388641bc76f17c45ce8b4c231aed1d32c`：DSH `0.2.1-alpha.2`、Cordis `4.0.5-alpha.1`、实际共享 zod `4.6.5`，各公开包独立核对后精确锁定。开发依赖的正式 JS/声明与该 SHA 的官方 pack 核验一致，移除本模块旧版本 override；api-contracts 仍仅为开发依赖 `v0.9.0`。事件、归属、签名、同意/撤回和 schema v1 不变；新观察记录的 DSH provenance 跟随本构建，旧记录不重写。
+
+本卡证据区分 SOURCE/FIXTURE/PACKAGE 与官方未打包 Electron 载体的默认 Desktop 插件安装、设置及限定存储回归。完整 U1、真实 Core+Server 组合、原生介质强杀、安装版 Desktop 和 owner 验收仍由原产品门负责。
 
 > rc.24：发布 allowlist 排除只供行为测试导入的 lib/client/index.js；rc.23 的默认安装/宿主取证保持冻结。
 

@@ -122,7 +122,7 @@ test('native registration and handler exceptions propagate unchanged; teardown r
   assert.equal(hook({fiber:{entry}},'commands',error,()=>service),service);
 });
 
-test('the Cordis 4.0.4 waterfall supplies the actual registering fiber and preserves its effect lifetime',async()=>{
+test('the resolved Cordis waterfall supplies the actual registering fiber and preserves its effect lifetime',async()=>{
   const {Context,Service}=await import('@deepseek-ai/cordis');
   const {mountCommandFacts}=await import('../lib/host/command-facts.js');
   const ctx=new Context(),facts=[],definitions=[],receivers=[];
