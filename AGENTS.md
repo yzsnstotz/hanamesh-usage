@@ -2,7 +2,7 @@
 
 流程规则只在 segflow：worker 读 /Users/yzliu/work/tools/segflow/roles/worker.md，架构准则见 roles/principles.md；本文件只写本模块事实。
 
-这是独立模块 `hanamesh-usage`。别把离线证据、STUB/STANDIN 或候选 tag 当作真实宿主验收。
+这是独立模块 `hanamesh-usage`。
 
 仅修改本仓。目标 Node24.13.1/pnpm10.33.0/TS5.9.3，不为本地工具降级目标。真实依赖只消费锁定产物，不 workspace-link 邻仓。Registry 实例、session、授权、安装状态继续由既有宿主所有。
 
@@ -14,4 +14,4 @@
 
 `npm run build:offline` 不是目标宿主构建。真实构建用 `npm run build`，保留 strict、noEmitOnError、skipLibCheck:false，不开 noCheck。`npm test`、`npm run test:mutations`、`npm run check`、`npm run test:detached` 是本轮离线复现路径。测试子进程显式 TAP；变异必须观察到断言失败。
 
-测试须新 mkdtemp/独立 DSH_HOME/profile；不动个人 ~/.dsh、3080、不启动真实模型耗额度、不执行远端数据库/网络/资金动作。不建远端、不发布。仓名不加版本后缀。
+测试须新 mkdtemp/独立 DSH_HOME/profile；不动个人 ~/.dsh、3080、不启动真实模型耗额度、不执行远端数据库/网络/资金动作。仓名不加版本后缀。
