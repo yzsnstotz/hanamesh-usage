@@ -1,7 +1,7 @@
 TAP version 13
 # evalmachine.<anonymous>:2153
 # //\# sourceMappingURL=client.js.map})
-#                                     
+#
 # SyntaxError: Unexpected end of input
 #     at new Script (node:vm:117:7)
 #     at createScript (node:vm:269:10)

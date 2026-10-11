@@ -48,3 +48,5 @@ raw/verification.json 逐项保存 exitCode。红绿证据：red.tap 先观察�
 运行目录保留 REPORT/CLEANUP、bundle、tgz、SHA256SUMS、第三方清单及中断文件原始 hash。遵守用户 AGENTS 的本轮无远端授权：只提交并合入本地 main，不 push/发布；origin/main 保持基线。本卡是独立工程交付，没有 owner ACCEPTED、U1 或真实 Desktop 通过声明。
 
 真实 Cordis/发布 Typert 框架测试使用内存 Connection 载体与 Core/Loader/Inventory fixture，不是 REAL_HOST/REAL_UI。凭据阻止未发放、改提交身份、跨 Peer 和重放请求，不是任意被攻陷客户端的渲染证明；已认证 Peer 可申请任意允许的 Loader 条目。DOM 观察不证明 CSS 可见性或 Portal 内容。真实 Desktop Loader-to-Client identity 投影、贡献者加载顺序、归属/同意/撤回仍由 J2S2-USAGE-05 取证。
+
+Git 收尾发现 TAP 断言格式自带空行尾空格；运行目录 raw-verbatim 保存逐字输出，仓内副本只去掉行尾空白后 diff --check 通过。未改退出码、断言或测试结果。

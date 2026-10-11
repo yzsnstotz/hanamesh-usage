@@ -8,9 +8,9 @@ not ok 1 - page content appearing after an initial empty child commit is reporte
   failureType: 'testCodeFailure'
   error: |-
     empty DOM needs commit observation
-    
+
     0 !== 1
-    
+
   code: 'ERR_ASSERTION'
   name: 'AssertionError'
   expected: 1
