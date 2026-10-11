@@ -6,20 +6,45 @@ import {randomBytes} from 'node:crypto';
 import {createUsageEvent,eventIdForLoader,eventNonceFromBytes,validLoaderReference,UsageError} from '../core/index.js';
 import {signUsageEvent} from './core-link.js';
 
+/** Existing metadata safety bounds; never load observed plugin code or unbounded JSON. */
+export const MAX_PACKAGE_METADATA_BYTES=256*1024;
+export const MAX_PACKAGE_ANCESTORS=32;
 const packageName=/^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/i;
 const versionPattern=/^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/;
 
 /** Resolve metadata without importing or executing the observed plugin. @param {string} moduleName @param {string} baseUrl */
 export async function inspectPackage(moduleName,baseUrl){
+  /** @param {string} code */
+  const unreadable=code=>({kind:/** @type {const} */('unreadable'),code});
+  if(!packageName.test(moduleName)||typeof baseUrl!=='string'||!baseUrl.startsWith('file:'))return unreadable('INVENTORY_PACKAGE_INVALID');
   try{
-    if(!packageName.test(moduleName)||typeof baseUrl!=='string'||!baseUrl.startsWith('file:'))return {kind:/** @type {const} */('unreadable')};
     const require=createRequire(baseUrl);let packagePath;
-    try{packagePath=require.resolve(`${moduleName}/package.json`);}catch{}
-    if(!packagePath){let entryPath;try{entryPath=require.resolve(moduleName);}catch{}if(entryPath){let cursor=dirname(entryPath);for(let i=0;i<32;i++){const candidate=join(cursor,'package.json');try{const metadata=JSON.parse(await readFile(candidate,'utf8'));if(metadata.name===moduleName){packagePath=candidate;break;}}catch{}const parent=dirname(cursor);if(parent===cursor)break;cursor=parent;}}}
-    if(!packagePath)return {kind:/** @type {const} */('unreadable')};const info=await stat(packagePath);if(!info.isFile()||info.size>256*1024)return {kind:/** @type {const} */('unreadable')};
-    const metadata=JSON.parse(await readFile(packagePath,'utf8'));if(metadata.name!==moduleName||typeof metadata.version!=='string'||!versionPattern.test(metadata.version))return {kind:/** @type {const} */('unreadable')};
+    try{packagePath=require.resolve(`${moduleName}/package.json`);}catch(error){
+      // Package exports commonly hide metadata: follow the exported entry, without executing it.
+      const code=/** @type {{code?:string}} */(error).code;
+      if(code!=='MODULE_NOT_FOUND'&&code!=='ERR_PACKAGE_PATH_NOT_EXPORTED')return unreadable('INVENTORY_PACKAGE_READ_FAILED');
+    }
+    if(!packagePath){
+      let entryPath;
+      try{entryPath=require.resolve(moduleName);}catch{return unreadable('INVENTORY_PACKAGE_UNRESOLVED');}
+      let cursor=dirname(entryPath);
+      for(let i=0;i<MAX_PACKAGE_ANCESTORS;i++){
+        const candidate=join(cursor,'package.json');
+        try{
+          const info=await stat(candidate);
+          if(!info.isFile()||info.size>MAX_PACKAGE_METADATA_BYTES)return unreadable('INVENTORY_PACKAGE_INVALID');
+          const metadata=JSON.parse(await readFile(candidate,'utf8'));
+          if(metadata.name===moduleName){packagePath=candidate;break;}
+        }catch(error){if(/** @type {{code?:string}} */(error).code!=='ENOENT')return unreadable('INVENTORY_PACKAGE_READ_FAILED');}
+        const parent=dirname(cursor);if(parent===cursor)break;cursor=parent;
+      }
+    }
+    if(!packagePath)return unreadable('INVENTORY_PACKAGE_UNRESOLVED');
+    const info=await stat(packagePath);if(!info.isFile()||info.size>MAX_PACKAGE_METADATA_BYTES)return unreadable('INVENTORY_PACKAGE_INVALID');
+    const metadata=JSON.parse(await readFile(packagePath,'utf8'));
+    if(metadata.name!==moduleName||typeof metadata.version!=='string'||!versionPattern.test(metadata.version))return unreadable('INVENTORY_PACKAGE_INVALID');
     return {kind:/** @type {const} */('present'),name:metadata.name,version:metadata.version};
-  }catch{return {kind:/** @type {const} */('unreadable')};}
+  }catch{return unreadable('INVENTORY_PACKAGE_READ_FAILED');}
 }
 
 /**
@@ -37,17 +62,22 @@ export function createInventory({ctx,store,link,inventoryIntervalMs,inspector=in
   const holder=/** @type {{loader?:{entries():Iterable<any>},baseUrl?:string}} */(/** @type {unknown} */(ctx));
   if(typeof holder.loader?.entries!=='function')throw new UsageError('LOADER_UNAVAILABLE');
   const loader=holder.loader;
-  let tail=Promise.resolve(),lastScanAt=/** @type {string|null} */(null),closed=false;
+  let tail=Promise.resolve(),lastScanAt=/** @type {string|null} */(null),lastError=/** @type {string|null} */(null),unreadableCount=0,closed=false;
   /** @type {ReturnType<typeof setInterval>|null} */let timer=null;
   const on=/** @type {(name:string,listener:()=>void)=>()=>void} */(ctx.on.bind(ctx));
-  const stopUpdate=on('loader/config-update',()=>{void scan();});
+  const stopUpdate=on('loader/config-update',()=>{backgroundScan();});
   async function scanRaw(){
-    if(closed)throw new UsageError('INVENTORY_CLOSED');const scannedAt=new Date(now()).toISOString(),items=[];let unreadable=0;
+    if(closed)throw new UsageError('INVENTORY_CLOSED');
+    const acceptedEntries=new Set((store.getSnapshot().inventory.last?.items??[]).filter(item=>validLoaderReference(item.hanaRef,item.version)).map(item=>item.entryId));
+    const scannedAt=new Date(now()).toISOString(),items=[];let unreadable=0;
     for(const entry of loader.entries()){
       if(entry?.options?.group)continue;const moduleName=entry?.options?.name,entryId=entry?.id;
-      if(typeof moduleName!=='string'||typeof entryId!=='string'){unreadable++;note('INVENTORY_ENTRY_UNREADABLE');continue;}
+      if(typeof moduleName!=='string'||typeof entryId!=='string'){unreadable++;note('INVENTORY_ENTRY_UNREADABLE');if(acceptedEntries.has(entryId))throw new UsageError('INVENTORY_FAILED');continue;}
       const baseUrl=entry?.parent?.tree?.ctx?.baseUrl??holder.baseUrl??import.meta.url,result=await inspector(moduleName,baseUrl);
-      if(result.kind!=='present'||result.name!==moduleName||!validLoaderReference(result.name,result.version)){unreadable++;note('INVENTORY_ENTRY_UNREADABLE');continue;}
+      if(result.kind!=='present'||result.name!==moduleName||!validLoaderReference(result.name,result.version)){unreadable++;note('INVENTORY_ENTRY_UNREADABLE');if(result.kind==='unreadable'&&['INVENTORY_PACKAGE_UNRESOLVED','INVENTORY_PACKAGE_INVALID','INVENTORY_PACKAGE_READ_FAILED'].includes(result.code))note(result.code);
+        // Unknown metadata cannot prove that an observed accepted entry was removed.
+        if(acceptedEntries.has(entryId)||(result.kind==='unreadable'&&['INVENTORY_PACKAGE_READ_FAILED','INVENTORY_PACKAGE_UNRESOLVED'].includes(result.code)))throw new UsageError('INVENTORY_FAILED');
+        continue;}
       items.push({hanaRef:result.name,version:result.version,entryId,disabled:Boolean(entry.disabled)});
     }
     items.sort((a,b)=>a.hanaRef.localeCompare(b.hanaRef)||a.version.localeCompare(b.version)||a.entryId.localeCompare(b.entryId));
@@ -66,10 +96,12 @@ export function createInventory({ctx,store,link,inventoryIntervalMs,inspector=in
       for(const item of items){const eventId=eventIdForLoader(deviceId,'install',item.hanaRef,item.version),existing=existingById.get(eventId);if(existing)observedDuplicates++;else if(!changes.some(change=>change.action==='install'&&change.hanaRef===item.hanaRef&&change.version===item.version))changes.push({action:/** @type {const} */('install'),hanaRef:item.hanaRef,version:item.version});}
       for(const change of changes){const eventId=eventIdForLoader(deviceId,change.action,change.hanaRef,change.version),event=signUsageEvent(core,createUsageEvent({deviceId,hanaRef:change.hanaRef,action:change.action,occurredAt:scannedAt,eventId,nonce:eventNonceFromBytes(randomBytes(16)),signature:null,source:'loader',sourcePlugin:null,evidenceRef:`${change.hanaRef}@${change.version}`}));inputs.push(event);byId.set(eventId,change);}
     }
-    const committed=await store.updateInventory(scannedAt,items,inputs);lastScanAt=scannedAt;return {scannedAt,events:committed.inserted.map(id=>byId.get(id)),duplicates:observedDuplicates+committed.duplicates,unreadable};
+    const committed=await store.updateInventory(scannedAt,items,inputs);lastScanAt=scannedAt;lastError=null;unreadableCount=unreadable;return {scannedAt,events:committed.inserted.map(id=>byId.get(id)),duplicates:observedDuplicates+committed.duplicates,unreadable};
   }
-  function scan(){const run=tail.then(scanRaw);tail=run.then(()=>{},()=>{});return run;}
-  async function start(){const result=await scan();if(!closed){timer=setInterval(()=>{void scan();},inventoryIntervalMs);timer.unref?.();}return result;}
+  function scan(){const run=tail.then(scanRaw).catch(()=>{lastError='INVENTORY_FAILED';note(lastError);throw new UsageError(lastError);});tail=run.then(()=>{},()=>{});return run;}
+  // scan() records failure before a background caller observes its rejection.
+  function backgroundScan(){void scan().then(()=>undefined,()=>undefined);}
+  async function start(){const result=await scan();if(!closed){timer=setInterval(()=>{backgroundScan();},inventoryIntervalMs);timer.unref?.();}return result;}
   async function close(){if(closed)return;closed=true;stopUpdate();if(timer!==null)clearInterval(timer);await tail;}
-  return {scan,start,close,drain:()=>tail,health:()=>({available:true,source:/** @type {const} */('loader'),lastScanAt,detail:{package:'@deepseek-ai/cordis',serviceKey:'loader',methods:['entries']}})};
+  return {scan,start,close,drain:()=>tail,health:()=>({available:lastScanAt!==null&&lastError===null,source:/** @type {const} */('loader'),lastScanAt,lastError,unreadable:unreadableCount,detail:{package:'@deepseek-ai/cordis',serviceKey:'loader',methods:['entries']}})};
 }

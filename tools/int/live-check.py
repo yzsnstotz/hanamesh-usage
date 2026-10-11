@@ -1,26 +1,35 @@
 """Card-owned live observer checks; never creates usage records or changes timers."""
-import json, sys, time, subprocess, urllib.request
+import argparse, json, sys, time, subprocess, urllib.request, re
 from pathlib import Path
-CONTROL = Path(sys.argv[1]).resolve()
-if CONTROL.parent != Path('/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01') or not CONTROL.name.startswith('control-'):
-    raise ValueError('CONTROL_NOT_THIS_CARD')
-OUT = CONTROL / 'evidence'
-OUT.mkdir(exist_ok=True)
-MAIN = 'qQZ6SDAcckArVBoOHzEtbx17vrLU-by3UhxA_vB815w'
-OTHER = 'GlddWEuTPx1eM81_a8pYNt9byskcX8KoM4GEG0sf2Cg'
+sys.path.insert(0,str(Path(__file__).resolve().parent.parent))
+from card_run import card_run
+parser=argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--card',required=True);parser.add_argument('--run',required=True)
+parser.add_argument('mode',choices=['snapshot','atomic-watch']);parser.add_argument('prefix',nargs='?')
+options=parser.parse_args();CONTROL=card_run(options.card,options.run)
+inputs=json.loads((CONTROL/'state/OBSERVER_INPUTS.json').read_text())
+MAIN,OTHER=inputs['mainDeviceId'],inputs['otherDeviceId']
+if any(not isinstance(v,str) or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.:-]{0,159}',v) for v in [MAIN,OTHER]):raise ValueError('DEVICE_ID_INVALID')
+ports=[inputs['mainObserverPort'],inputs['otherObserverPort']]
+if any(type(p)!=int or not 1<=p<=65535 or p==3080 for p in ports):raise ValueError('ISOLATED_PORT_REQUIRED')
+container=inputs['pgContainer']
+if not re.fullmatch(r'hanamesh-'+re.escape(options.card.lower())+r'-[a-z0-9-]+-pg',container):raise ValueError('PG_NOT_THIS_CARD')
+OUT=CONTROL/'evidence';OUT.mkdir(exist_ok=True)
 def save(name, value):
     (OUT / (name + '.json')).write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
-def observer(op, method='GET', port=62153):
+def observer(op, method='GET', port=None):
+    if port is None:port=ports[0]
     with urllib.request.urlopen(urllib.request.Request(f'http://127.0.0.1:{port}/{op}', method=method), timeout=10) as r:
         return json.load(r)
 def pg():
     sql = f"BEGIN READ ONLY; SELECT COALESCE(json_agg(t ORDER BY event_id),'[]'::json) FROM (SELECT event_id, device_id, principal_id, hana_ref, action, occurred_at, received_at FROM usage.events WHERE device_id IN ('{MAIN}','{OTHER}')) t; COMMIT;"
-    r = subprocess.run(['/opt/homebrew/bin/docker','--host','unix:///Users/yzliu/.colima/default/docker.sock','exec','-i','hanamesh-p04-real-99f45855-pg','psql','-h','127.0.0.1','-v','ON_ERROR_STOP=1','-qAt','-U','postgres','-d','hm_local','-c',sql], capture_output=True, text=True, check=True)
+    r = subprocess.run(['/opt/homebrew/bin/docker','--host','unix:///Users/yzliu/.colima/default/docker.sock','exec','-i',container,'psql','-h','127.0.0.1','-v','ON_ERROR_STOP=1','-qAt','-U','postgres','-d','hm_local','-c',sql], capture_output=True, text=True, check=True)
     return json.loads(r.stdout)
-mode=sys.argv[2]
+mode=options.mode
 if mode == 'snapshot':
-    prefix=sys.argv[3]
-    for name,port in [('main',62153),('other',55132)]:
+    prefix=options.prefix
+    if not prefix or not re.fullmatch(r'[A-Za-z0-9_-]+',prefix):raise ValueError('PREFIX_REQUIRED')
+    for name,port in [('main',ports[0]),('other',ports[1])]:
         for op in ['state','remote']: save(f'{prefix}-{name}-{op}',observer(op,port=port))
     rows=pg();save(prefix+'-pg',rows)
     print(json.dumps({'prefix':prefix,'PG':len(rows)}))

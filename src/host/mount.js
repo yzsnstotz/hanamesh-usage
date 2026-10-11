@@ -1,6 +1,6 @@
 // @ts-check
 import { randomBytes } from 'node:crypto';
-import { UsageError, UsageStore, EventStore, commitAfterSource, deriveUsageEvent, eventNonceFromBytes, projectTerminal } from '../core/index.js';
+import { UsageError, UsageStore, EventStore, commitAfterSource, deriveUsageEvent, eventNonceFromBytes, projectTerminal, DEFAULT_EVENT_RETENTION_DAYS, DEFAULT_QUERY_LIMIT, MAX_QUERY_LIMIT } from '../core/index.js';
 import { signUsageEvent } from './core-link.js';
 import { mountTransport } from './transport.js';
 import { createRecordSeat } from './record.js';
@@ -21,8 +21,9 @@ import { projectUsagePanel } from './panel.js';
  * @param {(accept:(fact:unknown)=>void)=>ReturnType<typeof mountCommandFacts>} [commandSource]
  */
 export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink, commandSource = accept=>mountCommandFacts(ctx,accept,config.maxPending)) {
-  const store = new UsageStore(domain.global, config.maxRecords);
-  const eventStore = new EventStore(eventDomain.global, config.maxEvents);
+  const eventRetentionDays=config.eventRetentionDays??DEFAULT_EVENT_RETENTION_DAYS,queryLimit=config.queryLimit??DEFAULT_QUERY_LIMIT;
+  const store = new UsageStore(domain.global, config.maxRecords, queryLimit);
+  const eventStore = new EventStore(eventDomain.global, config.maxEvents, Date.now, eventRetentionDays, queryLimit);
   /** @type {Map<string, {dirty: boolean, session: import('@deepseek-ai/dsh-session').Session}>} */
   const pending = new Map();
   /** @type {Record<string, number>} */
@@ -38,7 +39,7 @@ export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink,
   };
   /** Bounded code-only diagnostics: never print raw errors, sessions or payloads. @param {unknown} error */
   const note = (error) => {
-    const allowed = ['CAPACITY_REACHED','SOURCE_IDENTITY_CONFLICT','NO_DURABILITY_LISTENER','SOURCE_NOT_DURABLE','QUEUE_FULL','BINDING_ID_MISMATCH','INVALID_SOURCE_ID','INVALID_DECLARATION','EVENTS_CAPACITY_REACHED','EVENT_IDENTITY_CONFLICT','DERIVE_FAILED','INVENTORY_ENTRY_UNREADABLE','INVENTORY_FAILED'];
+    const allowed = ['CAPACITY_REACHED','SOURCE_IDENTITY_CONFLICT','NO_DURABILITY_LISTENER','SOURCE_NOT_DURABLE','QUEUE_FULL','BINDING_ID_MISMATCH','INVALID_SOURCE_ID','INVALID_DECLARATION','EVENTS_CAPACITY_REACHED','EVENT_IDENTITY_CONFLICT','DERIVE_FAILED','INVENTORY_ENTRY_UNREADABLE','INVENTORY_FAILED','INVENTORY_PACKAGE_UNRESOLVED','INVENTORY_PACKAGE_INVALID','INVENTORY_PACKAGE_READ_FAILED','COMMAND_SOURCE_INVALID','COMMAND_SOURCE_UNAVAILABLE','COMMAND_SOURCE_UNREADABLE','COMMAND_SOURCE_OWNER_NOT_FOUND','COMMAND_SOURCE_OWNER_INVALID','PAGE_SOURCE_UNREADABLE'];
     const code = error instanceof UsageError && allowed.includes(error.code) ? error.code : 'OBSERVATION_FAILED';
     failures[code] = (failures[code] ?? 0) + 1;
   };
@@ -135,7 +136,7 @@ export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink,
     if(closing||coreState().consent!=='granted'||fact===null||typeof fact!=='object'||Array.isArray(fact))return;
     const item=/** @type {{phase?:unknown,commandId?:unknown,source?:unknown,occurredAt?:unknown}} */(fact);
     if(item.phase!=='succeeded'||typeof item.commandId!=='string'||typeof item.occurredAt!=='number'||!Number.isSafeInteger(item.occurredAt))return;
-    const hanaRef=commandPackage(ctx,item.source);if(hanaRef===null)return;
+    const hanaRef=commandPackage(ctx,item.source,code=>note(new UsageError(code)));if(hanaRef===null)return;
     const observedAt=new Date(item.occurredAt);if(!Number.isFinite(observedAt.getTime()))return;
     const occurredAt=observedAt.toISOString();
     const idempotencyKey=`command:${item.commandId}:succeeded`;
@@ -144,7 +145,7 @@ export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink,
   const stopEvent = ctx.on('session/event', (session, event) => { commandFacts.observe(session,event); if (event.type === 'turn/end') schedule(session); });
   const pages=createPageFacts(ctx,()=>!closing&&coreState().consent==='granted',(input,allowed)=>{
     const run=jobs.then(()=>allowed()?record(input):{disposition:'rejected'});jobs=run.then(()=>{}).catch(note);return run;
-  },config.maxPending);
+  },config.maxPending,code=>note(new UsageError(code)));
   const stopPages=ctx.inject(['typertGateway'],async child=>{
     const {mountPagesRemote}=await import('./pages-remote.js');
     return mountPagesRemote(child,pages);
@@ -172,10 +173,10 @@ export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink,
     events: (filter = {}) => eventStore.query(filter),
     record,
     remote: () => reporter.readRemote(),
-    panel: () => projectUsagePanel(api.health(),eventStore.getSnapshot().events,coreLink.get(),config.panelTestSupply),
+    panel: () => projectUsagePanel(api.health(),eventStore.getSnapshot().events,coreLink.get(),config.panelTestSupply,{eventRetentionDays,queryLimit,maxQueryLimit:MAX_QUERY_LIMIT}),
     health: () => {
-      const current=coreState(),outbox=reporter.health();
-      return { pending: pending.size, recoveryComplete, failures: { ...failures }, consent:current.consent, core:coreLink.status(), deviceId:current.deviceId, outbox, derive:{skipped:{...skipped}}, withdrawal:eventStore.getSnapshot().withdrawal, inventory:inventory.health() };
+      const current=coreState(),outbox=reporter.health(),{available,source,lastScanAt,detail}=inventory.health();
+      return { pending: pending.size, recoveryComplete, failures: { ...failures }, consent:current.consent, core:coreLink.status(), deviceId:current.deviceId, outbox, derive:{skipped:{...skipped}}, withdrawal:eventStore.getSnapshot().withdrawal, inventory:{available,source,lastScanAt,detail} };
     },
     async drain() { await jobs; await inventory.drain(); await reporter.drain(); await store.drain(); await eventStore.drain(); },
     async reconcile() {

@@ -17,7 +17,7 @@ test('normal client export contributes exactly its own Settings section',async()
   const pkg=JSON.parse(readFileSync(new URL('../package.json',import.meta.url),'utf8'));
   assert(pkg.exports['./client'],'normal installed bundle has no public client export');
   const client=materialize();let slot,entry,component,disposed=false;
-  await client.apply({on:()=>()=>{},effect:fn=>fn(),remote:{$mount:async()=>()=>{}},slots:{inject(name,fn){slot=name;const dispose=fn();dispose();},register(options,body){entry=options;component=body;return()=>{disposed=true;};}}});
+  await client.apply({on:()=>()=>{},effect:fn=>fn(),inject(deps,fn){assert.deepEqual(Array.from(deps),['remote.hanameshUsagePages','slots']);fn(this);return Promise.resolve();},remote:{$mount:async()=>()=>{}},slots:{inject(name,fn){slot=name;const dispose=fn();dispose();},register(options,body){entry=options;component=body;return()=>{disposed=true;};}}});
   assert.equal(slot,'settings.section');assert.equal(entry.id,'hanamesh-usage');assert.equal(entry.label,'Usage 开发小面板');assert.equal(component,client.UsagePanel);assert(disposed);
 });
 test('panel read uses the selected carrier with receiver and refuses non-HTML/error replies',async()=>{

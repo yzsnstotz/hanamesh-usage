@@ -16,6 +16,7 @@ interface ClientContext {
   remote:{$mount(contribution:import('@deepseek-ai/dsh-typert-protocol').TypertRemoteContribution):Promise<()=>void>;hanameshUsagePages:PagesRemote};
   on(name:'internal/get',listener:(caller:unknown,name:string,error:unknown,next:()=>unknown)=>unknown):()=>void;
   effect(fn:()=>unknown):unknown;
+  inject(names:string[],mount:(ctx:ClientContext)=>void):PromiseLike<unknown>;
 }
 interface Carrier { fetch?(input:string|URL, init:RequestInit):Promise<Response> }
 declare global { interface Window { __DSH_TRANSPORT__?:Carrier } }
@@ -112,6 +113,7 @@ function presentedPage(component:import('react').ComponentType<any>,source:PageS
 /** Install before awaiting Remote mounting, so concurrent slot registrations are captured. */
 export async function apply(ctx:ClientContext):Promise<void> {
   let closed=false;
+  let pagesContext:ClientContext|null=null;
   const stop=ctx.on('internal/get',(caller,name,_error,next)=>{
     const service=next();
     if(closed||name!=='slots'||!service||typeof (service as {register?:unknown}).register!=='function')return service;
@@ -121,7 +123,7 @@ export async function apply(ctx:ClientContext):Promise<void> {
       return (options:{name?:string},component:import('react').ComponentType<any>)=>{
         const owner=slotOwner(caller);
         const body=!closed&&owner&&['main','settings.section','plugins.bundle.config','plugins.row.config'].includes(options?.name??'')
-          ?presentedPage(component,{...owner,surface:options.name!},()=>ctx.remote.hanameshUsagePages,()=>!closed):component;
+          ?presentedPage(component,{...owner,surface:options.name!},()=>pagesContext!.remote.hanameshUsagePages,()=>!closed&&pagesContext!==null):component;
         return Reflect.apply(member,target,[options,body]);
       };
     }});
@@ -130,5 +132,11 @@ export async function apply(ctx:ClientContext):Promise<void> {
   try {await ctx.effect(async()=>await ctx.remote.$mount(pagesContribution));}
   catch(error){closed=true;stop();throw error;}
   if(closed)return;
-  ctx.slots.inject('settings.section',()=>ctx.slots.register({name:'settings.section',id:'hanamesh-usage',order:80,label:'Usage 开发小面板'},UsagePanel));
+  // $mount creates the namespace. Declare its dependency in a child fiber only
+  // afterwards; accessing it through the outer remote inject is prohibited.
+  await ctx.inject(['remote.hanameshUsagePages','slots'],scoped=>{
+    pagesContext=scoped;
+    scoped.effect(()=>()=>{if(pagesContext===scoped)pagesContext=null;});
+    scoped.slots.inject('settings.section',()=>scoped.slots.register({name:'settings.section',id:'hanamesh-usage',order:80,label:'Usage 开发小面板'},UsagePanel));
+  });
 }

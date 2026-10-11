@@ -43,9 +43,11 @@ export declare class EventStore {
     private readonly global;
     private readonly maxEvents;
     private readonly now;
+    private readonly eventRetentionDays;
+    private readonly queryLimit;
     private snapshot;
     private tail;
-    constructor(global: EventGlobalPort, maxEvents?: number, now?: () => number);
+    constructor(global: EventGlobalPort, maxEvents?: number, now?: () => number, eventRetentionDays?: number, queryLimit?: number);
     private commit;
     put(input: UsageEvent): Promise<'inserted' | 'duplicate'>;
     signPending(signer: (event: UsageEvent) => UsageEvent): Promise<number>;

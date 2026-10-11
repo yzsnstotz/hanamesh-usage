@@ -8,8 +8,9 @@ const surfaces=['main','settings.section','plugins.bundle.config','plugins.row.c
  * @param {()=>boolean} consent
  * @param {(input:any,allowed:()=>boolean)=>Promise<any>} record
  * @param {number} limit
+ * @param {(code:string)=>void} [note]
  */
-export function createPageFacts(ctx,consent,record,limit){
+export function createPageFacts(ctx,consent,record,limit,note=()=>{}){
  /** @type {Map<string,{peer:object,source:{entryId:string,moduleName:string,packageName:string},surface:string,epoch:number,issuedAt:number}>} */
  const credentials=new Map();let epoch=0,closed=false;
  const rejected=()=>({disposition:'rejected'});
@@ -20,9 +21,9 @@ export function createPageFacts(ctx,consent,record,limit){
    if(!request||typeof request!=='object'||Array.isArray(request)||Object.keys(request).sort().join('|')!=='entryId|moduleName|surface')return rejected();
    const item=/** @type {any} */(request);
    if(typeof item.entryId!=='string'||typeof item.moduleName!=='string'||!surfaces.includes(item.surface))return rejected();
-   const name=commandPackage(ctx,item);if(name===null)return rejected();
+   const name=commandPackage(ctx,item,note);if(name===null)return rejected();
    const source={entryId:item.entryId,moduleName:item.moduleName,packageName:name},observedEpoch=epoch;
-   if(await pagePackage(ctx,source)!==name||closed||epoch!==observedEpoch||!consent())return rejected();
+   if(await pagePackage(ctx,source,note)!==name||closed||epoch!==observedEpoch||!consent())return rejected();
    const now=Date.now();for(const [token,value] of credentials)if(now-value.issuedAt>60000)credentials.delete(token);
    if(credentials.size>=limit)return rejected();
    const credential=randomBytes(32).toString('base64url');
@@ -36,7 +37,7 @@ export function createPageFacts(ctx,consent,record,limit){
    const item=credentials.get(token);if(!item||item.peer!==peer)return rejected();
    credentials.delete(token); // single-use even when storage or async ownership checks fail
    if(item.epoch!==epoch||Date.now()-item.issuedAt>60000||!consent())return rejected();
-   const name=await pagePackage(ctx,item.source);
+   const name=await pagePackage(ctx,item.source,note);
    if(name===null||closed||item.epoch!==epoch||!consent())return rejected();
    return record({hanaRef:name,action:'open',occurredAt:new Date().toISOString(),idempotencyKey:`page:${createHash('sha256').update(token).digest('hex')}`,sourcePlugin:name},()=>!closed&&item.epoch===epoch&&consent());
   },

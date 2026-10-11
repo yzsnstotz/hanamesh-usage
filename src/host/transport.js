@@ -1,6 +1,9 @@
 // @ts-check
 import { UsageError, exportEventProjection, renderUsage, validateFilter } from '../core/index.js';
 import { renderUsagePanel } from './panel.js';
+/** Build-only optional transport augmentation; public CLI declarations do not require Connection.
+ * @typedef {import('@deepseek-ai/dsh-client-connection').HostConnectionService} OptionalConnection
+ */
 /** @param {URL} url @returns {import('../core/index.js').Filter} */
 function parseFilter(url) {
   /** @type {Record<string, string | number>} */

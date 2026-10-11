@@ -1,3 +1,4 @@
+import {cardRun} from '../card-run.mjs';
 // Final integration launcher: unchanged official runProfile; genuine installed Core/Usage.
 // This development observer only reads services and replays an already observed ordinary fact.
 // It does not supply identity, consent, device keys, actions or event records.
@@ -5,8 +6,8 @@ import {readFile,writeFile,chmod} from 'node:fs/promises';
 import {createServer} from 'node:http';
 import {pathToFileURL} from 'node:url';
 import path from 'node:path';
-const run=path.resolve(process.argv[2]??'');
-if(path.dirname(run)!=='/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01'||!path.basename(run).startsWith('real-'))throw Error('RUN_NOT_THIS_CARD');
+const {run,args}=cardRun();
+if(args.length!==0)throw Error('UNEXPECTED_ARGS');
 if(process.env.DSH_HOME!==path.join(run,'dsh-home'))throw Error('DSH_HOME_NOT_ISOLATED');
 const inputs=JSON.parse(await readFile(path.join(run,'state/INPUTS.json'),'utf8'));
 const runtimeRoot=inputs.dshRuntimeRoot;

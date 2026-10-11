@@ -114,3 +114,9 @@ rc.5 上限 🧪，不是用户 ACCEPTED。
 - 红测同两项 peer missing 与证据清理丢失均 ERR_ASSERTION；最终卡片完整命令 exit 0、157/157；额外 npm run build/check 与 17/17 mutations（含 X03 反序）通过。未修改生产写序或编译严格选项。
 - 同份记录：[J1S4-USAGE-07](J1S4-USAGE-07/README.md)，learning：[USAGE-005](../learnings/USAGE-005-detached-frozen-peer-closure.md)。最终提交与交付件校验在运行目录 REPORT.md。
 - detached 输出仍仅离线语义构建；真实宿主、原生介质、UI 与 owner ACCEPTED 不因此升级。本次仅本地 main，不 push、不发布、不写共享 STATUS。开工前未提交 TAP 在运行目录及独立 stash 保全。
+
+## J2S2-USAGE-08 · Q67 分发闭包 / Q61 补遗（2026-10-11）
+
+- 最新 main 60fe1ed 的逐项复核、920 文件归档、published JS/声明干净消费者、具名默认/可见失败与工具参数，见 [同份本卡验收记录](J2S2-USAGE-08/README.md)。开发合约 v0.9.0 保留 dev-only；没有 ABI/SQL/签名或授权语义变更。
+- 原生官方 DSH Settings 三项通过；修复 namespace 缺 inject 引起的真实错误边界。完整 U1 仍归 USAGE05，未验证，不能升为产品 ACCEPTED。
+- 结果阻塞：默认官方 DSH 0.2.0-rc.2 实际 Usage import base 的 zod 为 4.6.5，与既有精确 peer 4.5.4 不符；不修改 peer、不预装/改上游策略。候选 rc.25 本地保存，请 PM 提供兼容正式宿主闭包。

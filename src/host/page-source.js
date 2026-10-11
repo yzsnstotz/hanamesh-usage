@@ -5,11 +5,13 @@ import {commandPackage} from './command-source.js';
  * Built-in platform pages and platform-owned generated configuration pages are not ordinary plugin opens.
  * @param {import('@deepseek-ai/cordis').Context} ctx
  * @param {{entryId:string,moduleName:string,packageName:string}} source
+ * @param {(code:string)=>void} [note]
  * @returns {Promise<string|null>}
  */
-export async function pagePackage(ctx,source){
-  const name=commandPackage(ctx,source);
+export async function pagePackage(ctx,source,note=()=>{}){
+  const name=commandPackage(ctx,source,note);
   if(name===null||name!==source.packageName)return null;
+  try {
   const inventory=/** @type {{list?():Promise<{entries:Array<{entryId:string,moduleName:string,enabled:boolean,fiberPhase:string|null}>}>}|undefined} */(ctx.get('pluginInventory'));
   const manager=/** @type {{listBundles?():Promise<Array<{installed:boolean,enabled:boolean,removable:boolean,error?:unknown,readOnlyReason?:unknown,rows:Array<{entryId?:string,moduleName:string}>}>>}|undefined} */(ctx.get('pluginManager'));
   if(typeof inventory?.list!=='function'||typeof manager?.listBundles!=='function')return null;
@@ -21,5 +23,6 @@ export async function pagePackage(ctx,source){
     &&b.rows.some(r=>r.entryId===source.entryId&&r.moduleName===source.moduleName));
   if(owners.length!==1)return null;
   // Resolution is checked again after async Inventory/management reads.
-  return commandPackage(ctx,source)===name?name:null;
+  return commandPackage(ctx,source,note)===name?name:null;
+  } catch { note('PAGE_SOURCE_UNREADABLE');return null; }
 }

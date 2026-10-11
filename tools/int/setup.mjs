@@ -1,3 +1,4 @@
+import {cardRun} from '../card-run.mjs';
 // P04-USAGE-INT-01 assembly only: fresh DSH_HOME, then the public CLI installs the ordinary sample and the Usage
 // candidate as ordinary bundles (PUBLIC_CLI_PLUGIN_ADD_BUNDLE). The Desktop checkout is read, never modified.
 //   node tools/int/setup.mjs <desktop> <run> <sample.tgz> <usage.tgz>
@@ -6,8 +7,9 @@ import {createHash} from 'node:crypto';
 import {existsSync, mkdirSync, readFileSync, writeFileSync} from 'node:fs';
 import {join, resolve} from 'node:path';
 
-const [desktop, run, sample, candidate] = process.argv.slice(2).map(p => resolve(p));
-if (!run?.endsWith('/hanamesh-runs/P04-USAGE-INT-01')) throw new Error('RUN_NOT_THIS_CARD');
+const {run,args}=cardRun();
+if(args.length!==3)throw Error('DESKTOP_SAMPLE_CANDIDATE_REQUIRED');
+const [desktop,sample,candidate]=args.map(p=>resolve(p));
 const home = join(run, 'dsh-home');
 if (process.env.DSH_HOME !== home) throw new Error('DSH_HOME_NOT_ISOLATED');
 if (existsSync(join(home, 'profiles'))) throw new Error('DSH_HOME_NOT_FRESH');

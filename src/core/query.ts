@@ -1,5 +1,6 @@
 import type { Declaration, Filter, MetricTotal, Observation, QueryResult, RemoteState } from './types.js';
 import { UsageError } from './privacy.js';
+import { DEFAULT_QUERY_LIMIT, MAX_QUERY_LIMIT, validateQueryLimit } from './policy.js';
 
 export function metricTotal(values: readonly Observation<number>[]): MetricTotal {
   const result: MetricTotal = { reported: { sum: null, count: 0 }, estimated: { sum: null, count: 0 }, unavailable: 0 };
@@ -16,13 +17,14 @@ export function validateFilter(filter: Filter): void {
   if (Object.keys(filter).some(k => !['executor','from','to','result','source','quality','offset','limit'].includes(k))) throw new UsageError('INVALID_FILTER');
   if (filter.executor !== undefined && (typeof filter.executor !== 'string' || filter.executor.length > 160)) throw new UsageError('INVALID_FILTER');
   for (const value of [filter.from,filter.to,filter.offset,filter.limit]) if (value !== undefined && (!Number.isSafeInteger(value) || value < 0)) throw new UsageError('INVALID_FILTER');
-  if (filter.limit !== undefined && (filter.limit < 1 || filter.limit > 1000)) throw new UsageError('INVALID_FILTER');
+  if (filter.limit !== undefined && (filter.limit < 1 || filter.limit > MAX_QUERY_LIMIT)) throw new UsageError('INVALID_FILTER');
   if (filter.from !== undefined && filter.to !== undefined && filter.from > filter.to) throw new UsageError('INVALID_FILTER');
   if (filter.result !== undefined && !['completed','failed','interrupted','unavailable'].includes(filter.result)) throw new UsageError('INVALID_FILTER');
   if (filter.quality !== undefined && !['reported','estimated','unavailable'].includes(filter.quality)) throw new UsageError('INVALID_FILTER');
   if (filter.source !== undefined && filter.source !== 'registry-session-log') throw new UsageError('INVALID_FILTER');
 }
-export function queryRecords(records: readonly Declaration[], filter: Filter = {}): QueryResult {
+export function queryRecords(records: readonly Declaration[], filter: Filter = {}, defaultLimit = DEFAULT_QUERY_LIMIT): QueryResult {
+  validateQueryLimit(defaultLimit);
   validateFilter(filter);
   const matched = records.filter(r => {
     const end = r.time.endedAt;
@@ -41,7 +43,7 @@ export function queryRecords(records: readonly Declaration[], filter: Filter = {
   const offset = filter.offset ?? 0;
   return {
     total: matched.length,
-    records: structuredClone(matched.slice(offset, offset + (filter.limit ?? 100))),
+    records: structuredClone(matched.slice(offset, offset + (filter.limit ?? defaultLimit))),
     aggregate: {
       inputTokens: metricTotal(matched.map(r => r.usage.inputTokens)),
       outputTokens: metricTotal(matched.map(r => r.usage.outputTokens)),

@@ -2,12 +2,14 @@ import type { Declaration, Filter, GlobalPort, QueryResult } from './types.js';
 import { UsageError, exportProjection } from './privacy.js';
 import { queryRecords } from './query.js';
 import { validateDeclaration, validateSnapshot } from './validate.js';
+import { DEFAULT_QUERY_LIMIT, validateQueryLimit } from './policy.js';
 
 /** Single-writer, single-domain projection. Counters are derived, never separately committed. */
 export class UsageStore {
   private tail: Promise<void> = Promise.resolve();
   private closed = false;
-  constructor(private readonly global: GlobalPort, private readonly maxRecords = 5000) {
+  constructor(private readonly global: GlobalPort, private readonly maxRecords = 5000, private readonly queryLimit = DEFAULT_QUERY_LIMIT) {
+    validateQueryLimit(queryLimit);
     if (!Number.isSafeInteger(maxRecords) || maxRecords < 1 || maxRecords > 100000) throw new UsageError('INVALID_CAPACITY');
     validateSnapshot(global.get());
   }
@@ -34,7 +36,7 @@ export class UsageStore {
   query(filter: Filter = {}): QueryResult {
     if (this.closed) throw new UsageError('STORE_CLOSED');
     const snapshot = this.global.get(); validateSnapshot(snapshot);
-    return queryRecords(snapshot.records, filter);
+    return queryRecords(snapshot.records, filter, this.queryLimit);
   }
   export(filter: Filter = {}): QueryResult {
     const result = this.query(filter);

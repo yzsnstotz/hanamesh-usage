@@ -89,3 +89,14 @@ O1 当前用计数返回 `accepted` / `duplicates`，没有逐条成功 id；客
 ## 有界错误码
 
 `INVALID_FILTER`、`EXPORT_DISABLED`、`USAGE_UNAVAILABLE`、`INVALID_RECORD_INPUT`、`DEVICE_UNAVAILABLE`、`EVENTS_CAPACITY_REACHED`、`EVENT_IDENTITY_CONFLICT`、`DERIVE_FAILED`、`CORE_SIGNATURE_INVALID`、`UPLOAD_UNAUTHORIZED`、`UPLOAD_UNAVAILABLE`、`UPLOAD_RESPONSE_INVALID`、`WITHDRAW_UNAVAILABLE`。错误响应、远端响应体、自由文本、prompt、文件路径与凭据都不写入本地状态或日志。
+
+## Q61 local policy (Usage provider only)
+
+Config adds `eventRetentionDays?: number` (default 90, positive integral days with safe millisecond product)
+and `queryLimit?: number` (default 100, 1–1000). The existing explicit query limit takes precedence.
+`panel().policy` returns `{eventRetentionDays,queryLimit,maxQueryLimit:1000}`; the read-only panel renders it.
+The published C-USAGE-LOCAL health shape, event schemaVersion=1, signatures and source ownership remain unchanged.
+Health failures contain bounded INVENTORY_PACKAGE_*/INVENTORY_FAILED/COMMAND_SOURCE_*/PAGE_SOURCE_UNREADABLE counts.
+No raw Error, prompt, path or credential is returned. Internal inventory status is projected to the original public fields.
+Deterministic default example: `{eventRetentionDays:90,queryLimit:100,maxQueryLimit:1000}`.
+SOURCE/FIXTURE coverage: tests/q61-policy-diagnostics.test.mjs, tests/command-facts.test.mjs and tests/page-facts.test.mjs.

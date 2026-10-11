@@ -1,10 +1,11 @@
+import {cardRun} from '../card-run.mjs';
 // Final integration assembly only: public official CLI installs unchanged bundles in a new DSH_HOME.
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {readFileSync,writeFileSync,existsSync} from 'node:fs';
 import path from 'node:path';
-const run=path.resolve(process.argv[2]??'');
-if(path.dirname(run)!=='/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01'||!path.basename(run).startsWith('real-'))throw Error('RUN_NOT_THIS_CARD');
+const {run,args}=cardRun();
+if(args.length!==0)throw Error('UNEXPECTED_ARGS');
 if(process.env.DSH_HOME!==path.join(run,'dsh-home'))throw Error('DSH_HOME_NOT_ISOLATED');
 const inputs=JSON.parse(readFileSync(path.join(run,'state/INPUTS.json'),'utf8'));
 const cli=inputs.dshRuntimeRoot

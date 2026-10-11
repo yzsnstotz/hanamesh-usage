@@ -1,3 +1,4 @@
+import {cardRun} from '../card-run.mjs';
 // P04-USAGE-INT-01 assembly only (not product code): a fresh, card-owned hanamesh-server instance
 // (rc.35 since HOST-USAGE12-SUPPLY-01; rc.34 before).
 // Consumes the delivered Host package as installed under <run>/host/hanamesh-server (exact tgz + its lock),
@@ -5,18 +6,17 @@
 // Secrets live only in <run>/host/state/secrets.json and runtime.env.json (0600); never printed.
 //   node tools/int/host.mjs <run> up | start | status
 import {spawn, spawnSync} from 'node:child_process';
-import {randomBytes, generateKeyPairSync} from 'node:crypto';
+import {randomBytes, generateKeyPairSync, createHash} from 'node:crypto';
 import {mkdir, readFile, writeFile, chmod, open} from 'node:fs/promises';
 import path from 'node:path';
 
-const [runArg, command] = process.argv.slice(2);
-if (!runArg || !['up', 'start', 'status'].includes(command)) throw new Error('usage: host.mjs <run> up|start|status');
-const RUN = path.resolve(runArg);
-if (!RUN.endsWith('/hanamesh-runs/P04-USAGE-INT-01')) throw new Error('RUN_NOT_THIS_CARD');
+const {run:RUN,card,args}=cardRun();
+const [command]=args;
+if(args.length!==1||!['up','start','status'].includes(command))throw Error('HOST_COMMAND_REQUIRED');
 const PKG = path.join(RUN, 'host/hanamesh-server');
 const STATE = path.join(RUN, 'host/state');
-const CONTAINER = 'hanamesh-p04-usage-int-01-pg';
-const LABEL = 'hanamesh.card=P04-USAGE-INT-01';
+const CONTAINER = `hanamesh-${card.toLowerCase()}-${createHash('sha256').update(RUN).digest('hex').slice(0,8)}-pg`;
+const LABEL = `hanamesh.card=${card}`;
 // pgvector/pgvector:pg17 already cached on this machine; never pulled.
 const IMAGE = 'sha256:cf134a767f474095eeba57e0117be8e568e011a63f33fbf252f14c9b760f8e6f';
 const PORT = 48670;

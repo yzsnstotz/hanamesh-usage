@@ -37,6 +37,7 @@ interface ClientContext {
     };
     on(name: 'internal/get', listener: (caller: unknown, name: string, error: unknown, next: () => unknown) => unknown): () => void;
     effect(fn: () => unknown): unknown;
+    inject(names: string[], mount: (ctx: ClientContext) => void): PromiseLike<unknown>;
 }
 interface Carrier {
     fetch?(input: string | URL, init: RequestInit): Promise<Response>;

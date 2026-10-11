@@ -1,3 +1,4 @@
+import {cardRun} from '../card-run.mjs';
 // P04-USAGE-INT-01 first-stage trial entry (development only; never packaged).
 // Real: DSH Host/loader/storage/commands, the Usage bundle installed by the public CLI, ServerUsage/Identity public
 // HTTP on the card's own hanamesh-server rc.34 + PostgreSQL. Explicit fixtures, labelled on the page: the Core
@@ -16,8 +17,9 @@ for (const stream of [process.stdout, process.stderr]) {
   const write = stream.write.bind(stream);
   stream.write = (chunk, ...args) => write(String(chunk).replace(/([?&]token=)[^\s&]+/g, '$1[REDACTED]'), ...args);
 }
-const [desktop, run] = process.argv.slice(2).map(p => resolve(p));
-assert(run.endsWith('/hanamesh-runs/P04-USAGE-INT-01') && process.env.DSH_HOME === join(run, 'dsh-home'));
+const {run,args}=cardRun();
+assert(args.length===1&&process.env.DSH_HOME===join(run,'dsh-home'));
+const desktop=resolve(args[0]);
 const HOST_ORIGIN = 'http://127.0.0.1:48670';
 const UI_PORT = 48671;
 const UI_ORIGINS = [`http://127.0.0.1:${UI_PORT}`, `http://localhost:${UI_PORT}`];

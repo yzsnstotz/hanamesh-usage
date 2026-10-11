@@ -1,3 +1,4 @@
+import {cardRun} from './card-run.mjs';
 // Component gate: real DSH Host/Loader/storage/command; Core and HTTP server are explicit fixtures.
 // Optional candidate is installed as an ordinary bundle; otherwise mount the generated Host entry.
 import assert from 'node:assert/strict';
@@ -13,8 +14,9 @@ for(const stream of [process.stdout,process.stderr]){
   stream.write=(chunk,...args)=>write(String(chunk).replace(/([?&]token=)[^\s&]+/g,'$1[REDACTED]'),...args);
 }
 
-const [desktop,run]=process.argv.slice(2).map(p=>resolve(p));
-assert(desktop&&run&&process.env.DSH_HOME===join(run,'dsh-home'));
+const {run,args}=cardRun();
+assert(args.length===1&&process.env.DSH_HOME===join(run,'dsh-home'));
+const desktop=resolve(args[0]);
 const evidence=join(run,'evidence');await mkdir(evidence,{recursive:true});
 const {runProfile}=await import(pathToFileURL(join(desktop,'apps/cli/lib/profile-boot.js')));
 const {createLaunchEnvironmentSnapshot}=await import(pathToFileURL(join(desktop,'packages/util/launch-environment/lib/index.js')));
@@ -85,12 +87,12 @@ try{
     const builtin=[...ctx.loader.entries()].find(e=>e.options.name==='@deepseek-ai/dsh-client-ui-settings-general');assert(builtin);
     const builtinOwner=ctx.get('pluginPackages').packageOf(builtin.options.name,builtin.parent.tree.ctx.baseUrl);
     builtinSource={entryId:builtin.id,moduleName:builtin.options.name,packageName:builtinOwner.name};
-    result.pageInput={scope:'FIXTURE_HOST_PAGE_FACT_ON_REAL_INSTALLED_INVENTORY',source:pageSource,inventory:ordinary,bundle:{name:bundle.name,installed:bundle.installed,enabled:bundle.enabled,removable:bundle.removable}};
+    result.pageInput={scope:'NEGATIVE_LEGACY_PAGE_NOTIFICATION_ON_REAL_INSTALLED_INVENTORY_NOT_UI',source:pageSource,inventory:ordinary,bundle:{name:bundle.name,installed:bundle.installed,enabled:bundle.enabled,removable:bundle.removable}};
     ctx.on('client-page/opened',fact=>pageFacts.push(fact));
     await present(pageFact());assert.equal(api.events().total,0);
   }
   const session=await ctx.typertGateway.invoke({namespace:'session',method:'create',args:{request:{cwd:run,sessionId:'usage-component-command'}}});
-  const facts=[];ctx.on('commands/operation',fact=>facts.push(fact));
+  const facts=[];ctx.on('session/event',(original,event)=>{if(original.id!==session.sessionId||!['command/run','command/done'].includes(event.type))return;facts.push({sessionId:original.id,type:event.type,seq:event.seq,time:event.time,data:{commandId:event.data.commandId,...(event.type==='command/run'?{name:event.data.name}:{kind:event.data.kind})}});});
   async function execute(){const value=await ctx.typertGateway.invoke({namespace:'commands',method:'execute',args:{agentId:session.sessionId,line:'/check-updates',submittedAttachments:[]}});assert.equal(value.result.kind,'success');await api.drain();return value;}
   await execute();assert.equal(api.events().total,0);result.beforeConsent=api.events().total;
   assert.equal(api.panel().total,0);assert.deepEqual(api.panel().testSupply,{identity:true,receiver:true});
@@ -106,24 +108,24 @@ try{
   const use=events.filter(e=>e.action==='use');assert.equal(use.length,1);assert.equal(use[0].hanaRef,owner.name);assert.equal(use[0].sourcePlugin,owner.name);
   assert.equal(use[0].evidenceRef,`command:${action.commandId}:succeeded`);assert.equal(events.filter(e=>e.action==='open').length,0);
   assert(events.some(e=>e.action==='install'&&e.hanaRef===owner.name));result.installObserved=true;
-  const success=facts.find(f=>f.commandId===action.commandId&&f.phase==='succeeded');assert(success);
+  const success=facts.find(f=>f.data.commandId===action.commandId&&f.type==='command/done'&&f.data.kind==='success');assert(success);
   // Explicit fixture delivery replay: the production event already came from public dispatch above.
-  ctx.emit('commands/operation',success);await api.drain();assert.equal(api.events({limit:200}).events.filter(e=>e.action==='use').length,1);
-  result.deliveryReplay={scope:'FIXTURE_REDELIVERY_OF_REAL_FACT',useCount:1};
+  const original=ctx.sessions.get(session.sessionId);assert(original);ctx.emit('session/event',original,{type:success.type,seq:success.seq,time:success.time,data:{...success.data}});await api.drain();assert.equal(api.events({limit:200}).events.filter(e=>e.action==='use').length,1);
+  result.deliveryReplay={scope:'FIXTURE_REDELIVERY_OF_NATIVE_COMMAND_END',useCount:1};
   if(pageSource){
     const first=pageFact();await present(first);await present(first);
-    assert.equal(api.events({limit:200}).events.filter(e=>e.action==='open').length,1);
+    assert.equal(api.events({limit:200}).events.filter(e=>e.action==='open').length,0);
     await present(pageFact());
     const beforeBuiltin=api.events({limit:200});await present(pageFact(builtinSource));assert.deepEqual(api.events({limit:200}),beforeBuiltin);
-    const opens=api.events({limit:200}).events.filter(e=>e.action==='open');assert.equal(opens.length,2);
+    const opens=api.events({limit:200}).events.filter(e=>e.action==='open');assert.equal(opens.length,0);
     assert(opens.every(e=>e.hanaRef===pageSource.packageName&&e.sourcePlugin===pageSource.packageName));
-    result.pageEvents={firstAndDuplicate:1,afterReopen:2,builtinExcluded:true,events:opens};
+    result.pageEvents={firstAndDuplicate:0,afterReopen:0,builtinExcluded:true,legacyNotificationsIgnored:true,realPresentation:'NOT_RUN_USAGE05_REQUIRED',events:opens};
   }
   // Wait for the real reporter timer's first scheduled upload; bounded assertion, not a retry route.
   await new Promise(r=>setTimeout(r,5500));await api.drain();
   assert(rows.has(use[0].eventId));assert.equal(api.events({limit:200}).events.find(e=>e.eventId===use[0].eventId).upload.state,'sent');
   result.signedUse=rows.get(use[0].eventId);result.uploadReadback={serverRows:rows.size,localSent:api.health().outbox.sent};
-  if(pageSource){for(const event of result.pageEvents.events){assert(rows.has(event.eventId));assert.equal(api.events({limit:200}).events.find(e=>e.eventId===event.eventId).upload.state,'sent');}result.openUploadReadback=2;}
+  if(pageSource){for(const event of result.pageEvents.events){assert(rows.has(event.eventId));assert.equal(api.events({limit:200}).events.find(e=>e.eventId===event.eventId).upload.state,'sent');}result.openUploadReadback=0;}
   const panel=api.panel();assert.equal(panel.events.filter(event=>event.action==='use').length,1);assert(panel.events.every(event=>event.signature.state==='success'));assert(panel.events.every(event=>event.upload.state==='sent'));
   assert.deepEqual(api.panel(),panel);result.panelReadback={scope:'REAL_INSTALLED_HOST_PANEL_PROJECTION_NO_GUI',...panel};
   const panelRequest=new Request(`http://127.0.0.1:${result.hostPort}/api/hanamesh/usage/panel/view`);

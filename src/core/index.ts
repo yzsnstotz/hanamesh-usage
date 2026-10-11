@@ -1,4 +1,5 @@
 export * from './pins.js';
+export * from './policy.js';
 export * from './types.js';
 export * from './privacy.js';
 export * from './project.js';

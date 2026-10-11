@@ -1,6 +1,7 @@
 import { UsageError } from './privacy.js';
 import { safeMetadata } from './privacy.js';
 import { validateEvent, type UsageEvent, type UploadState } from './events.js';
+import { DEFAULT_EVENT_RETENTION_DAYS, DEFAULT_QUERY_LIMIT, DAY_MS, validateRetentionDays, validateQueryLimit } from './policy.js';
 
 export interface WithdrawalState {
   requestedAt: string;
@@ -22,7 +23,6 @@ export interface EventGlobalPort { get(): EventSnapshot; set(value: EventSnapsho
 export interface IngestBatchResult { accepted:number; duplicates:number; rejected:readonly {eventId:string;code:string}[]; durability:'committed'|'pending-host-commit' }
 
 const terminal = new Set<UploadState>(['sent','duplicate','rejected']);
-const retentionMs = 90 * 24 * 60 * 60 * 1000;
 /** 去重身份：rc.7 起把归因两字段与回执纳入；同 eventId 不同归因/回执是 EVENT_IDENTITY_CONFLICT。 */
 function identity(event: UsageEvent): string {
   const receipt=event.receipt??null;
@@ -47,7 +47,9 @@ export function validateEventSnapshot(value: unknown): asserts value is EventSna
 export class EventStore {
   private snapshot: EventSnapshot;
   private tail: Promise<void> = Promise.resolve();
-  constructor(private readonly global: EventGlobalPort, private readonly maxEvents = 5000, private readonly now: () => number = Date.now) {
+  constructor(private readonly global: EventGlobalPort, private readonly maxEvents = 5000, private readonly now: () => number = Date.now, private readonly eventRetentionDays = DEFAULT_EVENT_RETENTION_DAYS, private readonly queryLimit = DEFAULT_QUERY_LIMIT) {
+    validateRetentionDays(eventRetentionDays);
+    validateQueryLimit(queryLimit);
     if (!Number.isSafeInteger(maxEvents) || maxEvents < 1 || maxEvents > 100000) throw new UsageError('INVALID_CAPACITY');
     validateEventSnapshot(global.get());
     this.snapshot = structuredClone(global.get());
@@ -66,7 +68,7 @@ export class EventStore {
         if (identity(existing) !== identity(input)) throw new UsageError('EVENT_IDENTITY_CONFLICT');
         result = 'duplicate'; return;
       }
-      const cutoff = this.now() - retentionMs;
+      const cutoff = this.now() - this.eventRetentionDays * DAY_MS;
       const retained = this.snapshot.events.filter(event => !(terminal.has(event.upload.state) && event.upload.sentAt !== null && Date.parse(event.upload.sentAt) < cutoff));
       if (retained.length >= this.maxEvents) throw new UsageError('EVENTS_CAPACITY_REACHED');
       const next: EventSnapshot = { ...structuredClone(this.snapshot), events:[...retained, structuredClone(input)] };
@@ -95,7 +97,7 @@ export class EventStore {
       if(!validIso(scannedAt))throw new UsageError('INVALID_INVENTORY');
       const seenItems=new Set<string>();
       for(const item of items){if(item===null||typeof item!=='object'||Object.keys(item).sort().join('|')!==['hanaRef','version','entryId','disabled'].sort().join('|')||typeof item.hanaRef!=='string'||!/^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/i.test(item.hanaRef)||typeof item.version!=='string'||!/^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/.test(item.version)||!safeMetadata(item.entryId)||typeof item.disabled!=='boolean'||seenItems.has(item.entryId))throw new UsageError('INVALID_INVENTORY');seenItems.add(item.entryId);}
-      const cutoff=this.now()-retentionMs;const events=this.snapshot.events.filter(event=>!(terminal.has(event.upload.state)&&event.upload.sentAt!==null&&Date.parse(event.upload.sentAt)<cutoff));
+      const cutoff=this.now()-this.eventRetentionDays*DAY_MS;const events=this.snapshot.events.filter(event=>!(terminal.has(event.upload.state)&&event.upload.sentAt!==null&&Date.parse(event.upload.sentAt)<cutoff));
       for(const input of inputs){validateEvent(input);const existing=events.find(event=>event.eventId===input.eventId);if(existing){if(identity(existing)!==identity(input))throw new UsageError('EVENT_IDENTITY_CONFLICT');duplicates++;continue;}if(events.length>=this.maxEvents)throw new UsageError('EVENTS_CAPACITY_REACHED');events.push(structuredClone(input));inserted.push(input.eventId);}
       const next={...structuredClone(this.snapshot),events,inventory:{last:{scannedAt,items:structuredClone(items)}}};await this.commit(next);
     });
@@ -140,8 +142,8 @@ export class EventStore {
   }
   query(filter: {state?: UploadState; limit?: number; after?: string} = {}): {total:number; events:UsageEvent[]} {
     if (filter.state !== undefined && !terminal.has(filter.state) && filter.state !== 'pending') throw new UsageError('INVALID_FILTER');
-    const limit = filter.limit ?? 100;
-    if (!Number.isSafeInteger(limit) || limit < 1 || limit > 1000) throw new UsageError('INVALID_FILTER');
+    const limit = filter.limit ?? this.queryLimit;
+    validateQueryLimit(limit);
     let events = this.snapshot.events;
     if (filter.state !== undefined) events = events.filter(event => event.upload.state === filter.state);
     if (filter.after !== undefined) { const index = events.findIndex(event => event.eventId === filter.after); if (index < 0) throw new UsageError('INVALID_FILTER'); events = events.slice(index + 1); }

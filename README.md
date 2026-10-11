@@ -1,4 +1,8 @@
-# hanamesh-usage · 0.2.0-rc.22
+# hanamesh-usage · 0.2.0-rc.25
+
+> rc.24：发布 allowlist 排除只供行为测试导入的 lib/client/index.js；rc.23 的默认安装/宿主取证保持冻结。
+
+> rc.23：Q67 默认 pnpm 冻结闭包和无开发合约的生产消费复核；Q61 具名本地保留期/默认查询与 bounded 读取诊断。旧 rc.22 候选和真实报告保留；本卡不替代 J2S2-USAGE-05 U1。
 
 > rc.22：record 保留原事实时间，按稳定 eventId 派生事件 nonce，两个独立缓冲的同事实签名摘要一致。Core/C-USAGE 消费正式合约 v0.9.0；C-USAGE-LOCAL 的 occurredAt 必填细化交 J1S4-APIC-13 发布，详见 [提供方交件](docs/contracts/usage-local-q18.md)。本卡只有 SOURCE/FIXTURE 证据。
 
@@ -68,7 +72,7 @@ npm run test:detached
 `offline`；只有服务端真的返回空列表才是 0。读回不写本机状态、不采集、不受同意开关影响（撤回后用它核对删除）。
 路由只挂在 Connection 的认证 exact 注册表，只允许 GET、不接受任何查询参数。
 
-开发小界面（不进包）：`tools/int/` 是 P04 整合卡首段的装配与试用入口——`host.mjs` 起本卡自己的
+开发小界面（不进包，保留原整合运行证据）：`tools/int/` 是历史 P04 整合卡首段的装配与试用入口——`host.mjs` 起本卡自己的
 hanamesh-server rc.34 + 全新 PG，`setup.mjs` 用公开 CLI 把普通样本和本包装进全新 `DSH_HOME`，
 `dev-entry.mjs` 在真实 DSH 宿主里提供醒目标注的测试 Core 并在 `http://127.0.0.1:48671/` 给出页面。
 
@@ -105,3 +109,35 @@ module table 获取同一实例，`react@18.3.1` / `@types/react@18.3.1` 仅开�
 工程安装使用正常 peer 解析：`npm install --ignore-scripts --strict-peer-deps`；冻结安装使用 `npm ci --ignore-scripts --strict-peer-deps`。本仓已去除旧 `legacy-peer-deps=true` 配置；必须同时核 `npm ls --all`，不能只以安装 exit0 宣称闭包齐全。
 
 客户端必须在功能贡献者注册前加载 Usage；已注册的旧组件与绕过 `internal/get` 的注册不追补。客户端依赖宿主既有 `slots`、`remote`（Typert Gateway）服务；host pages Remote 只随既有 `typertGateway` 可用而安装，不注册 Connection、Registry 或会话。真实 Desktop 的 Loader 身份投影、归属/同意/撤回取证仍由 J2S2-USAGE-05 执行，本轮工程完成不等于 U1 通过。
+
+## Q61 · 本地保留期、查询与故障配置
+
+`eventRetentionDays` 默认 **90**（`DEFAULT_EVENT_RETENTION_DAYS`），只裁剪 `sent/duplicate/rejected`
+且 `sentAt` 严格早于保留窗口的终态事件；pending 永不按年龄裁剪。正整数天数，乘以一天毫秒数须为
+安全整数。`queryLimit` 默认 **100**（`DEFAULT_QUERY_LIMIT`），范围 1–1000；声明与事件查询共用，
+调用者显式 `limit` 覆盖默认。`maxQueryLimit=1000` 是沿用的单次响应校验上限，不是总量限制；
+分页继续沿原 offset/after。无 schema、迁移、签名、业务时间窗或默认值变更。
+
+两项是 Cordis 插件 config，例如 `{eventRetentionDays:90,queryLimit:100}`，无效值报 `INVALID_CONFIG`。
+Usage 开发小面板及 `panel().policy` 显示实际值；读取配置不会写入、采集或改变同意。
+正式 C-USAGE-LOCAL `health()` 的闭合形状保持原样：`failures` 记录 code→count，
+`inventory.available/lastScanAt` 表示最近扫描状态。读取失败不会记录原 Error 或包路径。
+Inventory 暴露 `INVENTORY_FAILED/INVENTORY_ENTRY_UNREADABLE/INVENTORY_PACKAGE_*`；
+命令归属暴露 `COMMAND_SOURCE_UNREADABLE/UNAVAILABLE/INVALID/OWNER_NOT_FOUND/OWNER_INVALID`；
+页面核对读取失败为 `PAGE_SOURCE_UNREADABLE`。这些都是拒绝采集的原因，不是绕过归属的兜底。
+服务端读回的 90 天/+5 分钟窗口仍是提供方协议窗口，与本地 `eventRetentionDays` 分开。
+
+工具显式绑定卡片与运行目录（均不进生产包）：
+`node tools/int/setup.mjs <desktop> <sample.tgz> <usage.tgz> --card J2S2-USAGE-08 --run <本卡隔离目录>`；
+`tools/int/{host,final-host}.mjs <up|start|status>`、`dev-entry.mjs <desktop>`、
+`final-{setup,boot}.mjs` 都要求同样 `--card/--run`。Python component runner：
+`python3 tools/run-command-runtime.py <desktop> <sample.tgz> <node> --candidate <usage.tgz> --card <卡号> --run <隔离目录>`。
+默认卡根为 `~/.cache/hanamesh-runs`；隔离 HOME 时显式设置 `HANAMESH_RUNS_ROOT` 指向授权的卡根。
+卡根必须是独立 `.cache/hanamesh-runs`，不能位于 `.dsh` 内。路径必须在该卡内、属于当前 uid 且不经 symlink 越界；原 DSH_HOME 与 fresh profile 检查保留。
+`live-check.py` 还需本卡 `state/OBSERVER_INPUTS.json` 指定 deviceId、两个 observerPort 和本卡 PG container，
+不再默认指向原卡端口/设备/容器。历史 `final-setup` 供给仍冻结在原取证版本，不能把它当 rc.23 产品验收。
+
+开发合约只在 devDependencies：正式精确 `git+https://github.com/yzsnstotz/hanamesh-api-contracts.git#v0.9.0`。
+生产 TGZ 的运行 JS 和公开声明没有该包的模块依赖；`npm run test:contract` 自带目标构建。
+框架 peer 与 React 宿主外部供给沿用，独立声明消费需正常 TypeScript/Node/React 类型工具。
+本模块无 ABI 生成器或链上接口，ABI/模板/签名广播门不在本卡范围。

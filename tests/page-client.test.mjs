@@ -7,7 +7,7 @@ function client(){let registration;const effects=[],refs=[],calls=[],observers=[
  return {api,effects,refs,calls,observers,render:component=>{index=0;return component({privatePayload:'not inspected'});}};
 }
 function setup(c){let hook;let mounted;const registered=[],disposer=()=>{};const service={register(options,body){registered.push([options,body]);return disposer;},other(){return this===service;}};
- const ctx={on(name,fn){assert.equal(name,'internal/get');hook=fn;return()=>{hook=undefined;};},effect(fn){return fn();},remote:{$mount:async contribution=>{mounted=contribution;return()=>{};},hanameshUsagePages:{issue:async request=>{c.calls.push(['issue',request]);return {ok:true,value:{disposition:'issued',credential:'fixture-credential'}};},presented:async request=>{c.calls.push(['presented',request]);return {ok:true,value:{disposition:'recorded'}};}}},slots:{inject(){},register(){}}};
+ const ctx={on(name,fn){assert.equal(name,'internal/get');hook=fn;return()=>{hook=undefined;};},effect(fn){return fn();},inject(deps,fn){assert.deepEqual(Array.from(deps),['remote.hanameshUsagePages','slots']);fn(this);return Promise.resolve();},remote:{$mount:async contribution=>{mounted=contribution;return()=>{};},hanameshUsagePages:{issue:async request=>{c.calls.push(['issue',request]);return {ok:true,value:{disposition:'issued',credential:'fixture-credential'}};},presented:async request=>{c.calls.push(['presented',request]);return {ok:true,value:{disposition:'recorded'}};}}},slots:{inject(){},register(){}}};
  return {ctx,registered,disposer,get hook(){return hook;},get mounted(){return mounted;},service};
 }
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
@@ -39,7 +39,7 @@ test('presentation waits for DOM commit, emits once under effect replay and supp
 test('native Cordis trace captures registering child and preserves registration effect disposal',async()=>{
  const {Context,Service}=await import('@deepseek-ai/cordis');const ctx=new Context(),c=client(),definitions=[],receivers=[];
  class Slots extends Service{constructor(ctx){super(ctx,'slots');}inject(){}register(options,component){receivers.push(this.ctx.fiber);return this.ctx.effect(()=>{definitions.push([options,component]);return()=>definitions.splice(definitions.findIndex(x=>x[1]===component),1);});}}
- new Slots(ctx);ctx.provide('remote',{$mount:async()=>()=>{},hanameshUsagePages:{issue:async()=>({ok:true,value:{disposition:'withheld'}})}});
+ new Slots(ctx);ctx.provide('remote.hanameshUsagePages',{issue:async()=>({ok:true,value:{disposition:'withheld'}})});ctx.provide('remote',{$mount:async()=>()=>{},hanameshUsagePages:{issue:async()=>({ok:true,value:{disposition:'withheld'}})}});
  const usage=ctx.plugin({inject:c.api.inject,apply:c.api.apply});await usage.await();let registrar,nested;
  const owner=ctx.plugin({inject:['slots'],apply(child){child.fiber.entry={id:'include:native',options:{name:'native/client'}};nested=child.inject(['slots'],grandchild=>{registrar=grandchild.fiber;grandchild.slots.register({name:'main'},()=>null);});}});
  try{await owner.await();await nested.await();assert.equal(receivers[0],registrar);assert.equal(definitions.length,1);
@@ -62,3 +62,15 @@ test('page content appearing after an initial empty child commit is reported wit
  c.refs[0].current.childNodes.push({});c.observers[0].callback();await tick();assert.deepEqual(c.calls.map(x=>x[0]),['issue','presented']);
  stop();assert.equal(c.observers[0].disconnected,true);
 });
+
+ test('native namespace access is declared before a committed page observer calls it',async()=>{
+ const {Context,Service}=await import('@deepseek-ai/cordis');const ctx=new Context(),c=client(),definitions=[];let issued=0;
+ class Slots extends Service{constructor(ctx){super(ctx,'slots');}inject(){}register(options,body){definitions.push(body);return()=>{};}}
+ class Pages extends Service{constructor(ctx){super(ctx,'remote.hanameshUsagePages');}async issue(){issued++;return {ok:true,value:{disposition:'withheld'}};}}
+ class Remote extends Service{constructor(ctx){super(ctx,'remote');}async $mount(){return()=>{};}get hanameshUsagePages(){return this.ctx['remote.hanameshUsagePages'];}}
+ new Slots(ctx);new Remote(ctx);const pages=ctx.plugin({apply(child){new Pages(child);}});await pages.await();
+ const usage=ctx.plugin({inject:c.api.inject,apply:c.api.apply});await usage.await();
+ const owner=ctx.plugin({inject:['slots'],apply(child){child.fiber.entry={id:'include:native',options:{name:'native/client'}};child.slots.register({name:'settings.section'},()=>null);}});
+ try{await owner.await();c.render(definitions[0]);c.refs[0].current={childNodes:[{}]};const stop=c.effects.shift()();await tick();assert.equal(issued,1);stop();}
+ finally{await owner.dispose();await usage.dispose();await pages.dispose();}
+ });

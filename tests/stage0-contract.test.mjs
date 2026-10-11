@@ -7,7 +7,7 @@ const read = path => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8'
 test('U04 package is the standalone hanamesh-usage DSH bundle', () => {
   const pkg = JSON.parse(read('package.json'));
   assert.equal(pkg.name, 'hanamesh-usage');
-  assert.equal(pkg.version, '0.2.0-rc.22');
+  assert.equal(pkg.version, '0.2.0-rc.25');
   for (const [name, version] of Object.entries(pkg.peerDependencies)) {
     if (name.startsWith('@deepseek-ai/dsh-')) assert.equal(version, '0.2.0-rc.2', name);
   }
@@ -34,7 +34,7 @@ test('J1S2 sibling modules are reached only through the published @hanamesh/api-
     );
   }
   assert.match(pkg.devDependencies['@hanamesh/api-contracts'], /^git\+https:\/\/github\.com\/yzsnstotz\/hanamesh-api-contracts\.git#v\d+\.\d+\.\d+$/);
-  assert.equal(pkg.scripts['test:contract'], 'node --test --test-reporter=tap tests/stage0-contract.test.mjs tests/stage4-contract.test.mjs tests/contract-wire.test.mjs tests/shared-fact.test.mjs');
+  assert.equal(pkg.scripts['test:contract'], 'pnpm run build && node --test --test-reporter=tap tests/stage0-contract.test.mjs tests/stage4-contract.test.mjs tests/contract-wire.test.mjs tests/shared-fact.test.mjs');
 });
 
 test('U04 bundle patch inserts exactly one hanamesh-usage loader row', () => {

@@ -1,7 +1,6 @@
 import type { Filter, QueryResult, UploadState, UsageEvent, UsageReceipt } from '../core/index.js';
 import type {} from '@deepseek-ai/dsh-agent';
 import type {} from '@deepseek-ai/dsh-session-persistence';
-import type {} from '@deepseek-ai/dsh-client-connection';
 export interface Config {
   maxRecords?: number;
   maxPending?: number;
@@ -10,6 +9,10 @@ export interface Config {
   uploadIntervalMs?: number;
   uploadBatchSize?: number;
   inventoryIntervalMs?: number;
+  /** Terminal events only, default 90 days; pending events remain until sent/withdrawn. */
+  eventRetentionDays?: number;
+  /** Default for declaration/event queries (1–1000), default 100; caller limit overrides. */
+  queryLimit?: number;
   /** Display provenance only; does not supply identities or produce facts. */
   panelTestSupply?: PanelTestSupply;
 }
@@ -19,7 +22,9 @@ export interface PanelEvent {
   source:UsageEvent['source']; sourcePlugin:string|null; evidenceRef:string|null;
   signature:{state:'success'|'failure'|'unknown';code:string|null}; upload:UsageEvent['upload'];
 }
+export interface UsagePolicy {eventRetentionDays:number;queryLimit:number;maxQueryLimit:number}
 export interface PanelSnapshot {
+  policy:UsagePolicy;
   subject:{deviceId:string|null;principalId:string|null;reason:string|null};
   testSupply:PanelTestSupply;consent:HealthSnapshot['consent'];core:HealthSnapshot['core'];
   total:number;events:PanelEvent[];outbox:HealthSnapshot['outbox'];failures:Record<string,number>;

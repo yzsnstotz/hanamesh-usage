@@ -7,11 +7,19 @@ export function installedPeer(name){
     const parent=dirname(directory);if(parent===directory)throw Error('PEER_METADATA_NOT_FOUND');directory=parent;
   }
 }
-/** Minimal semver check for the peer specs this package declares: an exact version, or `>=A <B` (prerelease-aware, npm rules). */
+/** Explicit semver subset used by the frozen closure; unsupported syntax fails closed. */
 function parse(v){const m=/^(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:-([0-9A-Za-z.-]+))?$/.exec(v);if(!m)throw Error(`BAD_SEMVER ${v}`);return {tuple:[+m[1],+(m[2]??0),+(m[3]??0)],pre:m[4]?m[4].split('.'):null};}
 function compare(a,b){for(let i=0;i<3;i++)if(a.tuple[i]!==b.tuple[i])return a.tuple[i]<b.tuple[i]?-1:1;if(!a.pre&&!b.pre)return 0;if(!a.pre)return 1;if(!b.pre)return -1;for(let i=0;;i++){const x=a.pre[i],y=b.pre[i];if(x===undefined&&y===undefined)return 0;if(x===undefined)return -1;if(y===undefined)return 1;const nx=/^\d+$/.test(x),ny=/^\d+$/.test(y);if(nx&&ny){if(+x!==+y)return +x<+y?-1:1;}else if(nx)return -1;else if(ny)return 1;else if(x!==y)return x<y?-1:1;}}
 export function satisfies(version,spec){
   const v=parse(version);
+  if(spec.includes('||'))return spec.split('||').some(part=>satisfies(version,part.trim()));
+  if(spec==='*')return v.pre===null;
+  if(spec.startsWith('~')||spec.startsWith('^')){
+    if(!/^[~^]\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(spec))throw Error(`UNSUPPORTED_RANGE ${spec}`);
+    const lower=parse(spec.slice(1)),[major,minor,patch]=lower.tuple;
+    const upper=spec[0]==='~'?[major,minor+1,0]:major>0?[major+1,0,0]:minor>0?[0,minor+1,0]:[0,0,patch+1];
+    return satisfies(version,`>=${spec.slice(1)} <${upper.join('.')}`);
+  }
   if(!/[<>=]/.test(spec))return compare(v,parse(spec))===0;
   const comparators=spec.trim().split(/\s+/).map(c=>{const m=/^(>=|<=|>|<)(.+)$/.exec(c);if(!m)throw Error(`UNSUPPORTED_RANGE ${spec}`);return {op:m[1],v:parse(m[2])};});
   if(v.pre&&!comparators.some(c=>c.v.pre&&c.v.tuple.every((n,i)=>n===v.tuple[i])))return false;
