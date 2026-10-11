@@ -1,47 +1,67 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {fixtureHost} from './fixtures/host.mjs';
-
-const source={entryId:'include:ordinary-page',moduleName:'ordinary-plugin/client',packageName:'ordinary-plugin'};
-const loaderEntries=[{id:source.entryId,options:{name:source.moduleName},parent:{tree:{ctx:{baseUrl:'file:///isolated-profile/cordis.yml'}}}}];
-const canonical={name:source.packageName,version:'1.0.0',manifest:{name:source.packageName,version:'1.0.0'}};
-const entry={entryId:source.entryId,moduleName:source.moduleName,enabled:true,fiberPhase:'active'};
-const bundle={name:'ordinary-plugin',installed:true,enabled:true,removable:true,rows:[entry]};
-const setup=(options={})=>fixtureHost({bound:false,loaderEntries,packageOf:()=>canonical,pluginInventory:{list:async()=>({entries:[entry]})},pluginManager:{listBundles:async()=>[bundle]},...options});
-const fact=(operationId='open-1')=>({operationId,surface:'settings.section',source,occurredAt:Date.now()});
-
-test('page opened records only after consent, deduplicates operation and records a new open',async()=>{
-  const h=await setup();try{
-    const emit=h.handlers.get('client-page/opened');assert.equal(typeof emit,'function');
-    emit(fact('before'));await h.api.drain();assert.equal(h.api.events().total,0);
-    h.setConsent('granted');await h.api.drain();const opened=fact();emit(opened);emit(opened);emit(fact('open-2'));await h.api.drain();
-    const events=h.api.events().events;assert.equal(events.length,2);
-    assert(events.every(e=>e.action==='open'&&e.hanaRef===source.packageName&&e.sourcePlugin===source.packageName&&Buffer.from(e.signature,'base64url').length===64));
-    assert.deepEqual(new Set(events.map(e=>e.evidenceRef)),new Set(['page:open-1','page:open-2']));
-    h.setConsent('withheld');await h.api.drain();emit(fact('after'));await h.api.drain();assert.equal(h.api.events().total,0);
-  }finally{await h.close();}
+const source={entryId:'include:ordinary-page',moduleName:'ordinary-plugin/client'};
+const entry={id:source.entryId,options:{name:source.moduleName},parent:{tree:{ctx:{baseUrl:'file:///isolated-profile/cordis.yml'}}}};
+const canonical={name:'ordinary-plugin',version:'1.0.0',manifest:{name:'ordinary-plugin',version:'1.0.0'}};
+const row={entryId:source.entryId,moduleName:source.moduleName,enabled:true,fiberPhase:'active'};
+const bundle={installed:true,enabled:true,removable:true,rows:[row]};
+const setup=(options={})=>fixtureHost({bound:false,consent:'granted',loaderEntries:[entry],packageOf:()=>canonical,pluginInventory:{list:async()=>({entries:[row]})},pluginManager:{listBundles:async()=>[bundle]},...options});
+const peer={id:'fixture-peer'};
+const request=(surface='settings.section')=>({...source,surface});
+test('Usage pages replaces fork notification with host-issued single-use facts for all four surfaces',async()=>{
+ const h=await setup();try{
+  assert.equal(h.handlers.has('client-page/opened'),false);
+  assert(h.pages,'Usage must own a pages remote seat');
+  for(const surface of ['main','settings.section','plugins.bundle.config','plugins.row.config']){
+   const issued=await h.pages.issue(peer,request(surface));assert.equal(issued.disposition,'issued');
+   assert.equal((await h.pages.presented(peer,{credential:issued.credential})).disposition,'recorded');
+   assert.equal((await h.pages.presented(peer,{credential:issued.credential})).disposition,'rejected');
+  }
+  const events=h.api.events().events;assert.equal(events.length,4);
+  assert(events.every(e=>e.action==='open'&&e.hanaRef===canonical.name&&e.sourcePlugin===canonical.name&&Buffer.from(e.signature,'base64url').length===64));
+ }finally{await h.close();}
 });
-
-test('page source must match canonical identity, active Inventory and an ordinary installed bundle row',async()=>{
-  const h=await setup({consent:'granted'});try{
-    const emit=h.handlers.get('client-page/opened');assert.equal(typeof emit,'function');
-    for(const sourcePatch of [{packageName:'claimed-other'},{entryId:'other'},{moduleName:'other'}])emit({...fact(),source:{...source,...sourcePatch}});
-    emit({...fact(),surface:'market.details'});await h.api.drain();assert.equal(h.api.events().total,0);
-  }finally{await h.close();}
-  for(const patch of [
-    {pluginInventory:undefined},
-    {pluginInventory:{list:async()=>({entries:[{...entry,enabled:false}]})}},
-    {pluginInventory:{list:async()=>({entries:[{...entry,fiberPhase:'loading'}]})}},
-    {pluginManager:{listBundles:async()=>[{...bundle,installed:false,removable:false}]}},
-    {pluginManager:{listBundles:async()=>[{...bundle,removable:false}]}},
-    {pluginManager:{listBundles:async()=>[{...bundle,rows:[{...entry,entryId:'other'}]}]}},
-  ]){const f=await setup({consent:'granted',...patch});try{f.handlers.get('client-page/opened')(fact());await f.api.drain();assert.equal(f.api.events().total,0);}finally{await f.close();}}
+test('pages rejects forged source, payload changes, cross-peer and unknown credentials',async()=>{
+ const h=await setup();try{
+  for(const patch of [{entryId:'other'},{moduleName:'other'},{surface:'market.details'},{packageName:'claimed-other'}])assert.equal((await h.pages.issue(peer,{...request(),...patch})).disposition,'rejected');
+  const issued=await h.pages.issue(peer,request());
+  assert.equal((await h.pages.presented({id:'other-peer'},{credential:issued.credential})).disposition,'rejected');
+  assert.equal((await h.pages.presented(peer,{credential:issued.credential,packageName:'forged'})).disposition,'rejected');
+  assert.equal((await h.pages.presented(peer,{credential:'made-up'})).disposition,'rejected');
+  assert.equal((await h.pages.presented(peer,{credential:issued.credential})).disposition,'recorded');
+ }finally{await h.close();}
 });
-
-test('failed page write commits neither event nor dedupe; same fact succeeds after storage returns',async()=>{
-  const h=await setup({consent:'granted'});try{
-    const emit=h.handlers.get('client-page/opened');assert.equal(typeof emit,'function');const opened=fact();
-    const before=h.api.events();h.eg.fail=true;emit(opened);await h.api.drain();assert.deepEqual(h.api.events(),before);
-    h.eg.fail=false;emit(opened);await h.api.drain();assert.equal(h.api.events().total,1);
-  }finally{await h.close();}
+test('pages rechecks installed ownership and consent, including revoke then grant',async()=>{
+ let active=true;
+ const h=await setup({pluginInventory:{list:async()=>({entries:[{...row,enabled:active}]})}});try{
+  let issued=await h.pages.issue(peer,request());active=false;
+  assert.equal((await h.pages.presented(peer,{credential:issued.credential})).disposition,'rejected');
+  active=true;issued=await h.pages.issue(peer,request());h.setConsent('withheld');await h.api.drain();h.setConsent('granted');await h.api.drain();
+  assert.equal((await h.pages.presented(peer,{credential:issued.credential})).disposition,'rejected');assert.equal(h.api.events().total,0);
+  h.setConsent('withheld');assert.equal((await h.pages.issue(peer,request())).disposition,'withheld');
+ }finally{await h.close();}
+ for(const patch of [{pluginInventory:undefined},{pluginManager:{listBundles:async()=>[{...bundle,removable:false}]}},{packageOf:()=>({...canonical,manifest:{name:'other',version:'1.0.0'}})}]){
+  const f=await setup(patch);try{assert.equal((await f.pages.issue(peer,request())).disposition,'rejected');}finally{await f.close();}
+ }
+});
+test('failed page writes consume credential without partial event; new presentation can succeed',async()=>{
+ const h=await setup();try{
+  const issued=await h.pages.issue(peer,request());const before=h.api.events();h.eg.fail=true;
+  assert.equal((await h.pages.presented(peer,{credential:issued.credential})).disposition,'rejected');assert.deepEqual(h.api.events(),before);
+  h.eg.fail=false;assert.equal((await h.pages.presented(peer,{credential:issued.credential})).disposition,'rejected');
+  const next=await h.pages.issue(peer,request());assert.equal((await h.pages.presented(peer,{credential:next.credential})).disposition,'recorded');
+ }finally{await h.close();}
+});
+test('pages bounds outstanding credentials, expires claims and closes without accepting late facts',async()=>{
+ const h=await setup();const now=Date.now;try{
+  for(let i=0;i<128;i++)assert.equal((await h.pages.issue(peer,request())).disposition,'issued');
+  assert.equal((await h.pages.issue(peer,request())).disposition,'rejected');
+  Date.now=()=>now()+60001;
+  const issued=await h.pages.issue(peer,request());assert.equal(issued.disposition,'issued');
+  Date.now=()=>now()+120002;
+  assert.equal((await h.pages.presented(peer,{credential:issued.credential})).disposition,'rejected');
+  Date.now=now;h.pages.revoke();const next=await h.pages.issue(peer,request());await h.close();
+  assert.equal((await h.pages.presented(peer,{credential:next.credential})).disposition,'rejected');
+ }finally{Date.now=now;await h.close();}
 });

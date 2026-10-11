@@ -14,7 +14,7 @@ export async function fixtureHost({live=true,participated=true,persisted=true,bo
     get(name){return name==='pluginPackages'&&packageOf?{packageOf}:name==='pluginInventory'?pluginInventory:name==='pluginManager'?pluginManager:undefined;},
     on(name,fn){handlers.set(name,fn);return ()=>handlers.delete(name);},
     provide(name,value){ctx[name]=value;},
-    inject(names,fn){log.push('optional-connection');return ()=>{};},
+    inject(names,fn){log.push('optional-connection');return {dispose:async()=>{}};},
     sessions:{get:id=>live&&id===s.id?s:undefined,list:()=>live?[s]:[],flush:async()=>{log.push('source.flush');return participated;}},
     sessionPersistence:{list:async()=>[{header:s.header}],flush:async()=>{log.push('cold.flush');},open:async(id,mode)=>{
       if(mode!=='read')throw Error('UNAUTHORIZED_WRITE_HANDLE');

@@ -1,0 +1,28 @@
+TAP version 13
+# Subtest: published Typert Gateway dispatches Usage pages to invocation Peer and rejects replay/peer disposal
+not ok 1 - published Typert Gateway dispatches Usage pages to invocation Peer and rejects replay/peer disposal
+  ---
+  duration_ms: 5.76625
+  type: 'test'
+  location: '/Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/pages-remote.test.mjs:11:1'
+  failureType: 'testCodeFailure'
+  error: 'client api: generated Remote hanameshUsagePages/issue field "request" has no strict codec'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireStrictCodec (evalmachine.<anonymous>:2074:39)
+    requireStrictInputs (evalmachine.<anonymous>:2069:51)
+    Proxy.validateContribution (evalmachine.<anonymous>:1695:6)
+    Object.apply (file:///Users/yzliu/work/projects/hanamesh/hanamesh-usage/node_modules/@deepseek-ai/cordis/lib/index.js:120:36)
+    Proxy.mountContribution (evalmachine.<anonymous>:1663:10)
+    Object.apply (file:///Users/yzliu/work/projects/hanamesh/hanamesh-usage/node_modules/@deepseek-ai/cordis/lib/index.js:120:36)
+    evalmachine.<anonymous>:1639:52
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 105.198541

@@ -1,0 +1,32 @@
+TAP version 13
+# Subtest: page content appearing after an initial empty child commit is reported without a parent rerender
+not ok 1 - page content appearing after an initial empty child commit is reported without a parent rerender
+  ---
+  duration_ms: 3.747041
+  type: 'test'
+  location: '/Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/page-client.test.mjs:57:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    empty DOM needs commit observation
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/page-client.test.mjs:61:9)
+    async Test.run (node:internal/test_runner/test:1110:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 44.838042

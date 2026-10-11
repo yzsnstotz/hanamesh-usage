@@ -1,0 +1,77 @@
+TAP version 13
+# Subtest: Usage pages replaces fork notification with host-issued single-use facts for all four surfaces
+not ok 1 - Usage pages replaces fork notification with host-issued single-use facts for all four surfaces
+  ---
+  duration_ms: 3.383791
+  type: 'test'
+  location: '/Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/page-facts.test.mjs:12:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/page-facts.test.mjs:14:10)
+    async Test.run (node:internal/test_runner/test:1110:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+# Subtest: pages rejects forged source, payload changes, cross-peer and unknown credentials
+not ok 2 - pages rejects forged source, payload changes, cross-peer and unknown credentials
+  ---
+  duration_ms: 0.476917
+  type: 'test'
+  location: '/Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/page-facts.test.mjs:25:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'issue')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/page-facts.test.mjs:27:148)
+    async Test.run (node:internal/test_runner/test:1110:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+  ...
+# Subtest: pages rechecks installed ownership and consent, including revoke then grant
+not ok 3 - pages rechecks installed ownership and consent, including revoke then grant
+  ---
+  duration_ms: 0.457125
+  type: 'test'
+  location: '/Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/page-facts.test.mjs:35:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'issue')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/page-facts.test.mjs:38:28)
+    async Test.run (node:internal/test_runner/test:1110:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+  ...
+# Subtest: failed page writes consume credential without partial event; new presentation can succeed
+not ok 4 - failed page writes consume credential without partial event; new presentation can succeed
+  ---
+  duration_ms: 0.538458
+  type: 'test'
+  location: '/Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/page-facts.test.mjs:48:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'issue')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/page-facts.test.mjs:50:30)
+    async Test.run (node:internal/test_runner/test:1110:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 52.110667

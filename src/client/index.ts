@@ -1,15 +1,26 @@
-import { createElement as h, useEffect, useState } from 'react';
+import { createElement as h, useEffect, useState, useRef } from 'react';
 
 /** Public Settings Slot subset used here; mirrors the frozen platform contract. */
 interface SettingsSlots {
   inject(name:'settings.section', mount:()=>()=>void):unknown;
   register(options:{name:'settings.section';id:string;order:number;label:string}, component:typeof UsagePanel):()=>void;
 }
-interface ClientContext { slots:SettingsSlots }
+interface PageSource {entryId:string;moduleName:string;surface:string}
+type IssueResult={disposition:string;credential?:string};
+interface PagesRemote {
+  issue(request:PageSource):Promise<{ok:true;value:IssueResult}|{ok:false;error:unknown}>;
+  presented(request:{credential:string}):Promise<unknown>;
+}
+interface ClientContext {
+  slots:SettingsSlots;
+  remote:{$mount(contribution:import('@deepseek-ai/dsh-typert-protocol').TypertRemoteContribution):Promise<()=>void>;hanameshUsagePages:PagesRemote};
+  on(name:'internal/get',listener:(caller:unknown,name:string,error:unknown,next:()=>unknown)=>unknown):()=>void;
+  effect(fn:()=>unknown):unknown;
+}
 interface Carrier { fetch?(input:string|URL, init:RequestInit):Promise<Response> }
 declare global { interface Window { __DSH_TRANSPORT__?:Carrier } }
 
-export const inject=['slots'];
+export const inject=['slots','remote'];
 
 /** Same authenticated Fetch registry for Web and the Desktop carrier. No write API. */
 export async function fetchUsagePanel(signal:AbortSignal):Promise<string> {
@@ -44,7 +55,80 @@ export function UsagePanel() {
   );
 }
 
-/** Feature contributes its own page; the platform owns navigation and rendering. */
-export function apply(ctx:ClientContext):void {
+/** Usage-owned strict wire codecs implement Typert's documented schema parse seat. */
+function requestCodec(method:string):import('@deepseek-ai/dsh-typert-protocol').TypertCodec {
+  return {mode:'strict',typeSymbol:`hanamesh-usage/${method}Request`,create:()=>({parse(value:unknown){
+    if(!value||typeof value!=='object'||Array.isArray(value))throw new Error('USAGE_PAGE_INVALID_REQUEST');
+    const item=value as Record<string,unknown>;
+    if(method==='issue'){
+      if(Object.keys(item).sort().join('|')!=='entryId|moduleName|surface'||typeof item.entryId!=='string'||typeof item.moduleName!=='string'
+        ||!['main','settings.section','plugins.bundle.config','plugins.row.config'].includes(item.surface as string))throw new Error('USAGE_PAGE_INVALID_REQUEST');
+      return {entryId:item.entryId,moduleName:item.moduleName,surface:item.surface};
+    }
+    if(Object.keys(item).join('|')!=='credential'||typeof item.credential!=='string')throw new Error('USAGE_PAGE_INVALID_REQUEST');
+    return {credential:item.credential};
+  }})};
+}
+export const pagesContribution:import('@deepseek-ai/dsh-typert-protocol').TypertRemoteContribution={
+  package:'hanamesh-usage',descriptors:['issue','presented'].map(method=>({
+    id:`hanamesh-usage#hanameshUsagePages/${method}`,service:'hanameshUsagePages',namespace:'hanameshUsagePages',method,
+    invocation:{kind:'direct'},parameters:[{name:'request',wire:'request',source:'json',codec:requestCodec(method)}],result:{mode:'src-json'},
+  })),
+};
+function slotOwner(caller:unknown):{entryId:string;moduleName:string}|null {
+  const seen=new Set();
+  for(let fiber=(caller as {fiber?:any})?.fiber;fiber&&!seen.has(fiber);fiber=fiber.parent?.fiber){
+    seen.add(fiber);const entry=fiber.entry;if(!entry)continue;
+    if(typeof entry.id!=='string'||typeof entry.options?.name!=='string'||entry.options.group)return null;
+    return {entryId:entry.id,moduleName:entry.options.name};
+  }
+  return null;
+}
+/** Observe committed DOM, preserving component props and framework-owned registration. */
+function presentedPage(component:import('react').ComponentType<any>,source:PageSource,remote:()=>PagesRemote,enabled:()=>boolean){
+  return function UsagePresentedPage(props:object){
+    const element=useRef<HTMLDivElement|null>(null);
+    const claim=useRef<Promise<IssueResult|null>|null>(null);
+    const sent=useRef(false);
+    useEffect(()=>{
+      let mounted=true;
+      const observer=new MutationObserver(check);
+      function check(){
+        if(!mounted||!enabled()||sent.current||!element.current?.childNodes.length)return;
+        claim.current??=remote().issue(source).then(result=>result.ok?result.value:null,()=>null);
+        void claim.current.then(result=>{
+          if(!mounted||!enabled()||sent.current||result?.disposition!=='issued'||typeof result.credential!=='string')return;
+          sent.current=true;observer.disconnect();
+          void remote().presented({credential:result.credential}).catch(()=>{});
+        });
+      }
+      if(element.current)observer.observe(element.current,{childList:true,subtree:true});
+      check();
+      return ()=>{mounted=false;observer.disconnect();};
+    });
+    return h('div',{ref:element,style:{display:'contents'}},h(component,props));
+  };
+}
+/** Install before awaiting Remote mounting, so concurrent slot registrations are captured. */
+export async function apply(ctx:ClientContext):Promise<void> {
+  let closed=false;
+  const stop=ctx.on('internal/get',(caller,name,_error,next)=>{
+    const service=next();
+    if(closed||name!=='slots'||!service||typeof (service as {register?:unknown}).register!=='function')return service;
+    return new Proxy(service as object,{get(target,key){
+      const member=Reflect.get(target,key,target);
+      if(key!=='register'||typeof member!=='function')return typeof member==='function'?member.bind(target):member;
+      return (options:{name?:string},component:import('react').ComponentType<any>)=>{
+        const owner=slotOwner(caller);
+        const body=!closed&&owner&&['main','settings.section','plugins.bundle.config','plugins.row.config'].includes(options?.name??'')
+          ?presentedPage(component,{...owner,surface:options.name!},()=>ctx.remote.hanameshUsagePages,()=>!closed):component;
+        return Reflect.apply(member,target,[options,body]);
+      };
+    }});
+  });
+  ctx.effect(()=>()=>{closed=true;stop();});
+  try {await ctx.effect(async()=>await ctx.remote.$mount(pagesContribution));}
+  catch(error){closed=true;stop();throw error;}
+  if(closed)return;
   ctx.slots.inject('settings.section',()=>ctx.slots.register({name:'settings.section',id:'hanamesh-usage',order:80,label:'Usage 开发小面板'},UsagePanel));
 }

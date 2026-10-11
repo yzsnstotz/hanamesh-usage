@@ -1,0 +1,68 @@
+TAP version 13
+# Subtest: client wraps only four functional slots, preserves native receivers and options, mounts Usage remote
+ok 1 - client wraps only four functional slots, preserves native receivers and options, mounts Usage remote
+  ---
+  duration_ms: 2.472833
+  type: 'test'
+  ...
+# Subtest: presentation waits for DOM commit, emits once under effect replay and suppresses unmounted async replies
+ok 2 - presentation waits for DOM commit, emits once under effect replay and suppresses unmounted async replies
+  ---
+  duration_ms: 6.048291
+  type: 'test'
+  ...
+# Subtest: Usage pages replaces fork notification with host-issued single-use facts for all four surfaces
+ok 3 - Usage pages replaces fork notification with host-issued single-use facts for all four surfaces
+  ---
+  duration_ms: 7.011042
+  type: 'test'
+  ...
+# Subtest: pages rejects forged source, payload changes, cross-peer and unknown credentials
+ok 4 - pages rejects forged source, payload changes, cross-peer and unknown credentials
+  ---
+  duration_ms: 0.710875
+  type: 'test'
+  ...
+# Subtest: pages rechecks installed ownership and consent, including revoke then grant
+ok 5 - pages rechecks installed ownership and consent, including revoke then grant
+  ---
+  duration_ms: 2.890959
+  type: 'test'
+  ...
+# Subtest: failed page writes consume credential without partial event; new presentation can succeed
+not ok 6 - failed page writes consume credential without partial event; new presentation can succeed
+  ---
+  duration_ms: 0.784792
+  type: 'test'
+  location: '/Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/page-facts.test.mjs:48:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/page-facts.test.mjs:51:3)
+    async Test.run (node:internal/test_runner/test:1110:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+  ...
+# Subtest: normal client export contributes exactly its own Settings section
+ok 7 - normal client export contributes exactly its own Settings section
+  ---
+  duration_ms: 5.239208
+  type: 'test'
+  ...
+# Subtest: panel read uses the selected carrier with receiver and refuses non-HTML/error replies
+ok 8 - panel read uses the selected carrier with receiver and refuses non-HTML/error replies
+  ---
+  duration_ms: 15.468375
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 7
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 63.3855

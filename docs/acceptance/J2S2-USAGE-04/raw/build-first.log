@@ -1,0 +1,10 @@
+
+> hanamesh-usage@0.2.0-rc.20 build
+> node tools/build.mjs
+
+{"node":"v24.13.1","compiler":"Version 5.9.3","offline":false,"platform":"darwin","arch":"arm64"}
+src/host/mount.js(214,69): error TS2349: This expression is not callable.
+  Type 'Fiber & PromiseLike<Fiber>' has no call signatures.
+src/host/pages-remote.js(17,147): error TS7053: Element implicitly has an 'any' type because expression of type '"issue" | "presented"' can't be used to index type '{}'.
+  Property 'issue' does not exist on type '{}'.
+src/host/pages-remote.js(20,110): error TS2339: Property 'dispose' does not exist on type 'UsagePagesRemote'.

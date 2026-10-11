@@ -1,6 +1,6 @@
-# hanamesh-usage · 0.2.0-rc.20
+# hanamesh-usage · 0.2.0-rc.21
 
-> rc.13 消费公开 `client-page/opened` 并映射 open：核 canonical package、当前 Plugin Inventory 的启用/active 状态，以及 profile-installed、enabled、removable bundle 的实际所属 row；缺少这些公开服务或身份不一致时不采集。以 Host operationId 幂等，内置平台页及平台代生成的配置页不算普通插件。沿用 rc.12 succeeded→use；页面内按钮不自动算 use。组件与正式 GUI/真实 Core 服务端产品门分别记录。
+> rc.21 由 Usage 客户端经 Cordis `internal/get` 包住 `slots.register`，只包装 `main`、`settings.section`、`plugins.bundle.config`、`plugins.row.config` 四功能位。组件提交有内容的 DOM 后，经 Usage 自有 `hanameshUsagePages` Remote 的 `issue` / `presented` 报告；host 从 Loader 与 canonical manifest 解析包名，核 active Inventory 和 installed/enabled/removable bundle row。客户端不提交包名；一次性 256-bit 凭据绑定 Peer、Loader 身份和功能位，60 秒到期、限流、先消费再异步核验/写入，同意变化、Core 变更、Peer 退出和 Usage 关闭均撤销。凭据不落盘，事件只留其 SHA-256 幂等键。不再监听 fork 的 `client-page/opened`。StrictMode effect 重放只提交一次，未挂载和空 DOM 不报告；不自动把页面内按钮算 use。该机制不证明任意被攻陷客户端的渲染真实性。
 
 > rc.20 由 Usage 在 Host 经 Cordis `internal/get` 包住 commands 注册：记录调用方 fiber 的 Loader entry，以实际执行的 handler 确认命令归属，配对原会话自己的 `command/run` 与 `command/done(success)`，产出同形 `succeeded` 事实供现有 `use` 消费逻辑处理。不再监听 fork 的 `commands/operation`，不改上游、不读取命令参数或结果正文。包身份仍经 Loader entry、owning base URL 与 `pluginPackages.packageOf()` 核 canonical manifest；以 commandId + phase 去重。命令成功不证明 GUI open。SOURCE/FIXTURE 与真实 Cordis 框架测试不代替真实宿主、GUI 或生产服务组合验收。
 
@@ -101,3 +101,5 @@ module table 获取同一实例，`react@18.3.1` / `@types/react@18.3.1` 仅开�
 开发时合约类型与一致性套件从已发布源 tag 正常安装：Core `#semver:^0.2.0-rc.55`、ServerUsage `#semver:^0.2.0-rc.14`。只使用 Core 的 `./contract` 类型及双方公开 suite；运行时仍通过 Cordis 的 `hanameshCore` 服务，不 import 邻插件业务模块。锁文件记录一次解析的 commit，manifest 保持范围引用。npm 的 0.x caret 上限是下一 minor，不能据此声称覆盖整个 major；rc 的选择以实际包管理解析回执为准。
 
 工程安装使用正常 peer 解析：`npm install --ignore-scripts --strict-peer-deps`；冻结安装使用 `npm ci --ignore-scripts --strict-peer-deps`。本仓已去除旧 `legacy-peer-deps=true` 配置；必须同时核 `npm ls --all`，不能只以安装 exit0 宣称闭包齐全。
+
+客户端必须在功能贡献者注册前加载 Usage；已注册的旧组件与绕过 `internal/get` 的注册不追补。客户端依赖宿主既有 `slots`、`remote`（Typert Gateway）服务；host pages Remote 只随既有 `typertGateway` 可用而安装，不注册 Connection、Registry 或会话。真实 Desktop 的 Loader 身份投影、归属/同意/撤回取证仍由 J2S2-USAGE-05 执行，本轮工程完成不等于 U1 通过。

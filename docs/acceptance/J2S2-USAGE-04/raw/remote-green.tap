@@ -1,0 +1,31 @@
+TAP version 13
+# evalmachine.<anonymous>:2153
+# //\# sourceMappingURL=client.js.map})
+#                                     
+# SyntaxError: Unexpected end of input
+#     at new Script (node:vm:117:7)
+#     at createScript (node:vm:269:10)
+#     at runInThisContext (node:vm:317:10)
+#     at file:///Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/pages-remote.test.mjs:6:1
+# Node.js v24.13.1
+# Subtest: tests/pages-remote.test.mjs
+not ok 1 - tests/pages-remote.test.mjs
+  ---
+  duration_ms: 77.9345
+  type: 'test'
+  location: '/Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/pages-remote.test.mjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 81.473458

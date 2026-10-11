@@ -1,0 +1,42 @@
+TAP version 13
+# Subtest: client wraps only four functional slots, preserves native receivers and options, mounts Usage remote
+not ok 1 - client wraps only four functional slots, preserves native receivers and options, mounts Usage remote
+  ---
+  duration_ms: 1.046667
+  type: 'test'
+  location: '/Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/page-client.test.mjs:14:1'
+  failureType: 'testCodeFailure'
+  error: 'Usage must intercept slots'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/page-client.test.mjs:15:55)
+    async Test.run (node:internal/test_runner/test:1110:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+# Subtest: presentation waits for DOM commit, emits once under effect replay and suppresses unmounted async replies
+not ok 2 - presentation waits for DOM commit, emits once under effect replay and suppresses unmounted async replies
+  ---
+  duration_ms: 0.3555
+  type: 'test'
+  location: '/Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/page-client.test.mjs:26:1'
+  failureType: 'testCodeFailure'
+  error: 's.hook is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/page-client.test.mjs:29:4)
+    async Test.run (node:internal/test_runner/test:1110:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 34.927417

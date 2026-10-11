@@ -1,0 +1,44 @@
+[
+  {
+    "command": "npm ci",
+    "node": "24.13.1",
+    "exitCode": 0,
+    "log": "docs/acceptance/J2S2-USAGE-04/raw/npm-ci.log",
+    "DSH_HOME": "isolated mkdtemp under card run; removed after verification"
+  },
+  {
+    "command": "npm run build",
+    "node": "24.13.1",
+    "exitCode": 0,
+    "log": "docs/acceptance/J2S2-USAGE-04/raw/build.log",
+    "DSH_HOME": "isolated mkdtemp under card run; removed after verification"
+  },
+  {
+    "command": "npm test",
+    "node": "24.13.1",
+    "exitCode": 0,
+    "log": "docs/acceptance/J2S2-USAGE-04/raw/npm-test.tap",
+    "DSH_HOME": "isolated mkdtemp under card run; removed after verification"
+  },
+  {
+    "command": "npm run check",
+    "node": "24.13.1",
+    "exitCode": 0,
+    "log": "docs/acceptance/J2S2-USAGE-04/raw/check.log",
+    "DSH_HOME": "isolated mkdtemp under card run; removed after verification"
+  },
+  {
+    "command": "npm run test:mutations",
+    "node": "24.13.1",
+    "exitCode": 0,
+    "log": "docs/acceptance/J2S2-USAGE-04/raw/mutations.log",
+    "DSH_HOME": "isolated mkdtemp under card run; removed after verification"
+  },
+  {
+    "command": "npm run test:detached",
+    "node": "24.13.1",
+    "exitCode": 0,
+    "log": "docs/acceptance/J2S2-USAGE-04/raw/detached.log",
+    "DSH_HOME": "isolated mkdtemp under card run; removed after verification"
+  }
+]

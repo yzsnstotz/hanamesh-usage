@@ -8,8 +8,35 @@ interface SettingsSlots {
         label: string;
     }, component: typeof UsagePanel): () => void;
 }
+interface PageSource {
+    entryId: string;
+    moduleName: string;
+    surface: string;
+}
+type IssueResult = {
+    disposition: string;
+    credential?: string;
+};
+interface PagesRemote {
+    issue(request: PageSource): Promise<{
+        ok: true;
+        value: IssueResult;
+    } | {
+        ok: false;
+        error: unknown;
+    }>;
+    presented(request: {
+        credential: string;
+    }): Promise<unknown>;
+}
 interface ClientContext {
     slots: SettingsSlots;
+    remote: {
+        $mount(contribution: import('@deepseek-ai/dsh-typert-protocol').TypertRemoteContribution): Promise<() => void>;
+        hanameshUsagePages: PagesRemote;
+    };
+    on(name: 'internal/get', listener: (caller: unknown, name: string, error: unknown, next: () => unknown) => unknown): () => void;
+    effect(fn: () => unknown): unknown;
 }
 interface Carrier {
     fetch?(input: string | URL, init: RequestInit): Promise<Response>;
@@ -26,6 +53,7 @@ export declare function fetchUsagePanel(signal: AbortSignal): Promise<string>;
 export declare function UsagePanel(): import("react").DetailedReactHTMLElement<{
     'aria-label': string;
 }, HTMLElement>;
-/** Feature contributes its own page; the platform owns navigation and rendering. */
-export declare function apply(ctx: ClientContext): void;
+export declare const pagesContribution: import('@deepseek-ai/dsh-typert-protocol').TypertRemoteContribution;
+/** Install before awaiting Remote mounting, so concurrent slot registrations are captured. */
+export declare function apply(ctx: ClientContext): Promise<void>;
 export {};

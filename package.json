@@ -1,6 +1,6 @@
 {
   "name": "hanamesh-usage",
-  "version": "0.2.0-rc.20",
+  "version": "0.2.0-rc.21",
   "description": "Consent-gated, device-signed HanaMesh usage events for DSH",
   "type": "module",
   "main": "lib/host/index.js",
@@ -39,11 +39,13 @@
     "client": {
       "platform": "web",
       "inject": [
-        "@deepseek-ai/dsh-client-ui-settings-general"
+        "@deepseek-ai/dsh-client-ui-renderer",
+        "@deepseek-ai/dsh-api-gateway"
       ],
       "external": [
         "react"
-      ]
+      ],
+      "immediately": true
     }
   },
   "engines": {
@@ -60,7 +62,8 @@
     "@deepseek-ai/dsh-session-persistence": "0.2.0-rc.2",
     "@deepseek-ai/dsh-storage": "0.2.0-rc.2",
     "@deepseek-ai/dsh-storage-domain": "0.2.0-rc.2",
-    "zod": "4.5.4"
+    "zod": "4.5.4",
+    "@deepseek-ai/dsh-typert-protocol": "0.2.0-rc.2"
   },
   "peerDependenciesMeta": {
     "@deepseek-ai/dsh-client-connection": {
@@ -99,6 +102,7 @@
   "devDependencies": {
     "@deepseek-ai/cordis": "4.0.4",
     "@deepseek-ai/dsh-agent": "0.2.0-rc.2",
+    "@deepseek-ai/dsh-api-gateway": "0.2.0-rc.2",
     "@deepseek-ai/dsh-attachment": "0.2.0-rc.2",
     "@deepseek-ai/dsh-client-connection": "0.2.0-rc.2",
     "@deepseek-ai/dsh-llm": "0.2.0-rc.2",
@@ -108,12 +112,14 @@
     "@deepseek-ai/dsh-storage": "0.2.0-rc.2",
     "@deepseek-ai/dsh-storage-domain": "0.2.0-rc.2",
     "@deepseek-ai/dsh-system-prompt": "0.2.0-rc.2",
+    "@deepseek-ai/dsh-typert-protocol": "0.2.0-rc.2",
+    "@deepseek-ai/dsh-typert-registry": "0.2.0-rc.2",
     "@deepseek-ai/schemastery": "3.18.4",
+    "@hanamesh/api-contracts": "git+https://github.com/yzsnstotz/hanamesh-api-contracts.git#v0.1.0",
     "@types/node": "24.13.4",
     "@types/react": "18.3.1",
     "react": "18.3.1",
     "typescript": "5.9.3",
-    "zod": "4.5.4",
-    "@hanamesh/api-contracts": "git+https://github.com/yzsnstotz/hanamesh-api-contracts.git#v0.1.0"
+    "zod": "4.5.4"
   }
 }
