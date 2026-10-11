@@ -1,8 +1,8 @@
-# hanamesh-usage · 0.2.0-rc.19
+# hanamesh-usage · 0.2.0-rc.20
 
 > rc.13 消费公开 `client-page/opened` 并映射 open：核 canonical package、当前 Plugin Inventory 的启用/active 状态，以及 profile-installed、enabled、removable bundle 的实际所属 row；缺少这些公开服务或身份不一致时不采集。以 Host operationId 幂等，内置平台页及平台代生成的配置页不算普通插件。沿用 rc.12 succeeded→use；页面内按钮不自动算 use。组件与正式 GUI/真实 Core 服务端产品门分别记录。
 
-> rc.12 在 Host 订阅公开 `commands/operation`：仅把 `succeeded` 映射为 `use`，经真实 Loader entry、owning base URL 与 `pluginPackages.packageOf()` 核 canonical manifest；以 commandId + phase 去重。`entered` 不证明 GUI open，因此不会生成 open。此为私有候选，真实 GUI、生产服务组合和 open 生命周期仍需独立门。没有新增依赖或浏览器写接口。
+> rc.20 由 Usage 在 Host 经 Cordis `internal/get` 包住 commands 注册：记录调用方 fiber 的 Loader entry，以实际执行的 handler 确认命令归属，配对原会话自己的 `command/run` 与 `command/done(success)`，产出同形 `succeeded` 事实供现有 `use` 消费逻辑处理。不再监听 fork 的 `commands/operation`，不改上游、不读取命令参数或结果正文。包身份仍经 Loader entry、owning base URL 与 `pluginPackages.packageOf()` 核 canonical manifest；以 commandId + phase 去重。命令成功不证明 GUI open。SOURCE/FIXTURE 与真实 Cordis 框架测试不代替真实宿主、GUI 或生产服务组合验收。
 
 > rc.10 对齐官方 `@deepseek-ai/dsh@0.2.0-rc.2` 与 Cordis `4.0.4` 的公开 peer 闭包。沿用 rc.7 的事件字段、签名和存储格式；新宿主的 `agent/created` 回调按公开类型返回 `undefined`。rc.9 跳过官方 Loader 中不可安全记录的条目；rc.10 将 16 字节随机事件 nonce 加上字母前缀，使其满足服务端 token 首字符规则并保留 128 位随机熵。本卡的公开安装与真实运行时结果见 BlueMap `NPM-USAGE-01/REPORT.md`；组件门不等于产品 ACCEPTED。
 

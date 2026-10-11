@@ -7,6 +7,7 @@ import { createRecordSeat } from './record.js';
 import { createUsageReporter } from './upload.js';
 import { createInventory } from './inventory.js';
 import { commandPackage } from './command-source.js';
+import { mountCommandFacts } from './command-facts.js';
 import { pagePackage } from './page-source.js';
 import { projectUsagePanel } from './panel.js';
 
@@ -17,8 +18,9 @@ import { projectUsagePanel } from './panel.js';
  * @param {{global: import('../core/index.js').EventGlobalPort, close(): Promise<void>}} eventDomain
  * @param {Required<import('./contracts.js').Config>} config
  * @param {{status(): 'absent'|'incompatible'|'present',get(): import('@hanamesh/api-contracts/core').HanaMeshCoreContract|null,onChange(listener:(status:'absent'|'incompatible'|'present',core:import('@hanamesh/api-contracts/core').HanaMeshCoreContract|null)=>void):()=>void,close():void}} coreLink
+ * @param {(accept:(fact:unknown)=>void)=>ReturnType<typeof mountCommandFacts>} [commandSource]
  */
-export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink) {
+export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink, commandSource = accept=>mountCommandFacts(ctx,accept,config.maxPending)) {
   const store = new UsageStore(domain.global, config.maxRecords);
   const eventStore = new EventStore(eventDomain.global, config.maxEvents);
   /** @type {Map<string, {dirty: boolean, session: import('@deepseek-ai/dsh-session').Session}>} */
@@ -126,12 +128,11 @@ export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink)
     }).catch(error => { note(error); recoveryComplete = false; }).finally(() => { pending.delete(session.id); });
   }
   // Callbacks are synchronous notifications; all async failures are observed by jobs.
-  const stopEvent = ctx.on('session/event', (session, event) => { if (event.type === 'turn/end') schedule(session); });
   const stopCreated = ctx.on('agent/created', ({ agent }) => { schedule(agent.session); return undefined; });
   const record=createRecordSeat({store:eventStore,getConsent:()=>{const value=coreState().consent;return value==='granted'?'granted':'withheld';},getDeviceId:()=>coreState().deviceId,nonce,signEvent:event=>{const core=coreLink.get();if(core===null)throw new UsageError('CORE_UNAVAILABLE');return signUsageEvent(core,event);}});
   // A command success is a Host-observed operation, never a browser claim or a GUI-open assertion.
   const onCommand=/** @type {(name:string,listener:(fact:unknown)=>void)=>()=>void} */(ctx.on.bind(ctx));
-  const stopCommand=onCommand('commands/operation',fact=>{
+  const commandFacts=commandSource(fact=>{
     if(closing||coreState().consent!=='granted'||fact===null||typeof fact!=='object'||Array.isArray(fact))return;
     const item=/** @type {{phase?:unknown,commandId?:unknown,source?:unknown,occurredAt?:unknown}} */(fact);
     if(item.phase!=='succeeded'||typeof item.commandId!=='string'||typeof item.occurredAt!=='number'||!Number.isSafeInteger(item.occurredAt))return;
@@ -141,6 +142,7 @@ export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink)
     const idempotencyKey=`command:${item.commandId}:succeeded`;
     jobs=jobs.then(async()=>{const result=await record({hanaRef,action:'use',occurredAt,idempotencyKey,sourcePlugin:hanaRef});if(result.disposition==='rejected')note(new UsageError(result.code??'RECORD_FAILED'));}).catch(note);
   });
+  const stopEvent = ctx.on('session/event', (session, event) => { commandFacts.observe(session,event); if (event.type === 'turn/end') schedule(session); });
   const stopPage=onCommand('client-page/opened',fact=>{
     if(closing||coreState().consent!=='granted'||fact===null||typeof fact!=='object'||Array.isArray(fact))return;
     const item=/** @type {{operationId?:unknown,surface?:unknown,source?:{entryId?:unknown,moduleName?:unknown,packageName?:unknown},occurredAt?:unknown}} */(fact);
@@ -218,7 +220,7 @@ export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink)
     async close() {
       if (closing) return;
       closing = true;
-      stopEvent(); stopCreated();stopCommand();stopPage();stopCore();stopConsent?.();reporter.stop();coreLink.close();
+      stopEvent(); stopCreated();commandFacts.close();stopPage();stopCore();stopConsent?.();reporter.stop();coreLink.close();
       try { await jobs; await inventory.close(); await reporter.drain(); await store.close(); await eventStore.drain(); }
       finally { await Promise.all([domain.close(),eventDomain.close()]); }
     },

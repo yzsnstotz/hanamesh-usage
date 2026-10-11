@@ -1,0 +1,67 @@
+
+> hanamesh-usage@0.2.0-rc.20 test:detached
+> node tools/detached.mjs
+
+$ npm ci --offline --ignore-scripts --legacy-peer-deps
+
+added 31 packages in 745ms
+
+
+$ /Users/yzliu/.local/share/fnm/node-versions/v24.13.1/installation/bin/node tools/build.mjs --offline
+{"node":"v24.13.1","compiler":"Version 5.9.3","offline":true,"platform":"darwin","arch":"arm64"}
+OFFLINE_CORE_SEMANTIC_BUILD_COMPLETE; HOST_JS_COPIED_NOT_TYPECHECKED
+
+
+$ /Users/yzliu/.local/share/fnm/node-versions/v24.13.1/installation/bin/node tools/check.mjs
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: npm error code ELSPROBLEMS
+npm error missing: @deepseek-ai/dsh-invariants@0.2.0-rc.2, required by @deepseek-ai/dsh-agent@0.2.0-rc.2
+npm error missing: @deepseek-ai/dsh-session-projection@0.2.0-rc.2, required by @deepseek-ai/dsh-agent@0.2.0-rc.2
+npm error missing: @deepseek-ai/dsh-invariants@0.2.0-rc.2, required by @deepseek-ai/dsh-scope@0.2.0-rc.2
+npm error missing: @deepseek-ai/dsh-invariants@0.2.0-rc.2, required by @deepseek-ai/dsh-storage-domain@0.2.0-rc.2
+npm error missing: @deepseek-ai/dsh-invariants@0.2.0-rc.2, required by @deepseek-ai/dsh-system-prompt@0.2.0-rc.2
+npm error missing: @deepseek-ai/dsh-invariants@0.2.0-rc.2, required by @deepseek-ai/dsh-credentials@0.2.0-rc.2
+npm error A complete log of this run can be found in: /Users/yzliu/work/projects/hanamesh/hanamesh-usage/.npm-cache/_logs/2026-10-11T01_34_11_126Z-debug-0.log
+
+
+1 !== 0
+
+    at file:///private<isolated-repo>/tools/check.mjs:10:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:430:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:661:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.13.1
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+1 !== 0
+
+    at file:///Users/yzliu/work/projects/hanamesh/hanamesh-usage/tools/detached.mjs:7:240
+    at ModuleJob.run (node:internal/modules/esm/module_job:430:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:661:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.13.1
