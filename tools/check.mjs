@@ -13,19 +13,19 @@ assert.equal(pkg.name,'hanamesh-usage');assert.equal(pkg.version,'0.2.0-rc.19');
 assert.deepEqual(pkg.dependencies??{},{});assert.equal(Object.keys(pkg.peerDependencies).filter(name=>name.startsWith('@hanamesh/')||name.startsWith('hanamesh-')).length,0);
 assert.equal(pkg.dsh?.bundle?.patch,'./profile/cordis.patch.yml');assert.equal(pkg.dsh?.client?.platform,'web');assert.equal(pkg.exports['./client'].default,'./lib/client.js');assert(pkg.files.includes('profile'));assert(existsSync(pkg.dsh.bundle.patch));
 const dependencies=JSON.parse(read('docs/contracts/dependencies.json'));
-assert.equal(pkg.devDependencies['hanamesh-core'],dependencies.hanameshCore.source);
-assert.equal(pkg.devDependencies['@hanamesh/server-usage'],dependencies.serverUsage.source);
+// Sibling modules are reached only through the published contract package, never installed directly.
+assert.equal(pkg.devDependencies['@hanamesh/api-contracts'],dependencies.apiContracts.source);
+assert.match(pkg.devDependencies['@hanamesh/api-contracts'],/^git\+https:\/\/github\.com\/yzsnstotz\/hanamesh-api-contracts\.git#v\d+\.\d+\.\d+$/);
+assert.match(lock.packages['node_modules/@hanamesh/api-contracts'].resolved,/#[0-9a-f]{40}$/);
+for(const section of ['dependencies','devDependencies','peerDependencies','optionalDependencies'])
+ assert.deepEqual(Object.keys(pkg[section]??{}).filter(name=>(name.startsWith('@hanamesh/')||name.startsWith('hanamesh-'))&&name!=='@hanamesh/api-contracts'),[],`sibling module in ${section}`);
 assert.equal(existsSync('docs/contracts/hanamesh-core'),false);
-for(const name of ['hanamesh-core','@hanamesh/server-usage']) {
- assert.match(pkg.devDependencies[name],/^git\+https:\/\/github\.com\/yzsnstotz\/[^#]+#semver:\^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/);
- assert.match(lock.packages[`node_modules/${name}`].resolved,/#[0-9a-f]{40}$/);
-}
-await import('hanamesh-core/contract/suite');
-await import('@hanamesh/server-usage/conformance');
+await import('@hanamesh/api-contracts/core');
+await import('@hanamesh/api-contracts/usage-local');
 const patch=read(pkg.dsh.bundle.patch);assert.equal((patch.match(/^\s*- id:/gm)??[]).length,1);assert.match(patch,/^\s*- id: hanamesh-usage$/m);assert.match(patch,/^\s*name: hanamesh-usage$/m);
 const walk=dir=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(join(dir,e.name)):[join(dir,e.name)]);
 const sources=walk('src').filter(p=>/\.(ts|js)$/.test(p));
-const forbiddenSibling=new RegExp(`(?:from\\s+|import\\s*\\()['"](?:hanamesh-core|@hanamesh/dsh-app-host|${['@hanamesh/dsh-agent','registry'].join('-')})['"]`);
+const forbiddenSibling=/(?:from\s+|import\s*\()['"](?:hanamesh-[^'"]*|@hanamesh\/(?!api-contracts[/'"])[^'"]*)['"]/;
 for(const p of sources){
  if(p.endsWith('.js'))assert.equal(existsSync(p.slice(0,-3)+'.d.ts'),false,`JS entry must not be shadowed by sibling declarations: ${p}`);
  const s=read(p);

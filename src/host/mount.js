@@ -16,7 +16,7 @@ import { projectUsagePanel } from './panel.js';
  * @param {{global: import('../core/index.js').GlobalPort, close(): Promise<void>}} domain
  * @param {{global: import('../core/index.js').EventGlobalPort, close(): Promise<void>}} eventDomain
  * @param {Required<import('./contracts.js').Config>} config
- * @param {{status(): 'absent'|'incompatible'|'present',get(): import('hanamesh-core/contract').HanaMeshCoreContract|null,onChange(listener:(status:'absent'|'incompatible'|'present',core:import('hanamesh-core/contract').HanaMeshCoreContract|null)=>void):()=>void,close():void}} coreLink
+ * @param {{status(): 'absent'|'incompatible'|'present',get(): import('@hanamesh/api-contracts/core').HanaMeshCoreContract|null,onChange(listener:(status:'absent'|'incompatible'|'present',core:import('@hanamesh/api-contracts/core').HanaMeshCoreContract|null)=>void):()=>void,close():void}} coreLink
  */
 export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink) {
   const store = new UsageStore(domain.global, config.maxRecords);
@@ -159,7 +159,7 @@ export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink)
   const reporter=createUsageReporter({store:eventStore,link:coreLink,uploadIntervalMs:config.uploadIntervalMs,uploadBatchSize:config.uploadBatchSize});
   const inventory=createInventory({ctx,store:eventStore,link:coreLink,inventoryIntervalMs:config.inventoryIntervalMs,note:code=>note(new UsageError(code))});
   /** @type {(()=>void)|null} */let stopConsent=null;
-  /** @param {'absent'|'incompatible'|'present'} status @param {import('hanamesh-core/contract').HanaMeshCoreContract|null} core */
+  /** @param {'absent'|'incompatible'|'present'} status @param {import('@hanamesh/api-contracts/core').HanaMeshCoreContract|null} core */
   const attachCore=(status,core)=>{
     stopConsent?.();stopConsent=null;
     if(status!=='present'||core===null){reporter.stop();return;}

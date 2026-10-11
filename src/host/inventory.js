@@ -26,7 +26,7 @@ export async function inspectPackage(moduleName,baseUrl){
  * @param {{
  *  ctx: import('@deepseek-ai/cordis').Context,
  *  store: import('../core/index.js').EventStore,
- *  link: {get(): import('hanamesh-core/contract').HanaMeshCoreContract|null},
+ *  link: {get(): import('@hanamesh/api-contracts/core').HanaMeshCoreContract|null},
  *  inventoryIntervalMs:number,
  *  inspector?: typeof inspectPackage,
  *  now?: ()=>number,

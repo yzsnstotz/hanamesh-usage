@@ -25,6 +25,18 @@ test('U04 package is the standalone hanamesh-usage DSH bundle', () => {
   );
 });
 
+test('J1S2 sibling modules are reached only through the published @hanamesh/api-contracts tag', () => {
+  const pkg = JSON.parse(read('package.json'));
+  for (const section of ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']) {
+    assert.deepEqual(
+      Object.keys(pkg[section] ?? {}).filter(name => (name.startsWith('@hanamesh/') || name.startsWith('hanamesh-')) && name !== '@hanamesh/api-contracts'),
+      [], section,
+    );
+  }
+  assert.match(pkg.devDependencies['@hanamesh/api-contracts'], /^git\+https:\/\/github\.com\/yzsnstotz\/hanamesh-api-contracts\.git#v\d+\.\d+\.\d+$/);
+  assert.equal(pkg.scripts['test:contract'], 'node --test --test-reporter=tap tests/stage0-contract.test.mjs tests/stage4-contract.test.mjs tests/contract-wire.test.mjs');
+});
+
 test('U04 bundle patch inserts exactly one hanamesh-usage loader row', () => {
   const patch = read('profile/cordis.patch.yml');
   assert.equal((patch.match(/^\s*- id:/gm) ?? []).length, 1);

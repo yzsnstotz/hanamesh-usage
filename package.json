@@ -93,7 +93,8 @@
     "check": "node tools/check.mjs",
     "preflight:host": "node tools/preflight.mjs",
     "samples": "node tools/samples.mjs",
-    "test:detached": "node tools/detached.mjs"
+    "test:detached": "node tools/detached.mjs",
+    "test:contract": "node --test --test-reporter=tap tests/stage0-contract.test.mjs tests/stage4-contract.test.mjs tests/contract-wire.test.mjs"
   },
   "devDependencies": {
     "@deepseek-ai/cordis": "4.0.4",
@@ -113,7 +114,6 @@
     "react": "18.3.1",
     "typescript": "5.9.3",
     "zod": "4.5.4",
-    "hanamesh-core": "git+https://github.com/yzsnstotz/hanamesh-core.git#semver:^0.2.0-rc.55",
-    "@hanamesh/server-usage": "git+https://github.com/yzsnstotz/hanamesh-server-usage.git#semver:^0.2.0-rc.14"
+    "@hanamesh/api-contracts": "git+https://github.com/yzsnstotz/hanamesh-api-contracts.git#v0.1.0"
   }
 }

@@ -30,3 +30,71 @@ test('mixed signed batch with a local stub sends nothing and keeps every event p
   assert.equal(reporter.health().lastError,'UPLOAD_EVENT_INVALID');
   assert.deepEqual(store.query().events.map(event=>event.upload.state),['pending','pending']);
 });
+
+// C-CORE (consumer) and C-USAGE-LOCAL (provider) against the published @hanamesh/api-contracts fixtures only.
+// No sibling module is installed: Core is the contract package's in-memory provider fixture.
+const coreContract=await import('@hanamesh/api-contracts/core');
+const usageLocal=await import('@hanamesh/api-contracts/usage-local');
+const {duckCore,signUsageEvent}=await import('../lib/host/core-link.js');
+const {signingJSON}=await import('../lib/core/index.js');
+const {fixtureHost}=await import('./fixtures/host.mjs');
+
+test('C-CORE consumer: duckCore classifies every published handshake case like the contract',()=>{
+  const cases=coreContract.coreHandshakeCases();
+  assert(cases.length>=13);
+  for(const {id,value,expected} of cases){
+    const linked=duckCore(value);
+    assert.equal(linked.status,expected.status,id);
+    assert.equal(linked.core===null,expected.status!=='present',id);
+  }
+});
+
+test('C-CORE consumer: usage events signed through the contract fixture verify with its public key',async()=>{
+  const fixture=coreContract.createCoreProviderFixture({deviceId:'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk',initialConsent:'granted'});
+  const linked=duckCore(fixture.service);assert.equal(linked.status,'present');
+  const deviceId=linked.core.getDeviceId();
+  const event=signUsageEvent(linked.core,createUsageEvent(input({deviceId})));
+  const {signature,...six}=wireEvent(event);
+  assert(coreContract.verifyCoreSignature(linked.core.getPublicKey(),new TextEncoder().encode(signingJSON(six)),Buffer.from(signature,'base64url')));
+  assert.equal(coreContract.verifyCoreSignature(linked.core.getPublicKey(),new TextEncoder().encode(signingJSON({...six,action:'open'})),Buffer.from(signature,'base64url')),false);
+  assert.equal(linked.core.getConsent(),'granted');
+  assert.equal(linked.core.getSession().deviceId,deviceId);
+});
+
+// Same keys at every level. A member that is null on either side is a nullable member (string|null, object|null): the example cannot fix its type.
+const sameShape=(actual,expected,path='health')=>{
+  if(actual===null||expected===null)return;
+  if(typeof expected!=='object'||Array.isArray(expected)||path.endsWith('.failures'))return assert.equal(typeof actual,typeof expected,path);
+  assert.deepEqual(Object.keys(actual),Object.keys(expected),path);
+  for(const key of Object.keys(expected))sameShape(actual[key],expected[key],`${path}.${key}`);
+};
+
+test('C-USAGE-LOCAL provider: record returns the published dispositions, eventId and codes',async()=>{
+  const examples=await usageLocal.createUsageLocalContractExamples();
+  const deviceId='If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk';
+  const h=await fixtureHost({consent:'withheld',deviceId});
+  try{
+    const call={...examples.input,occurredAt:new Date().toISOString()};
+    assert.deepEqual(await h.api.record(call),examples.results.withheld);
+    h.setConsent('granted');
+    const recorded=await h.api.record(call);
+    assert.deepEqual(recorded,{disposition:'recorded',eventId:usageLocal.usageRecordEventId(deviceId,call.sourcePlugin,call.idempotencyKey)});
+    assert.deepEqual(await h.api.record(call),{...examples.results.duplicate,eventId:recorded.eventId});
+    assert.deepEqual(await h.api.record({...call,hanaRef:'@hanamesh/other-app'}),examples.results.EVENT_IDENTITY_CONFLICT);
+    assert.deepEqual(await h.api.record({...call,action:'install'}),examples.results.INVALID_RECORD_INPUT);
+    for(const code of ['EVENT_IDENTITY_CONFLICT','INVALID_RECORD_INPUT'])assert(usageLocal.USAGE_RECORD_CODES.includes(code));
+  }finally{await h.close();}
+});
+
+test('C-USAGE-LOCAL provider: health has the published HealthSnapshot shape, core present and absent',async()=>{
+  const examples=await usageLocal.createUsageLocalContractExamples();
+  for(const [coreStatus,expected] of [['present',examples.health],['absent',examples.healthCoreAbsent]]){
+    const h=await fixtureHost({coreStatus,consent:'granted'});
+    try{
+      const health=h.api.health();
+      sameShape(health,expected);
+      assert.equal(health.core,expected.core);assert.equal(health.consent,expected.consent);
+      assert.equal(health.deviceId===null,expected.deviceId===null);
+    }finally{await h.close();}
+  }
+});
