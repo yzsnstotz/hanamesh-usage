@@ -1,6 +1,6 @@
 # J2S2-USAGE-08 · Q67 分发闭包 / Q61 补遗
 
-结果：阻塞（默认正式 DSH 的实际 resolved peer 不符合既有精确 pin）。
+结果：阻塞。Q85 当前固定目标与新检查点见 [Q85-CHECKPOINT.md](Q85-CHECKPOINT.md)；下文是此前 rc.25 的历史检查点。
 源码/分发候选：0.2.0-rc.25；只本地候选，不发布、不 push，不登记共享 STATUS。
 基线最新本地 main：60fe1ed7e1126293ef6dea3e8155d9a60e989020。
 运行原件：`/Users/yzliu/.cache/hanamesh-runs/J2S2-USAGE-08`，提交与交付校验见 REPORT.md。
@@ -14,7 +14,7 @@
 | 默认安装/构建 | 增加从现有 npm 锁导入的 pnpm 锁；目标 Node24.13.1/pnpm10.33.0/TS5.9.3 | 原严格编译保持；完整闭包 37 包/101 边；npm detached 原断言保留 |
 | 90 天 / limit | EventStore、UsageStore、HTTP 查询、自有 Settings panel | 具名默认与可见配置，100/1000 不改；pending 不年龄删除；非法值拒绝 |
 | inventory / command-source | Loader 扫描、command 原归属、页面归属；HealthSnapshot 原 failures | 失败 bounded code 可见；读取失败不空写；不扩展闭合 health 契约 |
-| namespace / 原生 Settings | 普通官方 bundle + Gateway + Cordis 原注入策略 | 修复 namespace 子上下文声明；真实入口/策略/刷新通过；零事件/模型调用 |
+| namespace / 历史 web Settings | 普通官方 bundle + Gateway + Cordis 原注入策略 | 修复 namespace 子上下文声明；真实入口/策略/刷新通过；零事件/模型调用 |
 | tools/int / runtime | SOURCE 工具解析、隔离路径负例；历史 int 为原卡消费者 | 显式 --card/--run，必传 candidate；保留隔离、3080、容器归属检查；本卡未运行 SQL/command 组合 |
 | 旧 DSH 快照 | docs/contracts/host-api 为历史取证；编译消费实际已安装公开声明 | 逐文件存档后保留，不当现行 pin；用户旧 brief 路径当前缺失，旧 alpha.1 不是本卡复核目标 |
 | acceptance / 旧包 | 历史真实证据、旧 U31 suite tgz 仍被测试消费 | 920 文件来源 SHA/路径/hash/引用清单已核验；不批量删除 |
@@ -42,11 +42,11 @@
 
 ## PM 请求与门界线
 
-需要 PM 提供默认正式安装即可解析到既有精确 peer 的官方宿主闭包/正式分发依据。
+此历史请求已被 PM Q85 取代：目标固定官方 master d743267388641bc76f17c45ce8b4c231aed1d32c；不再等待旧 rc.2 闭包。
 本卡不授权改 peer 或上游策略；不预装合约/zod，不升级整组版本。
 这是宿主分发兼容性请求，不是新增服务端口/权限请求；现有公开调用无新增跨模块端口。
 
-限定原生 Settings 回归通过仍不替代 USAGE05 完整 U1、真实 Core/Server、介质持久化或 owner ACCEPTED。
+历史 web Settings 回归通过仍不替代 USAGE05 完整 U1、真实 Core/Server、介质持久化或 owner ACCEPTED。
 原用户 alpha.1 brief 路径当前不可找到，实时 main 已是 DSH rc.2 精确 pin；无旧宿主兼容声明。
 学习记录：[USAGE-006](../../learnings/USAGE-006-published-closure-native-namespace.md)。
 
@@ -59,7 +59,7 @@
 
 最终 receipt：`final-rc25-gates.json`、`card-exact-rc25.json`、`clean-consumer-rc25.json`、
 `native-rc25-default-install.json`、`native-rc25-settings.json`、`native-rc25-usage-import-base.json`。
-SOURCE 174/174，contract 18/18，20/20 ERR_ASSERTION 变异；native Settings 3/3；
+SOURCE 174/174，contract 18/18，20/20 ERR_ASSERTION 变异；web Settings 3/3（不是 Desktop）；
 resolved peer 门仍失败（zod4.6.5/4.5.4），结果保持阻塞。每项以原 receipt 退出码为证。
 
 准则核对：1–9 通过。现有合法开发引用保留；没有改变开源用法、服务实现、原 schema/迁移/checksum。

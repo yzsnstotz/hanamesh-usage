@@ -118,5 +118,5 @@ rc.5 上限 🧪，不是用户 ACCEPTED。
 ## J2S2-USAGE-08 · Q67 分发闭包 / Q61 补遗（2026-10-11）
 
 - 最新 main 60fe1ed 的逐项复核、920 文件归档、published JS/声明干净消费者、具名默认/可见失败与工具参数，见 [同份本卡验收记录](J2S2-USAGE-08/README.md)。开发合约 v0.9.0 保留 dev-only；没有 ABI/SQL/签名或授权语义变更。
-- 原生官方 DSH Settings 三项通过；修复 namespace 缺 inject 引起的真实错误边界。完整 U1 仍归 USAGE05，未验证，不能升为产品 ACCEPTED。
-- 结果阻塞：默认官方 DSH 0.2.0-rc.2 实际 Usage import base 的 zod 为 4.6.5，与既有精确 peer 4.5.4 不符；不修改 peer、不预装/改上游策略。候选 rc.25 本地保存，请 PM 提供兼容正式宿主闭包。
+- 历史 npm DSH 0.2.0-rc.2 runProfile(profile:web) Settings 三项通过；修复 namespace 缺 inject 引起的真实错误边界，这不是原生 Desktop 证据。完整 U1 仍归 USAGE05，未验证，不能升为产品 ACCEPTED。
+- 结果阻塞：默认官方 DSH 0.2.0-rc.2 实际 Usage import base 的 zod 为 4.6.5，与既有精确 peer 4.5.4 不符；不修改 peer、不预装/改上游策略。候选 rc.25 字节保留。旧宿主请求由 Q85 取代；固定目标与新结果见 [Q85 检查点](J2S2-USAGE-08/Q85-CHECKPOINT.md)。

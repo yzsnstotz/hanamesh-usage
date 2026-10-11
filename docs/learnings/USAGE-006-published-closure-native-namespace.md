@@ -2,7 +2,7 @@
 
 ID: USAGE-006
 模块/标签: usage、pnpm、合约、分发、Settings、Cordis、peer
-状态: VERIFIED（SOURCE/PACKAGE/限定原生 Settings；完整 U1 未验证）
+状态: VERIFIED（SOURCE/PACKAGE/历史 web Settings；完整 U1 未验证）
 观察日期: 2026-10-11（Asia/Tokyo）
 
 ## 根因与规则
@@ -34,10 +34,12 @@ inventory 总读取或元数据 READ_FAILED/UNRESOLVED 失败不得提交空快�
 
 ## 实证与未过门
 
-原生官方 DSH 0.2.0-rc.2 默认 plugin add + runProfile + 无头 Chrome：Settings 入口、策略展示、
+历史 npm DSH 0.2.0-rc.2 默认 plugin add + runProfile(profile:web) + 无头 Chrome：Settings 入口、策略展示、
 只读刷新通过，零错误/零事件/零模型调用。修复前同入口实际进入 settings.section 错误边界。
 该门不包含命令、真实 Core/Server、原生介质 kill 或 USAGE05 完整 U1。
 
 默认正式 DSH 安装的运行解析将 zod 选为 4.6.5，Usage 的既有精确 peer 为 4.5.4；
 其余十项一致。以实际 Usage import 所在 URL 再核对仍不一致。必须保留失败交 PM；
 不能改 peer、预装 zod 或修改 autoInstallPeers 使门变绿。详细命令与结果见同份本卡验收记录。
+
+Q85 更正：上述 Settings 证据属于 web。固定 master d743267388641bc76f17c45ce8b4c231aed1d32c 的新原生 Electron/生产运行树取证及边界见 [Q85 检查点](../acceptance/J2S2-USAGE-08/Q85-CHECKPOINT.md)。包名含 native、源码版本或 lock 输入不能证明 Desktop 的实际 resolved 或 Usage 支持。
