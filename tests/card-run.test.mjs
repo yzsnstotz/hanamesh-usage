@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync,mkdirSync,writeFileSync,symlinkSync} from 'node:fs';
+import {mkdtempSync,mkdirSync,writeFileSync,symlinkSync,realpathSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
 import {spawnSync} from 'node:child_process';
 const root=resolve(new URL('../',import.meta.url).pathname);
-const parent=mkdtempSync(join(tmpdir(),'usage-card-runs-'));
+const parent=mkdtempSync(join(realpathSync(tmpdir()),'usage-card-runs-'));
 const runs=join(parent,'.cache/hanamesh-runs');mkdirSync(runs,{recursive:true});
 const card='J2S2-USAGE-08',run=join(runs,card,'isolated');mkdirSync(run,{recursive:true});
 
