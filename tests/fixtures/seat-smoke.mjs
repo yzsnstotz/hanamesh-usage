@@ -14,10 +14,10 @@ const record=createRecordSeat({
   getConsent:()=>consent,
   getDeviceId:()=> 'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk',
   now:()=>Date.parse('2026-09-19T00:00:00.000Z'),
-  nonce:()=> 'AQIDBAUGBwgJCgsMDQ4PEA',
+
   signEvent:event=>({...event,signature:'c2lnbmF0dXJl'}),
 });
-const input={hanaRef:'@hanamesh/app',action:'open',idempotencyKey:'open-1',sourcePlugin:'@hanamesh/dsh-app-host'};
+const input={occurredAt:'2026-09-19T00:00:00.000Z',hanaRef:'@hanamesh/app',action:'open',idempotencyKey:'open-1',sourcePlugin:'@hanamesh/dsh-app-host'};
 const withheld=await record(input);consent='granted';const recorded=await record(input);const duplicate=await record(input);const rejected=await record({...input,action:'install'});
 assert.equal(withheld.disposition,'withheld');assert.equal(recorded.disposition,'recorded');assert.equal(duplicate.eventId,recorded.eventId);assert.deepEqual(rejected,{disposition:'rejected',code:'INVALID_RECORD_INPUT'});
 for(const value of [withheld,recorded,{disposition:duplicate.disposition},rejected])process.stdout.write(`${JSON.stringify(value)}\n`);

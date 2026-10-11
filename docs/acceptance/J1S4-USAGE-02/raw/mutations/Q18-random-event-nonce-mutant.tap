@@ -1,0 +1,34 @@
+TAP version 13
+# Subtest: Q18 two independent buffers sign the same source fact with equal digest; C-USAGE accepts then duplicates
+not ok 1 - Q18 two independent buffers sign the same source fact with equal digest; C-USAGE accepts then duplicates
+  ---
+  duration_ms: 4.976625
+  type: 'test'
+  location: '/Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/shared-fact.test.mjs:45:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    same fact must retain the same event nonce across clients
+    + actual - expected
+
+    + 'npU-RdbFiczG4KS0AK37GHLC61XE7F-T_F87l1Hby-Js'
+    - 'n4nAH4iNHlGuqsvqarimc3fA8i74yPhtJ0etmeoxVHeU'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'n4nAH4iNHlGuqsvqarimc3fA8i74yPhtJ0etmeoxVHeU'
+  actual: 'npU-RdbFiczG4KS0AK37GHLC61XE7F-T_F87l1Hby-Js'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/shared-fact.test.mjs:51:10)
+    async Test.run (node:internal/test_runner/test:1110:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 46.970375

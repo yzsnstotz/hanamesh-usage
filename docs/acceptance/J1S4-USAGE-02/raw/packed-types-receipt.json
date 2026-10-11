@@ -1,0 +1,6 @@
+{
+  "redExit": 2,
+  "greenExit": 0,
+  "apiContractsInstalled": false,
+  "scope": "PACKAGE/TYPE: real tgz plus copied exact locked peer artifacts; strict=true, skipLibCheck=false"
+}

@@ -1,0 +1,2 @@
+../../../../.cache/hanamesh-runs/J1S4-USAGE-02/verify-q18-node24-vz41_451/red-packed-yv22ipal/consumer/node_modules/hanamesh-usage/lib/core/event-store.d.ts(2,40): error TS2307: Cannot find module '@hanamesh/api-contracts/usage' or its corresponding type declarations.
+../../../../.cache/hanamesh-runs/J1S4-USAGE-02/verify-q18-node24-vz41_451/red-packed-yv22ipal/consumer/node_modules/hanamesh-usage/lib/core/event-store.d.ts(3,40): error TS2307: Cannot find module '@hanamesh/api-contracts/usage' or its corresponding type declarations.

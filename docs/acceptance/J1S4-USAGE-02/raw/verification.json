@@ -1,0 +1,84 @@
+{
+  "environment": {
+    "sandbox": "/Users/yzliu/.cache/hanamesh-runs/J1S4-USAGE-02/verify-q18-node24-vz41_451",
+    "nodeBin": "/Users/yzliu/.local/share/fnm/node-versions/v24.13.1/installation/bin",
+    "baseline": "1693646"
+  },
+  "results": [
+    {
+      "gate": "ci",
+      "command": [
+        "npm",
+        "ci"
+      ],
+      "exit": 0,
+      "seconds": 2.086,
+      "log": "/Users/yzliu/.cache/hanamesh-runs/J1S4-USAGE-02/verify-q18-node24-vz41_451/ci.log"
+    },
+    {
+      "gate": "build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exit": 0,
+      "seconds": 4.653,
+      "log": "/Users/yzliu/.cache/hanamesh-runs/J1S4-USAGE-02/verify-q18-node24-vz41_451/build.log"
+    },
+    {
+      "gate": "test",
+      "command": [
+        "npm",
+        "test"
+      ],
+      "exit": 0,
+      "seconds": 0.57,
+      "log": "/Users/yzliu/.cache/hanamesh-runs/J1S4-USAGE-02/verify-q18-node24-vz41_451/test.log"
+    },
+    {
+      "gate": "contract",
+      "command": [
+        "npm",
+        "run",
+        "test:contract"
+      ],
+      "exit": 0,
+      "seconds": 0.182,
+      "log": "/Users/yzliu/.cache/hanamesh-runs/J1S4-USAGE-02/verify-q18-node24-vz41_451/contract.log"
+    },
+    {
+      "gate": "check",
+      "command": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "exit": 0,
+      "seconds": 0.266,
+      "log": "/Users/yzliu/.cache/hanamesh-runs/J1S4-USAGE-02/verify-q18-node24-vz41_451/check.log"
+    },
+    {
+      "gate": "mutations",
+      "command": [
+        "npm",
+        "run",
+        "test:mutations"
+      ],
+      "exit": 0,
+      "seconds": 2.715,
+      "log": "/Users/yzliu/.cache/hanamesh-runs/J1S4-USAGE-02/verify-q18-node24-vz41_451/mutations.log"
+    },
+    {
+      "gate": "detached",
+      "command": [
+        "npm",
+        "run",
+        "test:detached"
+      ],
+      "exit": 0,
+      "seconds": 4.108,
+      "log": "/Users/yzliu/.cache/hanamesh-runs/J1S4-USAGE-02/verify-q18-node24-vz41_451/detached.log"
+    }
+  ]
+}

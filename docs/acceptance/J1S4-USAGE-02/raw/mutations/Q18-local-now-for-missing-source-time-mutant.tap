@@ -1,0 +1,42 @@
+TAP version 13
+# Subtest: Q18 missing source timestamp or stable fact key is an explicit input gap, never synthesized from local time
+not ok 1 - Q18 missing source timestamp or stable fact key is an explicit input gap, never synthesized from local time
+  ---
+  duration_ms: 4.17775
+  type: 'test'
+  location: '/Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/shared-fact.test.mjs:97:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    occurredAt
+    + actual - expected
+
+      {
+    +   disposition: 'recorded',
+    +   eventId: '8631eea1-44dc-519d-9dcd-174d5904584a'
+    -   code: 'INVALID_RECORD_INPUT',
+    -   disposition: 'rejected'
+      }
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    disposition: 'rejected'
+    code: 'INVALID_RECORD_INPUT'
+  actual:
+    disposition: 'recorded'
+    eventId: '8631eea1-44dc-519d-9dcd-174d5904584a'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/yzliu/work/projects/hanamesh/hanamesh-usage/tests/shared-fact.test.mjs:99:115)
+    async Test.run (node:internal/test_runner/test:1110:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 43.181125

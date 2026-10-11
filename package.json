@@ -1,6 +1,6 @@
 {
   "name": "hanamesh-usage",
-  "version": "0.2.0-rc.21",
+  "version": "0.2.0-rc.22",
   "description": "Consent-gated, device-signed HanaMesh usage events for DSH",
   "type": "module",
   "main": "lib/host/index.js",
@@ -97,7 +97,7 @@
     "preflight:host": "node tools/preflight.mjs",
     "samples": "node tools/samples.mjs",
     "test:detached": "node tools/detached.mjs",
-    "test:contract": "node --test --test-reporter=tap tests/stage0-contract.test.mjs tests/stage4-contract.test.mjs tests/contract-wire.test.mjs"
+    "test:contract": "node --test --test-reporter=tap tests/stage0-contract.test.mjs tests/stage4-contract.test.mjs tests/contract-wire.test.mjs tests/shared-fact.test.mjs"
   },
   "devDependencies": {
     "@deepseek-ai/cordis": "4.0.4",
@@ -115,7 +115,7 @@
     "@deepseek-ai/dsh-typert-protocol": "0.2.0-rc.2",
     "@deepseek-ai/dsh-typert-registry": "0.2.0-rc.2",
     "@deepseek-ai/schemastery": "3.18.4",
-    "@hanamesh/api-contracts": "git+https://github.com/yzsnstotz/hanamesh-api-contracts.git#v0.1.0",
+    "@hanamesh/api-contracts": "git+https://github.com/yzsnstotz/hanamesh-api-contracts.git#v0.9.0",
     "@types/node": "24.13.4",
     "@types/react": "18.3.1",
     "react": "18.3.1",

@@ -28,10 +28,11 @@ export interface EventGlobalPort {
     get(): EventSnapshot;
     set(value: EventSnapshot): Promise<void>;
 }
+/** Local storage admission DTO; public declarations stay independent of dev-only contracts. */
 export interface IngestBatchResult {
     accepted: number;
     duplicates: number;
-    rejected: {
+    rejected: readonly {
         eventId: string;
         code: string;
     }[];

@@ -1,4 +1,6 @@
-# hanamesh-usage · 0.2.0-rc.21
+# hanamesh-usage · 0.2.0-rc.22
+
+> rc.22：record 保留原事实时间，按稳定 eventId 派生事件 nonce，两个独立缓冲的同事实签名摘要一致。Core/C-USAGE 消费正式合约 v0.9.0；C-USAGE-LOCAL 的 occurredAt 必填细化交 J1S4-APIC-13 发布，详见 [提供方交件](docs/contracts/usage-local-q18.md)。本卡只有 SOURCE/FIXTURE 证据。
 
 > rc.21 由 Usage 客户端经 Cordis `internal/get` 包住 `slots.register`，只包装 `main`、`settings.section`、`plugins.bundle.config`、`plugins.row.config` 四功能位。组件提交有内容的 DOM 后，经 Usage 自有 `hanameshUsagePages` Remote 的 `issue` / `presented` 报告；host 从 Loader 与 canonical manifest 解析包名，核 active Inventory 和 installed/enabled/removable bundle row。客户端不提交包名；一次性 256-bit 凭据绑定 Peer、Loader 身份和功能位，60 秒到期、限流、先消费再异步核验/写入，同意变化、Core 变更、Peer 退出和 Usage 关闭均撤销。凭据不落盘，事件只留其 SHA-256 幂等键。不再监听 fork 的 `client-page/opened`。StrictMode effect 重放只提交一次，未挂载和空 DOM 不报告；不自动把页面内按钮算 use。该机制不证明任意被攻陷客户端的渲染真实性。
 

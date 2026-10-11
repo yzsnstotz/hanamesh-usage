@@ -1,0 +1,122 @@
+
+> hanamesh-usage@0.2.0-rc.22 test:contract
+> node --test --test-reporter=tap tests/stage0-contract.test.mjs tests/stage4-contract.test.mjs tests/contract-wire.test.mjs tests/shared-fact.test.mjs
+
+TAP version 13
+# Subtest: published event nonce is a token, independent of the producer entropy encoding
+ok 1 - published event nonce is a token, independent of the producer entropy encoding
+  ---
+  duration_ms: 2.382791
+  type: 'test'
+  ...
+# Subtest: local stub device ids cannot enter the public wire event
+ok 2 - local stub device ids cannot enter the public wire event
+  ---
+  duration_ms: 1.50575
+  type: 'test'
+  ...
+# Subtest: mixed signed batch with a local stub sends nothing and keeps every event pending
+ok 3 - mixed signed batch with a local stub sends nothing and keeps every event pending
+  ---
+  duration_ms: 2.273
+  type: 'test'
+  ...
+# Subtest: Q18 C-USAGE-LOCAL APIC-13 handoff examples exercise actual provider and explicit source gaps
+ok 4 - Q18 C-USAGE-LOCAL APIC-13 handoff examples exercise actual provider and explicit source gaps
+  ---
+  duration_ms: 3.978708
+  type: 'test'
+  ...
+# Subtest: C-CORE consumer: duckCore classifies every published handshake case like the contract
+ok 5 - C-CORE consumer: duckCore classifies every published handshake case like the contract
+  ---
+  duration_ms: 1.407542
+  type: 'test'
+  ...
+# Subtest: C-CORE consumer: usage events signed through the contract fixture verify with its public key
+ok 6 - C-CORE consumer: usage events signed through the contract fixture verify with its public key
+  ---
+  duration_ms: 0.790125
+  type: 'test'
+  ...
+# Subtest: C-USAGE-LOCAL provider: record returns the published dispositions, eventId and codes
+ok 7 - C-USAGE-LOCAL provider: record returns the published dispositions, eventId and codes
+  ---
+  duration_ms: 1.05875
+  type: 'test'
+  ...
+# Subtest: C-USAGE-LOCAL provider: health has the published HealthSnapshot shape, core present and absent
+ok 8 - C-USAGE-LOCAL provider: health has the published HealthSnapshot shape, core present and absent
+  ---
+  duration_ms: 1.258708
+  type: 'test'
+  ...
+# Subtest: Q18 two independent buffers sign the same source fact with equal digest; C-USAGE accepts then duplicates
+ok 9 - Q18 two independent buffers sign the same source fact with equal digest; C-USAGE accepts then duplicates
+  ---
+  duration_ms: 16.5725
+  type: 'test'
+  ...
+# Subtest: Q18 an accepted event with a lost receipt retries its original nonce after buffer restart, with fresh HTTP auth
+ok 10 - Q18 an accepted event with a lost receipt retries its original nonce after buffer restart, with fresh HTTP auth
+  ---
+  duration_ms: 1.307416
+  type: 'test'
+  ...
+# Subtest: Q18 different device or source keys remain independent; same key with different facts conflicts locally and in C-USAGE
+ok 11 - Q18 different device or source keys remain independent; same key with different facts conflicts locally and in C-USAGE
+  ---
+  duration_ms: 2.60175
+  type: 'test'
+  ...
+# Subtest: Q18 missing source timestamp or stable fact key is an explicit input gap, never synthesized from local time
+ok 12 - Q18 missing source timestamp or stable fact key is an explicit input gap, never synthesized from local time
+  ---
+  duration_ms: 0.361333
+  type: 'test'
+  ...
+# Subtest: U04 package is the standalone hanamesh-usage DSH bundle
+ok 13 - U04 package is the standalone hanamesh-usage DSH bundle
+  ---
+  duration_ms: 0.87625
+  type: 'test'
+  ...
+# Subtest: J1S2 sibling modules are reached only through the published @hanamesh/api-contracts tag
+ok 14 - J1S2 sibling modules are reached only through the published @hanamesh/api-contracts tag
+  ---
+  duration_ms: 0.163292
+  type: 'test'
+  ...
+# Subtest: U04 bundle patch inserts exactly one hanamesh-usage loader row
+ok 15 - U04 bundle patch inserts exactly one hanamesh-usage loader row
+  ---
+  duration_ms: 0.16625
+  type: 'test'
+  ...
+# Subtest: U02 runtime-registry is absent from package, source, vendor and contract inventory
+ok 16 - U02 runtime-registry is absent from package, source, vendor and contract inventory
+  ---
+  duration_ms: 1.162292
+  type: 'test'
+  ...
+# Subtest: U23 stage4 standins and isolated-host scripts are present
+ok 17 - U23 stage4 standins and isolated-host scripts are present
+  ---
+  duration_ms: 0.759083
+  type: 'test'
+  ...
+# Subtest: U31 suite tgz bundles usage without a checkout-specific path
+ok 18 - U31 suite tgz bundles usage without a checkout-specific path
+  ---
+  duration_ms: 17.0755
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 69.7125

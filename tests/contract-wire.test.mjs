@@ -39,6 +39,17 @@ const {duckCore,signUsageEvent}=await import('../lib/host/core-link.js');
 const {signingJSON}=await import('../lib/core/index.js');
 const {fixtureHost}=await import('./fixtures/host.mjs');
 
+test('Q18 C-USAGE-LOCAL APIC-13 handoff examples exercise actual provider and explicit source gaps',async()=>{
+  const {createUsageLocalQ18Examples}=await import('../test/fixtures/usage-local-q18.mjs');
+  const examples=await createUsageLocalQ18Examples();
+  assert.match(examples.label,/FIXTURE/);
+  assert.equal(examples.results.recorded.disposition,'recorded');
+  assert.deepEqual(examples.results.duplicate,{...examples.results.recorded,disposition:'duplicate'});
+  assert.deepEqual(examples.results.conflict,{disposition:'rejected',code:'EVENT_IDENTITY_CONFLICT'});
+  assert.deepEqual(examples.results.gap,{disposition:'rejected',code:'INVALID_RECORD_INPUT'});
+  assert.deepEqual(examples.results.withheld,{disposition:'withheld'});
+});
+
 test('C-CORE consumer: duckCore classifies every published handshake case like the contract',()=>{
   const cases=coreContract.coreHandshakeCases();
   assert(cases.length>=13);

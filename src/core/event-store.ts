@@ -18,7 +18,8 @@ export interface EventSnapshot {
   inventory: { last: { scannedAt: string; items: InventoryItem[] } | null };
 }
 export interface EventGlobalPort { get(): EventSnapshot; set(value: EventSnapshot): Promise<void> }
-export interface IngestBatchResult { accepted:number; duplicates:number; rejected:{eventId:string;code:string}[]; durability:'committed'|'pending-host-commit' }
+/** Local storage admission DTO; public declarations stay independent of dev-only contracts. */
+export interface IngestBatchResult { accepted:number; duplicates:number; rejected:readonly {eventId:string;code:string}[]; durability:'committed'|'pending-host-commit' }
 
 const terminal = new Set<UploadState>(['sent','duplicate','rejected']);
 const retentionMs = 90 * 24 * 60 * 60 * 1000;

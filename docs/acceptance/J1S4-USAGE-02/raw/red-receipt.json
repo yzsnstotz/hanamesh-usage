@@ -1,0 +1,6 @@
+{
+  "verbatimRunLog": "/Users/yzliu/.cache/hanamesh-runs/J1S4-USAGE-02/verify-q18-node24-vz41_451/red.tap",
+  "verbatimSHA256": "7fd28b37a58b54ac3650de634eaef1a79d3766e4f3838808d70eed929b3ca2a2",
+  "trackedSHA256": "942cc83c0492e4c5f1d49ee1ede024d891032c2855f89dbe95f68f6191394a39",
+  "normalization": "tracked TAP trailing whitespace only; verbatim original preserved in run directory"
+}

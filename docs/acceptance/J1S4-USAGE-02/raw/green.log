@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: U09 record seat module is present
+ok 1 - U09 record seat module is present
+  ---
+  duration_ms: 0.304042
+  type: 'test'
+  ...
+# Subtest: U09 record seat returns withheld, recorded, duplicate and rejected dispositions
+ok 2 - U09 record seat returns withheld, recorded, duplicate and rejected dispositions
+  ---
+  duration_ms: 2.280667
+  type: 'test'
+  ...
+# Subtest: U09 record seat rejects timestamps outside the 90-day and five-minute window
+ok 3 - U09 record seat rejects timestamps outside the 90-day and five-minute window
+  ---
+  duration_ms: 0.09725
+  type: 'test'
+  ...
+# Subtest: T6 record seat accepts sourceHanaRef, targetRef and a use receipt; rejects receipts on open and bad shapes
+ok 4 - T6 record seat accepts sourceHanaRef, targetRef and a use receipt; rejects receipts on open and bad shapes
+  ---
+  duration_ms: 0.695834
+  type: 'test'
+  ...
+# Subtest: Q18 two independent buffers sign the same source fact with equal digest; C-USAGE accepts then duplicates
+ok 5 - Q18 two independent buffers sign the same source fact with equal digest; C-USAGE accepts then duplicates
+  ---
+  duration_ms: 14.637958
+  type: 'test'
+  ...
+# Subtest: Q18 an accepted event with a lost receipt retries its original nonce after buffer restart, with fresh HTTP auth
+ok 6 - Q18 an accepted event with a lost receipt retries its original nonce after buffer restart, with fresh HTTP auth
+  ---
+  duration_ms: 1.278959
+  type: 'test'
+  ...
+# Subtest: Q18 different device or source keys remain independent; same key with different facts conflicts locally and in C-USAGE
+ok 7 - Q18 different device or source keys remain independent; same key with different facts conflicts locally and in C-USAGE
+  ---
+  duration_ms: 1.955125
+  type: 'test'
+  ...
+# Subtest: Q18 missing source timestamp or stable fact key is an explicit input gap, never synthesized from local time
+ok 8 - Q18 missing source timestamp or stable fact key is an explicit input gap, never synthesized from local time
+  ---
+  duration_ms: 0.356083
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 62.107583

@@ -1,0 +1,64 @@
+
+> hanamesh-usage@0.2.0-rc.22 check
+> node tools/check.mjs
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: legacy summaries producer must not enter event path src/host/record.js
+    at file:///Users/yzliu/work/projects/hanamesh/hanamesh-usage/tools/check.mjs:34:9 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '// @ts-check\n' +
+    "import { createUsageEvent, eventIdForSeat, eventNonceForSeat, safeMetadata, validReceipt, validTargetRef, UsageError } from '../core/index.js';\n" +
+    '\n' +
+    'const hana = /^(?:@[a-z0-9][a-z0-9._-]*\\/)?[a-z0-9][a-z0-9._-]*$/i;\n' +
+    '/** @param {unknown} value */\n' +
+    "const validHana = value => typeof value === 'string' && value.length <= 128 && hana.test(value) && !/(?:sk-|ghp_|secret|password|api.?key)/i.test(value);\n" +
+    '\n' +
+    '/**\n' +
+    ' * @param {{\n' +
+    " *   store: import('../core/index.js').EventStore,\n" +
+    " *   getConsent(): 'granted'|'withheld',\n" +
+    ' *   getDeviceId(): string|null,\n' +
+    ' *   now?(): number,\n' +
+    " *   signEvent(event: import('../core/index.js').UsageEvent): import('../core/index.js').UsageEvent,\n" +
+    ' * }} options\n' +
+    ' */\n' +
+    'export function createRecordSeat({store,getConsent,getDeviceId,now=Date.now,signEvent}) {\n' +
+    '  /**\n' +
+    '   * rc.7：三个可选归因键。`sourceHanaRef`（来源 Hana，npm 包名）、`targetRef`（目标应用/会话，有界 token）、\n' +
+    '   * `receipt {providerId, model|null, count}`（只允许配 `use`）。缺省与 rc.6 完全一致；同 idempotencyKey 但归因/回执不同是 EVENT_IDENTITY_CONFLICT。\n' +
+    "   * @param {import('./contracts.js').RecordInput} input @returns {Promise<import('./contracts.js').RecordResult>} */\n" +
+    '  return async function record(input) {\n' +
+    "    if (getConsent() !== 'granted') return { disposition:'withheld' };\n" +
+    '    try {\n' +
+    "      if (input === null || typeof input !== 'object' || Array.isArray(input)) throw new UsageError('INVALID_RECORD_INPUT');\n" +
+    "      const keys=Object.keys(input);if(keys.some(key=>!['hanaRef','action','occurredAt','idempotencyKey','sourcePlugin','sourceHanaRef','targetRef','receipt'].includes(key))) throw new UsageError('INVALID_RECORD_INPUT');\n" +
+    '      const {hanaRef,action,idempotencyKey,sourcePlugin}=input;\n' +
+    "      if (!validHana(hanaRef) || !['open','use'].includes(action) || !safeMetadata(idempotencyKey) || idempotencyKey.length > 160 || !validHana(sourcePlugin)) throw new UsageError('INVALID_RECORD_INPUT');\n" +
+    '      const sourceHanaRef=input.sourceHanaRef??null,targetRef=input.targetRef??null,receipt=input.receipt??null;\n' +
+    "      if ((sourceHanaRef!==null&&!validHana(sourceHanaRef))||(targetRef!==null&&!validTargetRef(targetRef))||(receipt!==null&&(action!=='use'||!validReceipt(receipt)))) throw new UsageError('INVALID_RECORD_INPUT');\n" +
+    "      const deviceId=getDeviceId();if(deviceId===null) throw new UsageError('DEVICE_UNAVAILABLE');\n" +
+    '      // The producer must preserve the original fact time across deliveries.\n' +
+    '      // Local now is only for the admission window, never for fact identity.\n' +
+    "      if(typeof input.occurredAt!=='string')throw new UsageError('INVALID_RECORD_INPUT');\n" +
+    '      const current=now();const occurredAt=input.occurredAt;const time=Date.parse(occurredAt);\n' +
+    "      if(!Number.isFinite(time)||new Date(time).toISOString()!==occurredAt||time<current-90*24*60*60*1000||time>current+5*60*1000) throw new UsageError('INVALID_RECORD_INPUT');\n" +
+    '      const eventId=eventIdForSeat(deviceId,sourcePlugin,idempotencyKey);\n' +
+    "      const event=signEvent(createUsageEvent({eventId,deviceId,hanaRef,action,occurredAt,nonce:eventNonceForSeat(eventId),signature:null,source:'seat',sourcePlugin,evidenceRef:idempotencyKey,sourceHanaRef,targetRef,receipt:receipt===null?null:{providerId:receipt.providerId,model:receipt.model,count:receipt.count}}));\n" +
+    '      const disposition=await store.put(event);\n' +
+    "      return { disposition:disposition==='inserted'?'recorded':'duplicate',eventId };\n" +
+    '    } catch (error) {\n' +
+    "      const code=error instanceof UsageError&&['INVALID_RECORD_INPUT','DEVICE_UNAVAILABLE','EVENTS_CAPACITY_REACHED','EVENT_IDENTITY_CONFLICT'].includes(error.code)?error.code:'RECORD_FAILED';\n" +
+    "      return { disposition:'rejected',code };\n" +
+    '    }\n' +
+    '  };\n' +
+    '}\n',
+  expected: /\bproducer\b/,
+  operator: 'doesNotMatch',
+  diff: 'simple'
+}
+
+Node.js v24.13.1

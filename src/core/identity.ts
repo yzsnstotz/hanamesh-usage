@@ -24,3 +24,8 @@ export function eventIdForLoader(deviceId: string, action: 'install' | 'uninstal
 export function eventIdForSeat(deviceId: string, sourcePlugin: string, idempotencyKey: string): string {
   return uuidv5(JSON.stringify([deviceId, sourcePlugin, idempotencyKey]));
 }
+/** Event nonce is identity-scoped, not a request authentication nonce. Same fact,
+ * independent buffers: same nonce. Different event id: separate nonce. */
+export function eventNonceForSeat(eventId: string): string {
+  return `n${createHash('sha256').update(JSON.stringify(['hanamesh-usage:seat-event-nonce:v1', eventId])).digest('base64url')}`;
+}
