@@ -1,0 +1,22 @@
+TAP version 13
+# Subtest: detached keeps the full frozen peer closure despite inherited legacy settings
+ok 1 - detached keeps the full frozen peer closure despite inherited legacy settings
+  ---
+  duration_ms: 6687.096166
+  type: 'test'
+  ...
+# Subtest: detached preserves offline failure output and exit code while deleting only its copy
+ok 2 - detached preserves offline failure output and exit code while deleting only its copy
+  ---
+  duration_ms: 1034.911709
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7766.367709

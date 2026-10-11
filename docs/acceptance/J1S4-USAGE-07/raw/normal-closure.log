@@ -1,0 +1,448 @@
+{
+  "version": "0.2.0-rc.22",
+  "name": "hanamesh-usage",
+  "dependencies": {
+    "@deepseek-ai/cordis": {
+      "version": "4.0.4",
+      "resolved": "https://registry.npmjs.org/@deepseek-ai/cordis/-/cordis-4.0.4.tgz",
+      "overridden": true,
+      "dependencies": {
+        "@deepseek-ai/cordis-plugin-include": {},
+        "@deepseek-ai/cordis-plugin-loader": {},
+        "@deepseek-ai/cosmokit": {
+          "version": "1.8.5",
+          "resolved": "https://registry.npmjs.org/@deepseek-ai/cosmokit/-/cosmokit-1.8.5.tgz",
+          "overridden": false
+        },
+        "@standard-schema/spec": {
+          "version": "1.1.0",
+          "resolved": "https://registry.npmjs.org/@standard-schema/spec/-/spec-1.1.0.tgz",
+          "overridden": false
+        }
+      }
+    },
+    "@deepseek-ai/dsh-agent": {
+      "version": "0.2.0-rc.2",
+      "resolved": "https://registry.npmjs.org/@deepseek-ai/dsh-agent/-/dsh-agent-0.2.0-rc.2.tgz",
+      "overridden": true,
+      "dependencies": {
+        "@deepseek-ai/cordis": {
+          "version": "4.0.4"
+        },
+        "@deepseek-ai/dsh-invariants": {
+          "version": "0.2.0-rc.2",
+          "resolved": "https://registry.npmjs.org/@deepseek-ai/dsh-invariants/-/dsh-invariants-0.2.0-rc.2.tgz",
+          "overridden": true,
+          "dependencies": {
+            "@deepseek-ai/cordis": {
+              "version": "4.0.4"
+            },
+            "@deepseek-ai/schemastery": {
+              "version": "3.18.4"
+            }
+          }
+        },
+        "@deepseek-ai/dsh-llm": {
+          "version": "0.2.0-rc.2"
+        },
+        "@deepseek-ai/dsh-scope": {
+          "version": "0.2.0-rc.2"
+        },
+        "@deepseek-ai/dsh-session-projection": {
+          "version": "0.2.0-rc.2",
+          "resolved": "https://registry.npmjs.org/@deepseek-ai/dsh-session-projection/-/dsh-session-projection-0.2.0-rc.2.tgz",
+          "overridden": true,
+          "dependencies": {
+            "@deepseek-ai/cordis": {
+              "version": "4.0.4"
+            },
+            "@deepseek-ai/dsh-session": {
+              "version": "0.2.0-rc.2"
+            },
+            "zod": {
+              "version": "4.5.4"
+            }
+          }
+        },
+        "@deepseek-ai/dsh-session": {
+          "version": "0.2.0-rc.2"
+        },
+        "@deepseek-ai/dsh-system-prompt": {
+          "version": "0.2.0-rc.2"
+        },
+        "@deepseek-ai/dsh-typert-protocol": {
+          "version": "0.2.0-rc.2"
+        },
+        "@deepseek-ai/dsh-util-values": {
+          "version": "0.2.0-rc.2",
+          "resolved": "https://registry.npmjs.org/@deepseek-ai/dsh-util-values/-/dsh-util-values-0.2.0-rc.2.tgz",
+          "overridden": true,
+          "dependencies": {
+            "@deepseek-ai/cordis": {
+              "version": "4.0.4"
+            }
+          }
+        },
+        "@deepseek-ai/dsh-workspace": {}
+      }
+    },
+    "@deepseek-ai/dsh-api-gateway": {
+      "version": "0.2.0-rc.2",
+      "resolved": "https://registry.npmjs.org/@deepseek-ai/dsh-api-gateway/-/dsh-api-gateway-0.2.0-rc.2.tgz",
+      "overridden": false,
+      "dependencies": {
+        "@deepseek-ai/cordis": {
+          "version": "4.0.4"
+        },
+        "@deepseek-ai/dsh-client-connection": {
+          "version": "0.2.0-rc.2"
+        },
+        "@deepseek-ai/dsh-deque": {
+          "version": "0.2.0-rc.2",
+          "resolved": "https://registry.npmjs.org/@deepseek-ai/dsh-deque/-/dsh-deque-0.2.0-rc.2.tgz",
+          "overridden": false,
+          "dependencies": {
+            "@deepseek-ai/cordis": {
+              "version": "4.0.4"
+            }
+          }
+        },
+        "@deepseek-ai/dsh-timeout": {
+          "version": "0.2.0-rc.2",
+          "resolved": "https://registry.npmjs.org/@deepseek-ai/dsh-timeout/-/dsh-timeout-0.2.0-rc.2.tgz",
+          "overridden": false,
+          "dependencies": {
+            "@deepseek-ai/cordis": {
+              "version": "4.0.4"
+            }
+          }
+        },
+        "@deepseek-ai/dsh-typert-protocol": {
+          "version": "0.2.0-rc.2"
+        },
+        "@deepseek-ai/schemastery": {
+          "version": "3.18.4"
+        },
+        "ws": {
+          "version": "8.22.0",
+          "resolved": "https://registry.npmjs.org/ws/-/ws-8.22.0.tgz",
+          "overridden": false,
+          "dependencies": {
+            "bufferutil": {},
+            "utf-8-validate": {}
+          }
+        }
+      }
+    },
+    "@deepseek-ai/dsh-attachment": {
+      "version": "0.2.0-rc.2",
+      "resolved": "https://registry.npmjs.org/@deepseek-ai/dsh-attachment/-/dsh-attachment-0.2.0-rc.2.tgz",
+      "overridden": true,
+      "dependencies": {
+        "@deepseek-ai/cordis": {
+          "version": "4.0.4"
+        },
+        "@deepseek-ai/dsh-brand": {
+          "version": "0.2.0-rc.2",
+          "resolved": "https://registry.npmjs.org/@deepseek-ai/dsh-brand/-/dsh-brand-0.2.0-rc.2.tgz",
+          "overridden": true,
+          "dependencies": {
+            "@deepseek-ai/cordis": {
+              "version": "4.0.4"
+            }
+          }
+        }
+      }
+    },
+    "@deepseek-ai/dsh-client-connection": {
+      "version": "0.2.0-rc.2",
+      "resolved": "https://registry.npmjs.org/@deepseek-ai/dsh-client-connection/-/dsh-client-connection-0.2.0-rc.2.tgz",
+      "overridden": true,
+      "dependencies": {
+        "@deepseek-ai/cordis": {
+          "version": "4.0.4"
+        },
+        "@deepseek-ai/dsh-credentials": {
+          "version": "0.2.0-rc.2",
+          "resolved": "https://registry.npmjs.org/@deepseek-ai/dsh-credentials/-/dsh-credentials-0.2.0-rc.2.tgz",
+          "overridden": false,
+          "dependencies": {
+            "@deepseek-ai/cordis": {
+              "version": "4.0.4"
+            },
+            "@deepseek-ai/dsh-brand": {
+              "version": "0.2.0-rc.2"
+            },
+            "@deepseek-ai/dsh-invariants": {
+              "version": "0.2.0-rc.2"
+            }
+          }
+        },
+        "@deepseek-ai/dsh-scope": {
+          "version": "0.2.0-rc.2"
+        },
+        "@deepseek-ai/schemastery": {
+          "version": "3.18.4"
+        },
+        "zod": {
+          "version": "4.5.4"
+        }
+      }
+    },
+    "@deepseek-ai/dsh-llm": {
+      "version": "0.2.0-rc.2",
+      "resolved": "https://registry.npmjs.org/@deepseek-ai/dsh-llm/-/dsh-llm-0.2.0-rc.2.tgz",
+      "overridden": true,
+      "dependencies": {
+        "@deepseek-ai/cordis": {
+          "version": "4.0.4"
+        },
+        "@deepseek-ai/dsh-brand": {
+          "version": "0.2.0-rc.2"
+        },
+        "@deepseek-ai/dsh-timeout": {
+          "version": "0.2.0-rc.2"
+        },
+        "@deepseek-ai/dsh-typert-protocol": {
+          "version": "0.2.0-rc.2"
+        },
+        "@deepseek-ai/dsh-util-crypto": {
+          "version": "0.2.0-rc.2",
+          "resolved": "https://registry.npmjs.org/@deepseek-ai/dsh-util-crypto/-/dsh-util-crypto-0.2.0-rc.2.tgz",
+          "overridden": false,
+          "dependencies": {
+            "@deepseek-ai/cordis": {
+              "version": "4.0.4"
+            }
+          }
+        },
+        "@deepseek-ai/dsh-util-values": {
+          "version": "0.2.0-rc.2"
+        },
+        "@deepseek-ai/schemastery": {
+          "version": "3.18.4"
+        },
+        "zod": {
+          "version": "4.5.4"
+        }
+      }
+    },
+    "@deepseek-ai/dsh-scope": {
+      "version": "0.2.0-rc.2",
+      "resolved": "https://registry.npmjs.org/@deepseek-ai/dsh-scope/-/dsh-scope-0.2.0-rc.2.tgz",
+      "overridden": true,
+      "dependencies": {
+        "@deepseek-ai/cordis": {
+          "version": "4.0.4"
+        },
+        "@deepseek-ai/dsh-invariants": {
+          "version": "0.2.0-rc.2"
+        }
+      }
+    },
+    "@deepseek-ai/dsh-session-persistence": {
+      "version": "0.2.0-rc.2",
+      "resolved": "https://registry.npmjs.org/@deepseek-ai/dsh-session-persistence/-/dsh-session-persistence-0.2.0-rc.2.tgz",
+      "overridden": true,
+      "dependencies": {
+        "@deepseek-ai/cordis": {
+          "version": "4.0.4"
+        },
+        "@deepseek-ai/dsh-brand": {
+          "version": "0.2.0-rc.2"
+        },
+        "@deepseek-ai/dsh-session": {
+          "version": "0.2.0-rc.2"
+        },
+        "@deepseek-ai/dsh-timeout": {
+          "version": "0.2.0-rc.2"
+        },
+        "@deepseek-ai/dsh-util-values": {
+          "version": "0.2.0-rc.2"
+        }
+      }
+    },
+    "@deepseek-ai/dsh-session": {
+      "version": "0.2.0-rc.2",
+      "resolved": "https://registry.npmjs.org/@deepseek-ai/dsh-session/-/dsh-session-0.2.0-rc.2.tgz",
+      "overridden": true,
+      "dependencies": {
+        "@deepseek-ai/cordis": {
+          "version": "4.0.4"
+        },
+        "@deepseek-ai/dsh-brand": {
+          "version": "0.2.0-rc.2"
+        },
+        "@deepseek-ai/dsh-llm": {
+          "version": "0.2.0-rc.2"
+        },
+        "@deepseek-ai/dsh-scope": {
+          "version": "0.2.0-rc.2"
+        },
+        "@deepseek-ai/dsh-util-values": {
+          "version": "0.2.0-rc.2"
+        }
+      }
+    },
+    "@deepseek-ai/dsh-storage-domain": {
+      "version": "0.2.0-rc.2",
+      "resolved": "https://registry.npmjs.org/@deepseek-ai/dsh-storage-domain/-/dsh-storage-domain-0.2.0-rc.2.tgz",
+      "overridden": true,
+      "dependencies": {
+        "@deepseek-ai/cordis": {
+          "version": "4.0.4"
+        },
+        "@deepseek-ai/dsh-invariants": {
+          "version": "0.2.0-rc.2"
+        },
+        "@deepseek-ai/dsh-storage": {
+          "version": "0.2.0-rc.2"
+        },
+        "@deepseek-ai/schemastery": {
+          "version": "3.18.4"
+        },
+        "zod": {
+          "version": "4.5.4"
+        }
+      }
+    },
+    "@deepseek-ai/dsh-storage": {
+      "version": "0.2.0-rc.2",
+      "resolved": "https://registry.npmjs.org/@deepseek-ai/dsh-storage/-/dsh-storage-0.2.0-rc.2.tgz",
+      "overridden": true,
+      "dependencies": {
+        "@deepseek-ai/cordis": {
+          "version": "4.0.4"
+        }
+      }
+    },
+    "@deepseek-ai/dsh-system-prompt": {
+      "version": "0.2.0-rc.2",
+      "resolved": "https://registry.npmjs.org/@deepseek-ai/dsh-system-prompt/-/dsh-system-prompt-0.2.0-rc.2.tgz",
+      "overridden": true,
+      "dependencies": {
+        "@deepseek-ai/cordis": {
+          "version": "4.0.4"
+        },
+        "@deepseek-ai/dsh-invariants": {
+          "version": "0.2.0-rc.2"
+        },
+        "@deepseek-ai/dsh-llm": {
+          "version": "0.2.0-rc.2"
+        },
+        "@deepseek-ai/dsh-scope": {
+          "version": "0.2.0-rc.2"
+        },
+        "@deepseek-ai/schemastery": {
+          "version": "3.18.4"
+        }
+      }
+    },
+    "@deepseek-ai/dsh-typert-protocol": {
+      "version": "0.2.0-rc.2",
+      "resolved": "https://registry.npmjs.org/@deepseek-ai/dsh-typert-protocol/-/dsh-typert-protocol-0.2.0-rc.2.tgz",
+      "overridden": true,
+      "dependencies": {
+        "@deepseek-ai/cordis": {
+          "version": "4.0.4"
+        },
+        "@deepseek-ai/dsh-brand": {
+          "version": "0.2.0-rc.2"
+        }
+      }
+    },
+    "@deepseek-ai/dsh-typert-registry": {
+      "version": "0.2.0-rc.2",
+      "resolved": "https://registry.npmjs.org/@deepseek-ai/dsh-typert-registry/-/dsh-typert-registry-0.2.0-rc.2.tgz",
+      "overridden": false,
+      "dependencies": {
+        "@deepseek-ai/cordis": {
+          "version": "4.0.4"
+        },
+        "zod": {
+          "version": "4.5.4"
+        }
+      }
+    },
+    "@deepseek-ai/schemastery": {
+      "version": "3.18.4",
+      "resolved": "https://registry.npmjs.org/@deepseek-ai/schemastery/-/schemastery-3.18.4.tgz",
+      "overridden": false,
+      "dependencies": {
+        "@deepseek-ai/cosmokit": {
+          "version": "1.8.5"
+        },
+        "@standard-schema/spec": {
+          "version": "1.1.0"
+        }
+      }
+    },
+    "@hanamesh/api-contracts": {
+      "version": "0.9.0",
+      "resolved": "git+ssh://git@github.com/yzsnstotz/hanamesh-api-contracts.git#42661e20b2048cd50b117299d6520badf77d4d08",
+      "overridden": false,
+      "dependencies": {
+        "fastify": {},
+        "viem": {}
+      }
+    },
+    "@types/node": {
+      "version": "24.13.4",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-24.13.4.tgz",
+      "overridden": false,
+      "dependencies": {
+        "undici-types": {
+          "version": "7.18.2",
+          "resolved": "https://registry.npmjs.org/undici-types/-/undici-types-7.18.2.tgz",
+          "overridden": false
+        }
+      }
+    },
+    "@types/react": {
+      "version": "18.3.1",
+      "resolved": "https://registry.npmjs.org/@types/react/-/react-18.3.1.tgz",
+      "overridden": false,
+      "dependencies": {
+        "@types/prop-types": {
+          "version": "15.7.15",
+          "resolved": "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.15.tgz",
+          "overridden": false
+        },
+        "csstype": {
+          "version": "3.2.3",
+          "resolved": "https://registry.npmjs.org/csstype/-/csstype-3.2.3.tgz",
+          "overridden": false
+        }
+      }
+    },
+    "react": {
+      "version": "18.3.1",
+      "resolved": "https://registry.npmjs.org/react/-/react-18.3.1.tgz",
+      "overridden": false,
+      "dependencies": {
+        "loose-envify": {
+          "version": "1.4.0",
+          "resolved": "https://registry.npmjs.org/loose-envify/-/loose-envify-1.4.0.tgz",
+          "overridden": false,
+          "dependencies": {
+            "js-tokens": {
+              "version": "4.0.0",
+              "resolved": "https://registry.npmjs.org/js-tokens/-/js-tokens-4.0.0.tgz",
+              "overridden": false
+            }
+          }
+        }
+      }
+    },
+    "typescript": {
+      "version": "5.9.3",
+      "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
+      "overridden": false
+    },
+    "zod": {
+      "version": "4.5.4",
+      "resolved": "https://registry.npmjs.org/zod/-/zod-4.5.4.tgz",
+      "overridden": false
+    }
+  }
+}

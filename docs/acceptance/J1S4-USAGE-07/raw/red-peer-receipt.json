@@ -1,0 +1,9 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "tests/detached.test.mjs"
+  ],
+  "exitCode": 1
+}

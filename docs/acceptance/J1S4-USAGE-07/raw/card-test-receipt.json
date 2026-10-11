@@ -1,0 +1,20 @@
+{
+  "command": [
+    "/bin/sh",
+    "-c",
+    "npm ci && npm test && npm run test:detached"
+  ],
+  "cwd": "/Users/yzliu/work/projects/hanamesh/hanamesh-usage",
+  "environment": {
+    "PATH": "/Users/yzliu/.local/share/fnm/node-versions/v24.13.1/installation/bin:/Users/yzliu/.cargo/bin:/Users/yzliu/.local/bin:/Applications/ChatGPT.app/Contents/Resources/codex-cli/codex-path:/Users/yzliu/.codex/tmp/arg0/codex-arg0He7Fhe:/Users/yzliu/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+    "HOME": "/Users/yzliu/.cache/hanamesh-runs/J1S4-USAGE-07/home",
+    "TMPDIR": "/Users/yzliu/.cache/hanamesh-runs/J1S4-USAGE-07",
+    "DSH_HOME": "/Users/yzliu/.cache/hanamesh-runs/J1S4-USAGE-07/dsh-home",
+    "npm_config_cache": "/Users/yzliu/.cache/hanamesh-runs/J1S4-USAGE-07/npm-cache",
+    "npm_config_offline": "true",
+    "npm_config_audit": "false",
+    "npm_config_fund": "false",
+    "npm_config_update_notifier": "false"
+  },
+  "exitCode": 0
+}

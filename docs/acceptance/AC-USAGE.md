@@ -107,3 +107,10 @@ rc.5 上限 🧪，不是用户 ACCEPTED。
 - REAL_HOST + STANDIN（`docs/acceptance/t6-2026-09-22/`）：全新隔离 `HOME=DSH_HOME=/private/tmp/hm-t6-<随机>/home`（`env -i` 同一行显式），dsh-runtime 0.1.5-alpha.1 `--from-default-profile web` 建 profile，`dsh plugin add` 依次装 `hanamesh-usage-0.2.0-rc.7.tgz`（sha256 `ced64f4634a7261bd4cacd823efafc1f14d1fd1fbc1408406a8435535f9038bd`）、core STANDIN、以及只为本门写的 `hanamesh-t6-seat-driver` STANDIN（把 JSON body 原样投给 `ctx.hanameshUsage.record`，源码 `seat-driver-standin.js`），随机非 3080 端口真实启动。结果：withheld → `withheld`；granted 后带 `targetRef` + `receipt` 的 `use` → `recorded`；同输入重投 → `duplicate`；改 `count` 重投 → `rejected EVENT_IDENTITY_CONFLICT`；`open` 带 receipt → `INVALID_RECORD_INPUT`；`open` 带 `sourceHanaRef` → `recorded`。`/events` 与磁盘 `storages/hanamesh_usage_events.json` 中 3 条席位事件都带新字段且已签名；153 条 Loader install 事件 `receipt: null`。SIGTERM 后把磁盘账本 153 条 Loader 事件的 `receipt` 键删掉（还原 rc.6 形状）再启动：正常加载，156 条全在、`recoveryComplete: true`、席位事件字段不变。结束后端口释放、无残留进程。
 - NOT_RUN：REAL_SERVER（rc.4 server-usage 收新字段）由派发 session 端到端复验（Vibe 经网关 → 服务端回执可查）；REAL_CORE 仍是 STANDIN。
 - 上限 🧪 DELIVERED；不是用户 ACCEPTED。
+
+## J1S4-USAGE-07 · Q-18 detached 工具收口（2026-10-11）
+
+- SOURCE/OFFLINE 工具卡完成：继承 legacy/omit/production 配置时仍按当前冻结锁安装完整 37 包，npm ls --all 与全部 check 断言保留；独立副本不读兄弟源码，home/cache/tmp 在本卡运行目录。失败命令/退出码/原日志保留，只删自己创建的副本。
+- 红测同两项 peer missing 与证据清理丢失均 ERR_ASSERTION；最终卡片完整命令 exit 0、157/157；额外 npm run build/check 与 17/17 mutations（含 X03 反序）通过。未修改生产写序或编译严格选项。
+- 同份记录：[J1S4-USAGE-07](J1S4-USAGE-07/README.md)，learning：[USAGE-005](../learnings/USAGE-005-detached-frozen-peer-closure.md)。最终提交与交付件校验在运行目录 REPORT.md。
+- detached 输出仍仅离线语义构建；真实宿主、原生介质、UI 与 owner ACCEPTED 不因此升级。本次仅本地 main，不 push、不发布、不写共享 STATUS。开工前未提交 TAP 在运行目录及独立 stash 保全。

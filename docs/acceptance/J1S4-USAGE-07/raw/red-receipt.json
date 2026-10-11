@@ -1,0 +1,10 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "tests/detached.test.mjs"
+  ],
+  "cwd": "/Users/yzliu/work/projects/hanamesh/hanamesh-usage",
+  "exitCode": 1
+}

@@ -1,0 +1,39 @@
+[
+  {
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "exitCode": 0,
+    "log": "build.log"
+  },
+  {
+    "command": [
+      "npm",
+      "run",
+      "check"
+    ],
+    "exitCode": 0,
+    "log": "check.log"
+  },
+  {
+    "command": [
+      "npm",
+      "run",
+      "test:mutations"
+    ],
+    "exitCode": 0,
+    "log": "mutations.log"
+  },
+  {
+    "command": [
+      "npm",
+      "ls",
+      "--all",
+      "--json"
+    ],
+    "exitCode": 0,
+    "log": "normal-closure.log"
+  }
+]
