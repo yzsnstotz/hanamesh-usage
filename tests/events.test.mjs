@@ -102,13 +102,15 @@ test('U12 EventStore signs all legacy pending events in one publication', async 
   assert.equal(await store.signPending(input=>input),0);assert.equal(global.writes,before+1);
 });
 
-test('U13 EventStore applies accepted, duplicate and rejected batch outcomes atomically', async () => {
+test('U13 EventStore atomically confirms the non-rejected mixed set without guessing individual membership', async () => {
   const global=new EventGlobal();const store=new core.EventStore(global);const events=[];
   for(const [index,nonce] of ['AQIDBAUGBwgJCgsMDQ4PEA','QkJCQkJCQkJCQkJCQkJCQg','Q0NDQ0NDQ0NDQ0NDQ0NDQw'].entries()){
     const event=core.createUsageEvent({...base(),eventId:core.eventIdForSeat('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk','app-host',`batch-${index}`),nonce,signature:'c2lnbmF0dXJl'});events.push(event);await store.put(event);
   }
   const before=global.writes;await store.applyUpload(events.map(event=>event.eventId),{accepted:1,duplicates:1,rejected:[{eventId:events[2].eventId,code:'USAGE_INPUT_INVALID'}],durability:'committed'},'2026-09-19T00:01:00.000Z');
-  assert.equal(global.writes,before+1);assert.deepEqual(store.query().events.map(event=>[event.upload.state,event.upload.code,event.upload.attempts]),[['sent',null,1],['duplicate',null,1],['rejected','USAGE_INPUT_INVALID',1]]);
+  assert.equal(global.writes,before+1);assert.deepEqual(store.query().events.map(event=>[event.upload.state,event.upload.code,event.upload.attempts]),[['sent',null,1],['sent',null,1],['rejected','USAGE_INPUT_INVALID',1]]);
+  const payload=({upload,...fields})=>fields;
+  assert.deepEqual(store.query().events.map(payload),events.map(payload),'confirmation preserves every original fact/signature/nonce');
 });
 
 test('U15 EventStore withdrawal clears all events in one publication before remote work', async () => {
