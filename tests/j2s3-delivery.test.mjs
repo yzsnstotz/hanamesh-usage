@@ -3,21 +3,34 @@ import assert from 'node:assert/strict';
 import {deliveryFixture,json} from './fixtures/signed-delivery.mjs';
 import {core} from './fixtures/helpers.mjs';
 import {fixtureHost} from './fixtures/host.mjs';
+import {deferred} from './fixtures/local-lifecycle.mjs';
 import {renderUsagePanel,projectUsagePanel} from '../lib/host/panel.js';
 
-test('S06-P01 signed original fact and explicit replay keep event bytes but refresh HTTP nonce',async t=>{
-  const f=deliveryFixture(t,(_request,n)=>n===1?json({error:{code:'USAGE_STORAGE_UNAVAILABLE',message:'Usage storage is unavailable.',durability:'unconfirmed'}},503):json({accepted:0,duplicates:1,rejected:[],durability:'committed'}));
+test('S06-P01 ordinary documented failure retry preserves event bytes and refreshes HTTP nonce',async t=>{
+  const f=deliveryFixture(t,(_request,n)=>n===1?json({error:{code:'USAGE_EVENT_HOOK_FAILED',message:'The host rejected the accepted usage events.'}},503):json({accepted:1,duplicates:0,rejected:[],durability:'committed'}));
   const first=await f.record(f.input('command:original:succeeded'));
   assert.equal(first.disposition,'recorded');
   assert.deepEqual(await f.record(f.input('command:original:succeeded')),{disposition:'duplicate',eventId:first.eventId});
   assert.equal(f.store.query().total,1);
   assert.notEqual(await f.reporter.runOnce(),'uploaded');
-  // Explicit user replay after an unconfirmed receipt; the contract substitute
-  // responds duplicate. This proves client byte preservation, not server dedup.
+  // No formal unknown marker: exercise established ordinary retry, not user
+  // authorization. Unknown protection is a separate P04 assertion below.
   assert.equal(await f.reporter.runOnce(),'uploaded');
   assert.equal(f.requests[0].options.body,f.requests[1].options.body);
   assert.notEqual(f.requests[0].options.headers['x-hm-nonce'],f.requests[1].options.headers['x-hm-nonce']);
-  assert.equal(f.reporter.health().duplicate,1);
+  assert.equal(f.reporter.health().sent,1);
+});
+
+test('S06-P04b work queued before unknown response and an already scheduled timer cannot replay it',async t=>{
+  t.mock.timers.enable({apis:['setTimeout']});
+  const entered=deferred(),reply=deferred();
+  const f=deliveryFixture(t,()=>{entered.resolve();return reply.promise;});
+  await f.record(f.input('queued-before-unknown'));f.reporter.start();
+  const first=f.reporter.runOnce();await entered.promise;
+  const second=f.reporter.runOnce();t.mock.timers.tick(5000);
+  reply.resolve(json({error:{code:'USAGE_STORAGE_UNAVAILABLE',message:'Usage storage is unavailable.',durability:'unconfirmed'}},503));
+  assert.deepEqual(await Promise.all([first,second]),['unconfirmed','unconfirmed']);
+  t.mock.timers.tick(3600000);await f.reporter.drain();assert.equal(f.requests.length,1);assert.equal(f.reporter.health().state,'unconfirmed');
 });
 
 test('S06-P01b legal committed ingestion has a visible receipt and independently verified signature',async t=>{
@@ -50,11 +63,24 @@ test('S06-P03 mixed counts never identify first/duplicate events by array positi
 });
 
 test('S06-P04 unknown POST commit stays visible and schedules no automatic replay',async t=>{
+  t.mock.timers.enable({apis:['setTimeout']});
   const f=deliveryFixture(t,()=>json({error:{code:'USAGE_STORAGE_UNAVAILABLE',message:'Usage storage is unavailable.',durability:'unconfirmed'}},503));
   await f.record(f.input('unknown-post')); await f.reporter.runOnce();
   const health=f.reporter.health();
   assert.equal(health.state,'unconfirmed'); assert.equal(health.lastError,'USAGE_STORAGE_UNAVAILABLE');
   assert.equal(health.nextAttemptAt,null); assert.equal(health.sent,0); assert.equal(f.store.query().total,1);
+  const original=JSON.stringify(core.wireEvent(f.store.getSnapshot().events[0]));
+  // runOnce has no user intent, whether queued directly or dispatched by start.
+  const queued=[f.reporter.runOnce(),f.reporter.runOnce()];f.reporter.start();
+  assert.deepEqual(await Promise.all(queued),['unconfirmed','unconfirmed']);
+  t.mock.timers.tick(3600000);await f.reporter.drain();
+  await f.reporter.grant();t.mock.timers.tick(3600000);await f.reporter.drain();
+  assert.equal(f.requests.length,1);
+  assert.equal(JSON.stringify(core.wireEvent(f.store.getSnapshot().events[0])),original);
+  f.reporter.stop();
+  const reopened=new core.EventStore(f.global,5000,()=>Date.parse('2026-10-15T00:00:02.000Z'));
+  const restarted=f.makeReporter(reopened);
+  try{restarted.start();assert.equal(await restarted.runOnce(),'unconfirmed');t.mock.timers.tick(3600000);await restarted.drain();assert.equal(f.requests.length,1);}finally{restarted.stop();}
 });
 
 test('S06-P05 event rejection is associated by eventId and remains visible with no raw error',async t=>{

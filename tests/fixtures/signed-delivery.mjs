@@ -33,12 +33,12 @@ export function deliveryFixture(t, respond) {
     async set(next){this.writes++; this.snapshot=structuredClone(next);},
   };
   const store = new core.EventStore(global, 5000, ()=>NOW);
-  const requests = [];
+  const requests = [], eventSignatures=[];
   const service = {
     protocolVersion:'1', getDeviceId:()=>deviceId, getPublicKey:()=>raw.toString('base64url'),
     getConsent:()=>consent, getServerOrigin:()=> 'https://usage.example',
     getSession:()=>({protocolVersion:'1',deviceId,registration:'registered',principalId:null,bound:null,serverReachable:null,checkedAt:null,reason:null}),
-    onConsentChange:()=>()=>{}, sign:bytes=>sign(null,bytes,privateKey),
+    onConsentChange:()=>()=>{}, sign:bytes=>{eventSignatures.push(Buffer.from(bytes));return sign(null,bytes,privateKey);},
     async signRequest({method,path,body}){
       const timestamp=String(NOW), nonce=randomBytes(16).toString('base64url');
       const preimage=`${method.toUpperCase()}|${path.split(/[?#]/)[0]}|${timestamp}|${nonce}|${createHash('sha256').update(body??new Uint8Array()).digest('hex')}`;
@@ -60,9 +60,29 @@ export function deliveryFixture(t, respond) {
     }
     return respond(request, requests.length);
   };
-  const reporter=createUsageReporter({store,link:{get:()=>service},uploadIntervalMs:60000,uploadBatchSize:200,fetchImpl,now:()=>NOW});
+  const makeReporter=(targetStore=store)=>createUsageReporter({store:targetStore,link:{get:()=>service},uploadIntervalMs:60000,uploadBatchSize:200,fetchImpl,now:()=>NOW});
+  const reporter=makeReporter();
   const record=createRecordSeat({store,getConsent:service.getConsent,getDeviceId:service.getDeviceId,now:()=>NOW,signEvent:event=>signUsageEvent(service,event)});
   t.after(()=>{reporter.stop(); rmSync(dir,{recursive:true,force:true});});
   const input = key => ({hanaRef:'fixture.app',sourcePlugin:'fixture.app',action:'use',occurredAt:'2026-10-15T00:00:00.007Z',idempotencyKey:key,targetRef:'original-session',receipt:{providerId:'fixture',model:null,count:1}});
-  return {dir,dshHome,store,global,service,requests,reporter,record,input,setConsent:value=>{consent=value;}};
+  return {dir,dshHome,store,global,service,requests,reporter,makeReporter,fetchImpl,eventSignatures,record,input,setConsent:value=>{consent=value;}};
+}
+
+// Real module mount with documented host ports only. It shares the independent
+// byte verifier above; neither the user entry nor its results are fabricated.
+export async function mountedDeliveryFixture(t,{onRequest,onWrite,origin='https://usage.example'}={}){
+  t.mock.timers.enable({apis:['setTimeout']});
+  const f=deliveryFixture(t,(request,n)=>onRequest?.(request,n)??json({accepted:JSON.parse(request.options.body).length,duplicates:0,rejected:[],durability:'committed'}));
+  const listeners=new Set(),requests=[];
+  f.service.onConsentChange=fn=>{listeners.add(fn);return()=>listeners.delete(fn);};
+  f.service.getServerOrigin=()=>origin;
+  if(onWrite){const set=f.global.set.bind(f.global);f.global.set=async next=>{await onWrite(next);await set(next);};}
+  t.mock.method(globalThis,'fetch',async(url,options)=>{requests.push({method:options.method,url:String(url),headers:options.headers,body:options.body});return f.fetchImpl(url,options);});
+  const ctx={loader:{entries:()=>[].values()},get:()=>undefined,on:()=>()=>{},inject:()=>({dispose:async()=>{}}),provide(){},sessions:{list:()=>[],get:()=>undefined},sessionPersistence:{list:async()=>[]}};
+  let records={schemaVersion:1,records:[]};
+  const {mountUsage}=await load('mount');
+  const mounted=mountUsage(ctx,null,{global:{get:()=>records,set:async value=>{records=structuredClone(value);}},close:async()=>{}},{global:f.global,close:async()=>{}},{maxRecords:5000,maxEvents:5000,maxPending:128,allowExport:false,uploadIntervalMs:60000,uploadBatchSize:200,inventoryIntervalMs:300000,panelTestSupply:{identity:false,receiver:false},eventRetentionDays:90,queryLimit:100}, {status:()=> 'present',get:()=>f.service,onChange:()=>()=>{},close(){}});
+  await mounted.ready;
+  t.after(()=>mounted.close());
+  return {...mounted,requests,eventSignatures:f.eventSignatures,makeReporter:f.makeReporter,requestCount:()=>f.requests.length,tickSend:()=>t.mock.timers.tick(5000),snapshot:()=>f.global.get(),setConsent(state,changedAt=new Date().toISOString()){f.setConsent(state);for(const fn of listeners)fn(state,changedAt);}};
 }
