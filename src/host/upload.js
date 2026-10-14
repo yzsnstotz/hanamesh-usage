@@ -16,17 +16,20 @@ const maxBodyBytes=64*1024;
  */
 export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize,fetchImpl=fetch,now=Date.now}){
   let state=/** @type {'idle'|'uploading'|'backoff'|'offline'|'stopped'|'unconfirmed'} */('stopped');
-  const confirmed=new Set(),unconfirmed=new Set();
+  const confirmed=new Set(),unconfirmed=new Map();
+  let persistenceFailed=false;
   let lastUploadAt=/** @type {string|null} */(null),nextAttemptAt=/** @type {string|null} */(null),lastError=/** @type {string|null} */(null),failures=0,active=false;
   let tail=Promise.resolve();
   // The existing bounded local diagnostic field persists the formal unknown
   // marker; it is absent from wireEvent and therefore changes no event digest.
-  for(const event of store.getSnapshot().events)if(event.upload.state==='pending'&&event.upload.code==='USAGE_STORAGE_UNAVAILABLE')unconfirmed.add(event.eventId);
-  if(unconfirmed.size>0){state='unconfirmed';lastError='USAGE_STORAGE_UNAVAILABLE';}
+  for(const event of store.getSnapshot().events)if(event.upload.state==='pending'&&['USAGE_STORAGE_UNAVAILABLE','UPLOAD_ATTEMPT_UNCONFIRMED'].includes(event.upload.code??''))unconfirmed.set(event.eventId,event.upload.code);
+  if(unconfirmed.size>0){state='unconfirmed';lastError=unconfirmed.values().next().value??null;}
   function pruneObservations(){
     const events=new Map(store.getSnapshot().events.map(event=>[event.eventId,event]));
     for(const id of confirmed)if(!events.has(id)||events.get(id)?.upload.state==='pending')confirmed.delete(id);
-    for(const id of unconfirmed)if(events.get(id)?.upload.code!=='USAGE_STORAGE_UNAVAILABLE'||events.get(id)?.upload.state!=='pending')unconfirmed.delete(id);
+    // A failed final write leaves the conservative intent in storage. Reads
+    // cannot erase the stronger response this instance actually observed.
+    for(const id of unconfirmed.keys())if(!events.has(id)||events.get(id)?.upload.state!=='pending')unconfirmed.delete(id);
   }
   /** @type {ReturnType<typeof setTimeout>|null} */let timer=null;
   const iso=()=>new Date(now()).toISOString();
@@ -45,6 +48,7 @@ export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize
   };
   function start(){
     pruneObservations();
+    if(persistenceFailed){state=unconfirmed.size>0?'unconfirmed':'stopped';return;}
     if(unconfirmed.size>0){state='unconfirmed';return;}
     active=true;const core=link.get();
     if(core===null){state='stopped';return;}
@@ -54,9 +58,21 @@ export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize
   }
   function stop(){active=false;clearTimer();state='stopped';nextAttemptAt=null;}
   /** @param {string} code @param {string[]} ids */
-  async function fail(code,ids){await store.markAttempts(ids);lastError=code;backoff();return /** @type {const} */('backoff');}
+  async function fail(code,ids){
+    try{await store.markAttempts(ids,null,true);}catch{return persistenceFailure(ids);}
+    lastError=code;backoff();return /** @type {const} */('backoff');
+  }
+  /** @param {string[]} ids @param {string} code */
+  function holdUnknown(ids,code){ids.forEach(id=>unconfirmed.set(id,code));clearTimer();active=false;state='unconfirmed';nextAttemptAt=null;lastError=code;}
+  /** A local write error cannot trigger another HTTP attempt. @param {string[]} ids */
+  function persistenceFailure(ids){
+    if(ids.length>0)holdUnknown(ids,'UPLOAD_ATTEMPT_UNCONFIRMED');else stop();
+    persistenceFailed=true;lastError='UPLOAD_STATE_PERSIST_FAILED';
+    return ids.length>0?/** @type {const} */('unconfirmed'):/** @type {const} */('stopped');
+  }
   async function runOnceRaw(){
     pruneObservations();
+    if(persistenceFailed)return unconfirmed.size>0?/** @type {const} */('unconfirmed'):/** @type {const} */('stopped');
     if(unconfirmed.size>0){state='unconfirmed';return /** @type {const} */('unconfirmed');}
     const core=link.get();if(core===null){state='stopped';return /** @type {const} */('stopped');}
     if(core.getConsent()!=='granted'){state='stopped';return /** @type {const} */('withheld');}
@@ -71,25 +87,40 @@ export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize
     // O1 `POST /v1/usage/events` body is a bare 1–200 item array (hanamesh-server-usage docs/API.md), not an {events:[…]} envelope.
     while(batch.length>0){json=JSON.stringify(wire);if(Buffer.byteLength(json)<=maxBodyBytes)break;batch=batch.slice(0,Math.max(1,Math.floor(batch.length/2)));wire=wire.slice(0,batch.length);if(batch.length===1&&Buffer.byteLength(JSON.stringify(wire))>maxBodyBytes)throw new UsageError('UPLOAD_BATCH_TOO_LARGE');}
     const ids=batch.map(event=>event.eventId),body=new TextEncoder().encode(json),url=new URL(EVENT_PATH,origin);state='uploading';
+    try{await store.markUploadIntent(ids);}catch{return persistenceFailure([]);}
+    // An await may cross consent withdrawal or identity changes. The original
+    // wire payload remains unchanged and is checked again before HTTP signing.
+    const readyCore=link.get();
+    const granted=readyCore?.getConsent()==='granted',sameDevice=readyCore!==null&&(typeof readyCore.getDeviceId!=='function'||batch.every(event=>event.deviceId===readyCore.getDeviceId()));
+    const sameOrigin=readyCore?.getServerOrigin()===origin;
+    if(!granted||!sameDevice||!sameOrigin){
+      try{await store.markUploadIntent(ids,false);}catch{return persistenceFailure(ids);}
+      stop();lastError=readyCore===null?'CORE_UNAVAILABLE':!sameDevice?'UPLOAD_EVENT_INVALID':!sameOrigin?'UPLOAD_UNAVAILABLE':null;
+      return readyCore!==null&&!granted?/** @type {const} */('withheld'):/** @type {const} */('stopped');
+    }
     let response;
     try{
-      const signed=await core.signRequest({method:'POST',path:EVENT_PATH,body});
+      const signed=await readyCore.signRequest({method:'POST',path:EVENT_PATH,body});
       response=await fetchImpl(url,{method:'POST',headers:{...signed,'content-type':'application/json',origin},body:json});
     }catch{return await fail('UPLOAD_UNAVAILABLE',ids);}
     if(response.status===401||response.status===403)return await fail('UPLOAD_UNAUTHORIZED',ids);
     if(response.status<200||response.status>=300){
       if(await unknownCommit(response)){
-        await store.markAttempts(ids,'USAGE_STORAGE_UNAVAILABLE');ids.forEach(id=>unconfirmed.add(id));clearTimer();active=false;
-        state='unconfirmed';nextAttemptAt=null;lastError='USAGE_STORAGE_UNAVAILABLE';return /** @type {const} */('unconfirmed');
+        holdUnknown(ids,'USAGE_STORAGE_UNAVAILABLE');
+        try{await store.markAttempts(ids,'USAGE_STORAGE_UNAVAILABLE');}catch{persistenceFailed=true;lastError='UPLOAD_STATE_PERSIST_FAILED';}
+        return /** @type {const} */('unconfirmed');
       }
       return await fail('UPLOAD_UNAVAILABLE',ids);
     }
+    let result;
     try{
-      const result=/** @type {import('../core/index.js').IngestBatchResult} */(await response.json());
+      result=/** @type {import('../core/index.js').IngestBatchResult} */(await response.json());
       if(Object.keys(result).sort().join('|')!=='accepted|duplicates|durability|rejected'||result.durability!=='committed')throw new UsageError('UPLOAD_RESPONSE_INVALID');
+    }catch{return await fail('UPLOAD_RESPONSE_INVALID',ids);}
+    try{
       await store.applyUpload(ids,result,iso());
       pruneObservations();const rejected=new Set(result.rejected.map(item=>item.eventId));ids.filter(id=>!rejected.has(id)).forEach(id=>confirmed.add(id));
-    }catch{return await fail('UPLOAD_RESPONSE_INVALID',ids);}
+    }catch(error){return error instanceof UsageError&&error.code==='INVALID_UPLOAD_RESULT'?await fail('UPLOAD_RESPONSE_INVALID',ids):persistenceFailure(ids);}
     failures=0;state='idle';lastError=null;nextAttemptAt=null;lastUploadAt=iso();return /** @type {const} */('uploaded');
   }
   function runOnce(){const run=tail.then(runOnceRaw);tail=run.then(()=>{},()=>{});return run;}
@@ -130,7 +161,7 @@ export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize
     stop();await tail;const current=store.getSnapshot().withdrawal;if(current?.state==='sent')return /** @type {const} */('sent');if(current?.state==='offline')return /** @type {const} */('offline');
     const core=link.get();const deviceId=deviceIdOverride??core?.getDeviceId();if(!deviceId){state='offline';return /** @type {const} */('offline');}
     if(current===null)await store.withdrawLocal(changedAt,deviceId);
-    confirmed.clear();unconfirmed.clear();
+    confirmed.clear();unconfirmed.clear();persistenceFailed=false;
     return await retryWithdrawal();
   }
   async function grant(){await store.clearWithdrawal();start();}
@@ -169,6 +200,6 @@ export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize
     return {state:'available',deviceId,total:events.length,events,code:null,httpStatus:status,checkedAt};
   }
   /** @param {import('../core/index.js').UsageEvent} event @returns {import('./contracts.js').CollectionObservation['events'][number]} */
-  function delivery(event){return {eventId:event.eventId,delivery:unconfirmed.has(event.eventId)?'unconfirmed':event.upload.state==='rejected'?'rejected':confirmed.has(event.eventId)?'confirmed':['sent','duplicate'].includes(event.upload.state)?'unconfirmed':'pending',code:unconfirmed.has(event.eventId)?'USAGE_STORAGE_UNAVAILABLE':event.upload.code};}
+  function delivery(event){return {eventId:event.eventId,delivery:unconfirmed.has(event.eventId)?'unconfirmed':event.upload.state==='rejected'?'rejected':confirmed.has(event.eventId)?'confirmed':['sent','duplicate'].includes(event.upload.state)?'unconfirmed':'pending',code:unconfirmed.get(event.eventId)??event.upload.code};}
   return {start,stop,runOnce,withdraw,retryWithdrawal,grant,readRemote,delivery,drain:()=>tail,health:()=>{pruneObservations();return {state,...counts(),lastUploadAt,nextAttemptAt,lastError};}};
 }

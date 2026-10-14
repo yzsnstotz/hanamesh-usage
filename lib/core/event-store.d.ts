@@ -56,7 +56,10 @@ export declare class EventStore {
         duplicates: number;
     }>;
     applyUpload(eventIds: string[], result: IngestBatchResult, sentAt: string): Promise<void>;
-    markAttempts(eventIds: string[], code?: string | null): Promise<void>;
+    /** Conservative send intent uses the existing local diagnostic slot only.
+     * Neither the signed event nor its attempt count changes at admission. */
+    markUploadIntent(eventIds: string[], pending?: boolean): Promise<void>;
+    markAttempts(eventIds: string[], code?: string | null, clearCode?: boolean): Promise<void>;
     withdrawLocal(requestedAt: string, deviceId: string): Promise<void>;
     markWithdrawal(input: {
         state: 'pending' | 'sent' | 'offline' | 'unconfirmed';
