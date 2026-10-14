@@ -4,7 +4,7 @@ import {localLifecycle,originalFact,deferred,fixtureSigningIdentity} from './fix
 import {fixtureHost} from './fixtures/host.mjs';
 
 // Proposed C-USAGE-LOCAL addition, not an already-published cross-module API.
-// Existing tests stay byte-for-byte unchanged. No custom server dedup/signing specification.
+// Pre-existing locked tests stay unchanged; these review-stage proposals follow Q-364.
 function observationPort(api){assert.equal(typeof api.observeCollection,'function','review proposal requires an explicit collection barrier; pending=0 is not completion');}
 test('USAGE02-R1 four-field replay uses the persisted original fact and never fabricates a new occurredAt',async t=>{
   const h=await localLifecycle(t);
@@ -12,7 +12,7 @@ test('USAGE02-R1 four-field replay uses the persisted original fact and never fa
 });
 test('USAGE02-R2 a new four-field fact without original time is a bounded gap with no write/sign/upload',async t=>{
   const h=await localLifecycle(t);
-  try{const {occurredAt,...input}=originalFact();assert.deepEqual(await h.api.record(input),{disposition:'rejected',code:'INVALID_RECORD_INPUT'});assert.equal(h.snapshot().events.length,0);assert.equal(h.signedInputs.length,0);assert.equal(h.requests.length,0);}finally{await h.close();}
+  try{const {occurredAt,...input}=originalFact();assert.deepEqual(await h.api.record(input),{disposition:'rejected',code:'FACT_TIME_UNAVAILABLE'});assert.equal(h.snapshot().events.length,0);assert.equal(h.signedInputs.length,0);assert.equal(h.requests.length,0);}finally{await h.close();}
 });
 test('USAGE02-R3 original time and attribution survive duplicate delivery; changed facts conflict; separate executions stay separate',async t=>{
   const h=await localLifecycle(t);
@@ -40,6 +40,12 @@ test('USAGE02-R8 health after release raises only the documented bounded unavail
   const h=await localLifecycle(t);
   try{await h.close();assert.throws(()=>h.api.health(),{code:'USAGE_UNAVAILABLE'});}finally{await h.close();}
 });
+test('USAGE02-R9 used package, collector plugin and registered app remain three distinct declared facts',async t=>{
+  const h=await localLifecycle(t);
+  try{const input=originalFact({hanaRef:'fixture.ordinary-package',sourcePlugin:'@hanamesh/dsh-app-host',targetRef:'registered-app-1',sourceHanaRef:'fixture.source',receipt:{providerId:'fixture',model:null,count:1}});assert.equal((await h.api.record(input)).disposition,'recorded');const event=h.snapshot().events[0];assert.equal(event.hanaRef,input.hanaRef);assert.equal(event.sourcePlugin,input.sourcePlugin);assert.equal(event.targetRef,input.targetRef);assert.equal(event.sourceHanaRef,input.sourceHanaRef);assert.notEqual(event.hanaRef,event.targetRef);assert.notEqual(event.sourcePlugin,event.hanaRef);assert.equal(event.occurredAt,input.occurredAt);
+    for(const extra of [{itemId:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'},{appId:'registered-app-1'},{packageName:'another-package'}])assert.deepEqual(await h.api.record({...input,...extra}),{disposition:'rejected',code:'INVALID_RECORD_INPUT'});
+  }finally{await h.close();}
+});
 test('USAGE02-C1 observation is separate from health and does not mistake an empty session queue for completed record persistence',async t=>{
   const entered=deferred(),release=deferred();const h=await localLifecycle(t,{onWrite:async next=>{if(next.events.length){entered.resolve();await release.promise;}}});
   let record;
@@ -63,9 +69,10 @@ test('USAGE02-D2 committed accepted receipt confirms sending; duplicate receipt 
     resultKind='duplicate';const second=await h.api.record(originalFact({idempotencyKey:'command:already-on-server:succeeded'}));t.mock.timers.tick(60000);observed=await h.api.observeCollection();assert.equal(observed.events.find(event=>event.eventId===second.eventId).delivery,'confirmed');assert.equal(observed.health.outbox.duplicate,1);
   }finally{await h.close();}
 });
-test('USAGE02-D3 pending host commit never becomes confirmed merely because pending is zero',async t=>{
-  const h=await localLifecycle(t,{onRequest:async request=>new Response(JSON.stringify({accepted:JSON.parse(request.body).length,duplicates:0,rejected:[],durability:'pending-host-commit'}),{status:200})});
-  try{observationPort(h.api);const result=await h.api.record(originalFact());h.tickSend();const observed=await h.api.observeCollection();const event=observed.events.find(item=>item.eventId===result.eventId);assert.equal(event.delivery,'unconfirmed');assert.notEqual(event.delivery,'confirmed');}finally{await h.close();}
+test('USAGE02-D3 formal C-USAGE unknown COMMIT error never becomes confirmed merely because pending is zero',async t=>{
+  // C-USAGE §11.5: unknown COMMIT is an error, never an HTTP 200 service receipt.
+  const h=await localLifecycle(t,{onRequest:async()=>new Response(JSON.stringify({error:{code:'USAGE_STORAGE_UNAVAILABLE',message:'Usage storage is unavailable.',durability:'unconfirmed'}}),{status:503})});
+  try{observationPort(h.api);const result=await h.api.record(originalFact());h.tickSend();const observed=await h.api.observeCollection();const event=observed.events.find(item=>item.eventId===result.eventId);assert.equal(event.delivery,'unconfirmed');assert.notEqual(event.delivery,'confirmed');const sentBefore=h.requests.length;t.mock.timers.tick(3600000);await h.api.drain();assert.equal(h.requests.length,sentBefore,'unknown COMMIT must not cause autonomous retry');}finally{await h.close();}
 });
 for(const [kind,code,onRequest] of [['auth','UPLOAD_UNAUTHORIZED',async()=>new Response('RAW_PRIVATE_SERVER_FAILURE',{status:401})],['invalid-response','UPLOAD_RESPONSE_INVALID',async()=>new Response('RAW_PRIVATE_SERVER_FAILURE',{status:200})],['transport','UPLOAD_UNAVAILABLE',async()=>{throw new Error('RAW_PRIVATE_SERVER_FAILURE');}]])test(`USAGE02-D4 ${kind} preserves pending with bounded diagnostics`,async t=>{
   const h=await localLifecycle(t,{onRequest});
