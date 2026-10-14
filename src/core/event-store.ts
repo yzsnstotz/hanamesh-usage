@@ -29,10 +29,17 @@ function identity(event: UsageEvent): string {
   return JSON.stringify([event.deviceId,event.hanaRef,event.action,event.occurredAt,event.source,event.sourcePlugin,event.evidenceRef,event.sourceHanaRef,event.targetRef,receipt===null?null:[receipt.providerId,receipt.model,receipt.count]]);
 }
 function validIso(value: unknown): value is string { const time=typeof value==='string'?Date.parse(value):NaN;return Number.isFinite(time)&&new Date(time).toISOString()===value; }
+/** Public Core identities are hashes, not prose/credential metadata. The full
+ * canonical base64url alphabet includes leading '-'/'_' and secret-like hash
+ * substrings. Keep previously admitted local fixture identifiers unchanged. */
+function validDeviceId(value:unknown):value is string {
+  return typeof value==='string'&&(/^[A-Za-z0-9_-]{43}$/.test(value)
+    &&Buffer.from(value,'base64url').toString('base64url')===value||safeMetadata(value));
+}
 function validateWithdrawal(value: unknown): asserts value is WithdrawalState {
   if(value===null||typeof value!=='object'||Array.isArray(value))throw new UsageError('INVALID_EVENT_SNAPSHOT');
   const item=value as Record<string,unknown>;
-  if(Object.keys(item).sort().join('|')!==['requestedAt','deviceId','state','attempts','deletedEvents','lastError'].sort().join('|')||!validIso(item.requestedAt)||!safeMetadata(item.deviceId)||!['pending','sent','offline','unconfirmed'].includes(String(item.state))||!Number.isSafeInteger(item.attempts)||Number(item.attempts)<0||(item.deletedEvents!==null&&(!Number.isSafeInteger(item.deletedEvents)||Number(item.deletedEvents)<0))||(item.lastError!==null&&!safeMetadata(item.lastError)))throw new UsageError('INVALID_EVENT_SNAPSHOT');
+  if(Object.keys(item).sort().join('|')!==['requestedAt','deviceId','state','attempts','deletedEvents','lastError'].sort().join('|')||!validIso(item.requestedAt)||!validDeviceId(item.deviceId)||!['pending','sent','offline','unconfirmed'].includes(String(item.state))||!Number.isSafeInteger(item.attempts)||Number(item.attempts)<0||(item.deletedEvents!==null&&(!Number.isSafeInteger(item.deletedEvents)||Number(item.deletedEvents)<0))||(item.lastError!==null&&!safeMetadata(item.lastError)))throw new UsageError('INVALID_EVENT_SNAPSHOT');
 }
 export function validateEventSnapshot(value: unknown): asserts value is EventSnapshot {
   if (value === null || typeof value !== 'object' || Array.isArray(value)) throw new UsageError('INVALID_EVENT_SNAPSHOT');
@@ -147,8 +154,40 @@ export class EventStore {
       if(found!==ids.size)throw new UsageError('INVALID_UPLOAD_RESULT');if(found>0)await this.commit({...structuredClone(this.snapshot),events});
     });this.tail=run.catch(()=>{});return run;
   }
+  /** A one-shot user selection may revisit unknown rows, but keeps their
+   * durable stop marker. No automatic sender uses this admission method. */
+  markResendIntent(eventIds:string[]):Promise<void>{
+    const run=this.tail.then(async()=>{
+      const ids=new Set(eventIds);let found=0;
+      if(ids.size!==eventIds.length||this.snapshot.withdrawal!==null)throw new UsageError('INVALID_UPLOAD_RESULT');
+      const events=this.snapshot.events.map(event=>{
+        if(!ids.has(event.eventId))return structuredClone(event);
+        if(event.upload.state!=='pending')throw new UsageError('INVALID_UPLOAD_RESULT');
+        found++;
+        const code=event.upload.code==='USAGE_STORAGE_UNAVAILABLE'?event.upload.code:'UPLOAD_ATTEMPT_UNCONFIRMED';
+        return {...structuredClone(event),upload:{...event.upload,code}};
+      });
+      if(found!==ids.size)throw new UsageError('INVALID_UPLOAD_RESULT');
+      await this.commit({...structuredClone(this.snapshot),events});
+    });this.tail=run.catch(()=>{});return run;
+  }
+  /** Record one explicit failed attempt atomically; an ordinary new failure
+   * cannot erase a pre-existing unknown outcome from an earlier request. */
+  markResendFailure(eventIds:string[],previousUnknown:ReadonlyMap<string,string>):Promise<void>{
+    const run=this.tail.then(async()=>{
+      const ids=new Set(eventIds);let found=0;
+      const events=this.snapshot.events.map(event=>{
+        if(!ids.has(event.eventId))return structuredClone(event);
+        if(event.upload.state!=='pending')throw new UsageError('INVALID_UPLOAD_RESULT');
+        found++;
+        return {...structuredClone(event),upload:{...event.upload,code:previousUnknown.get(event.eventId)??null,attempts:event.upload.attempts+1}};
+      });
+      if(found!==ids.size)throw new UsageError('INVALID_UPLOAD_RESULT');
+      await this.commit({...structuredClone(this.snapshot),events});
+    });this.tail=run.catch(()=>{});return run;
+  }
   withdrawLocal(requestedAt:string,deviceId:string):Promise<void>{
-    const run=this.tail.then(async()=>{if(!validIso(requestedAt)||!safeMetadata(deviceId))throw new UsageError('INVALID_WITHDRAWAL');await this.commit({...structuredClone(this.snapshot),events:[],withdrawal:{requestedAt,deviceId,state:'pending',attempts:0,deletedEvents:null,lastError:null}});});
+    const run=this.tail.then(async()=>{if(!validIso(requestedAt)||!validDeviceId(deviceId))throw new UsageError('INVALID_WITHDRAWAL');await this.commit({...structuredClone(this.snapshot),events:[],withdrawal:{requestedAt,deviceId,state:'pending',attempts:0,deletedEvents:null,lastError:null}});});
     this.tail=run.catch(()=>{});return run;
   }
   markWithdrawal(input:{state:'pending'|'sent'|'offline'|'unconfirmed';deletedEvents:number|null;lastError:string|null}):Promise<void>{

@@ -60,6 +60,12 @@ export declare class EventStore {
      * Neither the signed event nor its attempt count changes at admission. */
     markUploadIntent(eventIds: string[], pending?: boolean): Promise<void>;
     markAttempts(eventIds: string[], code?: string | null, clearCode?: boolean): Promise<void>;
+    /** A one-shot user selection may revisit unknown rows, but keeps their
+     * durable stop marker. No automatic sender uses this admission method. */
+    markResendIntent(eventIds: string[]): Promise<void>;
+    /** Record one explicit failed attempt atomically; an ordinary new failure
+     * cannot erase a pre-existing unknown outcome from an earlier request. */
+    markResendFailure(eventIds: string[], previousUnknown: ReadonlyMap<string, string>): Promise<void>;
     withdrawLocal(requestedAt: string, deviceId: string): Promise<void>;
     markWithdrawal(input: {
         state: 'pending' | 'sent' | 'offline' | 'unconfirmed';

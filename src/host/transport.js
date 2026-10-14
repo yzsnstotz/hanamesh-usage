@@ -1,6 +1,7 @@
 // @ts-check
 import { UsageError, exportEventProjection, renderUsage, validateFilter } from '../core/index.js';
 import { renderUsagePanel } from './panel.js';
+import { resendEventIds } from './resend-input.js';
 /** Build-only optional transport augmentation; public CLI declarations do not require Connection.
  * @typedef {import('@deepseek-ai/dsh-client-connection').HostConnectionService} OptionalConnection
  */
@@ -45,7 +46,7 @@ function parseEventFilter(url) {
  */
 export function mountTransport(ctx, api, options={}) {
   const base = '/api/hanamesh/usage';
-  for (const [path,method] of [[base,'GET'],[`${base}/view`,'GET'],[`${base}/export`,'POST'],[`${base}/health`,'GET'],[`${base}/events`,'GET'],[`${base}/panel`,'GET'],[`${base}/panel/view`,'GET'],[`${base}/panel/remote`,'GET']]) {
+  for (const [path,method] of [[base,'GET'],[`${base}/view`,'GET'],[`${base}/export`,'POST'],[`${base}/health`,'GET'],[`${base}/events`,'GET'],[`${base}/panel`,'GET'],[`${base}/panel/view`,'GET'],[`${base}/panel/remote`,'GET'],[`${base}/events/resend`,'POST']]) {
     const dispose = ctx.connection.fetch.register({
       path: /** @type {string} */ (path), methods: [/** @type {'GET'|'POST'} */ (method)], requestBody: 'buffered',
       fetch: async request => {
@@ -53,6 +54,12 @@ export function mountTransport(ctx, api, options={}) {
         if (request.method !== method) return new Response('{"error":"METHOD_NOT_ALLOWED"}', { status:405, headers });
         try {
           const url = new URL(request.url);
+          if(path===`${base}/events/resend`){
+            if([...url.searchParams].length!==0||request.headers.get('content-type')?.split(';')[0].trim().toLowerCase()!=='application/json')throw new UsageError('RESEND_INPUT_INVALID');
+            let input;try{input=await request.json();}catch{throw new UsageError('RESEND_INPUT_INVALID');}
+            const eventIds=resendEventIds(input);if(eventIds===null)throw new UsageError('RESEND_INPUT_INVALID');
+            return new Response(JSON.stringify(await api.resendEvents({eventIds})),{headers});
+          }
           if(path===`${base}/panel/remote`){
             if([...url.searchParams].length!==0)throw new UsageError('INVALID_FILTER');
             // Read-only; an unreachable or refusing server is reported in the body as unknown, never as zero.
@@ -81,8 +88,8 @@ export function mountTransport(ctx, api, options={}) {
           if (path === `${base}/export`) return new Response(JSON.stringify(result), { headers:{...headers,'content-disposition':'attachment; filename="hanamesh-usage.json"'} });
           return new Response(JSON.stringify({ ...result, health:api.health() }), { headers });
         } catch (error) {
-          const code = error instanceof UsageError && ['EXPORT_DISABLED','INVALID_FILTER'].includes(error.code) ? error.code : 'USAGE_UNAVAILABLE';
-          return new Response(JSON.stringify({ error:code }), { status:code === 'EXPORT_DISABLED' ? 403 : code === 'INVALID_FILTER' ? 400 : 503, headers });
+          const code = error instanceof UsageError && ['EXPORT_DISABLED','INVALID_FILTER','RESEND_INPUT_INVALID'].includes(error.code) ? error.code : 'USAGE_UNAVAILABLE';
+          return new Response(JSON.stringify(path===`${base}/events/resend`?{error:{code}}:{error:code}), { status:code === 'EXPORT_DISABLED' ? 403 : ['INVALID_FILTER','RESEND_INPUT_INVALID'].includes(code) ? 400 : 503, headers });
         }
       },
     });

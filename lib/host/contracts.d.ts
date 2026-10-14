@@ -30,6 +30,7 @@ export interface PanelSnapshot {
   subject:{deviceId:string|null;principalId:string|null;reason:string|null};
   testSupply:PanelTestSupply;consent:HealthSnapshot['consent'];core:HealthSnapshot['core'];
   total:number;events:PanelEvent[];outbox:HealthSnapshot['outbox'];failures:Record<string,number>;
+  withdrawal:HealthSnapshot['withdrawal'];
 }
 /** rc.7：`sourceHanaRef` / `targetRef` / `receipt` 可选；`receipt` 只允许配 `action:'use'`。 */
 export interface RecordInput { hanaRef:string; action:'open'|'use'; occurredAt?:string; idempotencyKey:string; sourcePlugin:string; sourceHanaRef?:string|null; targetRef?:string|null; receipt?:UsageReceipt|null }
@@ -54,6 +55,7 @@ export interface RemoteSnapshot {
   httpStatus:number|null; checkedAt:string;
 }
 export interface UsageService {
+  resendEvents(input:ResendEventsInput):Promise<ResendEventsResult>;
   observeCollection(): Promise<CollectionObservation>;
   /** Read-only, user-triggered: never writes local state and never collects. */
   remote(): Promise<RemoteSnapshot>;
@@ -65,6 +67,13 @@ export interface UsageService {
   panel(): PanelSnapshot;
   drain(): Promise<void>;
   reconcile(): Promise<void>;
+}
+export interface ResendEventsInput {readonly eventIds:readonly string[]}
+export interface ResendEventsResult {
+  state:'processed'|'withheld'|'rejected';
+  code:null|'RESEND_INPUT_INVALID'|'RESEND_EVENT_UNAVAILABLE'|'CORE_UNAVAILABLE'|'USAGE_UNAVAILABLE'|'UPLOAD_STATE_PERSIST_FAILED'|'RESEND_FAILED';
+  events:{eventId:string;delivery:'pending'|'confirmed'|'rejected'|'unconfirmed';code:string|null}[];
+  health:HealthSnapshot|null;
 }
 export interface CollectionObservation {
   state:'processed'|'failed';code:null|'COLLECTION_FAILED'|'USAGE_UNAVAILABLE';through:number|null;

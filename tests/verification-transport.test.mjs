@@ -15,7 +15,7 @@ function host({verification=false,throwCode=null}={}){
 }
 function enabled(h){assert(h.routes.has(base),'test-only capability route is missing');assert(h.routes.has(`${base}/call`),'editable three-call bridge is missing');}
 test('USAGE02-V1 default production transport has no verification capability or callable bridge',async()=>{
-  const h=host();try{assert.equal(h.routes.size,8);assert.equal((await h.request(base)).status,404);assert.equal((await h.request(`${base}/call`,{method:'POST',body:{call:'record',input:fact,verification:true}})).status,404);assert.equal(h.calls.length,0);}finally{h.close();}
+  const h=host();try{assert.equal(h.routes.size,9);assert.equal((await h.request(base)).status,404);assert.equal((await h.request(`${base}/call`,{method:'POST',body:{call:'record',input:fact,verification:true}})).status,404);assert.equal(h.calls.length,0);}finally{h.close();}
 });
 test('USAGE02-V2 enabled routes stay in the existing authenticated Connection registry and release completely',async()=>{
   const h=host({verification:true});try{enabled(h);assert.deepEqual(h.routes.get(base).methods,['GET']);assert.deepEqual(h.routes.get(`${base}/call`).methods,['POST']);assert.equal(h.routes.get(`${base}/call`).requestBody,'buffered');const response=await h.request(base);assert.equal(response.status,200);assert.equal(response.headers.get('cache-control'),'no-store');assert.deepEqual(await response.json(),{enabled:true,calls:['record','health','observeCollection'],deviceId:h.health.deviceId});}finally{h.close();}assert.equal(h.routes.size,0);

@@ -62,6 +62,72 @@ export declare function fetchUsageVerification(call: VerificationCall, input: un
 export declare function UsageVerificationPanel(): import("react").DetailedReactHTMLElement<{
     'aria-label': string;
 }, HTMLElement> | null;
+interface WithdrawalSnapshot {
+    requestedAt: string;
+    deviceId: string;
+    state: 'pending' | 'sent' | 'offline' | 'unconfirmed';
+    attempts: number;
+    deletedEvents: number | null;
+    lastError: string | null;
+}
+/** Client-side copy of the existing public health contract; contains no signing material. */
+interface HealthSnapshot {
+    pending: number;
+    recoveryComplete: boolean;
+    failures: Record<string, number>;
+    consent: 'granted' | 'withheld' | 'unknown';
+    core: 'present' | 'absent' | 'incompatible';
+    deviceId: string | null;
+    outbox: {
+        state: 'idle' | 'uploading' | 'backoff' | 'offline' | 'stopped' | 'unconfirmed';
+        pending: number;
+        sent: number;
+        duplicate: number;
+        rejected: number;
+        lastUploadAt: string | null;
+        nextAttemptAt: string | null;
+        lastError: string | null;
+    };
+    derive: {
+        skipped: {
+            consentWithheld: number;
+            executorUnavailable: number;
+            timeUnavailable: number;
+            noDevice: number;
+        };
+    };
+    withdrawal: WithdrawalSnapshot | null;
+    inventory: {
+        available: boolean;
+        source: 'loader' | 'plugin-inventory' | 'none';
+        lastScanAt: string | null;
+        detail: {
+            package: string;
+            serviceKey: string;
+            methods: string[];
+        } | null;
+    };
+}
+export interface ResendEventsResult {
+    readonly state: 'processed' | 'withheld' | 'rejected';
+    readonly code: null | 'RESEND_INPUT_INVALID' | 'RESEND_EVENT_UNAVAILABLE' | 'CORE_UNAVAILABLE' | 'USAGE_UNAVAILABLE' | 'UPLOAD_STATE_PERSIST_FAILED' | 'RESEND_FAILED';
+    readonly events: readonly {
+        eventId: string;
+        delivery: 'pending' | 'confirmed' | 'rejected' | 'unconfirmed';
+        code: string | null;
+    }[];
+    readonly health: HealthSnapshot | null;
+}
+/** One explicit user intent, through the normal authenticated carrier. */
+export declare function fetchUsageResend(input: {
+    eventIds: string[];
+}, signal: AbortSignal): Promise<ResendEventsResult>;
+/** Normal Settings controls. Reading this component grants no resend intent. */
+export declare function UsageResendPanel({ revision }: {
+    revision?: number;
+}): import("react").DetailedReactHTMLElement<{
+    'aria-label': string;
+}, HTMLElement>;
 /** Same authenticated Fetch registry for Web and the Desktop carrier. No write API. */
 export declare function fetchUsagePanel(signal: AbortSignal): Promise<string>;
 /** A sandboxed, script-free Usage-owned view with explicit refresh/error states. */

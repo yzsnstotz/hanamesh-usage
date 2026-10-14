@@ -8,6 +8,7 @@ const core=await import(pathToFileURL(resolve(root,'lib/core/index.js')).href);
 const host=await import(pathToFileURL(resolve(root,'lib/host/upload.js')).href);
 class EventGlobal{constructor(){this.snapshot={schemaVersion:1,events:[],withdrawal:null,inventory:{last:null}};}get(){return this.snapshot;}async set(next){this.snapshot=structuredClone(next);}}
 const NOW=Date.parse('2026-10-08T00:00:00.000Z');
+const WINDOW={from:'2026-07-10T00:05:00.000Z',to:'2026-10-08T00:05:00.000Z'};
 const row=(i)=>({deviceId:'device_FIXTURE',eventId:`00000000-0000-5000-8000-00000000000${i}`,nonce:'n',principalId:'p',hanaRef:'dsh-update-notifier',action:'use',occurredAt:'2026-10-07T00:00:0'+i+'.000Z',receivedAt:'2026-10-07T00:00:1'+i+'.000Z',signature:'s'});
 function fixture({respond,origin='https://usage.example',deviceId='device_FIXTURE',consent='granted'}={}){
   const store=new core.EventStore(new EventGlobal(),5000);const requests=[],signed=[];
@@ -19,7 +20,7 @@ function fixture({respond,origin='https://usage.example',deviceId='device_FIXTUR
 const json=(body,status=200)=>new Response(JSON.stringify(body),{status,headers:{'content-type':'application/json'}});
 
 test('R1 remote readback pages the device-signed public route to the end and never writes local state',async()=>{
-  const f=fixture({respond:n=>n===1?json({items:[row(1),row(2)],nextAfter:'cursor-1',window:{}}):json({items:[row(3)],nextAfter:null,window:{}})});
+  const f=fixture({respond:n=>n===1?json({items:[row(1),row(2)],nextAfter:'cursor-1',window:WINDOW}):json({items:[row(3)],nextAfter:null,window:WINDOW})});
   const before=structuredClone(f.store.getSnapshot());
   const result=await f.reporter.readRemote();
   assert.equal(result.state,'available');assert.equal(result.total,3);assert.equal(result.deviceId,'device_FIXTURE');
@@ -39,7 +40,7 @@ test('R1 remote readback pages the device-signed public route to the end and nev
   assert.deepEqual(f.store.getSnapshot(),before);
 });
 test('R2 an empty server page is an actual zero, distinct from unknown',async()=>{
-  const f=fixture({respond:()=>json({items:[],nextAfter:null,window:{}})});
+  const f=fixture({respond:()=>json({items:[],nextAfter:null,window:WINDOW})});
   assert.deepEqual(await f.reporter.readRemote(),{state:'available',deviceId:'device_FIXTURE',total:0,events:[],code:null,httpStatus:200,checkedAt:'2026-10-08T00:00:00.000Z'});
 });
 test('R3 refusal, outage and malformed bodies are unknown with bounded codes, never zero',async()=>{
@@ -49,7 +50,7 @@ test('R3 refusal, outage and malformed bodies are unknown with bounded codes, ne
     [()=>new Response('sk-SYNTHETIC_SECRET',{status:503}),'REMOTE_UNAVAILABLE',503],
     [()=>{throw new TypeError('fetch failed');},'REMOTE_UNAVAILABLE',null],
     [()=>json({items:'x',nextAfter:null}),'REMOTE_RESPONSE_INVALID',200],
-    [n=>n===1?json({items:[row(1)],nextAfter:'c'}):json({},500),'REMOTE_UNAVAILABLE',500],
+    [n=>n===1?json({items:[row(1)],nextAfter:'c',window:WINDOW}):json({},500),'REMOTE_UNAVAILABLE',500],
   ]){
     const f=fixture({respond});const result=await f.reporter.readRemote();
     assert.equal(result.state,'unknown');assert.equal(result.total,null);assert.deepEqual(result.events,[]);assert.equal(result.code,code);assert.equal(result.httpStatus,status);
