@@ -15,6 +15,8 @@ export interface Config {
   queryLimit?: number;
   /** Display provenance only; does not supply identities or produce facts. */
   panelTestSupply?: PanelTestSupply;
+  /** Explicit test/development build entry; always disabled in production. */
+  verification?: boolean;
 }
 export interface PanelTestSupply { identity:boolean; receiver:boolean }
 export interface PanelEvent {
@@ -30,7 +32,7 @@ export interface PanelSnapshot {
   total:number;events:PanelEvent[];outbox:HealthSnapshot['outbox'];failures:Record<string,number>;
 }
 /** rc.7：`sourceHanaRef` / `targetRef` / `receipt` 可选；`receipt` 只允许配 `action:'use'`。 */
-export interface RecordInput { hanaRef:string; action:'open'|'use'; occurredAt:string; idempotencyKey:string; sourcePlugin:string; sourceHanaRef?:string|null; targetRef?:string|null; receipt?:UsageReceipt|null }
+export interface RecordInput { hanaRef:string; action:'open'|'use'; occurredAt?:string; idempotencyKey:string; sourcePlugin:string; sourceHanaRef?:string|null; targetRef?:string|null; receipt?:UsageReceipt|null }
 export interface RecordResult { disposition:'recorded'|'duplicate'|'withheld'|'rejected'; eventId?:string; code?:string }
 export interface HealthSnapshot {
   pending:number;
@@ -39,9 +41,9 @@ export interface HealthSnapshot {
   consent:'granted'|'withheld'|'unknown';
   core:'present'|'absent'|'incompatible';
   deviceId:string|null;
-  outbox:{state:'idle'|'uploading'|'backoff'|'offline'|'stopped';pending:number;sent:number;duplicate:number;rejected:number;lastUploadAt:string|null;nextAttemptAt:string|null;lastError:string|null};
+  outbox:{state:'idle'|'uploading'|'backoff'|'offline'|'stopped'|'unconfirmed';pending:number;sent:number;duplicate:number;rejected:number;lastUploadAt:string|null;nextAttemptAt:string|null;lastError:string|null};
   derive:{skipped:{consentWithheld:number;executorUnavailable:number;timeUnavailable:number;noDevice:number}};
-  withdrawal:{requestedAt:string;deviceId:string;state:'pending'|'sent'|'offline';attempts:number;deletedEvents:number|null;lastError:string|null}|null;
+  withdrawal:{requestedAt:string;deviceId:string;state:'pending'|'sent'|'offline'|'unconfirmed';attempts:number;deletedEvents:number|null;lastError:string|null}|null;
   inventory:{available:boolean;source:'loader'|'plugin-inventory'|'none';lastScanAt:string|null;detail:{package:string;serviceKey:string;methods:string[]}|null};
 }
 export interface RemoteEvent { eventId:string; hanaRef:string; action:UsageEvent['action']; occurredAt:string; receivedAt:string }
@@ -52,6 +54,7 @@ export interface RemoteSnapshot {
   httpStatus:number|null; checkedAt:string;
 }
 export interface UsageService {
+  observeCollection(): Promise<CollectionObservation>;
   /** Read-only, user-triggered: never writes local state and never collects. */
   remote(): Promise<RemoteSnapshot>;
   query(filter?: Filter): QueryResult;
@@ -62,5 +65,10 @@ export interface UsageService {
   panel(): PanelSnapshot;
   drain(): Promise<void>;
   reconcile(): Promise<void>;
+}
+export interface CollectionObservation {
+  state:'processed'|'failed';code:null|'COLLECTION_FAILED'|'USAGE_UNAVAILABLE';through:number|null;
+  events:{eventId:string;delivery:'pending'|'confirmed'|'rejected'|'unconfirmed'|'withdrawn';code:string|null}[];
+  health:HealthSnapshot|null;
 }
 declare module '@deepseek-ai/cordis' { interface Context { hanameshUsage: UsageService } }

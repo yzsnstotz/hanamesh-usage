@@ -2,7 +2,7 @@ import { type UsageEvent, type UploadState } from './events.js';
 export interface WithdrawalState {
     requestedAt: string;
     deviceId: string;
-    state: 'pending' | 'sent' | 'offline';
+    state: 'pending' | 'sent' | 'offline' | 'unconfirmed';
     attempts: number;
     deletedEvents: number | null;
     lastError: string | null;
@@ -56,10 +56,10 @@ export declare class EventStore {
         duplicates: number;
     }>;
     applyUpload(eventIds: string[], result: IngestBatchResult, sentAt: string): Promise<void>;
-    markAttempts(eventIds: string[]): Promise<void>;
+    markAttempts(eventIds: string[], code?: string | null): Promise<void>;
     withdrawLocal(requestedAt: string, deviceId: string): Promise<void>;
     markWithdrawal(input: {
-        state: 'pending' | 'sent' | 'offline';
+        state: 'pending' | 'sent' | 'offline' | 'unconfirmed';
         deletedEvents: number | null;
         lastError: string | null;
     }): Promise<void>;

@@ -15,13 +15,14 @@ const validHana = value => typeof value === 'string' && value.length <= 128 && h
  * }} options
  */
 export function createRecordSeat({store,getConsent,getDeviceId,now=Date.now,signEvent}) {
+  let tail=Promise.resolve();
   /**
    * rc.7：三个可选归因键。`sourceHanaRef`（来源 Hana，npm 包名）、`targetRef`（目标应用/会话，有界 token）、
    * `receipt {providerId, model|null, count}`（只允许配 `use`）。缺省与 rc.6 完全一致；同 idempotencyKey 但归因/回执不同是 EVENT_IDENTITY_CONFLICT。
    * @param {import('./contracts.js').RecordInput} input @returns {Promise<import('./contracts.js').RecordResult>} */
-  return async function record(input) {
-    if (getConsent() !== 'granted') return { disposition:'withheld' };
+  async function record(input) {
     try {
+      if (getConsent() !== 'granted') return { disposition:'withheld' };
       if (input === null || typeof input !== 'object' || Array.isArray(input)) throw new UsageError('INVALID_RECORD_INPUT');
       const keys=Object.keys(input);if(keys.some(key=>!['hanaRef','action','occurredAt','idempotencyKey','sourcePlugin','sourceHanaRef','targetRef','receipt'].includes(key))) throw new UsageError('INVALID_RECORD_INPUT');
       const {hanaRef,action,idempotencyKey,sourcePlugin}=input;
@@ -29,18 +30,31 @@ export function createRecordSeat({store,getConsent,getDeviceId,now=Date.now,sign
       const sourceHanaRef=input.sourceHanaRef??null,targetRef=input.targetRef??null,receipt=input.receipt??null;
       if ((sourceHanaRef!==null&&!validHana(sourceHanaRef))||(targetRef!==null&&!validTargetRef(targetRef))||(receipt!==null&&(action!=='use'||!validReceipt(receipt)))) throw new UsageError('INVALID_RECORD_INPUT');
       const deviceId=getDeviceId();if(deviceId===null) throw new UsageError('DEVICE_UNAVAILABLE');
+      const eventId=eventIdForSeat(deviceId,sourcePlugin,idempotencyKey);
+      const existing=store.getSnapshot().events.find(event=>event.eventId===eventId);
+      const normalizedReceipt=receipt===null?null:{providerId:receipt.providerId,model:receipt.model,count:receipt.count};
+      if(existing){
+        if(existing.hanaRef!==hanaRef||existing.action!==action||existing.sourceHanaRef!==sourceHanaRef||existing.targetRef!==targetRef
+          ||JSON.stringify(existing.receipt??null)!==JSON.stringify(normalizedReceipt)
+          ||(input.occurredAt!==undefined&&input.occurredAt!==existing.occurredAt))throw new UsageError('EVENT_IDENTITY_CONFLICT');
+        // A replay returns the persisted fact; it never signs or writes it again.
+        return {disposition:/** @type {const} */('duplicate'),eventId};
+      }
       // The source must preserve the original fact time across deliveries.
       // Local now is only for the admission window, never for fact identity.
+      if(input.occurredAt===undefined)throw new UsageError('FACT_TIME_UNAVAILABLE');
       if(typeof input.occurredAt!=='string')throw new UsageError('INVALID_RECORD_INPUT');
       const current=now();const occurredAt=input.occurredAt;const time=Date.parse(occurredAt);
       if(!Number.isFinite(time)||new Date(time).toISOString()!==occurredAt||time<current-90*24*60*60*1000||time>current+5*60*1000) throw new UsageError('INVALID_RECORD_INPUT');
-      const eventId=eventIdForSeat(deviceId,sourcePlugin,idempotencyKey);
       const event=signEvent(createUsageEvent({eventId,deviceId,hanaRef,action,occurredAt,nonce:eventNonceForSeat(eventId),signature:null,source:'seat',sourcePlugin,evidenceRef:idempotencyKey,sourceHanaRef,targetRef,receipt:receipt===null?null:{providerId:receipt.providerId,model:receipt.model,count:receipt.count}}));
       const disposition=await store.put(event);
       return { disposition:disposition==='inserted'?'recorded':'duplicate',eventId };
     } catch (error) {
-      const code=error instanceof UsageError&&['INVALID_RECORD_INPUT','DEVICE_UNAVAILABLE','EVENTS_CAPACITY_REACHED','EVENT_IDENTITY_CONFLICT'].includes(error.code)?error.code:'RECORD_FAILED';
+      const code=error instanceof UsageError&&['INVALID_RECORD_INPUT','FACT_TIME_UNAVAILABLE','CORE_UNAVAILABLE','DEVICE_UNAVAILABLE','EVENTS_CAPACITY_REACHED','EVENT_IDENTITY_CONFLICT'].includes(error.code)?error.code:'RECORD_FAILED';
       return { disposition:'rejected',code };
     }
+  }
+  return (/** @type {import('./contracts.js').RecordInput} */input)=>{
+    const run=tail.then(()=>record(input));tail=run.then(()=>{},()=>{});return run;
   };
 }

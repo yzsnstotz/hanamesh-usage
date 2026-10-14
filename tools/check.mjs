@@ -43,7 +43,11 @@ for(const p of sources){
    assert.match(s,/getServerOrigin/);assert.match(s,/new URL\(/);
  }else if(p==='src/client/index.ts'){
    const calls=[...s.matchAll(/\bfetch\s*\(([^,]+),/g)].map(match=>match[1]);
-   assert.deepEqual(calls,["'api/hanamesh/usage/panel/view'","'api/hanamesh/usage/panel/view'"],`client only reads its own authenticated panel ${p}`);
+   assert.deepEqual(calls,['path','path',"'api/hanamesh/usage/panel/view'","'api/hanamesh/usage/panel/view'"],`client only uses its own authenticated view and verification bridge ${p}`);
+   assert.match(s,/const verificationPath='api\/hanamesh\/usage\/verification';/);
+   const verification=[...s.matchAll(/\bawait verificationFetch\(([^,]+),/g)].map(match=>match[1]);
+   assert.deepEqual(verification,['`${verificationPath}/call`','verificationPath'],`verification fetch callers are exactly the capability and call routes ${p}`);
+   assert.equal((s.match(/\bverificationFetch\(/g)??[]).length,3,`no extra verification fetch caller ${p}`);
    assert.match(s,/method:'GET'/);assert.doesNotMatch(s,/https?:|ctx\.get\(/);
  }else assert.doesNotMatch(s,/\bfetch\s*\(/,`outbound fetch ${p}`);
  assert.doesNotMatch(s,/\bconsole\.(?:log|error|warn)\s*\(/,`boundary ${p}`);

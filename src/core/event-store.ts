@@ -6,7 +6,7 @@ import { DEFAULT_EVENT_RETENTION_DAYS, DEFAULT_QUERY_LIMIT, DAY_MS, validateRete
 export interface WithdrawalState {
   requestedAt: string;
   deviceId: string;
-  state: 'pending' | 'sent' | 'offline';
+  state: 'pending' | 'sent' | 'offline' | 'unconfirmed';
   attempts: number;
   deletedEvents: number | null;
   lastError: string | null;
@@ -32,7 +32,7 @@ function validIso(value: unknown): value is string { const time=typeof value==='
 function validateWithdrawal(value: unknown): asserts value is WithdrawalState {
   if(value===null||typeof value!=='object'||Array.isArray(value))throw new UsageError('INVALID_EVENT_SNAPSHOT');
   const item=value as Record<string,unknown>;
-  if(Object.keys(item).sort().join('|')!==['requestedAt','deviceId','state','attempts','deletedEvents','lastError'].sort().join('|')||!validIso(item.requestedAt)||!safeMetadata(item.deviceId)||!['pending','sent','offline'].includes(String(item.state))||!Number.isSafeInteger(item.attempts)||Number(item.attempts)<0||(item.deletedEvents!==null&&(!Number.isSafeInteger(item.deletedEvents)||Number(item.deletedEvents)<0))||(item.lastError!==null&&!safeMetadata(item.lastError)))throw new UsageError('INVALID_EVENT_SNAPSHOT');
+  if(Object.keys(item).sort().join('|')!==['requestedAt','deviceId','state','attempts','deletedEvents','lastError'].sort().join('|')||!validIso(item.requestedAt)||!safeMetadata(item.deviceId)||!['pending','sent','offline','unconfirmed'].includes(String(item.state))||!Number.isSafeInteger(item.attempts)||Number(item.attempts)<0||(item.deletedEvents!==null&&(!Number.isSafeInteger(item.deletedEvents)||Number(item.deletedEvents)<0))||(item.lastError!==null&&!safeMetadata(item.lastError)))throw new UsageError('INVALID_EVENT_SNAPSHOT');
 }
 export function validateEventSnapshot(value: unknown): asserts value is EventSnapshot {
   if (value === null || typeof value !== 'object' || Array.isArray(value)) throw new UsageError('INVALID_EVENT_SNAPSHOT');
@@ -105,12 +105,14 @@ export class EventStore {
   }
   applyUpload(eventIds: string[], result: IngestBatchResult, sentAt: string): Promise<void> {
     const run=this.tail.then(async()=>{
-      if(!validIso(sentAt)||!Number.isSafeInteger(result.accepted)||result.accepted<0||!Number.isSafeInteger(result.duplicates)||result.duplicates<0||!['committed','pending-host-commit'].includes(result.durability)||!Array.isArray(result.rejected)||new Set(eventIds).size!==eventIds.length)throw new UsageError('INVALID_UPLOAD_RESULT');
+      if(!validIso(sentAt)||!Number.isSafeInteger(result.accepted)||result.accepted<0||!Number.isSafeInteger(result.duplicates)||result.duplicates<0||result.durability!=='committed'||!Array.isArray(result.rejected)||new Set(eventIds).size!==eventIds.length)throw new UsageError('INVALID_UPLOAD_RESULT');
       const rejected=new Map<string,string>();
       for(const item of result.rejected){if(!item||typeof item!=='object'||!eventIds.includes(item.eventId)||rejected.has(item.eventId)||!safeMetadata(item.code))throw new UsageError('INVALID_UPLOAD_RESULT');rejected.set(item.eventId,item.code);}
       const remaining=eventIds.filter(id=>!rejected.has(id));
       if(result.accepted+result.duplicates!==remaining.length)throw new UsageError('INVALID_UPLOAD_RESULT');
-      const sent=new Set(remaining.slice(0,result.accepted)),duplicates=new Set(remaining.slice(result.accepted));
+      // Mixed counts identify no individual membership. `sent` means confirmed
+      // ingestion here; label duplicate only when every non-rejected row is one.
+      const duplicates=new Set(result.accepted===0?remaining:[]),sent=new Set(result.accepted===0?[]:remaining);
       const found=new Set<string>();
       const events=this.snapshot.events.map(event=>{
         if(!eventIds.includes(event.eventId))return structuredClone(event);
@@ -123,9 +125,10 @@ export class EventStore {
     });
     this.tail=run.catch(()=>{});return run;
   }
-  markAttempts(eventIds:string[]):Promise<void>{
+  markAttempts(eventIds:string[],code:string|null=null):Promise<void>{
     const run=this.tail.then(async()=>{
-      const ids=new Set(eventIds);let found=0;const events=this.snapshot.events.map(event=>ids.has(event.eventId)?(found++,{...structuredClone(event),upload:{...event.upload,attempts:event.upload.attempts+1}}):structuredClone(event));
+      if(code!==null&&!safeMetadata(code))throw new UsageError('INVALID_UPLOAD_RESULT');
+      const ids=new Set(eventIds);let found=0;const events=this.snapshot.events.map(event=>ids.has(event.eventId)?(found++,{...structuredClone(event),upload:{...event.upload,...(code===null?{}:{code}),attempts:event.upload.attempts+1}}):structuredClone(event));
       if(found!==ids.size)throw new UsageError('INVALID_UPLOAD_RESULT');if(found>0)await this.commit({...structuredClone(this.snapshot),events});
     });this.tail=run.catch(()=>{});return run;
   }
@@ -133,7 +136,7 @@ export class EventStore {
     const run=this.tail.then(async()=>{if(!validIso(requestedAt)||!safeMetadata(deviceId))throw new UsageError('INVALID_WITHDRAWAL');await this.commit({...structuredClone(this.snapshot),events:[],withdrawal:{requestedAt,deviceId,state:'pending',attempts:0,deletedEvents:null,lastError:null}});});
     this.tail=run.catch(()=>{});return run;
   }
-  markWithdrawal(input:{state:'pending'|'sent'|'offline';deletedEvents:number|null;lastError:string|null}):Promise<void>{
+  markWithdrawal(input:{state:'pending'|'sent'|'offline'|'unconfirmed';deletedEvents:number|null;lastError:string|null}):Promise<void>{
     const run=this.tail.then(async()=>{const current=this.snapshot.withdrawal;if(current===null)throw new UsageError('INVALID_WITHDRAWAL');const next={...structuredClone(current),...input,attempts:current.attempts+1};await this.commit({...structuredClone(this.snapshot),withdrawal:next});});
     this.tail=run.catch(()=>{});return run;
   }

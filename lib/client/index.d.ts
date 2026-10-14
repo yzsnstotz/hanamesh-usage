@@ -48,6 +48,20 @@ declare global {
     }
 }
 export declare const inject: string[];
+declare const verificationCalls: readonly ["record", "health", "observeCollection"];
+type VerificationCall = typeof verificationCalls[number];
+interface VerificationReply {
+    call: VerificationCall;
+    input: unknown;
+    result: unknown;
+    health: unknown;
+}
+/** Test-profile bridge; forwards the edited input without generating source facts. */
+export declare function fetchUsageVerification(call: VerificationCall, input: unknown, signal: AbortSignal): Promise<VerificationReply>;
+/** Native controls are outside the script-free view and hidden until enabled. */
+export declare function UsageVerificationPanel(): import("react").DetailedReactHTMLElement<{
+    'aria-label': string;
+}, HTMLElement> | null;
 /** Same authenticated Fetch registry for Web and the Desktop carrier. No write API. */
 export declare function fetchUsagePanel(signal: AbortSignal): Promise<string>;
 /** A sandboxed, script-free Usage-owned view with explicit refresh/error states. */

@@ -15,9 +15,19 @@ const maxBodyBytes=64*1024;
  * }} options
  */
 export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize,fetchImpl=fetch,now=Date.now}){
-  let state=/** @type {'idle'|'uploading'|'backoff'|'offline'|'stopped'} */('stopped');
+  let state=/** @type {'idle'|'uploading'|'backoff'|'offline'|'stopped'|'unconfirmed'} */('stopped');
+  const confirmed=new Set(),unconfirmed=new Set();
   let lastUploadAt=/** @type {string|null} */(null),nextAttemptAt=/** @type {string|null} */(null),lastError=/** @type {string|null} */(null),failures=0,active=false;
   let tail=Promise.resolve();
+  // The existing bounded local diagnostic field persists the formal unknown
+  // marker; it is absent from wireEvent and therefore changes no event digest.
+  for(const event of store.getSnapshot().events)if(event.upload.state==='pending'&&event.upload.code==='USAGE_STORAGE_UNAVAILABLE')unconfirmed.add(event.eventId);
+  if(unconfirmed.size>0){state='unconfirmed';lastError='USAGE_STORAGE_UNAVAILABLE';}
+  function pruneObservations(){
+    const events=new Map(store.getSnapshot().events.map(event=>[event.eventId,event]));
+    for(const id of confirmed)if(!events.has(id)||events.get(id)?.upload.state==='pending')confirmed.delete(id);
+    for(const id of unconfirmed)if(events.get(id)?.upload.code!=='USAGE_STORAGE_UNAVAILABLE'||events.get(id)?.upload.state!=='pending')unconfirmed.delete(id);
+  }
   /** @type {ReturnType<typeof setTimeout>|null} */let timer=null;
   const iso=()=>new Date(now()).toISOString();
   const clearTimer=()=>{if(timer!==null){clearTimeout(timer);timer=null;}};
@@ -34,6 +44,8 @@ export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize
     return {pending:count('pending'),sent:count('sent'),duplicate:count('duplicate'),rejected:count('rejected')};
   };
   function start(){
+    pruneObservations();
+    if(unconfirmed.size>0){state='unconfirmed';return;}
     active=true;const core=link.get();
     if(core===null){state='stopped';return;}
     if(core.getConsent()!=='granted'){state='stopped';return;}
@@ -44,6 +56,8 @@ export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize
   /** @param {string} code @param {string[]} ids */
   async function fail(code,ids){await store.markAttempts(ids);lastError=code;backoff();return /** @type {const} */('backoff');}
   async function runOnceRaw(){
+    pruneObservations();
+    if(unconfirmed.size>0){state='unconfirmed';return /** @type {const} */('unconfirmed');}
     const core=link.get();if(core===null){state='stopped';return /** @type {const} */('stopped');}
     if(core.getConsent()!=='granted'){state='stopped';return /** @type {const} */('withheld');}
     const origin=core.getServerOrigin();if(origin===null){state='offline';return /** @type {const} */('offline');}
@@ -63,14 +77,27 @@ export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize
       response=await fetchImpl(url,{method:'POST',headers:{...signed,'content-type':'application/json',origin},body:json});
     }catch{return await fail('UPLOAD_UNAVAILABLE',ids);}
     if(response.status===401||response.status===403)return await fail('UPLOAD_UNAUTHORIZED',ids);
-    if(response.status<200||response.status>=300)return await fail('UPLOAD_UNAVAILABLE',ids);
+    if(response.status<200||response.status>=300){
+      if(await unknownCommit(response)){
+        await store.markAttempts(ids,'USAGE_STORAGE_UNAVAILABLE');ids.forEach(id=>unconfirmed.add(id));clearTimer();active=false;
+        state='unconfirmed';nextAttemptAt=null;lastError='USAGE_STORAGE_UNAVAILABLE';return /** @type {const} */('unconfirmed');
+      }
+      return await fail('UPLOAD_UNAVAILABLE',ids);
+    }
     try{
-      const result=/** @type {import('@hanamesh/api-contracts/usage').IngestBatchResult} */(await response.json());
+      const result=/** @type {import('../core/index.js').IngestBatchResult} */(await response.json());
+      if(Object.keys(result).sort().join('|')!=='accepted|duplicates|durability|rejected'||result.durability!=='committed')throw new UsageError('UPLOAD_RESPONSE_INVALID');
       await store.applyUpload(ids,result,iso());
+      pruneObservations();const rejected=new Set(result.rejected.map(item=>item.eventId));ids.filter(id=>!rejected.has(id)).forEach(id=>confirmed.add(id));
     }catch{return await fail('UPLOAD_RESPONSE_INVALID',ids);}
     failures=0;state='idle';lastError=null;nextAttemptAt=null;lastUploadAt=iso();return /** @type {const} */('uploaded');
   }
   function runOnce(){const run=tail.then(runOnceRaw);tail=run.then(()=>{},()=>{});return run;}
+  /** Only the formally supplied safe error marks an unknown COMMIT. @param {Response} response */
+  async function unknownCommit(response){
+    if(response.status!==503)return false;
+    try{const body=await response.json();return body?.error?.code==='USAGE_STORAGE_UNAVAILABLE'&&body.error.durability==='unconfirmed';}catch{return false;}
+  }
   /** @param {string} deviceId */
   async function requestWithdrawal(deviceId){
     const core=link.get();if(core===null)return {state:/** @type {const} */('offline'),deletedEvents:null,lastError:'CORE_UNAVAILABLE'};
@@ -78,25 +105,32 @@ export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize
     const path=`/v1/usage/me/devices/${encodeURIComponent(deviceId)}/events`,url=new URL(path,origin);
     try{
       const signed=await core.signRequest({method:'DELETE',path,body:null});const response=await fetchImpl(url,{method:'DELETE',headers:{...signed,origin}});
-      if(response.status<200||response.status>=300)throw new UsageError('WITHDRAW_UNAVAILABLE');
+      if(response.status<200||response.status>=300){
+        if(await unknownCommit(response))return {state:/** @type {const} */('unconfirmed'),deletedEvents:null,lastError:'USAGE_STORAGE_UNAVAILABLE'};
+        throw new UsageError('WITHDRAW_UNAVAILABLE');
+      }
       const body=/** @type {{deletedEvents?:unknown}} */(await response.json());if(!Number.isSafeInteger(body.deletedEvents)||Number(body.deletedEvents)<0)throw new UsageError('WITHDRAW_RESPONSE_INVALID');
       return {state:/** @type {const} */('sent'),deletedEvents:Number(body.deletedEvents),lastError:null};
     }catch{return {state:/** @type {const} */('pending'),deletedEvents:null,lastError:'WITHDRAW_UNAVAILABLE'};}
   }
-  async function retryWithdrawal(){
+  async function retryWithdrawalRaw(){
     const withdrawal=store.getSnapshot().withdrawal;if(withdrawal===null)return /** @type {const} */('idle');
     if(withdrawal.state==='sent')return /** @type {const} */('sent');
     if(withdrawal.state==='offline')return /** @type {const} */('offline');
+    if(withdrawal.state==='unconfirmed'){state='unconfirmed';return /** @type {const} */('unconfirmed');}
     const result=await requestWithdrawal(withdrawal.deviceId);await store.markWithdrawal(result);
     if(result.state==='sent'){clearTimer();state='stopped';lastError=null;return /** @type {const} */('sent');}
     if(result.state==='offline'){clearTimer();state='offline';lastError=result.lastError;return /** @type {const} */('offline');}
+    if(result.state==='unconfirmed'){clearTimer();active=false;state='unconfirmed';nextAttemptAt=null;lastError=result.lastError;return /** @type {const} */('unconfirmed');}
     lastError='WITHDRAW_UNAVAILABLE';backoff(true);return /** @type {const} */('backoff');
   }
+  function retryWithdrawal(){const run=tail.then(retryWithdrawalRaw);tail=run.then(()=>{},()=>{});return run;}
   /** @param {string} [changedAt] @param {string|null} [deviceIdOverride] */
   async function withdraw(changedAt=iso(),deviceIdOverride=null){
     stop();await tail;const current=store.getSnapshot().withdrawal;if(current?.state==='sent')return /** @type {const} */('sent');if(current?.state==='offline')return /** @type {const} */('offline');
     const core=link.get();const deviceId=deviceIdOverride??core?.getDeviceId();if(!deviceId){state='offline';return /** @type {const} */('offline');}
     if(current===null)await store.withdrawLocal(changedAt,deviceId);
+    confirmed.clear();unconfirmed.clear();
     return await retryWithdrawal();
   }
   async function grant(){await store.clearWithdrawal();start();}
@@ -134,5 +168,7 @@ export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize
     }while(after!==null);
     return {state:'available',deviceId,total:events.length,events,code:null,httpStatus:status,checkedAt};
   }
-  return {start,stop,runOnce,withdraw,retryWithdrawal,grant,readRemote,drain:()=>tail,health:()=>({state,...counts(),lastUploadAt,nextAttemptAt,lastError})};
+  /** @param {import('../core/index.js').UsageEvent} event @returns {import('./contracts.js').CollectionObservation['events'][number]} */
+  function delivery(event){return {eventId:event.eventId,delivery:unconfirmed.has(event.eventId)?'unconfirmed':event.upload.state==='rejected'?'rejected':confirmed.has(event.eventId)?'confirmed':['sent','duplicate'].includes(event.upload.state)?'unconfirmed':'pending',code:unconfirmed.has(event.eventId)?'USAGE_STORAGE_UNAVAILABLE':event.upload.code};}
+  return {start,stop,runOnce,withdraw,retryWithdrawal,grant,readRemote,delivery,drain:()=>tail,health:()=>{pruneObservations();return {state,...counts(),lastUploadAt,nextAttemptAt,lastError};}};
 }
