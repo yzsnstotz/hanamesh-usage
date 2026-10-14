@@ -14,11 +14,12 @@ const {createUsageReporter}=await import(pathToFileURL(resolve(root,'lib/host/up
 const NOW=Date.parse('2026-10-11T00:00:00.000Z');
 const fact={hanaRef:'fixture.hana',action:'use',sourcePlugin:'fixture.hana',idempotencyKey:'command:source-operation-1:succeeded',occurredAt:new Date(NOW).toISOString(),sourceHanaRef:'fixture.source',targetRef:'source-operation-1',receipt:{providerId:'fixture',model:null,count:1}};
 function buffer(core){
+  const effects={writes:0,signs:0};
   let snapshot={schemaVersion:1,events:[],withdrawal:null,inventory:{last:null}};
-  const port={get:()=>snapshot,set:async value=>{snapshot=structuredClone(value);}};
+  const port={get:()=>snapshot,set:async value=>{effects.writes++;snapshot=structuredClone(value);}};
   const store=new EventStore(port,5000,()=>NOW);
-  const record=createRecordSeat({store,getConsent:()=>core.getConsent(),getDeviceId:()=>core.getDeviceId(),now:()=>NOW,signEvent:event=>signUsageEvent(core,event)});
-  return {store,record,port};
+  const record=createRecordSeat({store,getConsent:()=>core.getConsent(),getDeviceId:()=>core.getDeviceId(),now:()=>NOW,signEvent:event=>{effects.signs++;return signUsageEvent(core,event);}});
+  return {store,record,port,effects};
 }
 async function setup(){
   const server=await createUsageProviderFixture();
@@ -94,8 +95,101 @@ test('Q18 different device or source keys remain independent; same key with diff
   assert.deepEqual((await send(changedNonce)).rejected,[{eventId:original.eventId,code:'USAGE_EVENT_CONFLICT'}]);
   const nonceReuse=server.event({nonce:original.nonce});assert.deepEqual((await send(nonceReuse)).rejected,[{eventId:nonceReuse.eventId,code:'USAGE_NONCE_REUSED'}]);
 });
-test('Q18 missing source timestamp or stable fact key is an explicit input gap, never synthesized from local time',async()=>{
+test('Q18 missing source timestamp on a new stable fact is FACT_TIME_UNAVAILABLE, never synthesized from local time',async()=>{
   const {a}=await setup(),client=buffer(a);
-  for(const key of ['occurredAt','idempotencyKey','sourcePlugin']){const input={...fact};delete input[key];assert.deepEqual(await client.record(input),{disposition:'rejected',code:'INVALID_RECORD_INPUT'},key);}
+  const {occurredAt,...input}=fact;
+  assert.deepEqual(await client.record(input),{disposition:'rejected',code:'FACT_TIME_UNAVAILABLE'});
   assert.equal(client.store.query().total,0);
+  assert.deepEqual(client.effects,{writes:0,signs:0});
+});
+
+for(const key of ['idempotencyKey','sourcePlugin'])test(`Q376 missing ${key} is INVALID_RECORD_INPUT, not a timestamp gap`,async()=>{
+  const {a}=await setup(),client=buffer(a),input={...fact};delete input[key];
+  assert.deepEqual(await client.record(input),{disposition:'rejected',code:'INVALID_RECORD_INPUT'});
+  assert.equal(client.store.query().total,0);assert.deepEqual(client.effects,{writes:0,signs:0});
+});
+
+test('Q376 malformed stable keys and source plugins remain invalid before any write or sign',async()=>{
+  const {a}=await setup(),client=buffer(a);
+  for(const change of [{idempotencyKey:''},{idempotencyKey:42},{sourcePlugin:''},{sourcePlugin:'not a package'},{occurredAt:'invalid-time'}]){
+    assert.deepEqual(await client.record({...fact,...change}),{disposition:'rejected',code:'INVALID_RECORD_INPUT'});
+  }
+  assert.equal(client.store.query().total,0);assert.deepEqual(client.effects,{writes:0,signs:0});
+});
+
+test('Q376 persisted replay without time keeps all declared attribution and the original signature nonce and time',async()=>{
+  const {a}=await setup(),client=buffer(a),first=await client.record(fact);
+  assert.equal(first.disposition,'recorded');
+  const before=structuredClone(client.port.get()),effects={...client.effects};
+  const {occurredAt,...replay}=fact;
+  assert.deepEqual(await client.record(replay),{disposition:'duplicate',eventId:first.eventId});
+  assert.deepEqual(client.port.get(),before);assert.deepEqual(client.effects,effects);
+});
+
+test('Q376 four-field replay is duplicate only when original optional attribution was null',async()=>{
+  const {a}=await setup(),client=buffer(a);
+  const plain={...fact,sourceHanaRef:null,targetRef:null,receipt:null};
+  const first=await client.record(plain),before=structuredClone(client.port.get()),effects={...client.effects};
+  assert.equal(first.disposition,'recorded');
+  const replay={hanaRef:plain.hanaRef,action:plain.action,sourcePlugin:plain.sourcePlugin,idempotencyKey:plain.idempotencyKey};
+  assert.deepEqual(await client.record(replay),{disposition:'duplicate',eventId:first.eventId});
+  assert.deepEqual(client.port.get(),before);assert.deepEqual(client.effects,effects);
+});
+
+for(const optional of ['sourceHanaRef','targetRef','receipt'])test(`Q376 omitted non-null ${optional} conflicts instead of being silently restored on replay`,async()=>{
+  const {a}=await setup(),client=buffer(a);await client.record(fact);
+  const before=structuredClone(client.port.get());
+  const {occurredAt,...replay}=fact;delete replay[optional];
+  assert.deepEqual(await client.record(replay),{disposition:'rejected',code:'EVENT_IDENTITY_CONFLICT'});
+  assert.deepEqual(client.port.get(),before);
+  const four={hanaRef:fact.hanaRef,action:fact.action,sourcePlugin:fact.sourcePlugin,idempotencyKey:fact.idempotencyKey};
+  assert.deepEqual(await client.record(four),{disposition:'rejected',code:'EVENT_IDENTITY_CONFLICT'});
+});
+
+// Q-376 preserves the current local admission subset. Wire's <=160 is not permission to enlarge it.
+for(const field of ['hanaRef','sourceHanaRef','sourcePlugin'])for(const length of [128,129,160,161,214])test(`Q376 ${field} local package-form length ${length} has no truncation or implicit wire expansion`,async()=>{
+  const {a}=await setup(),client=buffer(a),name='P'.repeat(length),calls=[];
+  const result=await client.record({...fact,[field]:name});
+  if(length===128){
+    assert.equal(result.disposition,'recorded');assert.equal(client.store.query().events[0][field],name);
+  }else{
+    assert.deepEqual(result,{disposition:'rejected',code:'INVALID_RECORD_INPUT'});
+    assert.deepEqual(client.effects,{writes:0,signs:0});
+    const reporter=createUsageReporter({store:client.store,link:{get:()=>a},uploadIntervalMs:60000,uploadBatchSize:200,now:()=>NOW,fetchImpl:async()=>{calls.push(true);throw new Error('MUST_NOT_SEND');}});
+    try{assert.equal(await reporter.runOnce(),'idle');assert.equal(calls.length,0);}finally{reporter.stop();}
+  }
+});
+
+test('Q376 package and publicly supplied directory identity are preserved independently from collector and registered app',async()=>{
+  const {a}=await setup(),client=buffer(a);
+  // Synthetic public source declaration only: these names are not proof of a live catalogue mapping.
+  const declared=[{hanaRef:'@Fixture/Ordinary.Package',appId:'registered-app-1'},
+    {hanaRef:'cccccccc-cccc-4ccc-8ccc-cccccccccccc',appId:'registered-app-2'}];
+  for(const [index,item] of declared.entries()){
+    const input={...fact,hanaRef:item.hanaRef,targetRef:item.appId,sourcePlugin:'@hanamesh/dsh-app-host',idempotencyKey:`command:declared-source-${index}:succeeded`};
+    assert.equal((await client.record(input)).disposition,'recorded');
+    const event=client.store.query().events.find(event=>event.evidenceRef===input.idempotencyKey);
+    assert.equal(event.hanaRef,item.hanaRef);assert.equal(event.sourcePlugin,input.sourcePlugin);assert.equal(event.targetRef,item.appId);
+  }
+  for(const bad of ['catalog:item','not a package','/private/path','ghp_synthetic']){
+    const before=client.effects.writes;
+    assert.deepEqual(await client.record({...fact,hanaRef:bad}),{disposition:'rejected',code:'INVALID_RECORD_INPUT'});
+    assert.equal(client.effects.writes,before);
+  }
+});
+
+test('Q376 absent or unmappable native package owner cannot produce a usage event or send',async()=>{
+  const {commandPackage}=await import(pathToFileURL(resolve(root,'lib/host/command-source.js')));
+  const {a}=await setup(),client=buffer(a),calls=[];
+  const source={entryId:'public-entry',moduleName:'fixture/commands'};
+  const entry={id:source.entryId,options:{name:source.moduleName},parent:{tree:{ctx:{baseUrl:'file:///fixture-profile/cordis.yml'}}}};
+  for(const found of [null,{name:'fixture.app',version:'1.0.0',manifest:{name:'other.app',version:'1.0.0'}}]){
+    const notes=[],name=commandPackage({loader:{entries:()=>[entry]},get:()=>({packageOf:()=>found})},source,code=>notes.push(code));
+    assert.equal(name,null);assert.deepEqual(notes,['COMMAND_SOURCE_OWNER_INVALID']);
+    if(name!==null)await client.record({...fact,hanaRef:name});
+  }
+  assert.deepEqual(await client.record({...fact,hanaRef:undefined}),{disposition:'rejected',code:'INVALID_RECORD_INPUT'});
+  assert.deepEqual(client.effects,{writes:0,signs:0});
+  const reporter=createUsageReporter({store:client.store,link:{get:()=>a},uploadIntervalMs:60000,uploadBatchSize:200,now:()=>NOW,fetchImpl:async()=>{calls.push(true);throw new Error('MUST_NOT_SEND');}});
+  try{assert.equal(await reporter.runOnce(),'idle');assert.equal(calls.length,0);}finally{reporter.stop();}
 });

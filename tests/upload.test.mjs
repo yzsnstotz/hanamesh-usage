@@ -19,10 +19,17 @@ async function fixture({count=3,consent='granted',origin='https://usage.example'
 }
 
 test('U13 upload reporter module is present',()=>assert.equal(typeof host?.createUsageReporter,'function'));
-test('U13 accepted, duplicate and rejected outcomes become terminal in one batch',async()=>{
-  const f=await fixture({respond:async()=>new Response(JSON.stringify({accepted:1,duplicates:1,rejected:[{eventId:f.events[2].eventId,code:'USAGE_INPUT_INVALID'}],durability:'pending-host-commit'}),{status:200})});
+test('U13 committed mixed counts confirm non-rejected events without inventing per-event accepted or duplicate membership',async()=>{
+  const f=await fixture({respond:async()=>new Response(JSON.stringify({accepted:1,duplicates:1,rejected:[{eventId:f.events[2].eventId,code:'USAGE_INPUT_INVALID'}],durability:'committed'}),{status:200})});
   const result=await f.reporter.runOnce();assert.equal(result,'uploaded');assert.equal(f.requests.length,1);const body=JSON.parse(f.requests[0].options.body);assert.ok(Array.isArray(body));assert.equal(body.length,3);assert(body.every(event=>Object.keys(event).length===7));assert.equal(f.requests[0].options.headers.origin,'https://usage.example');
-  assert.deepEqual(f.store.query().events.map(event=>event.upload.state),['sent','duplicate','rejected']);assert.equal(f.reporter.health().sent,1);assert.equal(f.reporter.health().duplicate,1);assert.equal(f.reporter.health().rejected,1);
+  assert.deepEqual(f.store.query().events.map(event=>event.upload.state),['sent','sent','rejected']);assert.equal(f.reporter.health().sent,2);assert.equal(f.reporter.health().duplicate,0);assert.equal(f.reporter.health().rejected,1);
+});
+test('Q376 HTTP200 pending-host-commit cannot confirm even when its aggregate counts look complete',async()=>{
+  const f=await fixture({respond:async()=>new Response(JSON.stringify({accepted:1,duplicates:1,rejected:[{eventId:f.events[2].eventId,code:'USAGE_INPUT_INVALID'}],durability:'pending-host-commit'}),{status:200})});
+  assert.notEqual(await f.reporter.runOnce(),'uploaded');assert.equal(f.requests.length,1);
+  assert.deepEqual(f.store.query().events.map(event=>event.upload.state),['pending','pending','pending']);
+  const health=f.reporter.health();assert.equal(health.pending,3);assert.equal(health.sent,0);assert.equal(health.duplicate,0);assert.equal(health.rejected,0);assert.equal(health.lastUploadAt,null);assert.equal(health.lastError,'UPLOAD_RESPONSE_INVALID');
+  f.reporter.stop();
 });
 test('U14 401 and 5xx retain pending events, increment attempts and expose only bounded errors',async()=>{
   for(const [status,code] of [[401,'UPLOAD_UNAUTHORIZED'],[503,'UPLOAD_UNAVAILABLE']]){const f=await fixture({respond:async()=>new Response('sk-SYNTHETIC_RESPONSE_SECRET',{status})});assert.equal(await f.reporter.runOnce(),'backoff');const event=f.store.query().events[0];assert.equal(event.upload.state,'pending');assert.equal(event.upload.attempts,1);assert.equal(f.reporter.health().lastError,code);assert.doesNotMatch(JSON.stringify(f.store.getSnapshot())+JSON.stringify(f.reporter.health()),/SYNTHETIC|sk-/);}

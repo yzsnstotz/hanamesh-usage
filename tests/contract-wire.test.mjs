@@ -39,15 +39,28 @@ const {duckCore,signUsageEvent}=await import('../lib/host/core-link.js');
 const {signingJSON}=await import('../lib/core/index.js');
 const {fixtureHost}=await import('./fixtures/host.mjs');
 
-test('Q18 C-USAGE-LOCAL APIC-13 handoff examples exercise actual provider and explicit source gaps',async()=>{
+test('Q18 C-USAGE-LOCAL APIC-13 handoff replays the already persisted fact with every attribution field',async()=>{
   const {createUsageLocalQ18Examples}=await import('../test/fixtures/usage-local-q18.mjs');
   const examples=await createUsageLocalQ18Examples();
   assert.match(examples.label,/FIXTURE/);
   assert.equal(examples.results.recorded.disposition,'recorded');
   assert.deepEqual(examples.results.duplicate,{...examples.results.recorded,disposition:'duplicate'});
   assert.deepEqual(examples.results.conflict,{disposition:'rejected',code:'EVENT_IDENTITY_CONFLICT'});
-  assert.deepEqual(examples.results.gap,{disposition:'rejected',code:'INVALID_RECORD_INPUT'});
+  assert.deepEqual(examples.results.gap,{...examples.results.recorded,disposition:'duplicate'});
   assert.deepEqual(examples.results.withheld,{disposition:'withheld'});
+});
+
+test('Q376 provider separates new missing-time facts from persisted attribution conflicts',async()=>{
+  const h=await fixtureHost({bound:false,consent:'granted'});
+  try{
+    const fact={hanaRef:'fixture.app',action:'use',sourcePlugin:'fixture.collector',idempotencyKey:'command:original:succeeded',occurredAt:new Date().toISOString(),targetRef:'registered-app',receipt:{providerId:'fixture',model:null,count:1}};
+    const first=await h.api.record(fact);assert.equal(first.disposition,'recorded');
+    const {occurredAt,...replay}=fact;
+    assert.deepEqual(await h.api.record({...replay,idempotencyKey:'command:new:succeeded'}),{disposition:'rejected',code:'FACT_TIME_UNAVAILABLE'});
+    assert.deepEqual(await h.api.record({...replay,targetRef:'other-app'}),{disposition:'rejected',code:'EVENT_IDENTITY_CONFLICT'});
+    assert.deepEqual(await h.api.record(replay),{disposition:'duplicate',eventId:first.eventId});
+    assert.equal(h.api.events().total,1);assert.equal(h.api.events().events[0].occurredAt,fact.occurredAt);
+  }finally{await h.close();}
 });
 
 test('C-CORE consumer: duckCore classifies every published handshake case like the contract',()=>{
