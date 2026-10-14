@@ -2,24 +2,24 @@ TAP version 13
 # Subtest: U19 uninstall uses the uninstall identity key
 not ok 1 - U19 uninstall uses the uninstall identity key
   ---
-  duration_ms: 4.884834
+  duration_ms: 2.75225
   type: 'test'
-  location: '/Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/source/hanamesh-usage/tests/inventory.test.mjs:60:1'
+  location: '/Users/yzliu/.cache/hanamesh-runs/J1S4-USAGE-02/wt/tests/inventory.test.mjs:60:1'
   failureType: 'testCodeFailure'
   error: |-
     Expected values to be strictly equal:
     + actual - expected
 
-    + '5f9dd067-5e93-5073-b53c-0adbe8630524'
-    - '00a2fd8b-fa91-5139-9ab5-7583e7083c97'
+    + 'a11bfb31-8df7-5db1-a3e8-b52baf1dae68'
+    - 'ef84bbdc-a179-5d43-847d-f4832ee4367e'
 
   code: 'ERR_ASSERTION'
   name: 'AssertionError'
-  expected: '00a2fd8b-fa91-5139-9ab5-7583e7083c97'
-  actual: '5f9dd067-5e93-5073-b53c-0adbe8630524'
+  expected: 'ef84bbdc-a179-5d43-847d-f4832ee4367e'
+  actual: 'a11bfb31-8df7-5db1-a3e8-b52baf1dae68'
   operator: 'strictEqual'
   stack: |-
-    TestContext.<anonymous> (file:///Users/yzliu/.cache/hanamesh-runs/P04-USAGE-INT-01/source/hanamesh-usage/tests/inventory.test.mjs:64:74)
+    TestContext.<anonymous> (file:///Users/yzliu/.cache/hanamesh-runs/J1S4-USAGE-02/wt/tests/inventory.test.mjs:64:74)
     async Test.run (node:internal/test_runner/test:1110:7)
     async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
   ...
@@ -31,4 +31,4 @@ not ok 1 - U19 uninstall uses the uninstall identity key
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 60.29025
+# duration_ms 37.47425

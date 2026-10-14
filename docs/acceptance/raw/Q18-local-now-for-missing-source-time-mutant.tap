@@ -1,0 +1,42 @@
+TAP version 13
+# Subtest: Q18 missing source timestamp on a new stable fact is FACT_TIME_UNAVAILABLE, never synthesized from local time
+not ok 1 - Q18 missing source timestamp on a new stable fact is FACT_TIME_UNAVAILABLE, never synthesized from local time
+  ---
+  duration_ms: 4.489
+  type: 'test'
+  location: '/Users/yzliu/.cache/hanamesh-runs/J1S4-USAGE-02/wt/tests/shared-fact.test.mjs:98:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+      {
+    +   disposition: 'recorded',
+    +   eventId: 'e17cb260-a2ab-5309-bc00-fb94e5e52f55'
+    -   code: 'FACT_TIME_UNAVAILABLE',
+    -   disposition: 'rejected'
+      }
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    disposition: 'rejected'
+    code: 'FACT_TIME_UNAVAILABLE'
+  actual:
+    disposition: 'recorded'
+    eventId: 'e17cb260-a2ab-5309-bc00-fb94e5e52f55'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/yzliu/.cache/hanamesh-runs/J1S4-USAGE-02/wt/tests/shared-fact.test.mjs:101:10)
+    async Test.run (node:internal/test_runner/test:1110:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 43.207708

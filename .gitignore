@@ -3,3 +3,7 @@ artifacts/
 *.bundle
 .tmp/
 .npm-cache/
+
+# Generated mutation TAP; historical committed snapshots remain preserved.
+/docs/acceptance/raw/*-baseline.tap
+/docs/acceptance/raw/*-mutant.tap

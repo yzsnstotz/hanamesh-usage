@@ -1,0 +1,16 @@
+TAP version 13
+# Subtest: Q61 defaults are named and visible through the Usage-owned panel
+ok 1 - Q61 defaults are named and visible through the Usage-owned panel
+  ---
+  duration_ms: 3.398
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 38.843083

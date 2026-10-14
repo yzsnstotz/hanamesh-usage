@@ -1,7 +1,7 @@
 /** Mutate actual compiled implementation in independent temp copies; require assertion failures. */
 import {mkdtempSync,cpSync,readFileSync,writeFileSync,rmSync,mkdirSync} from 'node:fs';
 import {tmpdir} from 'node:os';import {join,resolve} from 'node:path';import {fileURLToPath} from 'node:url';import {spawnSync} from 'node:child_process';import assert from 'node:assert/strict';
-const root=fileURLToPath(new URL('../',import.meta.url));process.chdir(root);const evidence=process.env.USAGE_MUTATION_EVIDENCE_DIR??'docs/acceptance/raw';mkdirSync(evidence,{recursive:true});
+const root=fileURLToPath(new URL('../',import.meta.url));process.chdir(root);const evidence=process.env.USAGE_MUTATION_EVIDENCE_DIR??'artifacts/mutations';mkdirSync(evidence,{recursive:true});
 const cases=[
  {name:'Q61-metadata-read-proves-uninstall',file:'lib/host/inventory.js',from:"if(acceptedEntries.has(entryId)||(result.kind==='unreadable'&&['INVENTORY_PACKAGE_READ_FAILED','INVENTORY_PACKAGE_UNRESOLVED'].includes(result.code)))throw new UsageError('INVENTORY_FAILED');",to:"/* mutant treats unknown metadata as removal */",test:'tests/q61-policy-diagnostics.test.mjs',pattern:'Q61 unreadable metadata cannot|Q61 initial metadata read'},
  {name:'Q61-retention-default-changed',file:'lib/core/policy.js',from:'export const DEFAULT_EVENT_RETENTION_DAYS = 90;',to:'export const DEFAULT_EVENT_RETENTION_DAYS = 91;',test:'tests/q61-policy-diagnostics.test.mjs',pattern:'Q61 defaults'},

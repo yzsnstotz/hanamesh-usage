@@ -2,7 +2,7 @@ TAP version 13
 # Subtest: R1 remote readback pages the device-signed public route to the end and never writes local state
 ok 1 - R1 remote readback pages the device-signed public route to the end and never writes local state
   ---
-  duration_ms: 18.010417
+  duration_ms: 9.0585
   type: 'test'
   ...
 1..1
@@ -13,4 +13,4 @@ ok 1 - R1 remote readback pages the device-signed public route to the end and ne
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 81.869416
+# duration_ms 44.500917
