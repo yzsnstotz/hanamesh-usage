@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync,mkdirSync,writeFileSync,readFileSync} from 'node:fs';
+import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {fileURLToPath,pathToFileURL} from 'node:url';
@@ -88,7 +88,7 @@ if(!process.env.USAGE_Q384_OBSERVE_CHILD){
   });
 
   for(const fault of ['once','persistent'])test(`Q384 ${fault} final marker refusal keeps a durable conservative attempt visible to an independent process`,async t=>{
-    const dir=mkdtempSync(join(tmpdir(),'usage-q384-restart-'));mkdirSync(join(dir,'dsh'));mkdirSync(join(dir,'tmp'));mkdirSync(join(dir,'profile'));
+    const dir=mkdtempSync(join(tmpdir(),'usage-q384-restart-'));t.after(()=>rmSync(dir,{recursive:true,force:true}));mkdirSync(join(dir,'dsh'));mkdirSync(join(dir,'tmp'));mkdirSync(join(dir,'profile'));
     const file=join(dir,'events.json'),f=await setup(t,{fault,file});f.reporter.start();await settle(f.reporter.runOnce());f.reporter.stop();
     assert.deepEqual(plain(JSON.parse(readFileSync(file,'utf8'))),f.before);
     const moduleURL=pathToFileURL(join(dir,'readback.test.mjs'));
@@ -126,10 +126,10 @@ test('independent process consumes only persisted attempt state',async t=>{t.moc
     }
   });
 
-  for(const fault of ['once','persistent'])test(`Q384 actual observeCollection exposes ${fault} local marker failure and never drops the server unknown`,()=>{
+  for(const fault of ['once','persistent'])test(`Q384 actual observeCollection exposes ${fault} local marker failure and never drops the server unknown`,t=>{
     // Isolate the actual scheduled-Promise rejection in the current RED source.
     // The child uses the real mounted API and TAP, not a substitute observer.
-    const dir=mkdtempSync(join(tmpdir(),'usage-q384-observe-'));mkdirSync(join(dir,'dsh'));mkdirSync(join(dir,'tmp'));mkdirSync(join(dir,'profile'));
+    const dir=mkdtempSync(join(tmpdir(),'usage-q384-observe-'));t.after(()=>rmSync(dir,{recursive:true,force:true}));mkdirSync(join(dir,'dsh'));mkdirSync(join(dir,'tmp'));mkdirSync(join(dir,'profile'));
     const child=spawnSync(process.execPath,['--test','--test-reporter=tap',fileURLToPath(import.meta.url)],{encoding:'utf8',env:childEnvironment({USAGE_Q384_OBSERVE_CHILD:fault,DSH_HOME:join(dir,'dsh'),TMPDIR:join(dir,'tmp')})});
     assert.doesNotMatch(child.stdout+child.stderr,/ERR_MODULE_NOT_FOUND|SyntaxError|ENOTCACHED/);
     assert.equal(child.status,0,child.stdout+child.stderr);assert.match(child.stdout,/# pass 1\b/);
