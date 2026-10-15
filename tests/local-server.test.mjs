@@ -86,7 +86,7 @@ test('local backend: signed events are accepted, a replay is a duplicate, the se
 });
 
 test('local backend: an uncatalogued plugin is rejected per item with a reason, the rest of the batch is written',
-  {skip,todo:skip?false:'C-USAGE per-item host reason is being added by Session A2 (planned shape: rejected[].reason {code,need}); until it lands the whole batch is answered 503'},async()=>{
+  {skip,todo:skip?false:'needs a host with server-usage >=0.3.3 per-item rejection (hanamesh-server stage/1b-server until it reaches main); an older host answers the whole batch 503'},async()=>{
   const fake=await registeredDevice(),client=buffer(fake.service);
   try{
     await client.record(fact(CATALOGUED,'use','command:it-2:succeeded'));
@@ -95,6 +95,6 @@ test('local backend: an uncatalogued plugin is rejected per item with a reason, 
     const rows=Object.fromEntries(client.store.query().events.map(event=>[event.hanaRef,event.upload]));
     assert.equal(rows[CATALOGUED].state,'sent');
     assert.equal(rows[UNCATALOGUED].state,'rejected');
-    assert.equal(rows[UNCATALOGUED].code,'USAGE_POINTS_HANA_REF_UNRESOLVED');
+    assert.equal(rows[UNCATALOGUED].code,'USAGE_EVENT_HOST_REJECTED:USAGE_POINTS_HANA_REF_UNRESOLVED');
   }finally{client.reporter.stop();}
 });
