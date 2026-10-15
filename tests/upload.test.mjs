@@ -18,6 +18,13 @@ async function fixture({count=3,consent='granted',origin='https://usage.example'
   return {store,events,requests,reporter,setConsent:value=>{currentConsent=value;},setOrigin:value=>{currentOrigin=value;}};
 }
 
+test('a reachable server answering an error keeps its C-USAGE code; only an unreadable answer is UPLOAD_UNAVAILABLE',async()=>{
+  for(const [body,code] of [['{"error":{"code":"USAGE_EVENT_HOOK_FAILED","message":"x"}}','USAGE_EVENT_HOOK_FAILED'],['{"error":{"code":"sk-not a token"}}','UPLOAD_UNAVAILABLE'],['<html>bad gateway</html>','UPLOAD_UNAVAILABLE']]){
+    const f=await fixture({respond:async()=>new Response(body,{status:503,headers:{'content-type':'application/json'}})});
+    assert.equal(await f.reporter.runOnce(),'backoff');assert.equal(f.reporter.health().lastError,code);
+    assert.deepEqual(f.store.query().events.map(event=>event.upload.state),['pending','pending','pending']);f.reporter.stop();
+  }
+});
 test('U13 upload reporter module is present',()=>assert.equal(typeof host?.createUsageReporter,'function'));
 test('U13 committed mixed counts confirm non-rejected events without inventing per-event accepted or duplicate membership',async()=>{
   const f=await fixture({respond:async()=>new Response(JSON.stringify({accepted:1,duplicates:1,rejected:[{eventId:f.events[2].eventId,code:'USAGE_INPUT_INVALID'}],durability:'committed'}),{status:200})});

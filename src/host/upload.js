@@ -105,12 +105,13 @@ export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize
     }catch{return await fail('UPLOAD_UNAVAILABLE',ids);}
     if(response.status===401||response.status===403)return await fail('UPLOAD_UNAUTHORIZED',ids);
     if(response.status<200||response.status>=300){
-      if(await unknownCommit(response)){
+      const answered=await serverError(response);
+      if(answered.unknown){
         holdUnknown(ids,'USAGE_STORAGE_UNAVAILABLE');
         try{await store.markAttempts(ids,'USAGE_STORAGE_UNAVAILABLE');}catch{persistenceFailed=true;lastError='UPLOAD_STATE_PERSIST_FAILED';}
         return /** @type {const} */('unconfirmed');
       }
-      return await fail('UPLOAD_UNAVAILABLE',ids);
+      return await fail(answered.code??'UPLOAD_UNAVAILABLE',ids);
     }
     let result;
     try{
@@ -193,10 +194,11 @@ export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize
         response=await fetchImpl(new URL(EVENT_PATH,origin),{method:'POST',headers:{...signed,'content-type':'application/json',origin},body:json});
       }catch{if(!await failed(ids,previous,'UPLOAD_UNAVAILABLE'))return answer('rejected','UPLOAD_STATE_PERSIST_FAILED',true);offset+=batch.length;continue;}
       if(response.status<200||response.status>=300){
-        if(await unknownCommit(response)){
+        const answered=await serverError(response);
+        if(answered.unknown){
           holdUnknown(ids,'USAGE_STORAGE_UNAVAILABLE');
           try{await store.markAttempts(ids,'USAGE_STORAGE_UNAVAILABLE');}catch{persistenceFailed=true;lastError='UPLOAD_STATE_PERSIST_FAILED';return answer('rejected','UPLOAD_STATE_PERSIST_FAILED',true);}
-        }else if(!await failed(ids,previous,response.status===401||response.status===403?'UPLOAD_UNAUTHORIZED':'UPLOAD_UNAVAILABLE'))return answer('rejected','UPLOAD_STATE_PERSIST_FAILED',true);
+        }else if(!await failed(ids,previous,response.status===401||response.status===403?'UPLOAD_UNAUTHORIZED':answered.code??'UPLOAD_UNAVAILABLE'))return answer('rejected','UPLOAD_STATE_PERSIST_FAILED',true);
         offset+=batch.length;continue;
       }
       let result;
@@ -216,9 +218,14 @@ export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize
   /** @param {string[]} eventIds */
   function resend(eventIds){const run=tail.then(()=>resendRaw([...eventIds]));tail=run.then(()=>{},()=>{});return run;}
   /** Only the formally supplied safe error marks an unknown COMMIT. @param {Response} response */
-  async function unknownCommit(response){
-    if(response.status!==503)return false;
-    try{const body=await response.json();return body?.error?.code==='USAGE_STORAGE_UNAVAILABLE'&&body.error.durability==='unconfirmed';}catch{return false;}
+  async function unknownCommit(response){return (await serverError(response)).unknown;}
+  /** Reads a non-2xx body once. `code` is the server's C-USAGE error code when it is a token, so health can say what the
+   *  server answered (e.g. USAGE_EVENT_HOOK_FAILED) instead of reporting a reachable server as unreachable. */
+  /** @param {Response} response @returns {Promise<{unknown:boolean,code:string|null}>} */
+  async function serverError(response){
+    try{const body=await response.json(),code=body?.error?.code;
+      return {unknown:response.status===503&&code==='USAGE_STORAGE_UNAVAILABLE'&&body.error.durability==='unconfirmed',code:typeof code==='string'&&/^[A-Z][A-Z0-9_]{0,63}$/.test(code)?code:null};}
+    catch{return {unknown:false,code:null};}
   }
   /** @param {string} deviceId */
   async function requestWithdrawal(deviceId){
