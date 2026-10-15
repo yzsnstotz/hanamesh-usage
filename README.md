@@ -1,4 +1,4 @@
-# hanamesh-usage · 0.2.0-rc.27
+# hanamesh-usage · 0.2.0-rc.28
 
 rc.26 消费项目批准的官方 `d743267388641bc76f17c45ce8b4c231aed1d32c`：DSH `0.2.1-alpha.2`、Cordis `4.0.5-alpha.1`、实际共享 zod `4.6.5`，各公开包独立核对后精确锁定。开发依赖的正式 JS/声明与该 SHA 的官方 pack 核验一致，移除本模块旧版本 override；不再安装 api-contracts 或任何 HanaMesh 邻仓包。事件、归属、签名、同意/撤回和 schema v1 不变；新观察记录的 DSH provenance 跟随本构建，旧记录不重写。
 
