@@ -1,0 +1,34 @@
+{
+  "build": {
+    "exit": 0,
+    "durationSeconds": 5.87,
+    "tail": "\n> hanamesh-usage@0.2.0-rc.30 build /Users/yzliu/work/projects/hanamesh/hanamesh-usage\n> node tools/build.mjs\n\n{\"node\":\"v24.13.1\",\"compiler\":\"Version 5.9.3\",\"offline\":false,\"platform\":\"darwin\",\"arch\":\"arm64\"}\nTARGET_SEMANTIC_BUILD_COMPLETE\n"
+  },
+  "test": {
+    "exit": 0,
+    "durationSeconds": 12.52,
+    "tail": " metadata or success\n  ---\n  duration_ms: 9.117333\n  type: 'test'\n  ...\n# Subtest: USAGE02-V5 unknown calls, malformed bodies and authority/configuration fields never invoke the service\nok 327 - USAGE02-V5 unknown calls, malformed bodies and authority/configuration fields never invoke the service\n  ---\n  duration_ms: 184.904125\n  type: 'test'\n  ...\n# Subtest: USAGE02-V6 unexpected service Error is bounded and does not serialize stack/message/cause\nok 328 - USAGE02-V6 unexpected service Error is bounded and does not serialize stack/message/cause\n  ---\n  duration_ms: 23.61275\n  type: 'test'\n  ...\n# Subtest: USAGE02-V7 method mismatch cannot trigger a record or expose the editable bridge\nok 329 - USAGE02-V7 method mismatch cannot trigger a record or expose the editable bridge\n  ---\n  duration_ms: 1.228167\n  type: 'test'\n  ...\n# Subtest: USAGE02-V8 normal development configuration may explicitly enable verification; production cannot\nok 330 - USAGE02-V8 normal development configuration may explicitly enable verification; production cannot\n  ---\n  duration_ms: 157.728292\n  type: 'test'\n  ...\n# Subtest: U15 withdrawal clears locally before DELETE and success is never resent\nok 331 - U15 withdrawal clears locally before DELETE and success is never resent\n  ---\n  duration_ms: 151.5685\n  type: 'test'\n  ...\n# Subtest: U15 failed withdrawal retries, then stops after the first success\nok 332 - U15 failed withdrawal retries, then stops after the first success\n  ---\n  duration_ms: 32.309875\n  type: 'test'\n  ...\n# Subtest: U15 offline withdrawal only clears local state\nok 333 - U15 offline withdrawal only clears local state\n  ---\n  duration_ms: 0.316375\n  type: 'test'\n  ...\n1..333\n# tests 333\n# suites 0\n# pass 331\n# fail 0\n# cancelled 0\n# skipped 2\n# todo 0\n# duration_ms 12340.384042\n"
+  },
+  "check": {
+    "exit": 0,
+    "durationSeconds": 0.34,
+    "tail": "\n> hanamesh-usage@0.2.0-rc.30 check /Users/yzliu/work/projects/hanamesh/hanamesh-usage\n> node tools/check.mjs\n\n{\"closureManager\":\"pnpm\",\"packages\":35,\"edges\":92}\n{\n  \"consistencySchemaValid\": true,\n  \"consistencyGroups\": 2,\n  \"consistencyBoundaries\": 3,\n  \"economicFieldMatches\": 0,\n  \"bundleRows\": 1,\n  \"productionFilesScanned\": 33,\n  \"siblingSourceImports\": 0,\n  \"lockScope\": \"PINNED_DEV_BUILD_CLOSURE_NOT_FULL_HOST\"\n}\n"
+  },
+  "installed-artifact": {
+    "exit": 0,
+    "scope": "ISOLATED_REAL_CLI_INSTALL_MCP_NOT_MODEL_OR_OWNER",
+    "versions": {
+      "usage": "0.2.0-rc.30",
+      "core": "0.3.6"
+    },
+    "coreSha256": "cd1c856aed07bbd3b2137d76687ddf7af53af17461c4ef8e36afc427c04a9db5",
+    "checks": [
+      "both real CLIs install final rc.30 manifests",
+      "both installed MCP processes initialize/list/read-only status",
+      "withheld causes no data files",
+      "synthetic hooks project both channels without private content",
+      "withdraw removes local facts"
+    ],
+    "cleanup": "temporary homes and Git market removed in finally"
+  }
+}
