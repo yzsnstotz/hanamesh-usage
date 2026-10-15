@@ -26,8 +26,8 @@ export function assertPhysicalClosure(root,pkg,lock){
       assert.equal(installed.name,name);
       const locked=Object.entries(lock.packages).some(([key,value])=>key.endsWith(`node_modules/${name}`)&&value.version===installed.version);
       assert(locked,`UNLOCKED_DEPENDENCY ${name}@${installed.version}`);
-      if(spec.startsWith('git+'))assert.equal(name,'@hanamesh/api-contracts');
-      else assert(satisfies(installed.version,spec),`INCOMPATIBLE_DEPENDENCY ${manifest.name} -> ${name}@${spec}, resolved ${installed.version}`);
+      assert(!/^(?:git\+|github:|https?:|file:|link:|workspace:)/.test(spec),`NON_REGISTRY_DEPENDENCY ${manifest.name} -> ${name}@${spec}`);
+      assert(satisfies(installed.version,spec),`INCOMPATIBLE_DEPENDENCY ${manifest.name} -> ${name}@${spec}, resolved ${installed.version}`);
       edges.push({from:manifest.name,name,spec,version:installed.version});
       if(!seen.has(dependencyPath)){seen.add(dependencyPath);walk(installed,dependencyPath);}
     }

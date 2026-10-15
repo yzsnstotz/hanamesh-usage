@@ -18,7 +18,6 @@ const health = {
   pending: 0, recoveryComplete: true, failures: {}, consent: 'granted', core: 'present',
   deviceId: 'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk',
   outbox: { state: 'offline', pending: 3, sent: 5, duplicate: 1, rejected: 0, lastUploadAt: null, nextAttemptAt: null, lastError: null },
-  derive: { skipped: { consentWithheld: 0, executorUnavailable: 0, timeUnavailable: 0, noDevice: 0 } },
   withdrawal: { requestedAt: '2026-10-15T00:00:01.007Z', deviceId: 'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', state: 'pending', lastError: 'WITHDRAW_UNAVAILABLE', attempts: 2, deletedEvents: null },
   inventory: { available: false, source: 'none', lastScanAt: null, detail: null },
 };

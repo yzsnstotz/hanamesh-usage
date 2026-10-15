@@ -5,61 +5,78 @@ import {resolve} from 'node:path';
 import {root} from './fixtures/helpers.mjs';
 const core=await import(pathToFileURL(resolve(root,'lib/core/index.js')).href);let host=null;try{host=await import(pathToFileURL(resolve(root,'lib/host/inventory.js')).href);}catch{}
 
+const DEVICE='If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk';
 class Global{constructor(){this.snapshot={schemaVersion:1,events:[],withdrawal:null,inventory:{last:null}};this.writes=0;}get(){return this.snapshot;}async set(next){this.writes++;this.snapshot=structuredClone(next);}}
-function entry(id,name,{disabled=false,baseUrl='file:///fixture/'}={}){return {id,options:{name},disabled,fiber:{state:disabled?4:2},parent:{tree:{ctx:{baseUrl}}}};}
-function fixture({consent='granted'}={}){
-  const global=new Global(),store=new core.EventStore(global),rows=[],unreadable=[];let entries=[entry('a','a'),entry('b','b')],currentConsent=consent;const versions=new Map([['a','1.0.0'],['b','2.0.0']]);
-  const ctx={loader:{entries:()=>entries.values()},on:()=>()=>{}};const service={getConsent:()=>currentConsent,getDeviceId:()=> 'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk',sign:()=>Buffer.alloc(64)};const link={get:()=>service};
-  const inventory=host?.createInventory({ctx,store,link,inventoryIntervalMs:300000,inspector:async name=>versions.has(name)?{kind:'present',name,version:versions.get(name)}:{kind:'unreadable'},now:(()=>{let time=0;return()=>Date.parse('2026-09-19T00:00:00.000Z')+time++*1000;})(),note:code=>unreadable.push(code)});
-  return {global,store,inventory,unreadable,setEntries:value=>{entries=value;},setConsent:value=>{currentConsent=value;},versions,rows};
+/** Shape of @deepseek-ai/dsh-plugin-manager BundleInfo (0.2.1-alpha.2) — only the fields Usage reads. */
+function bundle(name,version,{installed=true,availability='profile',enabled=true,error}={}){return {name,version,installed,availability,enabled,official:false,optional:false,removable:true,rows:[],overrides:[],...(error?{error}:{})};}
+/** Inventory under a fake Cordis context: `services` mimics ctx.get + the internal/service event. */
+function harness({consent='granted',bundles=[bundle('a','1.0.0'),bundle('b','2.0.0')],manager=true,global=new Global(),now}={}){
+  let list=bundles,currentConsent=consent;const notes=[];const listeners=new Map();
+  const pluginManager={listBundles:async()=>structuredClone(list)};
+  const services=new Map(manager?[['pluginManager',pluginManager]]:[]);
+  const ctx={get:name=>services.get(name),on:(name,fn)=>{listeners.set(name,fn);return()=>listeners.delete(name);}};
+  const service={getConsent:()=>currentConsent,getDeviceId:()=>DEVICE,sign:()=>Buffer.alloc(64)};
+  const store=new core.EventStore(global,5000,now??Date.now);
+  const inventory=host?.createInventory({ctx,store,link:{get:()=>service},inventoryIntervalMs:300000,now:now??(()=>{let t=0;return()=>Date.parse('2026-09-19T00:00:00.000Z')+t++*1000;})(),note:code=>notes.push(code)});
+  return {global,store,inventory,notes,listeners,setBundles:value=>{list=value;},setConsent:value=>{currentConsent=value;},
+    provide(){services.set('pluginManager',pluginManager);listeners.get('internal/service')?.('pluginManager',pluginManager);}};
 }
+const actions=result=>result.events.map(event=>[event.action,event.hanaRef,event.version]);
 
-test('U19 inventory module is present',()=>assert.equal(typeof host?.createInventory,'function'));
-test('U19 first scan installs all, stable/disabled scans add none, upgrade and removal are distinct',async()=>{
-  const f=fixture();let result=await f.inventory.scan();assert.deepEqual(result.events.map(event=>[event.action,event.hanaRef,event.version]),[['install','a','1.0.0'],['install','b','2.0.0']]);assert.equal(f.global.writes,1);
+test('inventory module is present',()=>assert.equal(typeof host?.createInventory,'function'));
+test('first scan installs profile bundles, stable/disabled scans add none, upgrade and removal are distinct',async()=>{
+  const f=harness();let result=await f.inventory.scan();assert.deepEqual(actions(result),[['install','a','1.0.0'],['install','b','2.0.0']]);assert.equal(f.global.writes,1);
   result=await f.inventory.scan();assert.deepEqual(result.events,[]);assert.equal(result.duplicates,2);
-  f.versions.set('b','2.1.0');f.setEntries([entry('b','b')]);result=await f.inventory.scan();assert.deepEqual(result.events.map(event=>[event.action,event.hanaRef,event.version]),[['install','b','2.1.0'],['uninstall','a','1.0.0']]);
-  f.setEntries([entry('b','b',{disabled:true})]);result=await f.inventory.scan();assert.deepEqual(result.events,[]);assert.equal(f.store.getSnapshot().inventory.last.items[0].disabled,true);await f.inventory.close();
+  f.setBundles([bundle('b','2.1.0')]);result=await f.inventory.scan();assert.deepEqual(actions(result),[['install','b','2.1.0'],['uninstall','a','1.0.0']]);
+  f.setBundles([bundle('b','2.1.0',{enabled:false})]);result=await f.inventory.scan();assert.deepEqual(result.events,[]);assert.equal(f.store.getSnapshot().inventory.last.items[0].disabled,true);await f.inventory.close();
 });
-test('U19 unreadable entries are isolated and withheld consent updates snapshot without events',async()=>{
-  const f=fixture({consent:'withheld'});f.setEntries([entry('a','a'),entry('bad','bad')]);const result=await f.inventory.scan();assert.deepEqual(result.events,[]);assert.equal(result.unreadable,1);assert.deepEqual(f.unreadable,['INVENTORY_ENTRY_UNREADABLE']);assert.deepEqual(f.store.getSnapshot().inventory.last.items.map(item=>item.hanaRef),['a']);await f.inventory.close();
+test('installation-supplied and undeclared bundles are not user installs',async()=>{
+  const f=harness({bundles:[bundle('@deepseek-ai/dsh-web-app','0.2.1-alpha.2',{installed:false,availability:'installation'}),
+    bundle('@deepseek-ai/dsh-base','0.2.1-alpha.2',{installed:true,availability:'installation'}),
+    bundle('catalog-entry-not-installed','1.0.0',{installed:false,availability:'missing'}),
+    bundle('dsh-no-long-sit','1.2.3')]});
+  const result=await f.inventory.scan();assert.deepEqual(actions(result),[['install','dsh-no-long-sit','1.2.3']]);
+  assert.deepEqual(f.store.getSnapshot().inventory.last.items.map(item=>item.hanaRef),['dsh-no-long-sit']);await f.inventory.close();
 });
-test('official api-key package name cannot abort consented inventory events',async()=>{
-  const f=fixture();
-  const name='@deepseek-ai/dsh-llm-deepseek-api-key';
-  f.versions.set(name,'0.2.0-rc.2');
-  f.setEntries([entry('a','a'),entry('official',name),entry('b','b')]);
-  const first=await f.inventory.scan();
-  assert.deepEqual(first.events.map(event=>event.hanaRef),['a','b']);
-  assert.equal(first.unreadable,1);
-  assert.deepEqual(f.store.getSnapshot().inventory.last.items.map(item=>item.hanaRef),['a','b']);
-  const again=await f.inventory.scan();
-  assert.deepEqual(again.events,[]);
-  assert.equal(f.store.query().total,2);
-  await f.inventory.close();
+test('an unreadable profile bundle is isolated, counted and named; withheld consent updates the snapshot without events',async()=>{
+  const f=harness({consent:'withheld',bundles:[bundle('a','1.0.0'),bundle('bad','not-a-version'),bundle('broken','1.0.0',{error:{code:'x'}})]});
+  const result=await f.inventory.scan();assert.deepEqual(result.events,[]);assert.equal(result.unreadable,2);
+  assert.deepEqual(f.notes,['INVENTORY_ENTRY_UNREADABLE','INVENTORY_ENTRY_UNREADABLE']);
+  assert.deepEqual(f.store.getSnapshot().inventory.last.items.map(item=>item.hanaRef),['a']);await f.inventory.close();
 });
-test('a pre-consent snapshot with an unsafe official name cannot abort later grant',async()=>{
+test('granting consent after a withheld first scan emits the current installs once',async()=>{const f=harness({consent:'withheld'});assert.deepEqual((await f.inventory.scan()).events,[]);f.setConsent('granted');assert.equal((await f.inventory.scan()).events.length,2);assert.deepEqual((await f.inventory.scan()).events,[]);await f.inventory.close();});
+test('a snapshot written by the old loader inventory is not a baseline: upgrading emits no uninstalls for built-ins',async()=>{
   const global=new Global();
-  global.snapshot.inventory.last={scannedAt:'2026-09-19T00:00:00.000Z',items:[{hanaRef:'@deepseek-ai/dsh-llm-deepseek-api-key',version:'0.2.0-rc.2',entryId:'official',disabled:false}]};
-  const store=new core.EventStore(global),ctx={loader:{entries:()=>[entry('a','a'),entry('b','b')].values()},on:()=>()=>{}},service={getConsent:()=> 'granted',getDeviceId:()=> 'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk',sign:()=>Buffer.alloc(64)};
-  const inventory=host.createInventory({ctx,store,link:{get:()=>service},inventoryIntervalMs:300000,inspector:async name=>({kind:'present',name,version:name==='a'?'1.0.0':'2.0.0'}),now:()=>Date.parse('2026-09-19T00:00:00.000Z')});
-  const result=await inventory.scan();
-  assert.deepEqual(result.events.map(event=>[event.action,event.hanaRef]),[['install','a'],['install','b']]);
-  assert.deepEqual(store.getSnapshot().inventory.last.items.map(item=>item.hanaRef),['a','b']);
-  await inventory.close();
+  global.snapshot.inventory.last={scannedAt:'2026-09-19T00:00:00.000Z',items:[{hanaRef:'@deepseek-ai/dsh-agent',version:'0.2.1-alpha.2',entryId:'agent',disabled:false},{hanaRef:'a',version:'1.0.0',entryId:'a-entry',disabled:false}]};
+  const f=harness({global,bundles:[bundle('a','1.0.0')]});
+  const result=await f.inventory.scan();assert.deepEqual(actions(result),[['install','a','1.0.0']]);
+  assert.deepEqual(f.store.getSnapshot().inventory.last.items,[{hanaRef:'a',version:'1.0.0',entryId:'bundle:a',disabled:false}]);await f.inventory.close();
 });
-test('U19 granting consent after a withheld first scan emits the current installs once',async()=>{const f=fixture({consent:'withheld'});assert.deepEqual((await f.inventory.scan()).events,[]);f.setConsent('granted');assert.equal((await f.inventory.scan()).events.length,2);assert.deepEqual((await f.inventory.scan()).events,[]);await f.inventory.close();});
-test('U08 stable inventory rescan does not resurrect a terminal install past retention',async()=>{
-  const eventId=core.eventIdForLoader('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk','install','a','1.0.0');
-  const expired={...core.createUsageEvent({deviceId:'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk',hanaRef:'a',action:'install',occurredAt:'2026-01-01T00:00:00.000Z',eventId,nonce:Buffer.alloc(16).toString('base64url'),signature:Buffer.alloc(64).toString('base64url'),source:'loader',sourcePlugin:null,evidenceRef:'a@1.0.0'}),upload:{state:'sent',code:null,attempts:1,sentAt:'2026-01-01T00:00:01.000Z'}};
-  const global=new Global();global.snapshot.events=[expired];global.snapshot.inventory.last={scannedAt:'2026-01-01T00:00:00.000Z',items:[{hanaRef:'a',version:'1.0.0',entryId:'a',disabled:false}]};
-  const store=new core.EventStore(global,5000,()=>Date.parse('2026-09-19T00:00:00.000Z')),ctx={loader:{entries:()=>[entry('a','a')].values()},on:()=>()=>{}},service={getConsent:()=> 'granted',getDeviceId:()=> 'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk',sign:()=>Buffer.alloc(64)};
-  const inventory=host.createInventory({ctx,store,link:{get:()=>service},inventoryIntervalMs:300000,inspector:async()=>({kind:'present',name:'a',version:'1.0.0'}),now:()=>Date.parse('2026-09-19T00:00:00.000Z')});
-  const result=await inventory.scan();assert.equal(result.duplicates,1);assert.equal(store.getSnapshot().events.length,0);await inventory.close();
+test('without the plugin manager the scan fails visibly, and runs when the service appears',async()=>{
+  const f=harness({manager:false});
+  await assert.rejects(f.inventory.scan(),error=>error.code==='INVENTORY_FAILED');
+  assert.equal(f.inventory.health().lastError,'INVENTORY_SOURCE_UNAVAILABLE');assert.equal(f.inventory.health().available,false);
+  assert.equal(f.store.getSnapshot().inventory.last,null);
+  f.provide();await f.inventory.drain();
+  assert.equal(f.inventory.health().lastError,null);assert.deepEqual(f.store.getSnapshot().events.map(event=>event.hanaRef),['a','b']);
+  assert.deepEqual(f.inventory.health().detail,{package:'@deepseek-ai/dsh-plugin-manager',serviceKey:'pluginManager',methods:['listBundles']});
+  assert.equal(f.inventory.health().source,'plugin-manager');await f.inventory.close();
 });
-test('U19 uninstall uses the uninstall identity key',async()=>{
-  const global=new Global();global.snapshot.inventory.last={scannedAt:'2026-09-18T00:00:00.000Z',items:[{hanaRef:'a',version:'1.0.0',entryId:'a',disabled:false}]};
-  const store=new core.EventStore(global),ctx={loader:{entries:()=>[].values()},on:()=>()=>{}},service={getConsent:()=> 'granted',getDeviceId:()=> 'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk',sign:()=>Buffer.alloc(64)};
-  const inventory=host.createInventory({ctx,store,link:{get:()=>service},inventoryIntervalMs:300000,now:()=>Date.parse('2026-09-19T00:00:00.000Z')});
-  await inventory.scan();const [event]=store.getSnapshot().events;assert.equal(event.eventId,core.eventIdForLoader('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk','uninstall','a','1.0.0'));await inventory.close();
+test('a plugin-manager change triggers a rescan',async()=>{
+  const f=harness();await f.inventory.scan();f.setBundles([bundle('a','1.0.0'),bundle('b','2.0.0'),bundle('c','3.0.0')]);
+  f.listeners.get('plugin-manager/changed')?.({});await f.inventory.drain();
+  assert.deepEqual(f.store.getSnapshot().events.map(event=>event.hanaRef).sort(),['a','b','c']);await f.inventory.close();
+});
+test('stable inventory rescan does not resurrect a terminal install past retention',async()=>{
+  const eventId=core.eventIdForLoader(DEVICE,'install','a','1.0.0');
+  const expired={...core.createUsageEvent({deviceId:DEVICE,hanaRef:'a',action:'install',occurredAt:'2026-01-01T00:00:00.000Z',eventId,nonce:Buffer.alloc(16).toString('base64url'),signature:Buffer.alloc(64).toString('base64url'),source:'loader',sourcePlugin:null,evidenceRef:'a@1.0.0'}),upload:{state:'sent',code:null,attempts:1,sentAt:'2026-01-01T00:00:01.000Z'}};
+  const global=new Global();global.snapshot.events=[expired];global.snapshot.inventory.last={scannedAt:'2026-01-01T00:00:00.000Z',items:[{hanaRef:'a',version:'1.0.0',entryId:'bundle:a',disabled:false}]};
+  const now=()=>Date.parse('2026-09-19T00:00:00.000Z');
+  const f=harness({global,now,bundles:[bundle('a','1.0.0')]});
+  const result=await f.inventory.scan();assert.equal(result.duplicates,1);assert.equal(f.store.getSnapshot().events.length,0);await f.inventory.close();
+});
+test('uninstall uses the uninstall identity key',async()=>{
+  const global=new Global();global.snapshot.inventory.last={scannedAt:'2026-09-18T00:00:00.000Z',items:[{hanaRef:'a',version:'1.0.0',entryId:'bundle:a',disabled:false}]};
+  const f=harness({global,bundles:[]});
+  await f.inventory.scan();const [event]=f.store.getSnapshot().events;assert.equal(event.eventId,core.eventIdForLoader(DEVICE,'uninstall','a','1.0.0'));await f.inventory.close();
 });

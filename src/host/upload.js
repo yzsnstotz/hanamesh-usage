@@ -7,7 +7,7 @@ const maxBodyBytes=64*1024;
 /**
  * @param {{
  *  store: import('../core/index.js').EventStore,
- *  link: {get(): import('@hanamesh/api-contracts/core').HanaMeshCoreContract|null},
+ *  link: {get(): import('./core-link.js').CoreService|null},
  *  uploadIntervalMs:number,
  *  uploadBatchSize:number,
  *  fetchImpl?: typeof fetch,

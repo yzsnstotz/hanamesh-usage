@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import * as core from '../lib/core/index.js';
 
 test('U05 core exports the usage event contract surface', () => {
-  for (const name of ['canonicalJSON','signingJSON','eventIdForSession','eventIdForLoader','eventIdForSeat','createUsageEvent','validateEvent','wireEvent','EventStore','deriveUsageEvent']) {
+  for (const name of ['canonicalJSON','signingJSON','eventIdForLoader','eventIdForSeat','createUsageEvent','validateEvent','wireEvent','EventStore']) {
     assert.equal(typeof core[name], 'function', name);
   }
 });
@@ -51,10 +51,9 @@ test('U05 event export is rebuilt field by field and preserves exactly the local
 });
 
 test('U07 event identities are deterministic UUIDv5 values separated by source semantics', () => {
-  const sessionA = core.eventIdForSession('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'session-1', 4);
-  assert.equal(sessionA, core.eventIdForSession('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'session-1', 4));
-  assert.match(sessionA, /^[0-9a-f]{8}-[0-9a-f]{4}-5[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
-  assert.notEqual(sessionA, core.eventIdForSession('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'session-1', 5));
+  const seatA = core.eventIdForSeat('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'app-host', 'open-1');
+  assert.match(seatA, /^[0-9a-f]{8}-[0-9a-f]{4}-5[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+  assert.notEqual(seatA, core.eventIdForSeat('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'app-host', 'open-2'));
   assert.notEqual(core.eventIdForLoader('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'install', 'pkg', '1.0.0'), core.eventIdForLoader('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'uninstall', 'pkg', '1.0.0'));
   assert.equal(core.eventIdForSeat('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'app-host', 'open-1'), core.eventIdForSeat('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'app-host', 'open-1'));
 });

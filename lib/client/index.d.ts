@@ -88,18 +88,10 @@ interface HealthSnapshot {
         nextAttemptAt: string | null;
         lastError: string | null;
     };
-    derive: {
-        skipped: {
-            consentWithheld: number;
-            executorUnavailable: number;
-            timeUnavailable: number;
-            noDevice: number;
-        };
-    };
     withdrawal: WithdrawalSnapshot | null;
     inventory: {
         available: boolean;
-        source: 'loader' | 'plugin-inventory' | 'none';
+        source: 'plugin-manager' | 'none';
         lastScanAt: string | null;
         detail: {
             package: string;

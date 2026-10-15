@@ -53,9 +53,6 @@ importers:
       '@deepseek-ai/schemastery':
         specifier: 3.18.5-alpha.1
         version: 3.18.5-alpha.1
-      '@hanamesh/api-contracts':
-        specifier: git+https://github.com/yzsnstotz/hanamesh-api-contracts.git#v0.9.0
-        version: https://codeload.github.com/yzsnstotz/hanamesh-api-contracts/tar.gz/42661e20b2048cd50b117299d6520badf77d4d08
       '@types/node':
         specifier: 24.13.4
         version: 24.13.4
@@ -213,19 +210,6 @@ packages:
 
   '@deepseek-ai/schemastery@3.18.5-alpha.1':
     resolution: {integrity: sha512-HojoBv1wMQn6N8nDgTgWbc/f4EFAlg/ZsIYN2AChnEDoFOmcWd3+MDzhozNffmywywzV7pcouHRR4x37YZfcjA==}
-
-  '@hanamesh/api-contracts@https://codeload.github.com/yzsnstotz/hanamesh-api-contracts/tar.gz/42661e20b2048cd50b117299d6520badf77d4d08':
-    resolution: {tarball: https://codeload.github.com/yzsnstotz/hanamesh-api-contracts/tar.gz/42661e20b2048cd50b117299d6520badf77d4d08}
-    version: 0.9.0
-    engines: {node: '>=20'}
-    peerDependencies:
-      fastify: ^5.12.3
-      viem: ^2.54.2
-    peerDependenciesMeta:
-      fastify:
-        optional: true
-      viem:
-        optional: true
 
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
@@ -416,8 +400,6 @@ snapshots:
     dependencies:
       '@deepseek-ai/cosmokit': 1.8.6-alpha.1
       '@standard-schema/spec': 1.1.0
-
-  '@hanamesh/api-contracts@https://codeload.github.com/yzsnstotz/hanamesh-api-contracts/tar.gz/42661e20b2048cd50b117299d6520badf77d4d08': {}
 
   '@standard-schema/spec@1.1.0': {}
 

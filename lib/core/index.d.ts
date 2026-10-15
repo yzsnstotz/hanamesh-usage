@@ -12,4 +12,3 @@ export * from './canonical.js';
 export * from './identity.js';
 export * from './events.js';
 export * from './event-store.js';
-export * from './derive.js';

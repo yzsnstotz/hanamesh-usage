@@ -168,9 +168,8 @@ interface HealthSnapshot {
   pending:number;recoveryComplete:boolean;failures:Record<string,number>;
   consent:'granted'|'withheld'|'unknown';core:'present'|'absent'|'incompatible';deviceId:string|null;
   outbox:{state:'idle'|'uploading'|'backoff'|'offline'|'stopped'|'unconfirmed';pending:number;sent:number;duplicate:number;rejected:number;lastUploadAt:string|null;nextAttemptAt:string|null;lastError:string|null};
-  derive:{skipped:{consentWithheld:number;executorUnavailable:number;timeUnavailable:number;noDevice:number}};
   withdrawal:WithdrawalSnapshot|null;
-  inventory:{available:boolean;source:'loader'|'plugin-inventory'|'none';lastScanAt:string|null;detail:{package:string;serviceKey:string;methods:string[]}|null};
+  inventory:{available:boolean;source:'plugin-manager'|'none';lastScanAt:string|null;detail:{package:string;serviceKey:string;methods:string[]}|null};
 }
 export interface ResendEventsResult {
   readonly state:'processed'|'withheld'|'rejected';

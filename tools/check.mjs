@@ -17,21 +17,15 @@ console.log(JSON.stringify({closureManager:pnpmLayout?'pnpm':'npm',...physical})
 assert.equal(pkg.name,'hanamesh-usage');assert.equal(pkg.version,'0.2.0-rc.26');assert.equal(pkg.private,undefined);assert.equal(pkg.license,'MIT');
 assert.deepEqual(pkg.dependencies??{},{});assert.equal(Object.keys(pkg.peerDependencies).filter(name=>name.startsWith('@hanamesh/')||name.startsWith('hanamesh-')).length,0);
 assert.equal(pkg.dsh?.bundle?.patch,'./profile/cordis.patch.yml');assert.equal(pkg.dsh?.client?.platform,'web');assert.equal(pkg.exports['./client'].default,'./lib/client.js');assert(pkg.files.includes('profile'));assert(existsSync(pkg.dsh.bundle.patch));
-const dependencies=JSON.parse(read('docs/contracts/dependencies.json'));
-// Sibling modules are reached only through the published contract package, never installed directly.
-assert.equal(pkg.devDependencies['@hanamesh/api-contracts'],dependencies.apiContracts.source);
-assert.match(pkg.devDependencies['@hanamesh/api-contracts'],/^git\+https:\/\/github\.com\/yzsnstotz\/hanamesh-api-contracts\.git#v\d+\.\d+\.\d+$/);
-assert.match(lock.packages['node_modules/@hanamesh/api-contracts'].resolved,/#[0-9a-f]{40}$/);
+// No HanaMesh sibling or contract package is installed; contracts are documented, tests run against in-repo doubles or the real backend.
 for(const section of ['dependencies','devDependencies','peerDependencies','optionalDependencies'])
- assert.deepEqual(Object.keys(pkg[section]??{}).filter(name=>(name.startsWith('@hanamesh/')||name.startsWith('hanamesh-'))&&name!=='@hanamesh/api-contracts'),[],`sibling module in ${section}`);
+ assert.deepEqual(Object.keys(pkg[section]??{}).filter(name=>name.startsWith('@hanamesh/')||name.startsWith('hanamesh-')),[],`sibling module in ${section}`);
 assert.equal(existsSync('docs/contracts/hanamesh-core'),false);
-await import('@hanamesh/api-contracts/core');
-await import('@hanamesh/api-contracts/usage-local');
-await import('@hanamesh/api-contracts/usage');
+assert.equal(Object.keys(lock.packages).some(key=>/node_modules\/(?:@hanamesh\/|hanamesh-)/.test(key)),false,'sibling module in package-lock.json');
 const patch=read(pkg.dsh.bundle.patch);assert.equal((patch.match(/^\s*- id:/gm)??[]).length,1);assert.match(patch,/^\s*- id: hanamesh-usage$/m);assert.match(patch,/^\s*name: hanamesh-usage$/m);
 const walk=dir=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(join(dir,e.name)):[join(dir,e.name)]);
 const sources=walk('src').filter(p=>/\.(ts|js)$/.test(p));
-const forbiddenSibling=/(?:from\s+|import\s*\()['"](?:hanamesh-[^'"]*|@hanamesh\/(?!api-contracts[/'"])[^'"]*)['"]/;
+const forbiddenSibling=/(?:from\s+|import\s*\()['"](?:hanamesh-[^'"]*|@hanamesh\/[^'"]*)['"]/;
 for(const p of sources){
  if(p.endsWith('.js'))assert.equal(existsSync(p.slice(0,-3)+'.d.ts'),false,`JS entry must not be shadowed by sibling declarations: ${p}`);
  const s=read(p);

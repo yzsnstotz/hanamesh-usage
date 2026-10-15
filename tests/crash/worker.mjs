@@ -18,9 +18,9 @@ if(mode==='group'){
   await new core.UsageStore(global).put(record());throw Error('INJECTION_WAS_NOT_REACHED');
 }else if(mode==='event-group'){
   const global=await eventGlobal(stage=>stage===point?pause(stage):Promise.resolve());
-  const declaration=record();const derived=core.deriveUsageEvent(declaration,{deviceId:'device_FIXTURE',consent:'granted',nonce:()=> 'AQIDBAUGBwgJCgsMDQ4PEA'});
-  if(derived.event===null)throw Error('FIXTURE_DERIVE_FAILED');
-  await new core.EventStore(global).put(derived.event);throw Error('INJECTION_WAS_NOT_REACHED');
+  const deviceId='If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk';
+  const event=core.createUsageEvent({deviceId,hanaRef:'fixture.hana',action:'use',occurredAt:'2026-09-19T00:00:00.000Z',eventId:core.eventIdForSeat(deviceId,'fixture.hana','command:crash:succeeded'),nonce:'AQIDBAUGBwgJCgsMDQ4PEA',signature:null,source:'seat',sourcePlugin:'fixture.hana',evidenceRef:'command:crash:succeeded'});
+  await new core.EventStore(global).put(event);throw Error('INJECTION_WAS_NOT_REACHED');
 }else if(mode==='boundary'){
   let writes=0;
   const after=async()=>{writes++;if(writes===1)await pause('between-first-and-second-durable-side');};

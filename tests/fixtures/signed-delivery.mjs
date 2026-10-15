@@ -78,10 +78,10 @@ export async function mountedDeliveryFixture(t,{onRequest,onWrite,origin='https:
   f.service.getServerOrigin=()=>origin;
   if(onWrite){const set=f.global.set.bind(f.global);f.global.set=async next=>{await onWrite(next);await set(next);};}
   t.mock.method(globalThis,'fetch',async(url,options)=>{requests.push({method:options.method,url:String(url),headers:options.headers,body:options.body});return f.fetchImpl(url,options);});
-  const ctx={loader:{entries:()=>[].values()},get:()=>undefined,on:()=>()=>{},inject:()=>({dispose:async()=>{}}),provide(){},sessions:{list:()=>[],get:()=>undefined},sessionPersistence:{list:async()=>[]}};
+  const ctx={loader:{entries:()=>[].values()},get:name=>name==='pluginManager'?{listBundles:async()=>[]}:undefined,on:()=>()=>{},inject:()=>({dispose:async()=>{}}),provide(){},sessions:{list:()=>[],get:()=>undefined},sessionPersistence:{list:async()=>[]}};
   let records={schemaVersion:1,records:[]};
   const {mountUsage}=await load('mount');
-  const mounted=mountUsage(ctx,null,{global:{get:()=>records,set:async value=>{records=structuredClone(value);}},close:async()=>{}},{global:f.global,close:async()=>{}},{maxRecords:5000,maxEvents:5000,maxPending:128,allowExport:false,uploadIntervalMs:60000,uploadBatchSize:200,inventoryIntervalMs:300000,panelTestSupply:{identity:false,receiver:false},eventRetentionDays:90,queryLimit:100}, {status:()=> 'present',get:()=>f.service,onChange:()=>()=>{},close(){}});
+  const mounted=mountUsage(ctx,{global:{get:()=>records,set:async value=>{records=structuredClone(value);}},close:async()=>{}},{global:f.global,close:async()=>{}},{maxRecords:5000,maxEvents:5000,maxPending:128,allowExport:false,uploadIntervalMs:60000,uploadBatchSize:200,inventoryIntervalMs:300000,panelTestSupply:{identity:false,receiver:false},eventRetentionDays:90,queryLimit:100}, {status:()=> 'present',get:()=>f.service,onChange:()=>()=>{},close(){}});
   await mounted.ready;
   t.after(()=>mounted.close());
   return {...mounted,requests,eventSignatures:f.eventSignatures,makeReporter:f.makeReporter,requestCount:()=>f.requests.length,tickSend:()=>t.mock.timers.tick(5000),snapshot:()=>f.global.get(),setConsent(state,changedAt=new Date().toISOString()){f.setConsent(state);for(const fn of listeners)fn(state,changedAt);}};
