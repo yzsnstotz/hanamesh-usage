@@ -53,6 +53,16 @@ test('U11 absent and incompatible core never block local Declaration recording',
   for(const coreStatus of ['absent','incompatible']){const h=await fixtureHost({coreStatus,consent:'granted'});assert.equal(h.api.query().total,1);assert.equal(h.api.events().total,0);const health=h.api.health();assert.equal(health.core,coreStatus);assert.equal(health.consent,'unknown');assert.equal(health.deviceId,null);await h.close();}
 });
 
+test('Core attaching after the first inventory scan, with consent already granted, records the current profile installs',async()=>{
+  const bundles=[{name:'dsh-no-long-sit',version:'0.1.3',installed:true,availability:'profile',enabled:true,removable:true,rows:[]}];
+  const h=await fixtureHost({coreStatus:'absent',consent:'granted',pluginManager:{listBundles:async()=>bundles}});
+  try{
+    assert.equal(h.api.events().total,0,'no Core yet: nothing is signed or recorded');
+    h.attachCore();await h.api.drain();
+    assert.deepEqual(h.api.events().events.map(event=>[event.action,event.hanaRef]),[['install','dsh-no-long-sit']]);
+  }finally{await h.close();}
+});
+
 test('U11 late core attachment signs legacy pending events and starts from the current consent',async()=>{
   const event=core.createUsageEvent({deviceId:'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk',hanaRef:'pkg',action:'use',occurredAt:'2026-09-19T00:00:00.000Z',eventId:core.eventIdForSeat('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk','app-host','legacy'),nonce:'AQIDBAUGBwgJCgsMDQ4PEA',signature:null,source:'seat',sourcePlugin:'app-host',evidenceRef:'legacy'});
   const h=await fixtureHost({coreStatus:'absent',consent:'granted',eventSnapshot:{schemaVersion:1,events:[event],withdrawal:null,inventory:{last:null}}});assert.equal(h.api.events().events[0].signature,null);h.attachCore();await h.api.drain();assert.equal(Buffer.from(h.api.events().events[0].signature,'base64url').length,64);assert.equal(h.api.health().core,'present');assert.equal(h.api.health().consent,'granted');await h.close();
