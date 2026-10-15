@@ -1,6 +1,5 @@
 // @ts-check
 import { randomBytes, createHash } from 'node:crypto';
-import { commandPackage } from './command-source.js';
 import { pagePackage } from './page-source.js';
 const surfaces=['main','settings.section','plugins.bundle.config','plugins.row.config'];
 /** Usage-owned presentation seat. Credentials are ephemeral, peer-bound and consumed before any async write.
@@ -21,9 +20,9 @@ export function createPageFacts(ctx,consent,record,limit,note=()=>{}){
    if(!request||typeof request!=='object'||Array.isArray(request)||Object.keys(request).sort().join('|')!=='entryId|moduleName|surface')return rejected();
    const item=/** @type {any} */(request);
    if(typeof item.entryId!=='string'||typeof item.moduleName!=='string'||!surfaces.includes(item.surface))return rejected();
-   const name=commandPackage(ctx,item,note);if(name===null)return rejected();
-   const source={entryId:item.entryId,moduleName:item.moduleName,packageName:name},observedEpoch=epoch;
-   if(await pagePackage(ctx,source,note)!==name||closed||epoch!==observedEpoch||!consent())return rejected();
+   const observedEpoch=epoch,name=await pagePackage(ctx,{entryId:item.entryId,moduleName:item.moduleName},note);
+   if(name===null||closed||epoch!==observedEpoch||!consent())return rejected();
+   const source={entryId:item.entryId,moduleName:item.moduleName,packageName:name};
    const now=Date.now();for(const [token,value] of credentials)if(now-value.issuedAt>60000)credentials.delete(token);
    if(credentials.size>=limit)return rejected();
    const credential=randomBytes(32).toString('base64url');
@@ -38,7 +37,7 @@ export function createPageFacts(ctx,consent,record,limit,note=()=>{}){
    credentials.delete(token); // single-use even when storage or async ownership checks fail
    if(item.epoch!==epoch||Date.now()-item.issuedAt>60000||!consent())return rejected();
    const name=await pagePackage(ctx,item.source,note);
-   if(name===null||closed||item.epoch!==epoch||!consent())return rejected();
+   if(name!==item.source.packageName||closed||item.epoch!==epoch||!consent())return rejected();
    return record({hanaRef:name,action:'open',occurredAt:new Date().toISOString(),idempotencyKey:`page:${createHash('sha256').update(token).digest('hex')}`,sourcePlugin:name},()=>!closed&&item.epoch===epoch&&consent());
   },
   /** @param {object} peer */
