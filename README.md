@@ -1,6 +1,10 @@
-# hanamesh-usage · 0.2.0-rc.29
+# hanamesh-usage · 0.2.0-rc.31
 
-rc.26 消费项目批准的官方 `d743267388641bc76f17c45ce8b4c231aed1d32c`：DSH `0.2.1-alpha.2`、Cordis `4.0.5-alpha.1`、实际共享 zod `4.6.5`，各公开包独立核对后精确锁定。开发依赖的正式 JS/声明与该 SHA 的官方 pack 核验一致，移除本模块旧版本 override；不再安装 api-contracts 或任何 HanaMesh 邻仓包。事件、归属、签名、同意/撤回和 schema v1 不变；新观察记录的 DSH provenance 跟随本构建，旧记录不重写。
+rc.31 接受官方 DSH rc.2 与当前 alpha 的公开宿主 peer：DSH `>=0.2.0-rc.2 <0.3.0-0 || >=0.2.1-0 <0.3.0-0`，Cordis `>=4.0.4 <4.1.0-0 || >=4.0.5-alpha.1 <4.1.0-0`，zod `^4.5.4`。开发闭包仍精确锁定 DSH `0.2.1-alpha.2` / Cordis `4.0.5-alpha.1` / zod `4.6.5`，无 override。安装与页面归属兼容 rc.2 的公开 `installed/removable` 和 alpha 的显式 `availability`；显式 `missing` 不降级猜为已安装。范围准入不代表范围内每个版本已在真实 Desktop 验过，证据与尚未运行的门见 [rc.2 兼容报告](docs/compatibility/dsh-rc2-rc31.md)。
+
+`Declaration.provenance.dshVersion` 保持既有含义：本包构建所依据的 DSH 版本（当前 `0.2.1-alpha.2`），不是运行中宿主版本的探测值。旧记录不重写。设置页不将该字段显示为当前宿主版本；完整查询/导出读到它时应按构建来源解释。本次不增加运行时版本探测或更改存储格式。
+
+历史 rc.26 曾将宿主 peer 精确锁到项目批准的官方 `d743267388641bc76f17c45ce8b4c231aed1d32c`。rc.31 将可安装宿主范围与可复现开发闭包分开；不安装 api-contracts 或 HanaMesh 邻仓包。
 
 本卡证据区分 SOURCE/FIXTURE/PACKAGE 与官方未打包 Electron 载体的默认 Desktop 插件安装、设置及限定存储回归。完整 U1、真实 Core+Server 组合、原生介质强杀、安装版 Desktop 和 owner 验收仍由原产品门负责。
 
@@ -30,7 +34,7 @@ rc.26 消费项目批准的官方 `d743267388641bc76f17c45ce8b4c231aed1d32c`：D
 
 **从 rc.3（`@hanamesh/dsh-activity`）升级：** storage-domain 由 `hanamesh_activity` 改为 `hanamesh_usage`，旧记录不迁入、不删除；需要保留请先在 rc.3 上 `POST /api/hanamesh/activity/export` 导出。
 
-首次 Loader 扫描会把当前已装插件记为 `install`，`occurredAt` 使用扫描时刻；这是 Adoption 弱证据。宿主没有更强的实时 install/uninstall 事件，本版只做跨启动快照比较。
+首次 Plugin Manager 扫描会把当前 profile 自有插件记为 `install`，`occurredAt` 使用扫描时刻；这是 Adoption 弱证据。本版只做安装快照比较，不将 Loader 的整个平台条目当作用户安装。
 
 ## 本地接口
 

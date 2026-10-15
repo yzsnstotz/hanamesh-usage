@@ -9,6 +9,15 @@ const bundle={name:'ordinary-plugin',installed:true,availability:'profile',enabl
 const setup=(options={})=>fixtureHost({bound:false,consent:'granted',loaderEntries:[entry],packageOf:()=>canonical,pluginInventory:{list:async()=>({entries:[row]})},pluginManager:{listBundles:async()=>[bundle]},...options});
 const peer={id:'fixture-peer'};
 const request=(surface='settings.section')=>({...source,surface});
+test('official rc.2 profile bundles produce an open through the existing single-use page fact path',async()=>{
+ const rc2={name:bundle.name,version:'1.0.0',installed:true,enabled:true,optional:false,removable:true,rows:[row],overrides:[]};
+ const h=await setup({pluginManager:{listBundles:async()=>[rc2]}});try{
+  const issued=await h.pages.issue(peer,request());assert.equal(issued.disposition,'issued');
+  assert.equal((await h.pages.presented(peer,{credential:issued.credential})).disposition,'recorded');
+  assert.equal((await h.pages.presented(peer,{credential:issued.credential})).disposition,'rejected');
+  assert.deepEqual(h.api.events().events.map(event=>[event.action,event.hanaRef]),[['install',bundle.name],['open',bundle.name]]);
+ }finally{await h.close();}
+});
 test('Usage pages replaces fork notification with host-issued single-use facts for all four surfaces',async()=>{
  const h=await setup();try{
   assert.equal(h.handlers.has('client-page/opened'),false);

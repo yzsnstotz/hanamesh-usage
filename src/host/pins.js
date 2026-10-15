@@ -1,7 +1,9 @@
 // @ts-check
 /**
  * Versions this build was composed against. They are RECORDED into each new
- * record's provenance; they are NOT a validation gate on stored records.
+ * record's provenance; they are NOT a validation gate on stored records or
+ * a detection of the running host's version. Supporting an older host does
+ * not change this build-composition meaning or rewrite historical records.
  *
  * 2026-09-13: the previous build asserted `registryVersion === '0.1.0-rc.2'`
  * inside the storage-domain schema, so re-pinning to Registry rc.3 made the

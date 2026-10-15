@@ -10,18 +10,49 @@ class Global{constructor(){this.snapshot={schemaVersion:1,events:[],withdrawal:n
 /** Shape of @deepseek-ai/dsh-plugin-manager BundleInfo (0.2.1-alpha.2) — only the fields Usage reads. */
 function bundle(name,version,{installed=true,availability='profile',enabled=true,error}={}){return {name,version,installed,availability,enabled,official:false,optional:false,removable:true,rows:[],overrides:[],...(error?{error}:{})};}
 /** Inventory under a fake Cordis context: `services` mimics ctx.get + the internal/service event. */
-function harness({consent='granted',bundles=[bundle('a','1.0.0'),bundle('b','2.0.0')],manager=true,global=new Global(),now}={}){
-  let list=bundles,currentConsent=consent;const notes=[];const listeners=new Map();
+function harness({consent='granted',bundles=[bundle('a','1.0.0'),bundle('b','2.0.0')],manager=true,corePresent=true,global=new Global(),now}={}){
+  let list=bundles,currentConsent=consent,present=corePresent;const notes=[];const listeners=new Map();
   const pluginManager={listBundles:async()=>structuredClone(list)};
   const services=new Map(manager?[['pluginManager',pluginManager]]:[]);
   const ctx={get:name=>services.get(name),on:(name,fn)=>{listeners.set(name,fn);return()=>listeners.delete(name);}};
   const service={getConsent:()=>currentConsent,getDeviceId:()=>DEVICE,sign:()=>Buffer.alloc(64)};
   const store=new core.EventStore(global,5000,now??Date.now);
-  const inventory=host?.createInventory({ctx,store,link:{get:()=>service},inventoryIntervalMs:300000,now:now??(()=>{let t=0;return()=>Date.parse('2026-09-19T00:00:00.000Z')+t++*1000;})(),note:code=>notes.push(code)});
+  const inventory=host?.createInventory({ctx,store,link:{get:()=>present?service:null},inventoryIntervalMs:300000,now:now??(()=>{let t=0;return()=>Date.parse('2026-09-19T00:00:00.000Z')+t++*1000;})(),note:code=>notes.push(code)});
   return {global,store,inventory,notes,listeners,setBundles:value=>{list=value;},setConsent:value=>{currentConsent=value;},
-    provide(){services.set('pluginManager',pluginManager);listeners.get('internal/service')?.('pluginManager',pluginManager);}};
+    setCorePresent:value=>{present=value;},provide(){services.set('pluginManager',pluginManager);listeners.get('internal/service')?.('pluginManager',pluginManager);}};
 }
 const actions=result=>result.events.map(event=>[event.action,event.hanaRef,event.version]);
+
+// Public rc.2 BundleInfo: packages/boot/plugin-manager/src/types.ts:46–69 at dsh-v0.2.0-rc.2.
+// In particular, rc.2 has no availability/official/source/installTarget members.
+function rc2Bundle(name,version,patch={}){return {name,version,installed:true,enabled:true,optional:false,removable:true,rows:[],overrides:[],...patch};}
+test('rc.2 inventory observes profile installs, disabled bundles and real removal without counting installation-owned copies',async()=>{
+  const f=harness({bundles:[rc2Bundle('a','1.0.0'),rc2Bundle('b','2.0.0',{enabled:false}),rc2Bundle('shipped','0.2.0-rc.2',{removable:false}),rc2Bundle('supplied','0.2.0-rc.2',{installed:false,removable:false})]});
+  try{
+    assert.deepEqual(actions(await f.inventory.scan()),[['install','a','1.0.0'],['install','b','2.0.0']]);
+    assert.equal(f.store.getSnapshot().inventory.last.items.find(item=>item.hanaRef==='b').disabled,true);
+    f.setBundles([rc2Bundle('b','2.0.0',{enabled:false})]);
+    assert.deepEqual(actions(await f.inventory.scan()),[['uninstall','a','1.0.0']]);
+  }finally{await f.inventory.close();}
+});
+test('rc.2 errors preserve an accepted inventory baseline until the bundle is readable again',async()=>{
+  const f=harness({bundles:[rc2Bundle('a','1.0.0')]});
+  try{
+    await f.inventory.scan();const before=structuredClone(f.store.getSnapshot());
+    f.setBundles([rc2Bundle('a',undefined,{error:{code:'not-bundle'}})]);
+    await assert.rejects(f.inventory.scan(),error=>error.code==='INVENTORY_FAILED');
+    assert.deepEqual(f.store.getSnapshot(),before);
+    f.setBundles([rc2Bundle('a','1.0.0')]);assert.deepEqual((await f.inventory.scan()).events,[]);
+  }finally{await f.inventory.close();}
+});
+test('rc.2 installs become reportable once when Core arrives after the first scan',async()=>{
+  const f=harness({corePresent:false,bundles:[rc2Bundle('a','1.0.0')]});
+  try{
+    assert.deepEqual((await f.inventory.scan()).events,[]);
+    f.setCorePresent(true);assert.deepEqual(actions(await f.inventory.scan()),[['install','a','1.0.0']]);
+    assert.deepEqual((await f.inventory.scan()).events,[]);
+  }finally{await f.inventory.close();}
+});
 
 test('inventory module is present',()=>assert.equal(typeof host?.createInventory,'function'));
 test('first scan installs profile bundles, stable/disabled scans add none, upgrade and removal are distinct',async()=>{
