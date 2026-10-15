@@ -150,6 +150,7 @@ export interface UsageRecordsSnapshot {
         duplicate: number;
         rejected: number;
         lastUploadAt: string | null;
+        nextAttemptAt: string | null;
         lastError: string | null;
     };
     withdrawal: WithdrawalSnapshot | null;

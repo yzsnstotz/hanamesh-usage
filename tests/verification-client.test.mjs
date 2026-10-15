@@ -133,6 +133,33 @@ const panelFixture = {
     row('aaaaaaaa-aaaa-5aaa-8aaa-aaaaaaaaaaa3', 'dsh-no-long-sit', 'install', '2026-10-15T00:30:00.000Z', 'pending'),
   ],
 };
+test('settings endpoint 404 explains the old backend and displays the actual next automatic retry',async()=>{
+  const nextAttemptAt='2026-10-16T04:05:06.000Z';
+  const panel={...panelFixture,outbox:{...panelFixture.outbox,state:'backoff',pending:3,lastError:'USAGE_SETTINGS_HTTP_404',nextAttemptAt}};
+  const h=materialize(async(path,init)=>{
+    assert.equal(init.method,'GET','reading the notice must not upload or retry');
+    if(path==='api/hanamesh/usage/panel')return json(panel);
+    assert.equal(path,'api/hanamesh/usage/panel/remote');
+    return json({state:'unknown',total:null,code:'REMOTE_UNAVAILABLE',events:[]});
+  });
+  try{
+    h.render(h.api.UsageRecords);await h.settle();
+    const visible=text(h.tree);
+    assert.match(visible,/后端版本过旧，缺上报设置接口/);
+    assert.match(visible,/升级后端后自动重试/);
+    assert.match(visible,/等待上报 3 条/);
+    assert.match(visible,/下次自动重试/);
+    const retry=nodes(h.tree).find(node=>node.type==='time'&&node.props.dateTime===nextAttemptAt);
+    assert(retry,'the server-projected nextAttemptAt must survive parsing and reach the visible time element');
+    assert.equal(text(retry),new Date(nextAttemptAt).toLocaleString());
+    assert.equal(nodes(h.tree).filter(node=>node.props['data-hanamesh-usage-row']==='pending').length,1);
+  }finally{h.dispose();}
+});
+test('only the settings endpoint 404 is identified as an old backend',()=>{
+  const h=materialize();
+  for(const code of ['USAGE_SETTINGS_HTTP_400','USAGE_SETTINGS_HTTP_401','USAGE_SETTINGS_HTTP_403','USAGE_SETTINGS_HTTP_410','USAGE_SETTINGS_HTTP_429','UPLOAD_HTTP_404'])
+    assert.doesNotMatch(h.api.usageReason(code),/版本过旧|缺上报设置接口|升级后端/);
+});
 function enabledClient(reply = (call, input) => ({ call, input, result: { disposition: 'recorded', eventId: 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb' }, health })) {
   const calls = [];
   function fetch(path, init) {

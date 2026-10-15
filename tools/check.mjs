@@ -14,7 +14,7 @@ const closureTree=JSON.parse(closure.stdout);
 for(const entry of Array.isArray(closureTree)?closureTree:[closureTree])assert.deepEqual(entry.problems??[],[]);
 const physical=assertPhysicalClosure(process.cwd(),pkg,lock);
 console.log(JSON.stringify({closureManager:pnpmLayout?'pnpm':'npm',...physical}));
-assert.equal(pkg.name,'hanamesh-usage');assert.equal(pkg.version,'0.2.0-rc.32');assert.equal(pkg.private,undefined);assert.equal(pkg.license,'MIT');
+assert.equal(pkg.name,'hanamesh-usage');assert.equal(pkg.version,'0.2.0-rc.33');assert.equal(pkg.private,undefined);assert.equal(pkg.license,'MIT');
 assert.deepEqual(pkg.dependencies??{},{});assert.equal(Object.keys(pkg.peerDependencies).filter(name=>name.startsWith('@hanamesh/')||name.startsWith('hanamesh-')).length,0);
 assert.equal(pkg.dsh?.bundle?.patch,'./profile/cordis.patch.yml');assert.equal(pkg.dsh?.client?.platform,'web');assert.equal(pkg.exports['./client'].default,'./lib/client.js');assert(pkg.files.includes('profile'));assert(existsSync(pkg.dsh.bundle.patch));
 // No HanaMesh sibling or contract package is installed; contracts are documented, tests run against in-repo doubles or the real backend.

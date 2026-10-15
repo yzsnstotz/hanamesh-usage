@@ -8,6 +8,9 @@ import {apply as applyUsage} from '../lib/host/index.js';
 
 const { privateKey, publicKey } = generateKeyPairSync('ed25519');
 const key = publicKey.export({format:'der', type:'spki'}).subarray(-32).toString('base64url');
+test('embedded local records view explains missing backend settings and keeps real retry deadline',async()=>{
+ const {renderUsagePanel}=await import('../lib/host/panel.js');const h=await fixtureHost();try{const panel=h.api.panel();panel.outbox={...panel.outbox,state:'backoff',lastError:'USAGE_SETTINGS_HTTP_404',nextAttemptAt:'2026-10-16T01:02:03.000Z'};const html=renderUsagePanel(panel);assert.match(html,/后端版本过旧，缺上报设置接口/);assert.match(html,/下次自动重试/);assert.match(html,/2026-10-16T01:02:03.000Z/);}finally{await h.close();}
+});
 function event(deviceId='If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', signature='valid') {
   const value=core.createUsageEvent({deviceId,hanaRef:'ordinary-plugin',action:'use',occurredAt:'2026-10-07T00:00:00.000Z',eventId:core.eventIdForSeat(deviceId,'ordinary-plugin','command:one:succeeded'),nonce:'AQIDBAUGBwgJCgsMDQ4PEA',signature:null,source:'seat',sourcePlugin:'ordinary-plugin',evidenceRef:'command:one:succeeded'});
   value.signature=signature==='missing'?null:signature==='valid'?sign(null,Buffer.from(core.signingJSON(value)),privateKey).toString('base64url'):Buffer.alloc(64).toString('base64url');

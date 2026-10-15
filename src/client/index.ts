@@ -329,7 +329,7 @@ export async function fetchUsagePanel(signal:AbortSignal):Promise<string> {
 export interface UsageRecordRow {eventId:string;hanaRef:string;action:'install'|'open'|'use'|'uninstall';occurredAt:string;upload:'pending'|'sent'|'duplicate'|'rejected';code:string|null}
 export interface UsageRecordsSnapshot {
   deviceId:string|null;consent:HealthSnapshot['consent'];core:HealthSnapshot['core'];total:number;
-  outbox:{state:HealthSnapshot['outbox']['state'];pending:number;sent:number;duplicate:number;rejected:number;lastUploadAt:string|null;lastError:string|null};
+  outbox:{state:HealthSnapshot['outbox']['state'];pending:number;sent:number;duplicate:number;rejected:number;lastUploadAt:string|null;nextAttemptAt:string|null;lastError:string|null};
   withdrawal:WithdrawalSnapshot|null;rows:UsageRecordRow[];
   inventory:{lastError:string|null;failureKind:string|null;unreadable:number}|null;filtered:{commands:number;pages:number}|null;
 }
@@ -345,6 +345,7 @@ const reasonText:Record<string,string>={
   USAGE_NONCE_REUSED:'与服务端已有记录冲突',
   USAGE_INPUT_INVALID:'记录格式没有通过服务端校验',
   UPLOAD_UNAVAILABLE:'服务端暂时连不上，稍后会自动再传',
+  USAGE_SETTINGS_HTTP_404:'后端版本过旧，缺上报设置接口；升级后端后自动重试',
   USAGE_EVENT_HOOK_FAILED:'服务端收到了，但处理这批记录时出错，整批没有写入；稍后会自动再传',
   USAGE_RATE_LIMITED:'服务端限流，稍后会自动再传',
   USAGE_IDENTITY_UNAVAILABLE:'服务端身份服务暂时不可用，稍后会自动再传',
@@ -392,7 +393,7 @@ async function fetchUsageRecords(signal:AbortSignal):Promise<UsageRecordsSnapsho
   const o=value.outbox;
   return {deviceId:(value.subject.deviceId as string|null)??null,consent:value.consent as HealthSnapshot['consent'],core:value.core as HealthSnapshot['core'],total:Number(value.total)||0,
     outbox:{state:o.state as HealthSnapshot['outbox']['state'],pending:Number(o.pending)||0,sent:Number(o.sent)||0,duplicate:Number(o.duplicate)||0,rejected:Number(o.rejected)||0,
-      lastUploadAt:typeof o.lastUploadAt==='string'?o.lastUploadAt:null,lastError:typeof o.lastError==='string'?o.lastError:null},
+      lastUploadAt:typeof o.lastUploadAt==='string'?o.lastUploadAt:null,nextAttemptAt:typeof o.nextAttemptAt==='string'?o.nextAttemptAt:null,lastError:typeof o.lastError==='string'?o.lastError:null},
     withdrawal:value.withdrawal,
     inventory:object(value.inventory)?{lastError:typeof value.inventory.lastError==='string'?value.inventory.lastError:null,failureKind:typeof value.inventory.failureKind==='string'?value.inventory.failureKind:null,unreadable:Number(value.inventory.unreadable)||0}:null,
     filtered:object(value.filtered)?{commands:Number(value.filtered.commands)||0,pages:Number(value.filtered.pages)||0}:null,
@@ -442,6 +443,8 @@ export function UsageRecords({revision=0}:{revision?:number}) {
   return h('div',{'data-hanamesh-usage-records':'ready'},
     h('p',{'data-hanamesh-usage-consent':snapshot.consent},consentLine),
     h('p',{'data-hanamesh-usage-outbox':snapshot.outbox.state},outboxText(snapshot)),
+    snapshot.outbox.state==='backoff'&&snapshot.outbox.nextAttemptAt!==null
+      ?h('p',{role:'status','data-hanamesh-usage-retry':snapshot.outbox.nextAttemptAt},'下次自动重试：',h('time',{dateTime:snapshot.outbox.nextAttemptAt},localTime(snapshot.outbox.nextAttemptAt))):null,
     snapshot.withdrawal?h('p',{role:'status','data-hanamesh-usage-withdrawal':snapshot.withdrawal.state},withdrawalText(snapshot.withdrawal)):null,
     snapshot.inventory?.lastError?h('p',{role:'alert','data-hanamesh-usage-inventory':snapshot.inventory.lastError},`插件清单：${usageReason(snapshot.inventory.lastError)}${snapshot.inventory.failureKind?`（${snapshot.inventory.failureKind}）`:''}；安装/卸载记录暂停，恢复后自动补上。`):null,
     snapshot.inventory&&snapshot.inventory.unreadable>0?h('p',{'data-hanamesh-usage-unreadable':String(snapshot.inventory.unreadable)},`有 ${snapshot.inventory.unreadable} 个已装插件这次读不到版本信息，暂未记录。`):null,
