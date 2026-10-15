@@ -63,6 +63,22 @@ test('upgrading from the loader inventory retracts never-sent install events for
   assert.deepEqual(f.store.getSnapshot().events.map(event=>[event.hanaRef,event.upload.state]),[['a','pending'],['@deepseek-ai/dsh-base','sent']],'sent history is not rewritten');
   assert.equal((await f.inventory.scan()).retracted,0,'once migrated, nothing more is retracted');await f.inventory.close();
 });
+test('a declared profile bundle that is momentarily unreadable (availability missing) is not recorded as uninstalled',async()=>{
+  const f=harness();await f.inventory.scan();
+  f.setBundles([bundle('a','1.0.0',{availability:'missing',error:{code:'BUNDLE_UNREADABLE'}}),bundle('b','2.0.0')]);
+  await assert.rejects(f.inventory.scan(),error=>error.code==='INVENTORY_FAILED');
+  assert.deepEqual(f.store.getSnapshot().events.map(event=>event.action),['install','install'],'no uninstall for a');
+  f.setBundles([bundle('a','1.0.0'),bundle('b','2.0.0')]);assert.deepEqual((await f.inventory.scan()).events,[]);await f.inventory.close();
+});
+test('legacy retraction keeps attempted-but-unconfirmed events and declared bundles that are unreadable during the scan',async()=>{
+  const global=new Global();
+  const pending=(hanaRef,attempts,code)=>({...core.createUsageEvent({deviceId:DEVICE,hanaRef,action:'install',occurredAt:'2026-10-01T00:00:00.000Z',eventId:core.eventIdForLoader(DEVICE,'install',hanaRef,'1.0.0'),nonce:Buffer.alloc(16).toString('base64url'),signature:Buffer.alloc(64).toString('base64url'),source:'loader',sourcePlugin:null,evidenceRef:`${hanaRef}@1.0.0`}),upload:{state:'pending',code,attempts,sentAt:null}});
+  global.snapshot.events=[pending('builtin-never',0,null),pending('builtin-unconfirmed',1,'USAGE_STORAGE_UNAVAILABLE'),pending('declared-unreadable',0,null)];
+  global.snapshot.inventory.last={scannedAt:'2026-10-01T00:00:00.000Z',items:[{hanaRef:'builtin-never',version:'1.0.0',entryId:'x',disabled:false}]};
+  const f=harness({global,bundles:[bundle('declared-unreadable','1.0.0',{availability:'missing'})],now:()=>Date.parse('2026-10-15T00:00:00.000Z')});
+  const result=await f.inventory.scan();assert.equal(result.retracted,1);
+  assert.deepEqual(f.store.getSnapshot().events.map(event=>event.hanaRef).sort(),['builtin-unconfirmed','declared-unreadable']);await f.inventory.close();
+});
 test('without the plugin manager the scan fails visibly, and runs when the service appears',async()=>{
   const f=harness({manager:false});
   await assert.rejects(f.inventory.scan(),error=>error.code==='INVENTORY_FAILED');

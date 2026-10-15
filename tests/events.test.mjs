@@ -120,7 +120,13 @@ test('A host rejection reason (C-USAGE per-item reason) is kept as the event cod
   await store.applyUpload(events.map(event=>event.eventId),{accepted:1,duplicates:0,rejected:[
     {eventId:events[1].eventId,code:'USAGE_EVENT_HOST_REJECTED',reason:{code:'USAGE_POINTS_HANA_REF_UNRESOLVED',need:'catalog-entry'}},
     {eventId:events[2].eventId,code:'USAGE_EVENT_HOST_REJECTED',reason:{code:'sk-not a token/ok',need:'x'}}],durability:'committed'},'2026-09-19T00:01:00.000Z');
-  assert.deepEqual(store.query().events.map(event=>[event.upload.state,event.upload.code]),[['sent',null],['rejected','USAGE_POINTS_HANA_REF_UNRESOLVED'],['rejected','USAGE_EVENT_HOST_REJECTED']]);
+  assert.deepEqual(store.query().events.map(event=>[event.upload.state,event.upload.code]),[['sent',null],['rejected','USAGE_EVENT_HOST_REJECTED:USAGE_POINTS_HANA_REF_UNRESOLVED'],['rejected','USAGE_EVENT_HOST_REJECTED']]);
+  // An explicit user resend reopens host rejections only (the server did not store them); other refusals stay final.
+  assert.equal(await store.reopenHostRejected(events.map(event=>event.eventId)),2);
+  assert.deepEqual(store.query().events.map(event=>[event.upload.state,event.upload.code]),[['sent',null],['pending',null],['pending',null]]);
+  const signed=({upload,...fields})=>fields;assert.deepEqual(store.query().events.map(signed),events.map(signed),'original signed bytes are kept');
+  await store.applyUpload([events[1].eventId],{accepted:0,duplicates:0,rejected:[{eventId:events[1].eventId,code:'USAGE_NONCE_REUSED'}],durability:'committed'},'2026-09-19T00:02:00.000Z');
+  assert.equal(await store.reopenHostRejected([events[1].eventId]),0);
 });
 
 test('U15 EventStore withdrawal clears all events in one publication before remote work', async () => {

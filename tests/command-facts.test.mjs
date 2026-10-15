@@ -85,6 +85,11 @@ test('a command the installation supplies (no profile-installed bundle owns it) 
   }
 });
 
+test('a profile bundle whose row names another package\'s command module does not make that command its use',async()=>{
+  const h=await host({pluginManager:manager(profileBundle('some-other-plugin',[source]))});
+  try{run(h,register(h));await h.api.drain();assert.equal(h.api.events().total,0);}finally{await h.close();}
+});
+
 test('withheld consent, unknown owner, mismatched manifest and failed event writes remain gated',async()=>{
   for(const options of [{consent:'withheld'},{packageOf:()=>({...canonical,manifest:{name:'other',version:'0.2.1'}})},{}]) {
     const h=await host(options);

@@ -142,8 +142,9 @@ export function mountUsage(ctx, domain, eventDomain, config, coreLink, commandSo
     accepted++;
     jobs=jobs.then(async()=>{
       // Same rule as page opens: only a command owned by a bundle the person installed counts as plugin use.
-      let owned=false;try{owned=await ownedByProfileBundle(/** @type {any} */(ctx.get('pluginManager')),source);}catch{note(new UsageError('COMMAND_SOURCE_UNREADABLE'));return;}
-      if(!owned)return;
+      // The credited package must be the owning bundle itself (a bundle row naming another package's module is not that package's use).
+      let owner=null;try{owner=await ownedByProfileBundle(/** @type {any} */(ctx.get('pluginManager')),source);}catch{note(new UsageError('COMMAND_SOURCE_UNREADABLE'));return;}
+      if(owner!==hanaRef)return;
       const result=await recordSeat({hanaRef,action:'use',occurredAt,idempotencyKey,sourcePlugin:hanaRef});if(result.disposition==='rejected')note(new UsageError(result.code??'RECORD_FAILED'));}).catch(note);
   });
   const stopEvent = ctx.on('session/event', (session, event) => { commandFacts.observe(session,event); if (event.type === 'turn/end') schedule(session); });
@@ -191,7 +192,8 @@ export function mountUsage(ctx, domain, eventDomain, config, coreLink, commandSo
       accepted++;
       const run=jobs.then(async()=>{
         if(closing)return /** @type {import('./contracts.js').ResendEventsResult} */({state:'rejected',code:'USAGE_UNAVAILABLE',events:[],health:null});
-        try{const result=await reporter.resend(ids);return {...result,health:closing?null:api.health()};}
+        // Host-rejected events (not stored by the server) become sendable again only through this explicit user intent.
+        try{await eventStore.reopenHostRejected(ids);const result=await reporter.resend(ids);return {...result,health:closing?null:api.health()};}
         catch{return /** @type {import('./contracts.js').ResendEventsResult} */({state:'rejected',code:closing?'USAGE_UNAVAILABLE':'RESEND_FAILED',events:[],health:closing?null:api.health()});}
       });
       jobs=run.then(()=>{},error=>note(error));return run;

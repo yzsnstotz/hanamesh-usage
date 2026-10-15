@@ -20,6 +20,8 @@ export interface EventSnapshot {
 }
 export interface EventGlobalPort { get(): EventSnapshot; set(value: EventSnapshot): Promise<void> }
 /** Local storage admission DTO; public declarations stay independent of dev-only contracts. */
+/** C-USAGE per-item host rejection, stored as `USAGE_EVENT_HOST_REJECTED[:REASON]`. */
+export function isHostRejection(code:string|null):boolean{return code==='USAGE_EVENT_HOST_REJECTED'||(code?.startsWith('USAGE_EVENT_HOST_REJECTED:')??false);}
 export interface IngestBatchResult { accepted:number; duplicates:number; rejected:readonly {eventId:string;code:string;reason?:{code?:string;need?:string}}[]; durability:'committed'|'pending-host-commit' }
 
 const terminal = new Set<UploadState>(['sent','duplicate','rejected']);
@@ -106,7 +108,7 @@ export class EventStore {
       if(!validIso(scannedAt))throw new UsageError('INVALID_INVENTORY');
       const seenItems=new Set<string>();
       for(const item of items){if(item===null||typeof item!=='object'||Object.keys(item).sort().join('|')!==['hanaRef','version','entryId','disabled'].sort().join('|')||typeof item.hanaRef!=='string'||!/^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/i.test(item.hanaRef)||typeof item.version!=='string'||!/^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/.test(item.version)||!safeMetadata(item.entryId)||typeof item.disabled!=='boolean'||seenItems.has(item.entryId))throw new UsageError('INVALID_INVENTORY');seenItems.add(item.entryId);}
-      const cutoff=this.now()-this.eventRetentionDays*DAY_MS;const events=this.snapshot.events.filter(event=>!(terminal.has(event.upload.state)&&event.upload.sentAt!==null&&Date.parse(event.upload.sentAt)<cutoff)).filter(event=>{const retract=event.source==='loader'&&event.upload.state==='pending'&&drop.has(event.hanaRef);if(retract)dropped++;return !retract;});
+      const cutoff=this.now()-this.eventRetentionDays*DAY_MS;const events=this.snapshot.events.filter(event=>!(terminal.has(event.upload.state)&&event.upload.sentAt!==null&&Date.parse(event.upload.sentAt)<cutoff)).filter(event=>{const retract=event.source==='loader'&&event.upload.state==='pending'&&event.upload.attempts===0&&event.upload.code===null&&drop.has(event.hanaRef);if(retract)dropped++;return !retract;});
       for(const input of inputs){validateEvent(input);const existing=events.find(event=>event.eventId===input.eventId);if(existing){if(identity(existing)!==identity(input))throw new UsageError('EVENT_IDENTITY_CONFLICT');duplicates++;continue;}if(events.length>=this.maxEvents)throw new UsageError('EVENTS_CAPACITY_REACHED');events.push(structuredClone(input));inserted.push(input.eventId);}
       const next={...structuredClone(this.snapshot),events,inventory:{last:{scannedAt,items:structuredClone(items)}}};await this.commit(next);
     });
@@ -117,9 +119,10 @@ export class EventStore {
       if(!validIso(sentAt)||!Number.isSafeInteger(result.accepted)||result.accepted<0||!Number.isSafeInteger(result.duplicates)||result.duplicates<0||result.durability!=='committed'||!Array.isArray(result.rejected)||new Set(eventIds).size!==eventIds.length)throw new UsageError('INVALID_UPLOAD_RESULT');
       const rejected=new Map<string,string>();
       for(const item of result.rejected){if(!item||typeof item!=='object'||!eventIds.includes(item.eventId)||rejected.has(item.eventId)||!safeMetadata(item.code))throw new UsageError('INVALID_UPLOAD_RESULT');
-        // C-USAGE per-item host reason ({code, need}): keep the more specific reason code when it is a safe token.
+        // C-USAGE per-item host reason ({code, need}): keep both, `CODE:REASON`, so a host rejection (not stored by the
+        // server, may be resent once the reason is resolved) stays distinguishable from a permanent per-item refusal.
         const reason:unknown=item.reason?.code;
-        rejected.set(item.eventId,typeof reason==='string'&&/^[A-Z][A-Z0-9_]{0,79}$/.test(reason)&&safeMetadata(reason)?reason:item.code);}
+        rejected.set(item.eventId,typeof reason==='string'&&/^[A-Z][A-Z0-9_]{0,79}$/.test(reason)&&safeMetadata(`${item.code}:${reason}`)?`${item.code}:${reason}`:item.code);}
       const remaining=eventIds.filter(id=>!rejected.has(id));
       if(result.accepted+result.duplicates!==remaining.length)throw new UsageError('INVALID_UPLOAD_RESULT');
       // Mixed counts identify no individual membership. `sent` means confirmed
@@ -136,6 +139,20 @@ export class EventStore {
       await this.commit({...structuredClone(this.snapshot),events});
     });
     this.tail=run.catch(()=>{});return run;
+  }
+  /** A host-rejected event (USAGE_EVENT_HOST_REJECTED) was not stored by the server; on an explicit user resend it goes
+   *  back to pending with its original signed bytes. Never used by the automatic sender. Returns how many were reopened. */
+  reopenHostRejected(eventIds:string[]):Promise<number>{
+    let count=0;
+    const run=this.tail.then(async()=>{
+      if(this.snapshot.withdrawal!==null)return;
+      const ids=new Set(eventIds);
+      const events=this.snapshot.events.map(event=>{
+        if(!ids.has(event.eventId)||event.upload.state!=='rejected'||!isHostRejection(event.upload.code))return structuredClone(event);
+        count++;return {...structuredClone(event),upload:{...event.upload,state:'pending' as const,code:null,sentAt:null}};
+      });
+      if(count>0)await this.commit({...structuredClone(this.snapshot),events});
+    });this.tail=run.catch(()=>{});return run.then(()=>count);
   }
   /** Conservative send intent uses the existing local diagnostic slot only.
    * Neither the signed event nor its attempt count changes at admission. */

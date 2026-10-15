@@ -29,6 +29,8 @@ export interface EventGlobalPort {
     set(value: EventSnapshot): Promise<void>;
 }
 /** Local storage admission DTO; public declarations stay independent of dev-only contracts. */
+/** C-USAGE per-item host rejection, stored as `USAGE_EVENT_HOST_REJECTED[:REASON]`. */
+export declare function isHostRejection(code: string | null): boolean;
 export interface IngestBatchResult {
     accepted: number;
     duplicates: number;
@@ -63,6 +65,9 @@ export declare class EventStore {
         dropped: number;
     }>;
     applyUpload(eventIds: string[], result: IngestBatchResult, sentAt: string): Promise<void>;
+    /** A host-rejected event (USAGE_EVENT_HOST_REJECTED) was not stored by the server; on an explicit user resend it goes
+     *  back to pending with its original signed bytes. Never used by the automatic sender. Returns how many were reopened. */
+    reopenHostRejected(eventIds: string[]): Promise<number>;
     /** Conservative send intent uses the existing local diagnostic slot only.
      * Neither the signed event nor its attempt count changes at admission. */
     markUploadIntent(eventIds: string[], pending?: boolean): Promise<void>;
