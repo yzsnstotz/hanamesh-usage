@@ -40,6 +40,7 @@ test('real DSH: the client reports its own client-tree entry id, which never equ
   assert.deepEqual(h.api.events().events.map(e=>[e.action,e.hanaRef]),[['open','ordinary-plugin']]);
   for(const moduleName of ['@deepseek-ai/dsh-client-ui-conversation','@deepseek-ai/dsh-client-ui-settings-general'])
    assert.equal((await h.pages.issue(peer,{entryId:'de443f0e',moduleName,surface:'main'})).disposition,'rejected','built-in platform pages are not plugin opens');
+  assert.equal(h.api.health().filtered.pages,2,'counted, not silently dropped');
  }finally{await h.close();}
 });
 test('pages rechecks installed ownership and consent, including revoke then grant',async()=>{

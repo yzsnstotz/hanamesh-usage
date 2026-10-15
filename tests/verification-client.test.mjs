@@ -19,7 +19,8 @@ const health = {
   deviceId: 'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk',
   outbox: { state: 'offline', pending: 3, sent: 5, duplicate: 1, rejected: 0, lastUploadAt: null, nextAttemptAt: null, lastError: null },
   withdrawal: { requestedAt: '2026-10-15T00:00:01.007Z', deviceId: 'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', state: 'pending', lastError: 'WITHDRAW_UNAVAILABLE', attempts: 2, deletedEvents: null },
-  inventory: { available: false, source: 'none', lastScanAt: null, detail: null },
+  inventory: { available: false, source: 'none', lastScanAt: null, lastError: null, failureKind: null, unreadable: 0, detail: null },
+  filtered: { commands: 0, pages: 0 },
 };
 const plain = value => JSON.parse(JSON.stringify(value));
 const json = (value, status = 200) => new Response(JSON.stringify(value), { status, headers: { 'content-type': 'application/json' } });
@@ -124,7 +125,8 @@ const row = (eventId, hanaRef, action, occurredAt, state, code = null) => ({ eve
 const panelFixture = {
   policy: { eventRetentionDays: 90, queryLimit: 100, maxQueryLimit: 1000 }, subject: { deviceId: health.deviceId, principalId: null, reason: null },
   testSupply: { identity: false, receiver: false }, consent: 'granted', core: 'present', total: 3, withdrawal: null,
-  outbox: { state: 'idle', pending: 1, sent: 1, duplicate: 0, rejected: 1, lastUploadAt: null, nextAttemptAt: null, lastError: null }, failures: {},
+  outbox: { state: 'idle', pending: 1, sent: 1, duplicate: 0, rejected: 1, lastUploadAt: null, nextAttemptAt: null, lastError: 'UPLOAD_HTTP_502' }, failures: {},
+  inventory: { available: false, source: 'plugin-manager', lastScanAt: null, lastError: 'INVENTORY_SOURCE_UNREADABLE', failureKind: 'TypeError', unreadable: 1, detail: null }, filtered: { commands: 2, pages: 1 },
   events: [
     row('aaaaaaaa-aaaa-5aaa-8aaa-aaaaaaaaaaa1', 'dsh-no-long-sit', 'use', '2026-10-15T01:00:00.000Z', 'sent'),
     row('aaaaaaaa-aaaa-5aaa-8aaa-aaaaaaaaaaa2', 'hanamesh-usage', 'open', '2026-10-15T02:00:00.000Z', 'rejected', 'USAGE_POINTS_HANA_REF_UNRESOLVED'),
@@ -310,6 +312,8 @@ test('VCLIENT12 Usage Settings shows the records natively (no iframe), with reas
   assert.match(all, /dsh-no-long-sit/); assert.match(all, /使用/); assert.match(all, /打开/); assert.match(all, /安装/);
   assert.match(all, /未被接收：该插件不在 HanaMesh 目录里/);
   assert.match(all, /关闭「数据授权」/);
+  assert.match(all, /服务端回了 HTTP 502/);assert.match(all, /插件清单：读取 DSH 插件管理服务出错（TypeError）/);
+  assert.match(all, /有 1 个已装插件这次读不到版本信息/);assert.match(all, /已忽略 2 次命令、1 次页面打开/);
   one(h, 'textarea'); one(h, 'select'); one(h, 'details');
   assert.equal(calls.filter(call => call.init?.method === 'POST').length, 0, 'reading the panel never writes');
   click(h, /查看服务端记录数/); await h.settle();

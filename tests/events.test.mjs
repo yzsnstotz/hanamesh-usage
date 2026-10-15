@@ -112,7 +112,7 @@ test('U13 EventStore atomically confirms the non-rejected mixed set without gues
   assert.deepEqual(store.query().events.map(payload),events.map(payload),'confirmation preserves every original fact/signature/nonce');
 });
 
-test('A host rejection reason (C-USAGE per-item reason) is kept as the event code; an unsafe reason falls back to the item code', async () => {
+test('A host rejection reason (C-USAGE per-item reason) is kept with the event code; an unreadable reason leaves REASON_UNREADABLE', async () => {
   const global=new EventGlobal();const store=new core.EventStore(global);const events=[];
   for(const [index,nonce] of ['AQIDBAUGBwgJCgsMDQ4PEA','QkJCQkJCQkJCQkJCQkJCQg','Q0NDQ0NDQ0NDQ0NDQ0NDQw'].entries()){
     const event=core.createUsageEvent({...base(),eventId:core.eventIdForSeat('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk','app-host',`reason-${index}`),nonce,signature:'c2lnbmF0dXJl'});events.push(event);await store.put(event);
@@ -120,7 +120,7 @@ test('A host rejection reason (C-USAGE per-item reason) is kept as the event cod
   await store.applyUpload(events.map(event=>event.eventId),{accepted:1,duplicates:0,rejected:[
     {eventId:events[1].eventId,code:'USAGE_EVENT_HOST_REJECTED',reason:{code:'USAGE_POINTS_HANA_REF_UNRESOLVED',need:'catalog-entry'}},
     {eventId:events[2].eventId,code:'USAGE_EVENT_HOST_REJECTED',reason:{code:'sk-not a token/ok',need:'x'}}],durability:'committed'},'2026-09-19T00:01:00.000Z');
-  assert.deepEqual(store.query().events.map(event=>[event.upload.state,event.upload.code]),[['sent',null],['rejected','USAGE_EVENT_HOST_REJECTED:USAGE_POINTS_HANA_REF_UNRESOLVED'],['rejected','USAGE_EVENT_HOST_REJECTED']]);
+  assert.deepEqual(store.query().events.map(event=>[event.upload.state,event.upload.code]),[['sent',null],['rejected','USAGE_EVENT_HOST_REJECTED:USAGE_POINTS_HANA_REF_UNRESOLVED'],['rejected','USAGE_EVENT_HOST_REJECTED:REASON_UNREADABLE']]);
   // An explicit user resend reopens host rejections only (the server did not store them); other refusals stay final.
   assert.equal(await store.reopenHostRejected(events.map(event=>event.eventId)),2);
   assert.deepEqual(store.query().events.map(event=>[event.upload.state,event.upload.code]),[['sent',null],['pending',null],['pending',null]]);

@@ -22,7 +22,7 @@ test('USAGE02-R3 original time and attribution survive duplicate delivery; chang
   }finally{await h.close();}
 });
 test('USAGE02-R4 health preserves the full existing no-argument public shape across Core absent/incompatible/present',async()=>{
-  for(const coreStatus of ['absent','incompatible','present']){const h=await fixtureHost({bound:false,coreStatus});try{const health=h.api.health();assert.deepEqual(Object.keys(health),['pending','recoveryComplete','failures','consent','core','deviceId','outbox','withdrawal','inventory']);assert.equal(health.core,coreStatus);assert.equal(health.consent,coreStatus==='present'?'withheld':'unknown');assert.deepEqual(Object.keys(health.outbox),['state','pending','sent','duplicate','rejected','lastUploadAt','nextAttemptAt','lastError']);assert.equal(health.withdrawal,null);}finally{await h.close();}}
+  for(const coreStatus of ['absent','incompatible','present']){const h=await fixtureHost({bound:false,coreStatus});try{const health=h.api.health();assert.deepEqual(Object.keys(health),['pending','recoveryComplete','failures','consent','core','deviceId','outbox','withdrawal','inventory','filtered']);assert.equal(health.core,coreStatus);assert.equal(health.consent,coreStatus==='present'?'withheld':'unknown');assert.deepEqual(Object.keys(health.outbox),['state','pending','sent','duplicate','rejected','lastUploadAt','nextAttemptAt','lastError']);assert.equal(health.withdrawal,null);}finally{await h.close();}}
 });
 test('USAGE02-R5 two independent clients propagate one source fact unchanged under one shared signing handle',async t=>{
   const identity=fixtureSigningIdentity(),a=await localLifecycle(t,{identity}),b=await localLifecycle(t,{identity,prepareClock:false});

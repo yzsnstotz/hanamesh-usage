@@ -13,6 +13,13 @@ const versionPattern=/^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z
 const SOURCE_DETAIL=Object.freeze({package:'@deepseek-ai/dsh-plugin-manager',serviceKey:'pluginManager',methods:['listBundles']});
 /** Entry ids this inventory writes; older snapshots (loader entry ids) are not a baseline for uninstalls. */
 const BUNDLE_ENTRY='bundle:';
+/** A bounded, secret-free description of an unexpected error: its own token code, else its constructor name. @param {unknown} error @returns {string} */
+export function causeOf(error){
+  const code=/** @type {{code?:unknown}} */(error)?.code;
+  if(typeof code==='string'&&/^[A-Z][A-Z0-9_]{0,63}$/.test(code))return code;
+  const name=/** @type {{name?:unknown}} */(error)?.name;
+  return typeof name==='string'&&/^[A-Za-z][A-Za-z0-9]{0,63}$/.test(name)?name:'UNKNOWN';
+}
 
 /**
  * @param {{
@@ -26,19 +33,22 @@ const BUNDLE_ENTRY='bundle:';
  */
 export function createInventory({ctx,store,link,inventoryIntervalMs,now=Date.now,note=()=>{}}){
   const host=/** @type {{get?(name:string):unknown}} */(/** @type {unknown} */(ctx));
-  let tail=Promise.resolve(),lastScanAt=/** @type {string|null} */(null),lastError=/** @type {string|null} */(null),unreadableCount=0,closed=false;
+  let tail=Promise.resolve(),lastScanAt=/** @type {string|null} */(null),lastError=/** @type {string|null} */(null),lastFailureKind=/** @type {string|null} */(null),unreadableCount=0,closed=false;
   /** @type {ReturnType<typeof setInterval>|null} */let timer=null;
   const on=/** @type {(name:string,listener:(...args:any[])=>void)=>()=>void} */(ctx.on.bind(ctx));
   const stops=[on('loader/config-update',()=>{backgroundScan();}),on('plugin-manager/changed',()=>{backgroundScan();}),
     on('internal/service',name=>{if(name==='pluginManager'&&lastError==='INVENTORY_SOURCE_UNAVAILABLE')backgroundScan();})];
   /** @returns {{listBundles():Promise<BundleInfo[]>}|null} */
   function manager(){
-    try{const value=/** @type {{listBundles?:unknown}|undefined} */(host.get?.('pluginManager'));return value&&typeof value.listBundles==='function'?/** @type {any} */(value):null;}catch{return null;}
+    let value;
+    // Reading the service can throw (Cordis rejects some lookups); that is not "absent" — keep it as a distinct, visible cause.
+    try{value=/** @type {{listBundles?:unknown}|undefined} */(host.get?.('pluginManager'));}catch(error){lastFailureKind=causeOf(error);throw new UsageError('INVENTORY_SOURCE_UNREADABLE');}
+    return value&&typeof value.listBundles==='function'?/** @type {any} */(value):null;
   }
   async function scanRaw(){
     if(closed)throw new UsageError('INVENTORY_CLOSED');
     const source=manager();
-    if(source===null){lastError='INVENTORY_SOURCE_UNAVAILABLE';throw new UsageError('INVENTORY_SOURCE_UNAVAILABLE');}
+    if(source===null){lastError='INVENTORY_SOURCE_UNAVAILABLE';lastFailureKind=null;throw new UsageError('INVENTORY_SOURCE_UNAVAILABLE');}
     const bundles=await source.listBundles();
     if(!Array.isArray(bundles))throw new UsageError('INVENTORY_FAILED');
     const accepted=new Set((store.getSnapshot().inventory.last?.items??[]).filter(item=>item.entryId.startsWith(BUNDLE_ENTRY)).map(item=>item.hanaRef));
@@ -77,9 +87,14 @@ export function createInventory({ctx,store,link,inventoryIntervalMs,now=Date.now
     const legacy=(store.getSnapshot().inventory.last?.items??[]).some(item=>!item.entryId.startsWith(BUNDLE_ENTRY));
     // Only events never attempted (attempts 0, no code): an attempted-but-unconfirmed upload may already be on the server.
     const retract=legacy?[...new Set(store.getSnapshot().events.filter(event=>event.source==='loader'&&event.upload.state==='pending'&&event.upload.attempts===0&&event.upload.code===null&&!declared.has(event.hanaRef)).map(event=>event.hanaRef))]:[];
-    const committed=await store.updateInventory(scannedAt,items,inputs,retract);lastScanAt=scannedAt;lastError=null;unreadableCount=unreadable;return {scannedAt,events:committed.inserted.map(id=>byId.get(id)),duplicates:observedDuplicates+committed.duplicates,unreadable,retracted:committed.dropped};
+    const committed=await store.updateInventory(scannedAt,items,inputs,retract);lastScanAt=scannedAt;lastError=null;lastFailureKind=null;unreadableCount=unreadable;return {scannedAt,events:committed.inserted.map(id=>byId.get(id)),duplicates:observedDuplicates+committed.duplicates,unreadable,retracted:committed.dropped};
   }
-  function scan(){const run=tail.then(scanRaw).catch(error=>{if(!(error instanceof UsageError&&error.code==='INVENTORY_SOURCE_UNAVAILABLE'))lastError='INVENTORY_FAILED';note(lastError??'INVENTORY_FAILED');throw new UsageError('INVENTORY_FAILED');});tail=run.then(()=>{},()=>{});return run;}
+  // Callers get one INVENTORY_FAILED; health keeps what actually failed: a Usage code as-is, anything else as
+  // INVENTORY_FAILED with its bounded cause.
+  function scan(){const run=tail.then(scanRaw).catch(error=>{
+    if(error instanceof UsageError){lastError=error.code;if(error.code!=='INVENTORY_SOURCE_UNREADABLE')lastFailureKind=null;}
+    else{lastError='INVENTORY_FAILED';lastFailureKind=causeOf(error);}
+    note(lastError);throw new UsageError('INVENTORY_FAILED');});tail=run.then(()=>{},()=>{});return run;}
   // scan() records failure before a background caller observes its rejection.
   function backgroundScan(){void scan().then(()=>undefined,()=>undefined);}
   async function start(){
@@ -87,5 +102,5 @@ export function createInventory({ctx,store,link,inventoryIntervalMs,now=Date.now
     try{return await scan();}finally{if(!closed&&timer===null){timer=setInterval(()=>{backgroundScan();},inventoryIntervalMs);timer.unref?.();}}
   }
   async function close(){if(closed)return;closed=true;for(const stop of stops)stop();if(timer!==null)clearInterval(timer);await tail;}
-  return {scan,start,close,drain:()=>tail,health:()=>({available:lastScanAt!==null&&lastError===null,source:/** @type {const} */('plugin-manager'),lastScanAt,lastError,unreadable:unreadableCount,detail:SOURCE_DETAIL})};
+  return {scan,start,close,drain:()=>tail,health:()=>({available:lastScanAt!==null&&lastError===null,source:/** @type {const} */('plugin-manager'),lastScanAt,lastError,failureKind:lastFailureKind,unreadable:unreadableCount,detail:SOURCE_DETAIL})};
 }

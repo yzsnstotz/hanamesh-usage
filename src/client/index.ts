@@ -169,7 +169,8 @@ interface HealthSnapshot {
   consent:'granted'|'withheld'|'unknown';core:'present'|'absent'|'incompatible';deviceId:string|null;
   outbox:{state:'idle'|'uploading'|'backoff'|'offline'|'stopped'|'unconfirmed';pending:number;sent:number;duplicate:number;rejected:number;lastUploadAt:string|null;nextAttemptAt:string|null;lastError:string|null};
   withdrawal:WithdrawalSnapshot|null;
-  inventory:{available:boolean;source:'plugin-manager'|'none';lastScanAt:string|null;detail:{package:string;serviceKey:string;methods:string[]}|null};
+  inventory:{available:boolean;source:'plugin-manager'|'none';lastScanAt:string|null;lastError:string|null;failureKind:string|null;unreadable:number;detail:{package:string;serviceKey:string;methods:string[]}|null};
+  filtered:{commands:number;pages:number};
 }
 export interface ResendEventsResult {
   readonly state:'processed'|'withheld'|'rejected';
@@ -330,6 +331,7 @@ export interface UsageRecordsSnapshot {
   deviceId:string|null;consent:HealthSnapshot['consent'];core:HealthSnapshot['core'];total:number;
   outbox:{state:HealthSnapshot['outbox']['state'];pending:number;sent:number;duplicate:number;rejected:number;lastUploadAt:string|null;lastError:string|null};
   withdrawal:WithdrawalSnapshot|null;rows:UsageRecordRow[];
+  inventory:{lastError:string|null;failureKind:string|null;unreadable:number}|null;filtered:{commands:number;pages:number}|null;
 }
 const actionText:Record<UsageRecordRow['action'],string>={install:'安装',open:'打开',use:'使用',uninstall:'卸载'};
 /** Plain-language reasons. Unknown tokens are shown as-is rather than hidden. */
@@ -350,8 +352,12 @@ const reasonText:Record<string,string>={
   USAGE_STORAGE_UNAVAILABLE:'服务端存储结果未知，暂停自动重传；可在下方「诊断」里手动重发',
   UPLOAD_STATE_PERSIST_FAILED:'本机保存上报状态失败',
   WITHDRAW_UNAVAILABLE:'删除服务端记录的请求暂时没有送达，会再试',
+  REASON_UNREADABLE:'服务端给了原因，但格式无法识别',
+  INVENTORY_SOURCE_UNAVAILABLE:'DSH 的插件管理服务不在，暂时读不到你装了哪些插件',
+  INVENTORY_SOURCE_UNREADABLE:'读取 DSH 插件管理服务出错',
+  INVENTORY_FAILED:'读取插件清单出错',
 };
-export const usageReason=(code:string|null):string=>{if(code===null)return '';const own=code.includes(':')?code.slice(code.indexOf(':')+1):code;return reasonText[own]??reasonText[code]??own;};
+export const usageReason=(code:string|null):string=>{if(code===null)return '';const http=/^UPLOAD_HTTP_(\d{3})$/.exec(code);if(http)return `服务端回了 HTTP ${http[1]}，没有可读的错误码；稍后会自动再传`;const own=code.includes(':')?code.slice(code.indexOf(':')+1):code;return reasonText[own]??reasonText[code]??own;};
 function uploadText(row:UsageRecordRow):string {
   if(row.upload==='sent'||row.upload==='duplicate')return '服务端已收到';
   if(row.upload==='rejected')return `未被接收：${usageReason(row.code)}${hostRejection(row.code)?'（条件满足后可在「诊断」里重发）':''}`;
@@ -384,6 +390,8 @@ async function fetchUsageRecords(signal:AbortSignal):Promise<UsageRecordsSnapsho
     outbox:{state:o.state as HealthSnapshot['outbox']['state'],pending:Number(o.pending)||0,sent:Number(o.sent)||0,duplicate:Number(o.duplicate)||0,rejected:Number(o.rejected)||0,
       lastUploadAt:typeof o.lastUploadAt==='string'?o.lastUploadAt:null,lastError:typeof o.lastError==='string'?o.lastError:null},
     withdrawal:value.withdrawal,
+    inventory:object(value.inventory)?{lastError:typeof value.inventory.lastError==='string'?value.inventory.lastError:null,failureKind:typeof value.inventory.failureKind==='string'?value.inventory.failureKind:null,unreadable:Number(value.inventory.unreadable)||0}:null,
+    filtered:object(value.filtered)?{commands:Number(value.filtered.commands)||0,pages:Number(value.filtered.pages)||0}:null,
     rows:value.events.map(event=>({eventId:event.eventId as string,hanaRef:event.hanaRef as string,action:event.action as UsageRecordRow['action'],occurredAt:event.occurredAt as string,
       upload:(event.upload as {state:UsageRecordRow['upload']}).state,code:(event.upload as {code:string|null}).code}))
       .sort((a,b)=>b.occurredAt.localeCompare(a.occurredAt))};
@@ -428,6 +436,9 @@ export function UsageRecords({revision=0}:{revision?:number}) {
     h('p',{'data-hanamesh-usage-consent':snapshot.consent},consentLine),
     h('p',{'data-hanamesh-usage-outbox':snapshot.outbox.state},outboxText(snapshot)),
     snapshot.withdrawal?h('p',{role:'status','data-hanamesh-usage-withdrawal':snapshot.withdrawal.state},withdrawalText(snapshot.withdrawal)):null,
+    snapshot.inventory?.lastError?h('p',{role:'alert','data-hanamesh-usage-inventory':snapshot.inventory.lastError},`插件清单：${usageReason(snapshot.inventory.lastError)}${snapshot.inventory.failureKind?`（${snapshot.inventory.failureKind}）`:''}；安装/卸载记录暂停，恢复后自动补上。`):null,
+    snapshot.inventory&&snapshot.inventory.unreadable>0?h('p',{'data-hanamesh-usage-unreadable':String(snapshot.inventory.unreadable)},`有 ${snapshot.inventory.unreadable} 个已装插件这次读不到版本信息，暂未记录。`):null,
+    snapshot.filtered&&(snapshot.filtered.commands>0||snapshot.filtered.pages>0)?h('p',{'data-hanamesh-usage-filtered':'true'},`已忽略 ${snapshot.filtered.commands} 次命令、${snapshot.filtered.pages} 次页面打开：它们属于 DSH 自带或不是你装的插件，不记录。`):null,
     h('p',null,'撤回：到「设置 → HanaMesh」关闭「数据授权」。关闭后不再记录，本机记录立即删除，并请求服务端删除本设备的原始记录。'),
     h('div',null,
       h('button',{type:'button',disabled:remoteBusy,onClick:checkRemote},remoteBusy?'查询中…':'查看服务端记录数'),

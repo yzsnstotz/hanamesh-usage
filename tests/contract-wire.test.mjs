@@ -46,7 +46,7 @@ const USAGE_RECORD_CODES=['INVALID_RECORD_INPUT','DEVICE_UNAVAILABLE','EVENTS_CA
 const usageLocalHealth=(core,consent,deviceId,outboxState)=>({pending:0,recoveryComplete:true,failures:{},consent,core,deviceId,
   outbox:{state:outboxState,pending:0,sent:0,duplicate:0,rejected:0,lastUploadAt:null,nextAttemptAt:null,lastError:null},
   withdrawal:null,
-  inventory:{available:false,source:'none',lastScanAt:null,detail:null}});
+  inventory:{available:false,source:'none',lastScanAt:null,lastError:null,failureKind:null,unreadable:0,detail:null},filtered:{commands:0,pages:0}});
 const usageLocal={
   input:{hanaRef:'@hanamesh/example-app',action:'open',idempotencyKey:'page:fixture-1',sourcePlugin:'@hanamesh/dsh-app-host'},
   results:{withheld:{disposition:'withheld'},duplicate:{disposition:'duplicate'},

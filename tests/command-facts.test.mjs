@@ -81,7 +81,7 @@ test('a command the installation supplies (no profile-installed bundle owns it) 
   const builtIn={name:'@deepseek-ai/dsh-web-app',installed:false,availability:'installation',enabled:true,removable:false,rows:[{rowId:source.entryId,moduleName:source.moduleName,entryId:source.entryId}]};
   for(const pluginManager of [manager(),manager(builtIn),manager({...profileBundle('dsh-update-notifier',[source]),enabled:false})]){
     const h=await host({pluginManager});
-    try{run(h,register(h));await h.api.drain();assert.equal(h.api.events().total,0);}finally{await h.close();}
+    try{run(h,register(h));await h.api.drain();assert.equal(h.api.events().total,0);assert.equal(h.api.health().filtered.commands,1,'counted, not silently dropped');}finally{await h.close();}
   }
 });
 

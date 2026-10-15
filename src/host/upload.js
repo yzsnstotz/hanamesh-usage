@@ -111,7 +111,8 @@ export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize
         try{await store.markAttempts(ids,'USAGE_STORAGE_UNAVAILABLE');}catch{persistenceFailed=true;lastError='UPLOAD_STATE_PERSIST_FAILED';}
         return /** @type {const} */('unconfirmed');
       }
-      return await fail(answered.code??'UPLOAD_UNAVAILABLE',ids);
+      // A reachable server whose error body is unreadable is not 'unreachable': keep its HTTP status.
+      return await fail(answered.code??`UPLOAD_HTTP_${response.status}`,ids);
     }
     let result;
     try{
@@ -198,7 +199,7 @@ export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize
         if(answered.unknown){
           holdUnknown(ids,'USAGE_STORAGE_UNAVAILABLE');
           try{await store.markAttempts(ids,'USAGE_STORAGE_UNAVAILABLE');}catch{persistenceFailed=true;lastError='UPLOAD_STATE_PERSIST_FAILED';return answer('rejected','UPLOAD_STATE_PERSIST_FAILED',true);}
-        }else if(!await failed(ids,previous,response.status===401||response.status===403?'UPLOAD_UNAUTHORIZED':answered.code??'UPLOAD_UNAVAILABLE'))return answer('rejected','UPLOAD_STATE_PERSIST_FAILED',true);
+        }else if(!await failed(ids,previous,response.status===401||response.status===403?'UPLOAD_UNAUTHORIZED':answered.code??`UPLOAD_HTTP_${response.status}`))return answer('rejected','UPLOAD_STATE_PERSIST_FAILED',true);
         offset+=batch.length;continue;
       }
       let result;

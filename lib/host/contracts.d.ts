@@ -31,6 +31,7 @@ export interface PanelSnapshot {
   testSupply:PanelTestSupply;consent:HealthSnapshot['consent'];core:HealthSnapshot['core'];
   total:number;events:PanelEvent[];outbox:HealthSnapshot['outbox'];failures:Record<string,number>;
   withdrawal:HealthSnapshot['withdrawal'];
+  inventory:HealthSnapshot['inventory'];filtered:HealthSnapshot['filtered'];
 }
 /** rc.7：`sourceHanaRef` / `targetRef` / `receipt` 可选；`receipt` 只允许配 `action:'use'`。 */
 export interface RecordInput { hanaRef:string; action:'open'|'use'; occurredAt?:string; idempotencyKey:string; sourcePlugin:string; sourceHanaRef?:string|null; targetRef?:string|null; receipt?:UsageReceipt|null }
@@ -44,7 +45,8 @@ export interface HealthSnapshot {
   deviceId:string|null;
   outbox:{state:'idle'|'uploading'|'backoff'|'offline'|'stopped'|'unconfirmed';pending:number;sent:number;duplicate:number;rejected:number;lastUploadAt:string|null;nextAttemptAt:string|null;lastError:string|null};
   withdrawal:{requestedAt:string;deviceId:string;state:'pending'|'sent'|'offline'|'unconfirmed';attempts:number;deletedEvents:number|null;lastError:string|null}|null;
-  inventory:{available:boolean;source:'plugin-manager'|'none';lastScanAt:string|null;detail:{package:string;serviceKey:string;methods:string[]}|null};
+  inventory:{available:boolean;source:'plugin-manager'|'none';lastScanAt:string|null;lastError:string|null;failureKind:string|null;unreadable:number;detail:{package:string;serviceKey:string;methods:string[]}|null};
+  filtered:{commands:number;pages:number};
 }
 export interface RemoteEvent { eventId:string; hanaRef:string; action:UsageEvent['action']; occurredAt:string; receivedAt:string }
 /** This device's server records, read through the public device-signed route. `total` is null unless `state` is available. */
