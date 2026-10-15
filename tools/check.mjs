@@ -40,8 +40,8 @@ for(const p of sources){
    assert.deepEqual(calls,['path','path',"'api/hanamesh/usage/panel/view'","'api/hanamesh/usage/panel/view'"],`client only uses its own authenticated view and verification bridge ${p}`);
    assert.match(s,/const verificationPath='api\/hanamesh\/usage\/verification';/);
    const verification=[...s.matchAll(/\bawait verificationFetch\(([^,]+),/g)].map(match=>match[1]);
-   assert.deepEqual(verification,['`${verificationPath}/call`','verificationPath',"'api/hanamesh/usage/events/resend'","'api/hanamesh/usage/panel'"],`normal resend and test-only verification stay on their own exact authenticated routes ${p}`);
-   assert.equal((s.match(/\bverificationFetch\(/g)??[]).length,5,`no extra local control fetch caller ${p}`);
+   assert.deepEqual(verification,['`${verificationPath}/call`','verificationPath',"'api/hanamesh/usage/events/resend'","'api/hanamesh/usage/panel'","'api/hanamesh/usage/panel'","'api/hanamesh/usage/panel/remote'"],`normal resend, the records view (read-only) and test-only verification stay on their own exact authenticated routes ${p}`);
+   assert.equal((s.match(/\bverificationFetch\(/g)??[]).length,7,`no extra local control fetch caller ${p}`);
    assert.match(s,/method:'GET'/);assert.doesNotMatch(s,/https?:|ctx\.get\(/);
  }else assert.doesNotMatch(s,/\bfetch\s*\(/,`outbound fetch ${p}`);
  assert.doesNotMatch(s,/\bconsole\.(?:log|error|warn)\s*\(/,`boundary ${p}`);

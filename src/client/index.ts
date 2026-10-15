@@ -189,7 +189,9 @@ const eventIdPattern=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3
 class ResendError extends Error {
   constructor(readonly code:string){super(code);}
 }
-const deliveryCode=(value:unknown):value is string|null=>value===null||(typeof value==='string'&&deliveryCodes.has(value));
+// Server codes and per-item host reasons are open-ended tokens (C-USAGE: "expect new values"); shape, not membership.
+const codeToken=/^[A-Z][A-Z0-9_]{0,63}$/;
+const deliveryCode=(value:unknown):value is string|null=>value===null||(typeof value==='string'&&(deliveryCodes.has(value)||codeToken.test(value)));
 function withdrawalSnapshot(value:unknown):value is WithdrawalSnapshot|null {
   return value===null||(object(value)&&typeof value.requestedAt==='string'&&typeof value.deviceId==='string'
     &&['pending','sent','offline','unconfirmed'].includes(value.state as string)
@@ -321,27 +323,132 @@ export async function fetchUsagePanel(signal:AbortSignal):Promise<string> {
   return await response.text();
 }
 
-/** A sandboxed, script-free Usage-owned view with explicit refresh/error states. */
-export function UsagePanel() {
-  const [revision,setRevision]=useState(0);
-  const [state,setState]=useState<{loading:boolean;html:string|null;error:boolean}>({loading:true,html:null,error:false});
+/** One record as the person sees it: what, when, and whether the server has it (with the server's reason). */
+export interface UsageRecordRow {eventId:string;hanaRef:string;action:'install'|'open'|'use'|'uninstall';occurredAt:string;upload:'pending'|'sent'|'duplicate'|'rejected';code:string|null}
+export interface UsageRecordsSnapshot {
+  deviceId:string|null;consent:HealthSnapshot['consent'];core:HealthSnapshot['core'];total:number;
+  outbox:{state:HealthSnapshot['outbox']['state'];pending:number;sent:number;duplicate:number;rejected:number;lastUploadAt:string|null;lastError:string|null};
+  withdrawal:WithdrawalSnapshot|null;rows:UsageRecordRow[];
+}
+const actionText:Record<UsageRecordRow['action'],string>={install:'安装',open:'打开',use:'使用',uninstall:'卸载'};
+/** Plain-language reasons. Unknown tokens are shown as-is rather than hidden. */
+const reasonText:Record<string,string>={
+  USAGE_POINTS_HANA_REF_UNRESOLVED:'该插件不在 HanaMesh 目录里，服务端没有接收（不计积分）',
+  USAGE_POINTS_HANA_ID_VERSION_UNSUPPORTED:'服务端无法识别该插件的目录编号，没有接收',
+  USAGE_EVENT_HOST_REJECTED:'服务端没有接收这条记录',
+  USAGE_CLOCK_SKEW:'本机时间与服务端相差太大，服务端没有接收',
+  USAGE_EVENT_CONFLICT:'与服务端已有的同一条记录内容不一致',
+  USAGE_NONCE_REUSED:'与服务端已有记录冲突',
+  USAGE_INPUT_INVALID:'记录格式没有通过服务端校验',
+  UPLOAD_UNAVAILABLE:'服务端暂时连不上，稍后会自动再传',
+  UPLOAD_UNAUTHORIZED:'服务端不认这台设备的签名（设备可能还没注册）',
+  UPLOAD_RESPONSE_INVALID:'服务端的回复格式不对，记录先留在本机',
+  USAGE_STORAGE_UNAVAILABLE:'服务端存储结果未知，暂停自动重传；可在下方「诊断」里手动重发',
+  UPLOAD_STATE_PERSIST_FAILED:'本机保存上报状态失败',
+  WITHDRAW_UNAVAILABLE:'删除服务端记录的请求暂时没有送达，会再试',
+};
+export const usageReason=(code:string|null):string=>code===null?'':reasonText[code]??code;
+function uploadText(row:UsageRecordRow):string {
+  if(row.upload==='sent'||row.upload==='duplicate')return '服务端已收到';
+  if(row.upload==='rejected')return `未被接收：${usageReason(row.code)}`;
+  return row.code?`等待上报（${usageReason(row.code)}）`:'等待上报';
+}
+function outboxText(snapshot:UsageRecordsSnapshot):string {
+  const o=snapshot.outbox;
+  if(o.state==='offline')return '没有配置服务端：记录只保存在本机，不会上报。';
+  if(o.state==='unconfirmed')return '上一次上报结果未知，已暂停自动重传。';
+  const counts=`服务端已收到 ${o.sent+o.duplicate} 条，等待上报 ${o.pending} 条，未被接收 ${o.rejected} 条。`;
+  return o.lastError?`${counts}最近一次：${usageReason(o.lastError)}`:counts;
+}
+function withdrawalText(w:WithdrawalSnapshot):string {
+  if(w.state==='sent')return `已撤回同意，服务端已删除本设备的原始记录 ${w.deletedEvents??0} 条。`;
+  if(w.state==='offline')return '已撤回同意，本机记录已删除；没有配置服务端，无需删除服务端记录。';
+  if(w.state==='unconfirmed')return '已撤回同意；服务端删除结果未知，会再确认。';
+  return `已撤回同意，本机记录已删除；正在请求服务端删除原始记录（已尝试 ${w.attempts} 次）${w.lastError?`：${usageReason(w.lastError)}`:''}。`;
+}
+async function fetchUsageRecords(signal:AbortSignal):Promise<UsageRecordsSnapshot> {
+  const response=await verificationFetch('api/hanamesh/usage/panel',{method:'GET',credentials:'same-origin',cache:'no-store',signal});
+  if(!response.ok)throw new Error('USAGE_PANEL_UNAVAILABLE');
+  const value=await resendJson(response).catch(()=>{throw new Error('USAGE_PANEL_UNAVAILABLE');});
+  const actions=['install','open','use','uninstall'];
+  if(!object(value)||!object(value.subject)||!object(value.outbox)||!['granted','withheld','unknown'].includes(value.consent as string)||!withdrawalSnapshot(value.withdrawal)
+    ||!Array.isArray(value.events)||!value.events.every(event=>object(event)&&typeof event.eventId==='string'&&typeof event.hanaRef==='string'
+      &&actions.includes(event.action as string)&&typeof event.occurredAt==='string'&&object(event.upload)
+      &&['pending','sent','duplicate','rejected'].includes(event.upload.state as string)&&deliveryCode(event.upload.code)))throw new Error('USAGE_PANEL_UNAVAILABLE');
+  const o=value.outbox;
+  return {deviceId:(value.subject.deviceId as string|null)??null,consent:value.consent as HealthSnapshot['consent'],core:value.core as HealthSnapshot['core'],total:Number(value.total)||0,
+    outbox:{state:o.state as HealthSnapshot['outbox']['state'],pending:Number(o.pending)||0,sent:Number(o.sent)||0,duplicate:Number(o.duplicate)||0,rejected:Number(o.rejected)||0,
+      lastUploadAt:typeof o.lastUploadAt==='string'?o.lastUploadAt:null,lastError:typeof o.lastError==='string'?o.lastError:null},
+    withdrawal:value.withdrawal,
+    rows:value.events.map(event=>({eventId:event.eventId as string,hanaRef:event.hanaRef as string,action:event.action as UsageRecordRow['action'],occurredAt:event.occurredAt as string,
+      upload:(event.upload as {state:UsageRecordRow['upload']}).state,code:(event.upload as {code:string|null}).code}))
+      .sort((a,b)=>b.occurredAt.localeCompare(a.occurredAt))};
+}
+interface RemoteView {state:'available'|'unknown'|'offline';total:number|null;code:string|null}
+async function fetchRemoteRecords(signal:AbortSignal):Promise<RemoteView> {
+  const response=await verificationFetch('api/hanamesh/usage/panel/remote',{method:'GET',credentials:'same-origin',cache:'no-store',signal});
+  if(!response.ok)throw new Error('REMOTE_UNAVAILABLE');
+  const value=await resendJson(response).catch(()=>{throw new Error('REMOTE_UNAVAILABLE');});
+  if(!object(value)||!['available','unknown','offline'].includes(value.state as string))throw new Error('REMOTE_UNAVAILABLE');
+  return {state:value.state as RemoteView['state'],total:Number.isSafeInteger(value.total)?value.total as number:null,code:typeof value.code==='string'?value.code:null};
+}
+const localTime=(iso:string)=>{const date=new Date(iso);return Number.isNaN(date.getTime())?iso:date.toLocaleString();};
+
+/** The person's view of their usage records. Reading never collects, uploads or resends anything. */
+export function UsageRecords({revision=0}:{revision?:number}) {
+  const [snapshot,setSnapshot]=useState<UsageRecordsSnapshot|null>(null);
+  const [error,setError]=useState<string|null>(null);
+  const [remote,setRemote]=useState<RemoteView|null>(null);
+  const [remoteBusy,setRemoteBusy]=useState(false);
+  const remoteRequest=useRef<AbortController|null>(null);
+  useEffect(()=>()=>remoteRequest.current?.abort(),[]);
   useEffect(()=>{
-    const controller=new AbortController();
-    setState({loading:true,html:null,error:false});
-    void fetchUsagePanel(controller.signal).then(html=>{
-      if(!controller.signal.aborted)setState({loading:false,html,error:false});
-    },()=>{
-      if(!controller.signal.aborted)setState({loading:false,html:null,error:true});
-    });
+    const controller=new AbortController();setError(null);setRemote(null);
+    void fetchUsageRecords(controller.signal).then(value=>{if(!controller.signal.aborted)setSnapshot(value);},()=>{if(!controller.signal.aborted){setSnapshot(null);setError('USAGE_PANEL_UNAVAILABLE');}});
     return ()=>controller.abort();
   },[revision]);
-  return h('section',{'aria-label':'Usage 开发小面板'},
-    h('h2',null,'Usage 开发小面板'),
-    h('button',{type:'button',disabled:state.loading,onClick:()=>setRevision(value=>value+1)},state.loading?'读取中…':'刷新本机记录'),
-    state.error?h('p',{role:'alert'},'本机记录读取失败 · USAGE_PANEL_UNAVAILABLE；刷新只读，不触发新的采集或上报。'):null,
-    state.html===null?null:h('iframe',{title:'本机 Usage 事件、签名与上报状态',srcDoc:state.html,sandbox:'',style:{width:'100%',height:650,border:0}}),
-    h(UsageResendPanel,{revision}),
-    h(UsageVerificationPanel),
+  function checkRemote(){
+    if(remoteRequest.current!==null)return;
+    const controller=new AbortController();remoteRequest.current=controller;setRemoteBusy(true);
+    void fetchRemoteRecords(controller.signal).then(value=>{if(!controller.signal.aborted)setRemote(value);},()=>{if(!controller.signal.aborted)setRemote({state:'unknown',total:null,code:'REMOTE_UNAVAILABLE'});})
+      .finally(()=>{if(remoteRequest.current===controller)remoteRequest.current=null;if(!controller.signal.aborted)setRemoteBusy(false);});
+  }
+  if(error!==null)return h('p',{role:'alert','data-hanamesh-usage-records':'unavailable'},'使用记录读取失败（USAGE_PANEL_UNAVAILABLE）。可以点「刷新」再试；刷新不会采集或上报任何东西。');
+  if(snapshot===null)return h('p',{role:'status','data-hanamesh-usage-records':'loading'},'读取中…');
+  const consentLine=snapshot.core!=='present'
+    ?'没有找到 HanaMesh Core：不记录。请确认 HanaMesh Core 插件已安装并启用。'
+    :snapshot.consent==='granted'
+      ?'已同意：记录你安装、打开和使用的插件（只有时间、插件名和动作，不含对话内容）。'
+      :'未同意：不记录任何使用。要开始记录，到「设置 → HanaMesh」打开「数据授权」。';
+  return h('div',{'data-hanamesh-usage-records':'ready'},
+    h('p',{'data-hanamesh-usage-consent':snapshot.consent},consentLine),
+    h('p',{'data-hanamesh-usage-outbox':snapshot.outbox.state},outboxText(snapshot)),
+    snapshot.withdrawal?h('p',{role:'status','data-hanamesh-usage-withdrawal':snapshot.withdrawal.state},withdrawalText(snapshot.withdrawal)):null,
+    h('p',null,'撤回：到「设置 → HanaMesh」关闭「数据授权」。关闭后不再记录，本机记录立即删除，并请求服务端删除本设备的原始记录。'),
+    h('div',null,
+      h('button',{type:'button',disabled:remoteBusy,onClick:checkRemote},remoteBusy?'查询中…':'查看服务端记录数'),
+      remote===null?null:h('span',{role:'status','data-hanamesh-usage-remote':remote.state},
+        remote.state==='available'?` 服务端有本设备的原始记录 ${remote.total??0} 条。`
+          :remote.state==='offline'?' 没有配置服务端。':` 服务端暂时查不到（${usageReason(remote.code)}），不代表 0 条。`)),
+    snapshot.rows.length===0
+      ?h('p',null,snapshot.consent==='granted'?'还没有记录。打开一个插件页面或执行一个插件命令后会出现在这里。':'没有记录。')
+      :h('table',{'aria-label':'本设备使用记录'},
+        h('thead',null,h('tr',null,h('th',null,'时间'),h('th',null,'插件'),h('th',null,'动作'),h('th',null,'状态'))),
+        h('tbody',null,...snapshot.rows.map(row=>h('tr',{key:row.eventId,'data-hanamesh-usage-row':row.upload},
+          h('td',null,localTime(row.occurredAt)),h('td',null,row.hanaRef),h('td',null,actionText[row.action]),h('td',null,uploadText(row)))))),
+  );
+}
+
+/** Settings section: the records first; resend and test-build verification stay under 诊断. */
+export function UsagePanel() {
+  const [revision,setRevision]=useState(0);
+  return h('section',{'aria-label':'HanaMesh 使用记录'},
+    h('h2',null,'HanaMesh 使用记录'),
+    h('button',{type:'button',onClick:()=>setRevision(value=>value+1)},'刷新'),
+    h(UsageRecords,{revision}),
+    h('details',null,h('summary',null,'诊断'),
+      h(UsageResendPanel,{revision}),
+      h(UsageVerificationPanel)),
   );
 }
 
@@ -426,6 +533,6 @@ export async function apply(ctx:ClientContext):Promise<void> {
   await ctx.inject(['remote.hanameshUsagePages','slots'],scoped=>{
     pagesContext=scoped;
     scoped.effect(()=>()=>{if(pagesContext===scoped)pagesContext=null;});
-    scoped.slots.inject('settings.section',()=>scoped.slots.register({name:'settings.section',id:'hanamesh-usage',order:80,label:'Usage 开发小面板'},UsagePanel));
+    scoped.slots.inject('settings.section',()=>scoped.slots.register({name:'settings.section',id:'hanamesh-usage',order:80,label:'HanaMesh 使用记录'},UsagePanel));
   });
 }

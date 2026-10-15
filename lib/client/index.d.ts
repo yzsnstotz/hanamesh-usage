@@ -122,7 +122,40 @@ export declare function UsageResendPanel({ revision }: {
 }, HTMLElement>;
 /** Same authenticated Fetch registry for Web and the Desktop carrier. No write API. */
 export declare function fetchUsagePanel(signal: AbortSignal): Promise<string>;
-/** A sandboxed, script-free Usage-owned view with explicit refresh/error states. */
+/** One record as the person sees it: what, when, and whether the server has it (with the server's reason). */
+export interface UsageRecordRow {
+    eventId: string;
+    hanaRef: string;
+    action: 'install' | 'open' | 'use' | 'uninstall';
+    occurredAt: string;
+    upload: 'pending' | 'sent' | 'duplicate' | 'rejected';
+    code: string | null;
+}
+export interface UsageRecordsSnapshot {
+    deviceId: string | null;
+    consent: HealthSnapshot['consent'];
+    core: HealthSnapshot['core'];
+    total: number;
+    outbox: {
+        state: HealthSnapshot['outbox']['state'];
+        pending: number;
+        sent: number;
+        duplicate: number;
+        rejected: number;
+        lastUploadAt: string | null;
+        lastError: string | null;
+    };
+    withdrawal: WithdrawalSnapshot | null;
+    rows: UsageRecordRow[];
+}
+export declare const usageReason: (code: string | null) => string;
+/** The person's view of their usage records. Reading never collects, uploads or resends anything. */
+export declare function UsageRecords({ revision }: {
+    revision?: number;
+}): import("react").ReactElement<{
+    'data-hanamesh-usage-records': string;
+}, string | import("react").JSXElementConstructor<any>>;
+/** Settings section: the records first; resend and test-build verification stay under 诊断. */
 export declare function UsagePanel(): import("react").DetailedReactHTMLElement<{
     'aria-label': string;
 }, HTMLElement>;
