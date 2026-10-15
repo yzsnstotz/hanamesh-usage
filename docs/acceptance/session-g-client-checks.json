@@ -1,0 +1,87 @@
+{
+  "scope": "ENGINEERING_ONLY_NO_OWNER_ACCEPTANCE",
+  "toolchain": {
+    "node": "24.13.1",
+    "pnpm": "10.33.0",
+    "typescript": "5.9.3"
+  },
+  "checks": {
+    "build": "TARGET_SEMANTIC_BUILD_COMPLETE",
+    "test": {
+      "tests": 333,
+      "pass": 331,
+      "fail": 0,
+      "skipped": 2
+    },
+    "check": "PASS",
+    "mutationsKilled": 24,
+    "mutationNames": [
+      "G-missing-response-is-success",
+      "G-pre-post-duplicate-identity",
+      "G-ignore-unknown-policy",
+      "G-late-result-rewrites-frozen-fact",
+      "G-omit-consent-epoch",
+      "Q61-metadata-read-proves-uninstall",
+      "Q61-retention-default-changed",
+      "Q61-command-source-silent-read-failure",
+      "Q18-random-event-nonce",
+      "Q18-local-now-for-missing-source-time",
+      "J2S2-page-replay-credential",
+      "J2S2-page-cross-peer",
+      "J2S2-command-error-counted-as-use",
+      "T05-unavailable-to-zero",
+      "X03-reverse-durable-order",
+      "X03-summary-before-source",
+      "X03-withdraw-remote-first",
+      "U14-unauthorized-marked-sent",
+      "U16-ignore-withheld-consent",
+      "T6-receipt-dropped-from-wire",
+      "T6-receipt-ignored-by-dedup-identity",
+      "R1-query-in-signed-path",
+      "R3-unavailable-reported-as-zero",
+      "U19-uninstall-uses-install-key"
+    ]
+  },
+  "hostProbe": {
+    "hostVersion": "0.162.0-alpha.17.2",
+    "method": "Real bundled CLI dispatch with deterministic loopback Responses SSE and local fixture MCP; hooks are host-generated, not injected.",
+    "checks": {
+      "nestedAndDirectCallsReachedFixture": true,
+      "preHooks": 4,
+      "postSuccessHooks": 2,
+      "postFailureHooks": 0,
+      "hostCompletedCalls": 2,
+      "hostFailedCalls": 2,
+      "outerExecHooks": 0
+    },
+    "cleanup": {
+      "tempRootRemoved": true,
+      "childProcessGroupTerminated": true,
+      "localProviderClosed": true
+    }
+  },
+  "package": {
+    "coreVersion": "0.3.6",
+    "coreSha256": "51c61cca0e9623bcf38dc12aa098f94e34836db9ef7e99188c9df0d5975a2063",
+    "scope": "ISOLATED_REAL_CLI_INSTALL_MCP_NOT_MODEL_OR_OWNER",
+    "install": {
+      "claude": true,
+      "codex": true,
+      "mcpReadonlyState": true,
+      "preConsentWrites": 0
+    },
+    "syntheticHooks": {
+      "bothChannelAttribution": true,
+      "minimalLocalProjection": true,
+      "withdrawClearsLocal": true,
+      "actualModelUse": false
+    }
+  },
+  "notRun": [
+    "Real external model/provider calls",
+    "Personal or owner app/browser flow",
+    "Production services or deployment",
+    "Two optional real-backend client tests (no backend origin configured)"
+  ],
+  "cleanup": "Disposable test/probe homes and process groups removed; the interrupted run\u2019s empty fixture directory was removed after proving it contained only the expected disposable empty directory tree."
+}

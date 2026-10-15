@@ -1,3 +1,4 @@
+import {sharedSettingsResponse} from './shared-settings.mjs';
 import assert from 'node:assert/strict';
 import {createPrivateKey, createPublicKey, createHash, randomBytes, sign, verify} from 'node:crypto';
 import {mkdtempSync, mkdirSync, rmSync} from 'node:fs';
@@ -45,7 +46,7 @@ export function deliveryFixture(t, respond) {
       return {'x-hm-device-id':deviceId,'x-hm-timestamp':timestamp,'x-hm-nonce':nonce,'x-hm-signature':sign(null,Buffer.from(preimage),privateKey).toString('base64url')};
     },
   };
-  const fetchImpl = async (url, options) => {
+  const fetchImpl = async (url, options) => {const policy=sharedSettingsResponse(url,options);if(policy)return policy;
     const request={url:new URL(url), options}; requests.push(request);
     // Independent verifier uses the actual transmitted bytes, not the candidate canonical helper.
     const h=options.headers, bytes=Buffer.from(options.body??'');
@@ -77,7 +78,7 @@ export async function mountedDeliveryFixture(t,{onRequest,onWrite,origin='https:
   f.service.onConsentChange=fn=>{listeners.add(fn);return()=>listeners.delete(fn);};
   f.service.getServerOrigin=()=>origin;
   if(onWrite){const set=f.global.set.bind(f.global);f.global.set=async next=>{await onWrite(next);await set(next);};}
-  t.mock.method(globalThis,'fetch',async(url,options)=>{requests.push({method:options.method,url:String(url),headers:options.headers,body:options.body});return f.fetchImpl(url,options);});
+  t.mock.method(globalThis,'fetch',async(url,options)=>{const policy=sharedSettingsResponse(url,options);if(policy)return policy;requests.push({method:options.method,url:String(url),headers:options.headers,body:options.body});return f.fetchImpl(url,options);});
   const ctx={loader:{entries:()=>[].values()},get:name=>name==='pluginManager'?{listBundles:async()=>[]}:undefined,on:()=>()=>{},inject:()=>({dispose:async()=>{}}),provide(){},sessions:{list:()=>[],get:()=>undefined},sessionPersistence:{list:async()=>[]}};
   let records={schemaVersion:1,records:[]};
   const {mountUsage}=await load('mount');

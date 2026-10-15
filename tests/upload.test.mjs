@@ -1,3 +1,4 @@
+import {sharedSettingsResponse} from './fixtures/shared-settings.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {pathToFileURL} from 'node:url';
@@ -13,7 +14,7 @@ async function fixture({count=3,consent='granted',origin='https://usage.example'
   for(let i=0;i<count;i++){const event=core.createUsageEvent({deviceId:'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk',hanaRef:`p${String(i).padEnd(119,'x')}`,action:'use',occurredAt:'2026-09-19T00:00:00.000Z',eventId:core.eventIdForSeat('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk','app-host',`use-${i}`),nonce:nonce(i),signature:Buffer.alloc(64,i).toString('base64url'),source:'seat',sourcePlugin:'app-host',evidenceRef:`use-${i}`});events.push(event);await store.put(event);}
   let currentConsent=consent,currentOrigin=origin;const requests=[];
   const linked={get:()=>({getConsent:()=>currentConsent,getDeviceId:()=> 'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk',getServerOrigin:()=>currentOrigin,signRequest:async input=>({'x-hm-device-id':'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk','x-hm-timestamp':'1','x-hm-nonce':'request-nonce','x-hm-signature':'request-signature'}),sign:()=>new Uint8Array(64)})};
-  const fetchImpl=async(url,options)=>{requests.push({url:String(url),options});return respond?respond(requests.length,url,options):new Response(JSON.stringify({accepted:count,duplicates:0,rejected:[],durability:'committed'}),{status:200,headers:{'content-type':'application/json'}});};
+  const fetchImpl=async(url,options)=>{const policy=sharedSettingsResponse(url,options);if(policy)return policy;requests.push({url:String(url),options});return respond?respond(requests.length,url,options):new Response(JSON.stringify({accepted:count,duplicates:0,rejected:[],durability:'committed'}),{status:200,headers:{'content-type':'application/json'}});};
   const reporter=host?.createUsageReporter({store,link:linked,uploadIntervalMs:60000,uploadBatchSize:200,fetchImpl,now:()=>Date.parse('2026-09-19T00:01:00.000Z')});
   return {store,events,requests,reporter,setConsent:value=>{currentConsent=value;},setOrigin:value=>{currentOrigin=value;}};
 }
@@ -30,7 +31,7 @@ test('uploads wait, visibly, until Core reports the device registered (registrat
   const f=await fixture();
   const store=f.store,requests=[];
   const core={getConsent:()=> 'granted',getDeviceId:()=> 'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk',getServerOrigin:()=> 'https://usage.example',getSession:()=>({registration}),signRequest:async()=>({'x-hm-device-id':'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk','x-hm-timestamp':'1','x-hm-nonce':'n','x-hm-signature':'s'})};
-  const reporter=host.createUsageReporter({store,link:{get:()=>core},uploadIntervalMs:60000,uploadBatchSize:200,fetchImpl:async(url,options)=>{requests.push(options);const n=JSON.parse(options.body).length;return new Response(JSON.stringify({accepted:n,duplicates:0,rejected:[],durability:'committed'}),{status:200});}});
+  const reporter=host.createUsageReporter({store,link:{get:()=>core},uploadIntervalMs:60000,uploadBatchSize:200,fetchImpl:async(url,options)=>{const policy=sharedSettingsResponse(url,options);if(policy)return policy;requests.push(options);const n=JSON.parse(options.body).length;return new Response(JSON.stringify({accepted:n,duplicates:0,rejected:[],durability:'committed'}),{status:200});}});
   try{
     assert.equal(await reporter.runOnce(),'backoff');assert.equal(reporter.health().lastError,'DEVICE_NOT_REGISTERED');assert.equal(requests.length,0,'nothing is sent before registration');
     registration='registered';assert.equal(await reporter.runOnce(),'uploaded');assert.equal(requests.length,1);

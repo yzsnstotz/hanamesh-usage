@@ -18,8 +18,10 @@ node "$PLUGIN/lib/agent/cli.mjs" consent --agree
 
 需要系统可用的 Node 24（当前打包不包含跨平台 Node 运行时）。安装说明应先说明这个前置条件。后端/网站地址由用户的本地启动输出给出；无默认线上 API，开发测试不连接 api.hanamesh.com。
 
+未知成败保持 `null`，不会从外层脚本成功猜测内层成功。后台 `countUnconfirmedCalls` 默认关闭；开启后，已经开始但还没有可见终结结果的调用也可能计入，包含仍在执行的调用。一次调用的开始和结果只算一次；上传后出现的结果只补充本地显示，不新增积分事件。
+
 同意后重开会话，调用 `hanamesh_status`。没有名单或后端协议未提供时，必须明确说上传停止，不把本地记录称为积分。
 
 未绑定时请用户运行 `node "$PLUGIN/lib/agent/cli.mjs" bind-link`，打开输出的网站链接，登录并绑定。该设备身份与本机 DSH 共用；已有绑定会自动生效。
 
-撤回：用户运行 `node "$PLUGIN/lib/agent/cli.mjs" withdraw`。离线删除会显示 pending，下次会话继续；未确认删除前不能重新开启。不得把 pending 说成删除成功。
+撤回：用户运行 `node "$PLUGIN/lib/agent/cli.mjs" withdraw`。离线删除会显示 pending，下次会话继续；只有匹配当前同意代次的 committed 撤回屏障才表示服务端删除已确认；取得屏障后可清除旧的在途上传标记。未确认删除前不能重新开启。不得把 pending 说成删除成功。

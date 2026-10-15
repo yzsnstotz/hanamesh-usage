@@ -14,7 +14,7 @@ export async function hookTrust(env=process.env) {
   const tables=new Map();let table=null;
   for(const line of text.split('\n')){const h=/^\[(.+)\]$/.exec(line.trim());if(h){table=h[1];continue;}const kv=/^([a-z_]+)\s*=\s*(.+)$/.exec(line.trim());if(table&&kv){const v=tables.get(table)??{};v[kv[1]]=kv[2];tables.set(table,v);}}
   if(tables.get(`plugins."${match}"`)?.enabled!=='true')return {state:'disabled',effective:false};
-  const events=['session_start','post_tool_use','post_tool_use_failure'];
+  const events=['session_start','pre_tool_use','post_tool_use'];
   const rows=events.map(event=>tables.get(`hooks.state."${match}:hooks/hooks.json:${event}:0:0"`));
   const recorded=rows.filter(row=>row?.trusted_hash && row.enabled!=='false').length;
   return {state:recorded===events.length?'trust-recorded':recorded?'partially-trusted':'untrusted',recorded,total:events.length,effective:recorded===events.length?'unknown':false,

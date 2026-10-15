@@ -44,7 +44,7 @@ const usageRecordEventId=(deviceId,sourcePlugin,idempotencyKey)=>{
 };
 const USAGE_RECORD_CODES=['INVALID_RECORD_INPUT','DEVICE_UNAVAILABLE','EVENTS_CAPACITY_REACHED','EVENT_IDENTITY_CONFLICT','RECORD_FAILED'];
 const usageLocalHealth=(core,consent,deviceId,outboxState)=>({pending:0,recoveryComplete:true,failures:{},consent,core,deviceId,
-  outbox:{state:outboxState,pending:0,sent:0,duplicate:0,rejected:0,lastUploadAt:null,nextAttemptAt:null,lastError:null},
+  outbox:{state:outboxState,pending:0,sent:0,duplicate:0,rejected:0,lastUploadAt:null,nextAttemptAt:null,lastError:null,uploadIntervalMs:null,settings:null},
   withdrawal:null,
   inventory:{available:false,source:'none',lastScanAt:null,lastError:null,failureKind:null,unreadable:0,detail:null},filtered:{commands:0,pages:0}});
 const usageLocal={

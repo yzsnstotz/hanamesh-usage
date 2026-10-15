@@ -33,7 +33,7 @@ export async function runtime(env=process.env) {
     child.on('close',()=>{try{const value=JSON.parse(stdout);if(value.error)reject(new Error(value.error.code));else resolveResult(value.result);}catch{reject(new Error('CORE_AGENT_RESPONSE_INVALID'));}});
     child.stdin.on('error',()=>{});child.stdin.end(JSON.stringify({config:{...config,timeoutMs:config.requestTimeoutMs,sharedHome:paths.sharedHome},input}));
   });
-  return {...paths,config,call,env,host:hostContext(env),store:new AgentStore(paths.agentHome),
+  return {...paths,config,call,env,host:hostContext(env),store:new AgentStore(paths.agentHome,{timeoutMs:config.requestTimeoutMs}),
     async configure(value){await mkdir(paths.agentHome,{recursive:true,mode:0o700});await atomicJSON(join(paths.agentHome,'config.json'),value);},
   };
 }

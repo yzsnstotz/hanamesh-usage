@@ -21,7 +21,7 @@ test('both hosts attribute tools and skills; code mode; ambiguous servers stop a
  assert.doesNotMatch(JSON.stringify(row),/sk-private|private output|Users|transcript|secret-session/);
  assert.equal(projectHook({...input,tool_name:'mcp__probe__echo'},'codex',installed).pluginId,'target@market');
  assert.equal(projectHook({...input,tool_name:'exec',tool_input:{code:'const r = await tools.mcp__probe__echo({text:"private"});text(r);'}},'codex',installed).pluginId,'target@market');
- assert.equal(projectHook({...input,tool_name:'exec',tool_input:{code:'const r = await tools.mcp__probe__echo({text:"private"});text(r);'}},'codex',installed).disposition,'unverified');
+ assert.equal(projectHook({...input,tool_name:'exec',tool_input:{code:'const r = await tools.mcp__probe__echo({text:"private"});text(r);'}},'codex',installed).disposition,'outer-only');
  assert.equal(projectHook({...input,tool_name:'exec',tool_input:{code:'text(`\n await tools.mcp__probe__echo({})\n`);'}},'codex',installed),null);
  assert.equal(projectHook({...input,tool_name:'mcp__probe__echo'},'codex',[...installed,{...installed[0],pluginId:'other@market'}]).disposition,'ambiguous');
  assert.equal(projectHook({...input,tool_name:'Skill',tool_input:{skill:'target:hello'}},'claude',installed).feature,'skill:hello');
@@ -49,7 +49,7 @@ test('withdrawing clears local first and waits for the last sender before deleti
  const {AgentStore}=await import('../src/agent/store.mjs');const {senderLock}=await import('../src/agent/sender-lock.mjs');
  const {beginWithdrawal,finishWithdrawal}=await import('../src/agent/withdraw.mjs');
  const release=await senderLock(root);const calls=[];const store=new AgentStore(root);
- const r={agentHome:root,store,async call(input){calls.push(input.operation);return input.operation==='withdraw'?{deletedEvents:1}:{consent:{state:'withheld'}};}};
+ const r={agentHome:root,store,async call(input){calls.push(input.operation);return input.operation==='withdraw'?{deletedEvents:1,consentId:'11111111-1111-4111-8111-111111111111',state:'withdrawn',barrier:'committed'}:{consent:{state:'withheld',consentId:'11111111-1111-4111-8111-111111111111'}};}};
  assert.equal((await beginWithdrawal(r)).state,'pending');assert.deepEqual(calls,['consent']);assert.equal((await store.rows()).length,0);
  await release();assert.equal((await finishWithdrawal(r)).state,'sent');assert.deepEqual(calls,['consent','withdraw']);
 });
@@ -58,8 +58,8 @@ test('DELETE acknowledgement cannot clear unknown-upload evidence or reopen cons
  const {mkdir}=await import('node:fs/promises');await mkdir(join(root,'inflight'));
  await writeFile(join(root,'inflight',`${'b'.repeat(64)}.json`),JSON.stringify({eventId:'fixture'}));
  const {AgentStore}=await import('../src/agent/store.mjs');const {beginWithdrawal,grantConsent}=await import('../src/agent/withdraw.mjs');
- const r={agentHome:root,store:new AgentStore(root),call:async()=>({deletedEvents:1})};
- const result=await beginWithdrawal(r);assert.equal(result.state,'unconfirmed');assert.equal(result.code,'UPLOAD_OUTCOME_UNCONFIRMED');
+ const r={agentHome:root,store:new AgentStore(root),call:async x=>x.operation==='consent'?{consent:{state:'withheld',consentId:'11111111-1111-4111-8111-111111111111'}}:{deletedEvents:1}};
+ const result=await beginWithdrawal(r);assert.equal(result.state,'pending');assert.equal(result.code,'AGENT_WITHDRAWAL_UNCONFIRMED');
  await assert.rejects(grantConsent(r),/WITHDRAWAL_PENDING/);
  assert.equal((await readdir(join(root,'inflight'))).length,1);
 });

@@ -1,3 +1,4 @@
+import {sharedSettingsResponse} from './fixtures/shared-settings.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,rmSync} from 'node:fs';
@@ -35,7 +36,7 @@ async function setup(t,{fault='once',response=unknown,file=null,hold=null}={}){
   const store=new EventStore(global),core={getConsent:()=> 'granted',getDeviceId:()=>identity.deviceId,getPublicKey:()=>identity.publicKey,sign:identity.sign,getServerOrigin:()=> 'https://fixture.invalid',signRequest:async()=>({'x-hm-device-id':identity.deviceId,'x-hm-timestamp':String(Date.now()),'x-hm-nonce':`fixture-auth-${++auth}`,'x-hm-signature':'fixture-request-signature'})};
   const record=createRecordSeat({store,getConsent:core.getConsent,getDeviceId:core.getDeviceId,signEvent:event=>signUsageEvent(core,event)});
   assert.equal((await record(originalFact())).disposition,'recorded');
-  const before=plain(snapshot),reporter=createUsageReporter({store,link:{get:()=>core},uploadIntervalMs:60000,uploadBatchSize:200,fetchImpl:async(_url,options)=>{
+  const before=plain(snapshot),reporter=createUsageReporter({store,link:{get:()=>core},uploadIntervalMs:60000,uploadBatchSize:200,fetchImpl:async(_url,options)=>{const policy=sharedSettingsResponse(_url,options);if(policy)return policy;
     requests.push({body:options.body,headers:options.headers});
     if(hold){hold.entered.resolve();await hold.release.promise;}
     afterResponse=true;return response();
@@ -81,7 +82,7 @@ if(!process.env.USAGE_Q384_OBSERVE_CHILD){
     const identity=fixtureSigningIdentity(),core={getConsent:()=> 'granted',getDeviceId:()=>identity.deviceId,getPublicKey:()=>identity.publicKey,sign:identity.sign,getServerOrigin:()=> 'https://fixture.invalid',signRequest:async()=>{auth++;return {};}};
     const record=createRecordSeat({store,getConsent:core.getConsent,getDeviceId:core.getDeviceId,signEvent:event=>signUsageEvent(core,event)});
     await record(originalFact());const before=plain(snapshot);reject=true;
-    const reporter=createUsageReporter({store,link:{get:()=>core},uploadIntervalMs:60000,uploadBatchSize:200,fetchImpl:async()=>{requests++;return unknown();}});t.after(()=>reporter.stop());reporter.start();
+    const reporter=createUsageReporter({store,link:{get:()=>core},uploadIntervalMs:60000,uploadBatchSize:200,fetchImpl:async(url,options)=>{const policy=sharedSettingsResponse(url,options);if(policy)return policy;requests++;return unknown();}});t.after(()=>reporter.stop());reporter.start();
     const outcome=await settle(reporter.runOnce());assert.equal(requests,0,'without a durable attempt marker, the request must not enter the transport');assert.equal(auth,0);
     assert.deepEqual(outcome,{value:'stopped'});assert.equal(reporter.health().state,'stopped');assert.equal(reporter.health().lastError,'UPLOAD_STATE_PERSIST_FAILED');
     assert.equal(reporter.delivery(store.getSnapshot().events[0]).delivery,'pending','zero transport attempts is not a formal server unknown');assert.deepEqual(plain(snapshot),before);
@@ -106,7 +107,7 @@ test('independent process consumes only persisted attempt state',async t=>{t.moc
     // A separate reconstructed store receives only the committed snapshot; no
     // original reporter Set, response, signer handle or pending Promise crosses.
     const snapshot=f.snapshot(),reconstructed=new EventStore({get:()=>snapshot,set:async()=>{throw new Error('readback only');}});let requests=0;
-    const second=createUsageReporter({store:reconstructed,link:{get:()=>({getConsent:()=> 'granted',getServerOrigin:()=> 'https://fixture.invalid',signRequest:async()=>({})})},uploadIntervalMs:60000,uploadBatchSize:200,fetchImpl:async()=>{requests++;return unknown();}});
+    const second=createUsageReporter({store:reconstructed,link:{get:()=>({getConsent:()=> 'granted',getServerOrigin:()=> 'https://fixture.invalid',signRequest:async()=>({})})},uploadIntervalMs:60000,uploadBatchSize:200,fetchImpl:async(url,options)=>{const policy=sharedSettingsResponse(url,options);if(policy)return policy;requests++;return unknown();}});
     try{second.start();await settle(second.runOnce());assert.equal(requests,0,'a persisted unresolved attempt must survive the lost response window');t.mock.timers.tick(5000);await second.drain();assert.equal(requests,0);assert.equal(second.delivery(reconstructed.getSnapshot().events[0]).delivery,'unconfirmed');}finally{second.stop();hold.release.resolve();await sending;}
   });
 

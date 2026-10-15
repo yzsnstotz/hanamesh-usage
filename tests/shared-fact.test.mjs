@@ -1,3 +1,4 @@
+import {sharedSettingsResponse} from './fixtures/shared-settings.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {pathToFileURL} from 'node:url';
@@ -135,7 +136,7 @@ for(const field of ['hanaRef','sourceHanaRef','sourcePlugin'])for(const length o
   }else{
     assert.deepEqual(result,{disposition:'rejected',code:'INVALID_RECORD_INPUT'});
     assert.deepEqual(client.effects,{writes:0,signs:0});
-    const reporter=createUsageReporter({store:client.store,link:{get:()=>a},uploadIntervalMs:60000,uploadBatchSize:200,now:()=>NOW,fetchImpl:async()=>{calls.push(true);throw new Error('MUST_NOT_SEND');}});
+    const reporter=createUsageReporter({store:client.store,link:{get:()=>a},uploadIntervalMs:60000,uploadBatchSize:200,now:()=>NOW,fetchImpl:async(url,options)=>{const policy=sharedSettingsResponse(url,options);if(policy)return policy;calls.push(true);throw new Error('MUST_NOT_SEND');}});
     try{assert.equal(await reporter.runOnce(),'idle');assert.equal(calls.length,0);}finally{reporter.stop();}
   }
 });
@@ -170,6 +171,6 @@ test('Q376 absent or unmappable native package owner cannot produce a usage even
   }
   assert.deepEqual(await client.record({...fact,hanaRef:undefined}),{disposition:'rejected',code:'INVALID_RECORD_INPUT'});
   assert.deepEqual(client.effects,{writes:0,signs:0});
-  const reporter=createUsageReporter({store:client.store,link:{get:()=>a},uploadIntervalMs:60000,uploadBatchSize:200,now:()=>NOW,fetchImpl:async()=>{calls.push(true);throw new Error('MUST_NOT_SEND');}});
+  const reporter=createUsageReporter({store:client.store,link:{get:()=>a},uploadIntervalMs:60000,uploadBatchSize:200,now:()=>NOW,fetchImpl:async(url,options)=>{const policy=sharedSettingsResponse(url,options);if(policy)return policy;calls.push(true);throw new Error('MUST_NOT_SEND');}});
   try{assert.equal(await reporter.runOnce(),'idle');assert.equal(calls.length,0);}finally{reporter.stop();}
 });

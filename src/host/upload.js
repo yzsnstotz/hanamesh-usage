@@ -17,6 +17,7 @@ const maxBodyBytes=64*1024;
 export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize,fetchImpl=fetch,now=Date.now}){
   let state=/** @type {'idle'|'uploading'|'backoff'|'offline'|'stopped'|'unconfirmed'} */('stopped');
   const confirmed=new Set(),unconfirmed=new Map();
+  let sharedSettings=/** @type {import('./contracts.js').SharedUsageSettings|null} */(null),settingsOrigin=/** @type {string|null} */(null),settingsAt=0;
   let persistenceFailed=false;
   let lastUploadAt=/** @type {string|null} */(null),nextAttemptAt=/** @type {string|null} */(null),lastError=/** @type {string|null} */(null),failures=0,active=false;
   let tail=Promise.resolve();
@@ -35,7 +36,7 @@ export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize
   const iso=()=>new Date(now()).toISOString();
   const clearTimer=()=>{if(timer!==null){clearTimeout(timer);timer=null;}};
   /** @param {number} delay */
-  const schedule=delay=>{clearTimer();if(!active)return;timer=setTimeout(()=>{void runOnce().finally(()=>{if(active&&state!=='backoff')schedule(uploadIntervalMs);});},delay);timer.unref?.();};
+  const schedule=delay=>{clearTimer();if(!active)return;timer=setTimeout(()=>{void runOnce().finally(()=>{if(active&&state!=='backoff'&&sharedSettings)schedule(sharedSettings.uploadIntervalMs);});},delay);timer.unref?.();};
   /** @param {number} delay */
   const scheduleWithdrawal=delay=>{clearTimer();timer=setTimeout(()=>{void retryWithdrawal();},delay);timer.unref?.();};
   /** @param {boolean} [withdrawal] */
@@ -70,6 +71,24 @@ export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize
     persistenceFailed=true;lastError='UPLOAD_STATE_PERSIST_FAILED';
     return ids.length>0?/** @type {const} */('unconfirmed'):/** @type {const} */('stopped');
   }
+  /** Shared server policy is authoritative; a failed fetch is visible, with no local interval fallback.
+   * @param {string} origin */
+  async function refreshSettings(origin){
+    if(sharedSettings&&settingsOrigin===origin&&now()-settingsAt<sharedSettings.catalogRefreshMs)return;
+    try{
+      const response=await fetchImpl(new URL('/v1/usage/settings',origin),{method:'GET',redirect:'error',credentials:'omit',signal:AbortSignal.timeout(10000)});
+      if(!response.ok)throw new UsageError(`USAGE_SETTINGS_HTTP_${response.status}`);
+      const value=/** @type {import('./contracts.js').SharedUsageSettings} */(await response.json());
+      if(!value||Object.keys(value).sort().join('|')!=='backfillWindowDays|catalogRefreshMs|channelWeights|countUnconfirmedCalls|uploadIntervalMs|version'||!Number.isSafeInteger(value.version)||value.version<1||!['uploadIntervalMs','catalogRefreshMs'].every(key=>{const n=value[/** @type {'uploadIntervalMs'|'catalogRefreshMs'} */(key)];return Number.isSafeInteger(n)&&n>0&&n<=2147483647;})||!Number.isSafeInteger(value.backfillWindowDays)||value.backfillWindowDays<0||typeof value.countUnconfirmedCalls!=='boolean'||!value.channelWeights||Object.keys(value.channelWeights).sort().join('|')!=='claude|codex|dsh'||!Object.values(value.channelWeights).every(weight=>typeof weight==='number'&&Number.isFinite(weight)&&weight>=0))throw new UsageError('USAGE_SETTINGS_INVALID');
+      sharedSettings=value;settingsOrigin=origin;settingsAt=now();
+    }catch(error){sharedSettings=null;settingsOrigin=null;throw error instanceof UsageError?error:new UsageError('USAGE_SETTINGS_UNAVAILABLE');}
+  }
+  /** @param {string} origin */
+  async function settingsForRun(origin){
+    try{await refreshSettings(origin);}catch(error){lastError=error instanceof UsageError?error.code:'USAGE_SETTINGS_UNAVAILABLE';backoff();return /** @type {const} */('backoff');}
+    if(link.get()?.getConsent()!=='granted'){stop();return /** @type {const} */('withheld');}
+    return null;
+  }
   async function runOnceRaw(){
     pruneObservations();
     if(persistenceFailed)return unconfirmed.size>0?/** @type {const} */('unconfirmed'):/** @type {const} */('stopped');
@@ -78,7 +97,9 @@ export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize
     if(core.getConsent()!=='granted'){state='stopped';return /** @type {const} */('withheld');}
     const origin=core.getServerOrigin();if(origin===null){state='offline';return /** @type {const} */('offline');}
     let batch=store.query({state:'pending',limit:uploadBatchSize}).events.filter(event=>event.signature!==null);
-    if(batch.length===0){state='idle';lastError=null;nextAttemptAt=null;return /** @type {const} */('idle');}
+    if(batch.length===0){
+    {const unavailable=await settingsForRun(origin);if(unavailable)return unavailable;}
+      state='idle';lastError=null;nextAttemptAt=null;return /** @type {const} */('idle');}
     // Core registers the device only after consent; until it reports `registered` the server cannot verify this device,
     // so wait (visible) instead of sending a request that would be refused. A Core session without the field is not gated.
     // getSession is a required C-CORE method (duckCore guarantees it in the host); bare test doubles without it are not gated.
@@ -88,6 +109,7 @@ export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize
     // Admit the entire candidate batch before signing a request or sending any
     // row. A local-only stub must remain pending with a visible local error.
     try{wire=batch.map(wireEvent);}catch{stop();lastError='UPLOAD_EVENT_INVALID';return /** @type {const} */('stopped');}
+    {const unavailable=await settingsForRun(origin);if(unavailable)return unavailable;}
     let json='';
     // O1 `POST /v1/usage/events` body is a bare 1–200 item array (hanamesh-server-usage docs/API.md), not an {events:[…]} envelope.
     while(batch.length>0){json=JSON.stringify(wire);if(Buffer.byteLength(json)<=maxBodyBytes)break;batch=batch.slice(0,Math.max(1,Math.floor(batch.length/2)));wire=wire.slice(0,batch.length);if(batch.length===1&&Buffer.byteLength(JSON.stringify(wire))>maxBodyBytes)throw new UsageError('UPLOAD_BATCH_TOO_LARGE');}
@@ -308,5 +330,5 @@ export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize
   }
   /** @param {import('../core/index.js').UsageEvent} event @returns {import('./contracts.js').ResendEventsResult['events'][number]} */
   function delivery(event){return {eventId:event.eventId,delivery:unconfirmed.has(event.eventId)?'unconfirmed':event.upload.state==='rejected'?'rejected':confirmed.has(event.eventId)?'confirmed':['sent','duplicate'].includes(event.upload.state)?'unconfirmed':'pending',code:unconfirmed.get(event.eventId)??event.upload.code};}
-  return {start,stop,runOnce,resend,withdraw,retryWithdrawal,grant,readRemote,delivery,drain:()=>tail,health:()=>{pruneObservations();return {state,...counts(),lastUploadAt,nextAttemptAt,lastError};}};
+  return {start,stop,runOnce,resend,withdraw,retryWithdrawal,grant,readRemote,delivery,drain:()=>tail,health:()=>{pruneObservations();return {state,...counts(),lastUploadAt,nextAttemptAt,lastError,uploadIntervalMs:sharedSettings?.uploadIntervalMs ?? null,settings:sharedSettings};}};
 }

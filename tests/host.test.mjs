@@ -69,5 +69,5 @@ test('U11 late core attachment signs legacy pending events and starts from the c
 });
 
 test('U17 health exposes the complete bounded field table',async()=>{
-  const h=await fixtureHost();const health=h.api.health();assert.deepEqual(Object.keys(health),['pending','recoveryComplete','failures','consent','core','deviceId','outbox','withdrawal','inventory','filtered']);assert.deepEqual(Object.keys(health.outbox),['state','pending','sent','duplicate','rejected','lastUploadAt','nextAttemptAt','lastError']);await h.close();
+  const h=await fixtureHost();const health=h.api.health();assert.deepEqual(Object.keys(health),['pending','recoveryComplete','failures','consent','core','deviceId','outbox','withdrawal','inventory','filtered']);assert.deepEqual(Object.keys(health.outbox),['state','pending','sent','duplicate','rejected','lastUploadAt','nextAttemptAt','lastError','uploadIntervalMs','settings']);await h.close();
 });

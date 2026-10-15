@@ -18,6 +18,15 @@ export async function uploadOnce(r,{now=Date.now(),request=(origin,path,init)=>r
   if(pending.length===0)return {state:'idle',code:null,settings:catalog.settings};
   await r.call({operation:'register'});
   const device=await r.call({operation:'state'});
+  const consentId=device.consent.consentId;
+  if(device.consent.state!=='granted'||consentId!==state.consent.consentId||typeof consentId!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(consentId))throw new Error('AGENT_CONSENT_INVALID');
+  const active=async()=>{const current=await r.call({operation:'state'});if(current.consent.state!=='granted'||current.consent.consentId!==consentId||current.deviceId!==device.deviceId)throw new Error('AGENT_CONSENT_CHANGED');};
+  // Activate the same grant before admitting any event. Exact JSON bytes are device signed.
+  const consentPath=`/v2/usage/me/devices/${encodeURIComponent(device.deviceId)}/consents/${consentId}`,activationBody='{}';
+  const activationHeaders=await r.call({operation:'signRequest',method:'POST',path:consentPath,body:activationBody});
+  const activation=await request(r.config.serverOrigin,consentPath,{method:'POST',headers:{...activationHeaders,origin:r.config.serverOrigin,'content-type':'application/json'},body:activationBody});
+  if(!activation||Object.keys(activation).sort().join('|')!=='barrier|consentId|state'||activation.consentId!==consentId||activation.state!=='active'||activation.barrier!=='committed')throw new Error('AGENT_ACTIVATION_UNCONFIRMED');
+  await active();
   const from=new Date(now-86400000).toISOString(),to=new Date(now).toISOString();
   const path=`/v1/usage/me/contributions?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
   const readHeaders=await r.call({operation:'signRequest',method:'GET',path,body:null});
@@ -26,17 +35,19 @@ export async function uploadOnce(r,{now=Date.now(),request=(origin,path,init)=>r
   // Unbound devices may upload (pending points); the user sees the website binding entry explicitly.
   for(const row of pending) {
     const entry=(await r.store.rows()).find(item=>item.factId===row.factId);
+    await active();
+    if(!entry)throw new Error('AGENT_FACT_CHANGED');
     let wire=entry.wire;
-    if(wire && (wire.deviceId!==device.deviceId||wire.hanaRef!==row.hanaRef))throw new Error('AGENT_ATTRIBUTION_CHANGED');
+    if(wire && (wire.deviceId!==device.deviceId||wire.hanaRef!==row.hanaRef||!wire.nonce.startsWith(`g${consentId}.`)))throw new Error('AGENT_ATTRIBUTION_CHANGED');
     if(!wire) {
-      const event=agentEventForFact(device.deviceId,row);
+      const event=agentEventForFact(device.deviceId,{...entry,hanaRef:row.hanaRef},consentId);
       const {signature}=await r.call({operation:'sign',bytes:Buffer.from(agentSigningJSON(event)).toString('base64')});
       wire={...event,signature};
-      await r.store.freezeWire(row.factId,wire);
+      wire=await r.store.freezeWire(row.factId,wire);
     }
     const body=JSON.stringify([wire]),path='/v2/usage/events';
     const headers=await r.call({operation:'signRequest',method:'POST',path,body});
-    if((await r.call({operation:'state'})).consent.state!=='granted')return {state:'withheld',code:'CONSENT_WITHHELD'};
+    await active();
     // Persist intent before the request. A crash/unknown commit cannot silently trigger an automatic replay.
     await r.store.mark(row.factId,{state:'unconfirmed',code:'UPLOAD_ATTEMPT_UNCONFIRMED'});
     const inflight=join(r.agentHome,'inflight');await mkdir(inflight,{recursive:true,mode:0o700});

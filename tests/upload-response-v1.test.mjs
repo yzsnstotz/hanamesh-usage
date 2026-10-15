@@ -1,3 +1,4 @@
+import {sharedSettingsResponse} from './fixtures/shared-settings.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {EventStore,createUsageEvent,eventIdForSeat,signingJSON} from '../lib/core/index.js';
@@ -10,7 +11,7 @@ async function fixture(t,{status=503,body={error:{code:'USAGE_STORAGE_UNAVAILABL
   const store=new EventStore({get:()=>snapshot,set:async next=>{snapshot=structuredClone(next);}});
   const event=createUsageEvent({deviceId,hanaRef:'@test/app',action:'use',occurredAt:new Date().toISOString(),eventId:eventIdForSeat(deviceId,'fixture','use-1'),nonce:'event_nonce_0001',signature:Buffer.alloc(64).toString('base64url'),source:'seat',sourcePlugin:'fixture',evidenceRef:'use-1'});await store.put(event);
   const core={getConsent:()=> 'granted',getDeviceId:()=>deviceId,getServerOrigin:()=> 'https://fixture.invalid',signRequest:async()=>({'x-hm-device-id':deviceId,'x-hm-timestamp':String(Date.now()),'x-hm-nonce':'fixture-new-request-nonce','x-hm-signature':'fixture-request-signature'})};
-  const reporter=createUsageReporter({store,link:{get:()=>core},uploadIntervalMs:60000,uploadBatchSize:200,fetchImpl:async()=>{requests++;return new Response(JSON.stringify(body),{status});}});
+  const reporter=createUsageReporter({store,link:{get:()=>core},uploadIntervalMs:60000,uploadBatchSize:200,fetchImpl:async(url,options)=>{const policy=sharedSettingsResponse(url,options);if(policy)return policy;requests++;return new Response(JSON.stringify(body),{status});}});
   return {store,reporter,requests:()=>requests};
 }
 test('USAGE02-S1 event encoding matches the formal six-key UTF8 vector; optional claims do not silently enter this signature',()=>{

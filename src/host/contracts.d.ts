@@ -6,6 +6,7 @@ export interface Config {
   maxPending?: number;
   allowExport?: boolean;
   maxEvents?: number;
+  /** Legacy config input; the effective interval comes from GET /v1/usage/settings after consent. */
   uploadIntervalMs?: number;
   uploadBatchSize?: number;
   inventoryIntervalMs?: number;
@@ -36,6 +37,7 @@ export interface PanelSnapshot {
 /** rc.7：`sourceHanaRef` / `targetRef` / `receipt` 可选；`receipt` 只允许配 `action:'use'`。 */
 export interface RecordInput { hanaRef:string; action:'open'|'use'; occurredAt?:string; idempotencyKey:string; sourcePlugin:string; sourceHanaRef?:string|null; targetRef?:string|null; receipt?:UsageReceipt|null }
 export interface RecordResult { disposition:'recorded'|'duplicate'|'withheld'|'rejected'; eventId?:string; code?:string }
+export interface SharedUsageSettings {version:number;uploadIntervalMs:number;catalogRefreshMs:number;backfillWindowDays:number;countUnconfirmedCalls:boolean;channelWeights:{dsh:number;claude:number;codex:number}}
 export interface HealthSnapshot {
   pending:number;
   recoveryComplete:boolean;
@@ -43,7 +45,7 @@ export interface HealthSnapshot {
   consent:'granted'|'withheld'|'unknown';
   core:'present'|'absent'|'incompatible';
   deviceId:string|null;
-  outbox:{state:'idle'|'uploading'|'backoff'|'offline'|'stopped'|'unconfirmed';pending:number;sent:number;duplicate:number;rejected:number;lastUploadAt:string|null;nextAttemptAt:string|null;lastError:string|null};
+  outbox:{state:'idle'|'uploading'|'backoff'|'offline'|'stopped'|'unconfirmed';pending:number;sent:number;duplicate:number;rejected:number;lastUploadAt:string|null;nextAttemptAt:string|null;lastError:string|null;uploadIntervalMs:number|null;settings:SharedUsageSettings|null};
   withdrawal:{requestedAt:string;deviceId:string;state:'pending'|'sent'|'offline'|'unconfirmed';attempts:number;deletedEvents:number|null;lastError:string|null}|null;
   inventory:{available:boolean;source:'plugin-manager'|'none';lastScanAt:string|null;lastError:string|null;failureKind:string|null;unreadable:number;detail:{package:string;serviceKey:string;methods:string[]}|null};
   filtered:{commands:number;pages:number};

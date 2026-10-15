@@ -24,7 +24,7 @@ try {
       await mkdir(r.agentHome,{recursive:true,mode:0o700});
       const release=await agentLock(r.agentHome,'collection',r.config.requestTimeoutMs);
       if(!release)throw new Error('AGENT_COLLECTION_BUSY');
-      try{const current=await r.call({operation:'state'});if(current.consent.state==='granted'&&current.consent.changedAt===state.consent.changedAt)await r.store.record(row,true);}
+      try{const current=await r.call({operation:'state'});if(current.consent.state==='granted'&&current.consent.changedAt===state.consent.changedAt&&current.consent.consentId===state.consent.consentId)await r.store.record(row,true);}
       finally{await release();}
     }
   }

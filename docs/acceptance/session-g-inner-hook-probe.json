@@ -1,0 +1,288 @@
+{
+  "probe": "bundled-host-code-mode-inner-hooks",
+  "hostVersion": "0.162.0-alpha.17.2",
+  "method": "Real bundled CLI dispatch with deterministic loopback Responses SSE and local fixture MCP; hooks are host-generated, not injected.",
+  "hostBinary": "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+  "externalModelCalls": 0,
+  "requests": [
+    {
+      "path": "/v1/responses",
+      "probeToolNames": [
+        {
+          "name": "exec",
+          "type": "custom"
+        },
+        {
+          "name": "mcp__fixture.failure",
+          "type": "function"
+        },
+        {
+          "name": "mcp__fixture.success",
+          "type": "function"
+        }
+      ],
+      "inputTypes": [
+        "message",
+        "message",
+        "message",
+        "message"
+      ]
+    },
+    {
+      "path": "/v1/responses",
+      "inputTypes": [
+        "message",
+        "message",
+        "message",
+        "message",
+        "custom_tool_call",
+        "custom_tool_call_output"
+      ]
+    },
+    {
+      "path": "/v1/responses",
+      "inputTypes": [
+        "message",
+        "message",
+        "message",
+        "message",
+        "custom_tool_call",
+        "custom_tool_call_output",
+        "function_call",
+        "function_call_output"
+      ]
+    },
+    {
+      "path": "/v1/responses",
+      "inputTypes": [
+        "message",
+        "message",
+        "message",
+        "message",
+        "custom_tool_call",
+        "custom_tool_call_output",
+        "function_call",
+        "function_call_output",
+        "function_call",
+        "function_call_output"
+      ]
+    }
+  ],
+  "hooks": [
+    {
+      "event": "PreToolUse",
+      "toolName": "mcp__fixture__success",
+      "hasToolUseId": true,
+      "callKey": "83b60cfe7ef96d04",
+      "hasSessionId": true,
+      "responseType": "undefined",
+      "responseKeys": [],
+      "isError": null,
+      "is_error": null,
+      "errorPresent": false
+    },
+    {
+      "event": "PostToolUse",
+      "toolName": "mcp__fixture__success",
+      "hasToolUseId": true,
+      "callKey": "83b60cfe7ef96d04",
+      "hasSessionId": true,
+      "responseType": "object",
+      "responseKeys": [
+        "content",
+        "isError"
+      ],
+      "isError": false,
+      "is_error": null,
+      "errorPresent": false
+    },
+    {
+      "event": "PreToolUse",
+      "toolName": "mcp__fixture__failure",
+      "hasToolUseId": true,
+      "callKey": "b2282e88157aaad0",
+      "hasSessionId": true,
+      "responseType": "undefined",
+      "responseKeys": [],
+      "isError": null,
+      "is_error": null,
+      "errorPresent": false
+    },
+    {
+      "event": "PreToolUse",
+      "toolName": "mcp__fixture__failure",
+      "hasToolUseId": true,
+      "callKey": "34dd7c62f98d07c5",
+      "hasSessionId": true,
+      "responseType": "undefined",
+      "responseKeys": [],
+      "isError": null,
+      "is_error": null,
+      "errorPresent": false
+    },
+    {
+      "event": "PreToolUse",
+      "toolName": "mcp__fixture__success",
+      "hasToolUseId": true,
+      "callKey": "78bd7ed58fd4165f",
+      "hasSessionId": true,
+      "responseType": "undefined",
+      "responseKeys": [],
+      "isError": null,
+      "is_error": null,
+      "errorPresent": false
+    },
+    {
+      "event": "PostToolUse",
+      "toolName": "mcp__fixture__success",
+      "hasToolUseId": true,
+      "callKey": "78bd7ed58fd4165f",
+      "hasSessionId": true,
+      "responseType": "object",
+      "responseKeys": [
+        "content",
+        "isError"
+      ],
+      "isError": false,
+      "is_error": null,
+      "errorPresent": false
+    }
+  ],
+  "fixtureCalls": [
+    {
+      "name": "success"
+    },
+    {
+      "name": "failure"
+    },
+    {
+      "name": "failure"
+    },
+    {
+      "name": "success"
+    }
+  ],
+  "exitCode": 0,
+  "stdoutEvents": [
+    {
+      "type": "thread.started"
+    },
+    {
+      "type": "item.completed",
+      "itemType": "error",
+      "message": "`--dangerously-bypass-hook-trust` is enabled. Enabled hooks may run without review for this invocation."
+    },
+    {
+      "type": "item.completed",
+      "itemType": "error",
+      "message": "`--dangerously-bypass-hook-trust` is enabled. Enabled hooks may run without review for this invocation."
+    },
+    {
+      "type": "item.completed",
+      "itemType": "error",
+      "message": "Under-development features enabled: code_mode. Under-development features are incomplete and may behave unpredictably. To suppress this warning, set `suppress_unstable_features_warning = true` in /private<TEMP>/codex/config.toml."
+    },
+    {
+      "type": "item.completed",
+      "itemType": "error",
+      "message": "Model metadata for `probe` not found. Defaulting to fallback metadata; this can degrade performance and cause issues."
+    },
+    {
+      "type": "turn.started"
+    },
+    {
+      "type": "item.started",
+      "itemType": "mcp_tool_call",
+      "itemStatus": "in_progress",
+      "tool": "success",
+      "error": null
+    },
+    {
+      "type": "item.completed",
+      "itemType": "mcp_tool_call",
+      "itemStatus": "completed",
+      "tool": "success",
+      "resultKeys": [
+        "content",
+        "structured_content"
+      ],
+      "error": null
+    },
+    {
+      "type": "item.started",
+      "itemType": "mcp_tool_call",
+      "itemStatus": "in_progress",
+      "tool": "failure",
+      "error": null
+    },
+    {
+      "type": "item.completed",
+      "itemType": "mcp_tool_call",
+      "itemStatus": "failed",
+      "tool": "failure",
+      "resultKeys": [
+        "content",
+        "structured_content"
+      ],
+      "error": null
+    },
+    {
+      "type": "item.started",
+      "itemType": "mcp_tool_call",
+      "itemStatus": "in_progress",
+      "tool": "failure",
+      "error": null
+    },
+    {
+      "type": "item.completed",
+      "itemType": "mcp_tool_call",
+      "itemStatus": "failed",
+      "tool": "failure",
+      "resultKeys": [
+        "content",
+        "structured_content"
+      ],
+      "error": null
+    },
+    {
+      "type": "item.started",
+      "itemType": "mcp_tool_call",
+      "itemStatus": "in_progress",
+      "tool": "success",
+      "error": null
+    },
+    {
+      "type": "item.completed",
+      "itemType": "mcp_tool_call",
+      "itemStatus": "completed",
+      "tool": "success",
+      "resultKeys": [
+        "content",
+        "structured_content"
+      ],
+      "error": null
+    },
+    {
+      "type": "item.completed",
+      "itemType": "agent_message"
+    },
+    {
+      "type": "turn.completed"
+    }
+  ],
+  "stderr": "Reading additional input from stdin...\n",
+  "checks": {
+    "nestedAndDirectCallsReachedFixture": true,
+    "preHooks": 4,
+    "postSuccessHooks": 2,
+    "postFailureHooks": 0,
+    "hostCompletedCalls": 2,
+    "hostFailedCalls": 2,
+    "outerExecHooks": 0
+  },
+  "cleanup": {
+    "tempRootRemoved": true,
+    "childProcessGroupTerminated": true,
+    "localProviderClosed": true
+  }
+}
