@@ -360,8 +360,9 @@ const reasonText:Record<string,string>={
   INVENTORY_FAILED:'读取插件清单出错',
 };
 export const usageReason=(code:string|null):string=>{if(code===null)return '';const http=/^UPLOAD_HTTP_(\d{3})$/.exec(code);if(http)return `服务端回了 HTTP ${http[1]}，没有可读的错误码；稍后会自动再传`;const own=code.includes(':')?code.slice(code.indexOf(':')+1):code;return reasonText[own]??reasonText[code]??own;};
-function uploadText(row:UsageRecordRow):string {
-  if(row.upload==='sent'||row.upload==='duplicate')return '服务端已收到';
+const hostNoteText:Record<string,string>={USAGE_POINTS_SCORING_DISABLED:'官方插件 · 不计积分',HOST_NOTE_UNREADABLE:'服务端附了说明，但格式无法识别'};
+function uploadText(row:UsageRecordRow,note?:string):string {
+  if(row.upload==='sent'||row.upload==='duplicate')return note?`服务端已收到 · ${hostNoteText[note]??note}`:'服务端已收到';
   if(row.upload==='rejected')return `未被接收：${usageReason(row.code)}${hostRejection(row.code)?'（条件满足后可在「诊断」里重发）':''}`;
   return row.code?`等待上报（${usageReason(row.code)}）`:'等待上报';
 }
@@ -398,13 +399,15 @@ async function fetchUsageRecords(signal:AbortSignal):Promise<UsageRecordsSnapsho
       upload:(event.upload as {state:UsageRecordRow['upload']}).state,code:(event.upload as {code:string|null}).code}))
       .sort((a,b)=>b.occurredAt.localeCompare(a.occurredAt))};
 }
-interface RemoteView {state:'available'|'unknown'|'offline';total:number|null;code:string|null}
+interface RemoteView {state:'available'|'unknown'|'offline';total:number|null;code:string|null;notes:Record<string,string>}
 async function fetchRemoteRecords(signal:AbortSignal):Promise<RemoteView> {
   const response=await verificationFetch('api/hanamesh/usage/panel/remote',{method:'GET',credentials:'same-origin',cache:'no-store',signal});
   if(!response.ok)throw new Error('REMOTE_UNAVAILABLE');
   const value=await resendJson(response).catch(()=>{throw new Error('REMOTE_UNAVAILABLE');});
   if(!object(value)||!['available','unknown','offline'].includes(value.state as string))throw new Error('REMOTE_UNAVAILABLE');
-  return {state:value.state as RemoteView['state'],total:Number.isSafeInteger(value.total)?value.total as number:null,code:typeof value.code==='string'?value.code:null};
+  const notes:Record<string,string>={};
+  if(Array.isArray(value.events))for(const event of value.events)if(object(event)&&typeof event.eventId==='string'&&object(event.hostNote)&&typeof event.hostNote.code==='string')notes[event.eventId]=event.hostNote.code;
+  return {state:value.state as RemoteView['state'],total:Number.isSafeInteger(value.total)?value.total as number:null,code:typeof value.code==='string'?value.code:null,notes};
 }
 const localTime=(iso:string)=>{const date=new Date(iso);return Number.isNaN(date.getTime())?iso:date.toLocaleString();};
 
@@ -418,13 +421,14 @@ export function UsageRecords({revision=0}:{revision?:number}) {
   useEffect(()=>()=>remoteRequest.current?.abort(),[]);
   useEffect(()=>{
     const controller=new AbortController();setError(null);setRemote(null);
-    void fetchUsageRecords(controller.signal).then(value=>{if(!controller.signal.aborted)setSnapshot(value);},()=>{if(!controller.signal.aborted){setSnapshot(null);setError('USAGE_PANEL_UNAVAILABLE');}});
+    // With consent, also read the server's listing once so stored rows can carry its notes (e.g. official plugin, no points).
+    void fetchUsageRecords(controller.signal).then(value=>{if(!controller.signal.aborted){setSnapshot(value);if(value.consent==='granted'&&value.outbox.state!=='offline')checkRemote();}},()=>{if(!controller.signal.aborted){setSnapshot(null);setError('USAGE_PANEL_UNAVAILABLE');}});
     return ()=>controller.abort();
   },[revision]);
   function checkRemote(){
     if(remoteRequest.current!==null)return;
     const controller=new AbortController();remoteRequest.current=controller;setRemoteBusy(true);
-    void fetchRemoteRecords(controller.signal).then(value=>{if(!controller.signal.aborted)setRemote(value);},()=>{if(!controller.signal.aborted)setRemote({state:'unknown',total:null,code:'REMOTE_UNAVAILABLE'});})
+    void fetchRemoteRecords(controller.signal).then(value=>{if(!controller.signal.aborted)setRemote(value);},()=>{if(!controller.signal.aborted)setRemote({state:'unknown',total:null,code:'REMOTE_UNAVAILABLE',notes:{}});})
       .finally(()=>{if(remoteRequest.current===controller)remoteRequest.current=null;if(!controller.signal.aborted)setRemoteBusy(false);});
   }
   if(error!==null)return h('p',{role:'alert','data-hanamesh-usage-records':'unavailable'},'使用记录读取失败（USAGE_PANEL_UNAVAILABLE）。可以点「刷新」再试；刷新不会采集或上报任何东西。');
@@ -452,7 +456,7 @@ export function UsageRecords({revision=0}:{revision?:number}) {
       :h('table',{'aria-label':'本设备使用记录'},
         h('thead',null,h('tr',null,h('th',null,'时间'),h('th',null,'插件'),h('th',null,'动作'),h('th',null,'状态'))),
         h('tbody',null,...snapshot.rows.map(row=>h('tr',{key:row.eventId,'data-hanamesh-usage-row':row.upload},
-          h('td',null,localTime(row.occurredAt)),h('td',null,row.hanaRef),h('td',null,actionText[row.action]),h('td',null,uploadText(row)))))),
+          h('td',null,localTime(row.occurredAt)),h('td',null,row.hanaRef),h('td',null,actionText[row.action]),h('td',null,uploadText(row,remote?.notes[row.eventId])))))),
   );
 }
 

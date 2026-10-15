@@ -48,7 +48,8 @@ export interface HealthSnapshot {
   inventory:{available:boolean;source:'plugin-manager'|'none';lastScanAt:string|null;lastError:string|null;failureKind:string|null;unreadable:number;detail:{package:string;serviceKey:string;methods:string[]}|null};
   filtered:{commands:number;pages:number};
 }
-export interface RemoteEvent { eventId:string; hanaRef:string; action:UsageEvent['action']; occurredAt:string; receivedAt:string }
+/** `hostNote`: the server's optional note on a stored event (C-USAGE, e.g. USAGE_POINTS_SCORING_DISABLED for official plugins); null when absent. */
+export interface RemoteEvent { eventId:string; hanaRef:string; action:UsageEvent['action']; occurredAt:string; receivedAt:string; hostNote:{code:string}|null }
 /** This device's server records, read through the public device-signed route. `total` is null unless `state` is available. */
 export interface RemoteSnapshot {
   state:'available'|'unknown'|'offline'; deviceId:string|null; total:number|null; events:RemoteEvent[];

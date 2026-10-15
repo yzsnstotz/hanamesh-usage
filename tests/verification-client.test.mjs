@@ -140,7 +140,7 @@ function enabledClient(reply = (call, input) => ({ call, input, result: { dispos
     calls.push({ path, init });
     if (path === capabilityPath) return Promise.resolve(json({ enabled: true, calls: methods, deviceId: health.deviceId }));
     if (path === 'api/hanamesh/usage/panel') return Promise.resolve(json(panelFixture));
-    if (path === 'api/hanamesh/usage/panel/remote') return Promise.resolve(json({ state: 'available', deviceId: health.deviceId, total: 4, events: [], code: null, httpStatus: 200, checkedAt: '2026-10-15T00:00:00.000Z' }));
+    if (path === 'api/hanamesh/usage/panel/remote') return Promise.resolve(json({ state: 'available', deviceId: health.deviceId, total: 4, events: [{ eventId: 'aaaaaaaa-aaaa-5aaa-8aaa-aaaaaaaaaaa1', hanaRef: 'dsh-no-long-sit', action: 'use', occurredAt: '2026-10-15T01:00:00.000Z', receivedAt: '2026-10-15T01:00:01.000Z', hostNote: { code: 'USAGE_POINTS_SCORING_DISABLED' } }], code: null, httpStatus: 200, checkedAt: '2026-10-15T00:00:00.000Z' }));
     assert.equal(path, callPath);
     const { call, input } = JSON.parse(init.body);
     return Promise.resolve(json(reply(call, input)));
@@ -312,6 +312,7 @@ test('VCLIENT12 Usage Settings shows the records natively (no iframe), with reas
   assert.match(all, /dsh-no-long-sit/); assert.match(all, /使用/); assert.match(all, /打开/); assert.match(all, /安装/);
   assert.match(all, /未被接收：该插件不在 HanaMesh 目录里/);
   assert.match(all, /关闭「数据授权」/);
+  assert.match(all, /服务端已收到 · 官方插件 · 不计积分/, 'host note read automatically once consent is on');
   assert.match(all, /服务端回了 HTTP 502/);assert.match(all, /插件清单：读取 DSH 插件管理服务出错（TypeError）/);
   assert.match(all, /有 1 个已装插件这次读不到版本信息/);assert.match(all, /已忽略 2 次命令、1 次页面打开/);
   one(h, 'textarea'); one(h, 'select'); one(h, 'details');
