@@ -224,7 +224,7 @@ export function createUsageReporter({store,link,uploadIntervalMs,uploadBatchSize
   /** @param {Response} response @returns {Promise<{unknown:boolean,code:string|null}>} */
   async function serverError(response){
     try{const body=await response.json(),code=body?.error?.code;
-      return {unknown:response.status===503&&code==='USAGE_STORAGE_UNAVAILABLE'&&body.error.durability==='unconfirmed',code:typeof code==='string'&&/^[A-Z][A-Z0-9_]{0,63}$/.test(code)?code:null};}
+      return {unknown:response.status===503&&code==='USAGE_STORAGE_UNAVAILABLE'&&body.error.durability==='unconfirmed',code:typeof code==='string'&&/^[A-Z][A-Z0-9_]{0,79}$/.test(code)?code:null};}
     catch{return {unknown:false,code:null};}
   }
   /** @param {string} deviceId */

@@ -119,7 +119,7 @@ export class EventStore {
       for(const item of result.rejected){if(!item||typeof item!=='object'||!eventIds.includes(item.eventId)||rejected.has(item.eventId)||!safeMetadata(item.code))throw new UsageError('INVALID_UPLOAD_RESULT');
         // C-USAGE per-item host reason ({code, need}): keep the more specific reason code when it is a safe token.
         const reason:unknown=item.reason?.code;
-        rejected.set(item.eventId,typeof reason==='string'&&/^[A-Z][A-Z0-9_]{0,63}$/.test(reason)&&safeMetadata(reason)?reason:item.code);}
+        rejected.set(item.eventId,typeof reason==='string'&&/^[A-Z][A-Z0-9_]{0,79}$/.test(reason)&&safeMetadata(reason)?reason:item.code);}
       const remaining=eventIds.filter(id=>!rejected.has(id));
       if(result.accepted+result.duplicates!==remaining.length)throw new UsageError('INVALID_UPLOAD_RESULT');
       // Mixed counts identify no individual membership. `sent` means confirmed

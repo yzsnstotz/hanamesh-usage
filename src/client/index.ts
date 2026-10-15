@@ -190,7 +190,7 @@ class ResendError extends Error {
   constructor(readonly code:string){super(code);}
 }
 // Server codes and per-item host reasons are open-ended tokens (C-USAGE: "expect new values"); shape, not membership.
-const codeToken=/^[A-Z][A-Z0-9_]{0,63}$/;
+const codeToken=/^[A-Z][A-Z0-9_]{0,79}$/;
 const deliveryCode=(value:unknown):value is string|null=>value===null||(typeof value==='string'&&(deliveryCodes.has(value)||codeToken.test(value)));
 function withdrawalSnapshot(value:unknown):value is WithdrawalSnapshot|null {
   return value===null||(object(value)&&typeof value.requestedAt==='string'&&typeof value.deviceId==='string'
