@@ -1,6 +1,5 @@
 // @ts-check
-import { randomBytes } from 'node:crypto';
-import { UsageError, UsageStore, EventStore, commitAfterSource, deriveUsageEvent, eventNonceFromBytes, projectTerminal, DEFAULT_EVENT_RETENTION_DAYS, DEFAULT_QUERY_LIMIT, MAX_QUERY_LIMIT } from '../core/index.js';
+import { UsageError, UsageStore, EventStore, commitAfterSource, projectTerminal, DEFAULT_EVENT_RETENTION_DAYS, DEFAULT_QUERY_LIMIT, MAX_QUERY_LIMIT } from '../core/index.js';
 import { signUsageEvent } from './core-link.js';
 import { mountTransport } from './transport.js';
 import { createRecordSeat } from './record.js';
@@ -10,18 +9,19 @@ import { createInventory } from './inventory.js';
 import { commandPackage } from './command-source.js';
 import { mountCommandFacts } from './command-facts.js';
 import { createPageFacts } from './page-facts.js';
+import { ownedByProfileBundle } from './page-source.js';
+import { HOST_VERSIONS } from './pins.js';
 import { projectUsagePanel } from './panel.js';
 
 /**
  * @param {import('@deepseek-ai/cordis').Context} ctx
- * @param {{readBinding(id: import('@deepseek-ai/dsh-session').SessionId): Promise<import('../core/index.js').BindingObservation | undefined>} | null} registry
  * @param {{global: import('../core/index.js').GlobalPort, close(): Promise<void>}} domain
  * @param {{global: import('../core/index.js').EventGlobalPort, close(): Promise<void>}} eventDomain
  * @param {Required<import('./contracts.js').Config>} config
- * @param {{status(): 'absent'|'incompatible'|'present',get(): import('@hanamesh/api-contracts/core').HanaMeshCoreContract|null,onChange(listener:(status:'absent'|'incompatible'|'present',core:import('@hanamesh/api-contracts/core').HanaMeshCoreContract|null)=>void):()=>void,close():void}} coreLink
+ * @param {{status(): 'absent'|'incompatible'|'present',get(): import('./core-link.js').CoreService|null,onChange(listener:(status:'absent'|'incompatible'|'present',core:import('./core-link.js').CoreService|null)=>void):()=>void,close():void}} coreLink
  * @param {(accept:(fact:unknown)=>void)=>ReturnType<typeof mountCommandFacts>} [commandSource]
  */
-export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink, commandSource = accept=>mountCommandFacts(ctx,accept,config.maxPending)) {
+export function mountUsage(ctx, domain, eventDomain, config, coreLink, commandSource = accept=>mountCommandFacts(ctx,accept,config.maxPending)) {
   const eventRetentionDays=config.eventRetentionDays??DEFAULT_EVENT_RETENTION_DAYS,queryLimit=config.queryLimit??DEFAULT_QUERY_LIMIT;
   const store = new UsageStore(domain.global, config.maxRecords, queryLimit);
   const eventStore = new EventStore(eventDomain.global, config.maxEvents, Date.now, eventRetentionDays, queryLimit);
@@ -29,12 +29,10 @@ export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink,
   const pending = new Map();
   /** @type {Record<string, number>} */
   const failures = {};
-  const skipped = { consentWithheld:0, executorUnavailable:0, timeUnavailable:0, noDevice:0 };
   let closing = false;
   let recoveryComplete = false;
   let jobs = Promise.resolve();
   let accepted=0,collectionFailed=false;
-  const nonce=()=>eventNonceFromBytes(randomBytes(16));
   const coreState=()=>{
     const core=coreLink.get();if(core===null)return {core:null,deviceId:null,consent:/** @type {const} */('unknown')};
     try{return {core,deviceId:core.getDeviceId(),consent:core.getConsent()};}catch{return {core:null,deviceId:null,consent:/** @type {const} */('unknown')};}
@@ -46,20 +44,6 @@ export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink,
     const code = error instanceof UsageError && allowed.includes(error.code) ? error.code : 'OBSERVATION_FAILED';
     failures[code] = (failures[code] ?? 0) + 1;
   };
-  /** @param {import('../core/index.js').Declaration} record */
-  async function derive(record) {
-    let result;
-    const current=coreState();
-    try { result=deriveUsageEvent(record,{deviceId:current.deviceId,consent:current.consent,nonce}); }
-    catch { note(new UsageError('DERIVE_FAILED')); return; }
-    if(result.skipped!==null){skipped[result.skipped]++;return;}
-    try{if(current.core===null)throw new UsageError('DERIVE_FAILED');await eventStore.put(signUsageEvent(current.core,result.event));}catch(error){note(error instanceof UsageError&&error.code==='EVENTS_CAPACITY_REACHED'?error:new UsageError('DERIVE_FAILED'));}
-  }
-  /** @param {import('@deepseek-ai/dsh-session').SessionId} id */
-  async function bindingFor(id) {
-    // Read-only public contract. Never call create/resume, or register another registry.
-    return registry ? await registry.readBinding(id) : undefined;
-  }
   /**
    * @param {import('@deepseek-ai/dsh-session').SessionId} id
    * @param {import('@deepseek-ai/dsh-session').SessionEvent<'turn/end'>} expected
@@ -72,15 +56,16 @@ export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink,
       if (!actual || actual.type !== 'turn/end' || actual.seq !== expected.seq || actual.time !== expected.time || actual.data.turn !== expected.data.turn || actual.data.reason.kind !== expected.data.reason.kind) throw new UsageError('SOURCE_NOT_DURABLE');
     } finally { await handle.close(); }
   }
+  // Chat turns stay local summaries (query/export) and never become usage events: DSH exposes no public fact saying which
+  // plugin a turn belongs to, so turns are not counted (owner decision D, 2026-10-15).
   /** @param {import('@deepseek-ai/dsh-session').Session} session @param {number} [through] */
   async function observeLive(session,through=Infinity) {
     const events = session.snapshotEvents().filter(event=>event.seq<=through);
-    const binding = await bindingFor(session.id);
     /** @type {import('../core/index.js').SessionObservation} */
     const input = {
       sessionId: session.id, events, inheritedEventCount: session.inheritedEventCount,
       ...(session.header.parentSession ? { parentSession: session.header.parentSession } : {}),
-      ...(binding ? { binding } : {}), sampleKind: 'runtime_observation',
+      sampleKind: 'runtime_observation', hostVersions: HOST_VERSIONS,
     };
     /** @type {Promise<void> | undefined} */
     let flush;
@@ -93,21 +78,20 @@ export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink,
         });
         await flush;
         await verifyTerminal(session.id, end);
-      }, async () => { const disposition=await store.put(record);if(disposition==='inserted')await derive(record);return disposition; });
+      }, async () => await store.put(record));
     }
   }
   /** @param {import('@deepseek-ai/dsh-session').SessionId} id */
   async function observeCold(id) {
     const live = ctx.sessions.get(id);
     if (live) return await observeLive(live);
-    const binding = await bindingFor(id);
     const handle = await ctx.sessionPersistence.open(id, 'read');
     try {
       const { events } = await handle.read();
       /** @type {import('../core/index.js').SessionObservation} */
       const input = { sessionId: id, events, inheritedEventCount: handle.inheritedEventCount,
         ...(handle.header.parentSession ? { parentSession: handle.header.parentSession } : {}),
-        ...(binding ? { binding } : {}), sampleKind: 'runtime_observation' };
+        sampleKind: 'runtime_observation', hostVersions: HOST_VERSIONS };
       for (const end of events) {
         if (end.type !== 'turn/end' || end.seq < handle.inheritedEventCount) continue;
         const record = projectTerminal(input, end);
@@ -115,7 +99,7 @@ export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink,
           // flush() is the published persistence barrier; read() alone is not one.
           await ctx.sessionPersistence.flush();
           await verifyTerminal(id, end);
-        }, async () => { const disposition=await store.put(record);if(disposition==='inserted')await derive(record);return disposition; });
+        }, async () => await store.put(record));
       }
     } finally { await handle.close(); }
   }
@@ -154,8 +138,14 @@ export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink,
     const observedAt=new Date(item.occurredAt);if(!Number.isFinite(observedAt.getTime()))return;
     const occurredAt=observedAt.toISOString();
     const idempotencyKey=`command:${item.commandId}:succeeded`;
+    const source=/** @type {{entryId:string,moduleName:string}} */(item.source);
     accepted++;
-    jobs=jobs.then(async()=>{const result=await recordSeat({hanaRef,action:'use',occurredAt,idempotencyKey,sourcePlugin:hanaRef});if(result.disposition==='rejected')note(new UsageError(result.code??'RECORD_FAILED'));}).catch(note);
+    jobs=jobs.then(async()=>{
+      // Same rule as page opens: only a command owned by a bundle the person installed counts as plugin use.
+      // The credited package must be the owning bundle itself (a bundle row naming another package's module is not that package's use).
+      let owner=null;try{owner=await ownedByProfileBundle(/** @type {any} */(ctx.get('pluginManager')),source);}catch{note(new UsageError('COMMAND_SOURCE_UNREADABLE'));return;}
+      if(owner!==hanaRef)return;
+      const result=await recordSeat({hanaRef,action:'use',occurredAt,idempotencyKey,sourcePlugin:hanaRef});if(result.disposition==='rejected')note(new UsageError(result.code??'RECORD_FAILED'));}).catch(note);
   });
   const stopEvent = ctx.on('session/event', (session, event) => { commandFacts.observe(session,event); if (event.type === 'turn/end') schedule(session); });
   const pages=createPageFacts(ctx,()=>!closing&&coreState().consent==='granted',(input,allowed)=>{
@@ -169,12 +159,14 @@ export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink,
   const reporter=createUsageReporter({store:eventStore,link:coreLink,uploadIntervalMs:config.uploadIntervalMs,uploadBatchSize:config.uploadBatchSize});
   const inventory=createInventory({ctx,store:eventStore,link:coreLink,inventoryIntervalMs:config.inventoryIntervalMs,note:code=>note(new UsageError(code))});
   /** @type {(()=>void)|null} */let stopConsent=null;
-  /** @param {'absent'|'incompatible'|'present'} status @param {import('@hanamesh/api-contracts/core').HanaMeshCoreContract|null} core */
+  /** @param {'absent'|'incompatible'|'present'} status @param {import('./core-link.js').CoreService|null} core */
   const attachCore=(status,core)=>{
     pages.revoke();stopConsent?.();stopConsent=null;
     if(status!=='present'||core===null){reporter.stop();return;}
     stopConsent=core.onConsentChange((state,changedAt)=>{pages.revoke();if(state==='withheld')reporter.stop();accepted++;let deviceId=null;try{deviceId=core.getDeviceId();}catch{}jobs=jobs.then(async()=>{if(state==='withheld')await reporter.withdraw(changedAt,deviceId);else {await eventStore.signPending(event=>signUsageEvent(core,event));try{await inventory.scan();}catch{note(new UsageError('INVENTORY_FAILED'));}await reporter.grant();}}).catch(error=>note(error));});
-    jobs=jobs.then(async()=>{await eventStore.signPending(event=>signUsageEvent(core,event));reporter.start();}).catch(error=>note(error));
+    // A scan that ran before Core attached recorded the inventory without events; with consent already granted, rescan
+    // so current profile installs become reportable (same as on a later grant).
+    jobs=jobs.then(async()=>{await eventStore.signPending(event=>signUsageEvent(core,event));if(core.getConsent()==='granted'){try{await inventory.scan();}catch{note(new UsageError('INVENTORY_FAILED'));}}reporter.start();}).catch(error=>note(error));
   };
   const stopCore=coreLink.onChange(attachCore);attachCore(coreLink.status(),coreLink.get());
   const api = {
@@ -200,7 +192,8 @@ export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink,
       accepted++;
       const run=jobs.then(async()=>{
         if(closing)return /** @type {import('./contracts.js').ResendEventsResult} */({state:'rejected',code:'USAGE_UNAVAILABLE',events:[],health:null});
-        try{const result=await reporter.resend(ids);return {...result,health:closing?null:api.health()};}
+        // Host-rejected events (not stored by the server) become sendable again only through this explicit user intent.
+        try{await eventStore.reopenHostRejected(ids);const result=await reporter.resend(ids);return {...result,health:closing?null:api.health()};}
         catch{return /** @type {import('./contracts.js').ResendEventsResult} */({state:'rejected',code:closing?'USAGE_UNAVAILABLE':'RESEND_FAILED',events:[],health:closing?null:api.health()});}
       });
       jobs=run.then(()=>{},error=>note(error));return run;
@@ -223,7 +216,7 @@ export function mountUsage(ctx, registry, domain, eventDomain, config, coreLink,
     health: () => {
       if(closing)throw new UsageError('USAGE_UNAVAILABLE');
       const current=coreState(),outbox=reporter.health(),{available,source,lastScanAt,detail}=inventory.health();
-      return { pending: pending.size, recoveryComplete, failures: { ...failures }, consent:current.consent, core:coreLink.status(), deviceId:current.deviceId, outbox, derive:{skipped:{...skipped}}, withdrawal:eventStore.getSnapshot().withdrawal, inventory:{available,source,lastScanAt,detail} };
+      return { pending: pending.size, recoveryComplete, failures: { ...failures }, consent:current.consent, core:coreLink.status(), deviceId:current.deviceId, outbox, withdrawal:eventStore.getSnapshot().withdrawal, inventory:{available,source,lastScanAt,detail} };
     },
     async drain() { await jobs; await inventory.drain(); await reporter.drain(); await store.drain(); await eventStore.drain(); },
     async reconcile() {

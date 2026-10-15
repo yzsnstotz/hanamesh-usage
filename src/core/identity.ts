@@ -15,9 +15,6 @@ function uuidv5(name: string): string {
   return `${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20)}`;
 }
 
-export function eventIdForSession(deviceId: string, sessionId: string, turn: number): string {
-  return uuidv5(JSON.stringify([deviceId, 'turn/end', sessionId, turn]));
-}
 export function eventIdForLoader(deviceId: string, action: 'install' | 'uninstall', hanaRef: string, version: string): string {
   return uuidv5(JSON.stringify([deviceId, action, hanaRef, version]));
 }

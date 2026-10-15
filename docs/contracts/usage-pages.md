@@ -1,6 +1,6 @@
 # Usage 内部 pages Remote（rc.21）
 
-这是 Usage 客户端与 Usage host 自身的内部协议，不扩展 C-CORE、C-USAGE-LOCAL 或 C-USAGE；跨模块仍只消费锁定的 @hanamesh/api-contracts v0.9.0。
+这是 Usage 客户端与 Usage host 自身的内部协议，不扩展 C-CORE、C-USAGE-LOCAL 或 C-USAGE；本模块不安装任何 HanaMesh 合约包或邻仓模块。
 
 客户端 `remote.$mount(pagesContribution)` 选入 `hanameshUsagePages`；host 经公开 TypertRemoteService/Remote 暴露同名命名空间。使用现有 Connection/Gateway 的认证 Peer，不创建新连接或执行身份。Client 请求是 strict codec；host 对每个 JSON 请求作完整字段校验。客户端没有 packageName、occurredAt、operationId 或 sourcePlugin 写入口。
 

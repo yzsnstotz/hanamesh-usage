@@ -1,6 +1,6 @@
-# hanamesh-usage · 0.2.0-rc.26
+# hanamesh-usage · 0.2.0-rc.27
 
-rc.26 消费项目批准的官方 `d743267388641bc76f17c45ce8b4c231aed1d32c`：DSH `0.2.1-alpha.2`、Cordis `4.0.5-alpha.1`、实际共享 zod `4.6.5`，各公开包独立核对后精确锁定。开发依赖的正式 JS/声明与该 SHA 的官方 pack 核验一致，移除本模块旧版本 override；api-contracts 仍仅为开发依赖 `v0.9.0`。事件、归属、签名、同意/撤回和 schema v1 不变；新观察记录的 DSH provenance 跟随本构建，旧记录不重写。
+rc.26 消费项目批准的官方 `d743267388641bc76f17c45ce8b4c231aed1d32c`：DSH `0.2.1-alpha.2`、Cordis `4.0.5-alpha.1`、实际共享 zod `4.6.5`，各公开包独立核对后精确锁定。开发依赖的正式 JS/声明与该 SHA 的官方 pack 核验一致，移除本模块旧版本 override；不再安装 api-contracts 或任何 HanaMesh 邻仓包。事件、归属、签名、同意/撤回和 schema v1 不变；新观察记录的 DSH provenance 跟随本构建，旧记录不重写。
 
 本卡证据区分 SOURCE/FIXTURE/PACKAGE 与官方未打包 Electron 载体的默认 Desktop 插件安装、设置及限定存储回归。完整 U1、真实 Core+Server 组合、原生介质强杀、安装版 Desktop 和 owner 验收仍由原产品门负责。
 
@@ -141,7 +141,7 @@ Inventory 暴露 `INVENTORY_FAILED/INVENTORY_ENTRY_UNREADABLE/INVENTORY_PACKAGE_
 `live-check.py` 还需本卡 `state/OBSERVER_INPUTS.json` 指定 deviceId、两个 observerPort 和本卡 PG container，
 不再默认指向原卡端口/设备/容器。历史 `final-setup` 供给仍冻结在原取证版本，不能把它当 rc.23 产品验收。
 
-开发合约只在 devDependencies：正式精确 `git+https://github.com/yzsnstotz/hanamesh-api-contracts.git#v0.9.0`。
-生产 TGZ 的运行 JS 和公开声明没有该包的模块依赖；`npm run test:contract` 自带目标构建。
+不安装任何 HanaMesh 合约包（含开发依赖）。C-CORE 用仓内 Ed25519 测试替身 `tests/fixtures/core-fake.mjs`；C-USAGE 服务端行为只对真实本地后端验证。
+`npm run test:contract` 自带目标构建。
 框架 peer 与 React 宿主外部供给沿用，独立声明消费需正常 TypeScript/Node/React 类型工具。
 本模块无 ABI 生成器或链上接口，ABI/模板/签名广播门不在本卡范围。

@@ -64,6 +64,8 @@ export interface SessionObservation {
   parentSession?: string;
   binding?: BindingObservation;
   sampleKind: 'runtime_observation' | 'synthetic';
+  /** Host versions recorded into provenance; supplied by the host adapter so core carries no DSH pins. */
+  hostVersions: { registryVersion: string; dshVersion: string };
 }
 export interface Filter {
   executor?: string;

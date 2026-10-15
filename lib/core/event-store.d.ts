@@ -29,12 +29,18 @@ export interface EventGlobalPort {
     set(value: EventSnapshot): Promise<void>;
 }
 /** Local storage admission DTO; public declarations stay independent of dev-only contracts. */
+/** C-USAGE per-item host rejection, stored as `USAGE_EVENT_HOST_REJECTED[:REASON]`. */
+export declare function isHostRejection(code: string | null): boolean;
 export interface IngestBatchResult {
     accepted: number;
     duplicates: number;
     rejected: readonly {
         eventId: string;
         code: string;
+        reason?: {
+            code?: string;
+            need?: string;
+        };
     }[];
     durability: 'committed' | 'pending-host-commit';
 }
@@ -51,11 +57,17 @@ export declare class EventStore {
     private commit;
     put(input: UsageEvent): Promise<'inserted' | 'duplicate'>;
     signPending(signer: (event: UsageEvent) => UsageEvent): Promise<number>;
-    updateInventory(scannedAt: string, items: InventoryItem[], inputs: UsageEvent[]): Promise<{
+    /** `dropPendingLoader`: never-sent loader install/uninstall events for these package names are removed in the same
+     *  commit (an inventory source migration retracting records that were never valid user installs). */
+    updateInventory(scannedAt: string, items: InventoryItem[], inputs: UsageEvent[], dropPendingLoader?: readonly string[]): Promise<{
         inserted: string[];
         duplicates: number;
+        dropped: number;
     }>;
     applyUpload(eventIds: string[], result: IngestBatchResult, sentAt: string): Promise<void>;
+    /** A host-rejected event (USAGE_EVENT_HOST_REJECTED) was not stored by the server; on an explicit user resend it goes
+     *  back to pending with its original signed bytes. Never used by the automatic sender. Returns how many were reopened. */
+    reopenHostRejected(eventIds: string[]): Promise<number>;
     /** Conservative send intent uses the existing local diagnostic slot only.
      * Neither the signed event nor its attempt count changes at admission. */
     markUploadIntent(eventIds: string[], pending?: boolean): Promise<void>;

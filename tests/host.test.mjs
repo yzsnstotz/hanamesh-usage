@@ -39,14 +39,9 @@ test('T11 FIXTURE ONLY: no connection/cloud module is required for local service
   const h=await fixtureHost();assert.equal(h.ctx.connection,undefined);assert.equal(h.api.query().total,1);await h.close();await h.close();assert.equal(h.domainCloses,2);
 });
 
-test('U06 source declaration commits before its derived event',async()=>{
-  const h=await fixtureHost({consent:'granted'});assert.equal(h.api.query().total,1);assert.equal(h.api.events().total,1);
-  assert(h.log.indexOf('summary.set')<h.log.lastIndexOf('event.set'));assert.equal(h.api.events().events[0].action,'use');await h.close();
-});
-
-test('U06 derivation failure is bounded and never rolls back the Declaration',async()=>{
-  const h=await fixtureHost({consent:'granted',deviceId:'bad'});assert.equal(h.api.query().total,1);assert.equal(h.api.events().total,0);
-  assert.equal(h.api.health().failures.DERIVE_FAILED,1);assert.equal(h.api.health().recoveryComplete,true);await h.close();
+test('D chat turns stay a local summary and never become a usage event, even with consent (owner decision D)',async()=>{
+  const h=await fixtureHost({consent:'granted'});assert.equal(h.api.query().total,1);assert.equal(h.api.events().total,0);
+  assert.equal(h.api.health().recoveryComplete,true);await h.close();
 });
 
 test('U09 mounted service exposes the record seat while withheld remains event-free',async()=>{
@@ -55,7 +50,17 @@ test('U09 mounted service exposes the record seat while withheld remains event-f
 });
 
 test('U11 absent and incompatible core never block local Declaration recording',async()=>{
-  for(const coreStatus of ['absent','incompatible']){const h=await fixtureHost({coreStatus,consent:'granted'});assert.equal(h.api.query().total,1);assert.equal(h.api.events().total,0);const health=h.api.health();assert.equal(health.core,coreStatus);assert.equal(health.consent,'unknown');assert.equal(health.deviceId,null);assert.equal(health.derive.skipped.noDevice,1);await h.close();}
+  for(const coreStatus of ['absent','incompatible']){const h=await fixtureHost({coreStatus,consent:'granted'});assert.equal(h.api.query().total,1);assert.equal(h.api.events().total,0);const health=h.api.health();assert.equal(health.core,coreStatus);assert.equal(health.consent,'unknown');assert.equal(health.deviceId,null);await h.close();}
+});
+
+test('Core attaching after the first inventory scan, with consent already granted, records the current profile installs',async()=>{
+  const bundles=[{name:'dsh-no-long-sit',version:'0.1.3',installed:true,availability:'profile',enabled:true,removable:true,rows:[]}];
+  const h=await fixtureHost({coreStatus:'absent',consent:'granted',pluginManager:{listBundles:async()=>bundles}});
+  try{
+    assert.equal(h.api.events().total,0,'no Core yet: nothing is signed or recorded');
+    h.attachCore();await h.api.drain();
+    assert.deepEqual(h.api.events().events.map(event=>[event.action,event.hanaRef]),[['install','dsh-no-long-sit']]);
+  }finally{await h.close();}
 });
 
 test('U11 late core attachment signs legacy pending events and starts from the current consent',async()=>{
@@ -64,5 +69,5 @@ test('U11 late core attachment signs legacy pending events and starts from the c
 });
 
 test('U17 health exposes the complete bounded field table',async()=>{
-  const h=await fixtureHost();const health=h.api.health();assert.deepEqual(Object.keys(health),['pending','recoveryComplete','failures','consent','core','deviceId','outbox','derive','withdrawal','inventory']);assert.deepEqual(Object.keys(health.outbox),['state','pending','sent','duplicate','rejected','lastUploadAt','nextAttemptAt','lastError']);assert.deepEqual(Object.keys(health.derive.skipped),['consentWithheld','executorUnavailable','timeUnavailable','noDevice']);await h.close();
+  const h=await fixtureHost();const health=h.api.health();assert.deepEqual(Object.keys(health),['pending','recoveryComplete','failures','consent','core','deviceId','outbox','withdrawal','inventory']);assert.deepEqual(Object.keys(health.outbox),['state','pending','sent','duplicate','rejected','lastUploadAt','nextAttemptAt','lastError']);await h.close();
 });

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import * as core from '../lib/core/index.js';
 
 test('U05 core exports the usage event contract surface', () => {
-  for (const name of ['canonicalJSON','signingJSON','eventIdForSession','eventIdForLoader','eventIdForSeat','createUsageEvent','validateEvent','wireEvent','EventStore','deriveUsageEvent']) {
+  for (const name of ['canonicalJSON','signingJSON','eventIdForLoader','eventIdForSeat','createUsageEvent','validateEvent','wireEvent','EventStore']) {
     assert.equal(typeof core[name], 'function', name);
   }
 });
@@ -51,10 +51,9 @@ test('U05 event export is rebuilt field by field and preserves exactly the local
 });
 
 test('U07 event identities are deterministic UUIDv5 values separated by source semantics', () => {
-  const sessionA = core.eventIdForSession('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'session-1', 4);
-  assert.equal(sessionA, core.eventIdForSession('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'session-1', 4));
-  assert.match(sessionA, /^[0-9a-f]{8}-[0-9a-f]{4}-5[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
-  assert.notEqual(sessionA, core.eventIdForSession('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'session-1', 5));
+  const seatA = core.eventIdForSeat('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'app-host', 'open-1');
+  assert.match(seatA, /^[0-9a-f]{8}-[0-9a-f]{4}-5[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+  assert.notEqual(seatA, core.eventIdForSeat('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'app-host', 'open-2'));
   assert.notEqual(core.eventIdForLoader('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'install', 'pkg', '1.0.0'), core.eventIdForLoader('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'uninstall', 'pkg', '1.0.0'));
   assert.equal(core.eventIdForSeat('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'app-host', 'open-1'), core.eventIdForSeat('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk', 'app-host', 'open-1'));
 });
@@ -111,6 +110,23 @@ test('U13 EventStore atomically confirms the non-rejected mixed set without gues
   assert.equal(global.writes,before+1);assert.deepEqual(store.query().events.map(event=>[event.upload.state,event.upload.code,event.upload.attempts]),[['sent',null,1],['sent',null,1],['rejected','USAGE_INPUT_INVALID',1]]);
   const payload=({upload,...fields})=>fields;
   assert.deepEqual(store.query().events.map(payload),events.map(payload),'confirmation preserves every original fact/signature/nonce');
+});
+
+test('A host rejection reason (C-USAGE per-item reason) is kept as the event code; an unsafe reason falls back to the item code', async () => {
+  const global=new EventGlobal();const store=new core.EventStore(global);const events=[];
+  for(const [index,nonce] of ['AQIDBAUGBwgJCgsMDQ4PEA','QkJCQkJCQkJCQkJCQkJCQg','Q0NDQ0NDQ0NDQ0NDQ0NDQw'].entries()){
+    const event=core.createUsageEvent({...base(),eventId:core.eventIdForSeat('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk','app-host',`reason-${index}`),nonce,signature:'c2lnbmF0dXJl'});events.push(event);await store.put(event);
+  }
+  await store.applyUpload(events.map(event=>event.eventId),{accepted:1,duplicates:0,rejected:[
+    {eventId:events[1].eventId,code:'USAGE_EVENT_HOST_REJECTED',reason:{code:'USAGE_POINTS_HANA_REF_UNRESOLVED',need:'catalog-entry'}},
+    {eventId:events[2].eventId,code:'USAGE_EVENT_HOST_REJECTED',reason:{code:'sk-not a token/ok',need:'x'}}],durability:'committed'},'2026-09-19T00:01:00.000Z');
+  assert.deepEqual(store.query().events.map(event=>[event.upload.state,event.upload.code]),[['sent',null],['rejected','USAGE_EVENT_HOST_REJECTED:USAGE_POINTS_HANA_REF_UNRESOLVED'],['rejected','USAGE_EVENT_HOST_REJECTED']]);
+  // An explicit user resend reopens host rejections only (the server did not store them); other refusals stay final.
+  assert.equal(await store.reopenHostRejected(events.map(event=>event.eventId)),2);
+  assert.deepEqual(store.query().events.map(event=>[event.upload.state,event.upload.code]),[['sent',null],['pending',null],['pending',null]]);
+  const signed=({upload,...fields})=>fields;assert.deepEqual(store.query().events.map(signed),events.map(signed),'original signed bytes are kept');
+  await store.applyUpload([events[1].eventId],{accepted:0,duplicates:0,rejected:[{eventId:events[1].eventId,code:'USAGE_NONCE_REUSED'}],durability:'committed'},'2026-09-19T00:02:00.000Z');
+  assert.equal(await store.reopenHostRejected([events[1].eventId]),0);
 });
 
 test('U15 EventStore withdrawal clears all events in one publication before remote work', async () => {

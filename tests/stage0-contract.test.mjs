@@ -7,14 +7,14 @@ const read = path => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8'
 test('U04 package is the standalone hanamesh-usage DSH bundle', () => {
   const pkg = JSON.parse(read('package.json'));
   assert.equal(pkg.name, 'hanamesh-usage');
-  assert.equal(pkg.version, '0.2.0-rc.26');
+  assert.equal(pkg.version, '0.2.0-rc.27');
   for (const [name, version] of Object.entries(pkg.peerDependencies)) {
     if (name.startsWith('@deepseek-ai/dsh-')) assert.equal(version, '0.2.1-alpha.2', name);
   }
   assert.equal(pkg.peerDependencies['@deepseek-ai/cordis'], '4.0.5-alpha.1');
   assert.equal(pkg.devDependencies['@deepseek-ai/dsh-storage-domain'], '0.2.1-alpha.2');
   assert.equal(pkg.devDependencies['@deepseek-ai/cordis'], '4.0.5-alpha.1');
-  assert.match(read('src/core/pins.ts'), /DSH_VERSION = '0\.2\.1-alpha\.2'/);
+  assert.match(read('src/host/pins.js'), /DSH_VERSION = '0\.2\.1-alpha\.2'/);
   assert.deepEqual(pkg.dsh.bundle, {patch:'./profile/cordis.patch.yml'});
   assert.equal(pkg.files.includes('profile'), true);
   assert.equal(pkg.dsh.client.platform, 'web');assert.equal(pkg.exports['./client'].default,'./lib/client.js');
@@ -25,15 +25,14 @@ test('U04 package is the standalone hanamesh-usage DSH bundle', () => {
   );
 });
 
-test('J1S2 sibling modules are reached only through the published @hanamesh/api-contracts tag', () => {
+test('J1S2 no HanaMesh sibling or contract package is installed in any dependency section', () => {
   const pkg = JSON.parse(read('package.json'));
   for (const section of ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']) {
     assert.deepEqual(
-      Object.keys(pkg[section] ?? {}).filter(name => (name.startsWith('@hanamesh/') || name.startsWith('hanamesh-')) && name !== '@hanamesh/api-contracts'),
+      Object.keys(pkg[section] ?? {}).filter(name => name.startsWith('@hanamesh/') || name.startsWith('hanamesh-')),
       [], section,
     );
   }
-  assert.match(pkg.devDependencies['@hanamesh/api-contracts'], /^git\+https:\/\/github\.com\/yzsnstotz\/hanamesh-api-contracts\.git#v\d+\.\d+\.\d+$/);
   assert.equal(pkg.scripts['test:contract'], 'pnpm run build && node --test --test-reporter=tap tests/stage0-contract.test.mjs tests/stage4-contract.test.mjs tests/contract-wire.test.mjs tests/shared-fact.test.mjs');
 });
 

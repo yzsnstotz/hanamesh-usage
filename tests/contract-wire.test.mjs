@@ -31,10 +31,29 @@ test('mixed signed batch with a local stub sends nothing and keeps every event p
   assert.deepEqual(store.query().events.map(event=>event.upload.state),['pending','pending']);
 });
 
-// C-CORE (consumer) and C-USAGE-LOCAL (provider) against the published @hanamesh/api-contracts fixtures only.
-// No sibling module is installed: Core is the contract package's in-memory provider fixture.
-const coreContract=await import('@hanamesh/api-contracts/core');
-const usageLocal=await import('@hanamesh/api-contracts/usage-local');
+// C-CORE (consumer) and C-USAGE-LOCAL (provider). No sibling module is installed: Core is the in-repo
+// Ed25519 test double; the C-USAGE-LOCAL expectations below are written out from the contract.
+const {coreHandshakeCases,createCoreFake,verifyCoreSignature,RFC8032_TEST1}=await import('./fixtures/core-fake.mjs');
+const {createHash}=await import('node:crypto');
+// C-USAGE-LOCAL record eventId: UUIDv5(namespace, JSON [deviceId, sourcePlugin, idempotencyKey]).
+const USAGE_EVENT_NAMESPACE='6aa7b4d1-88f5-4f96-89e2-cf5ffca77c2d';
+const usageRecordEventId=(deviceId,sourcePlugin,idempotencyKey)=>{
+  const b=createHash('sha1').update(Buffer.from(USAGE_EVENT_NAMESPACE.replaceAll('-',''),'hex')).update(JSON.stringify([deviceId,sourcePlugin,idempotencyKey]),'utf8').digest().subarray(0,16);
+  b[6]=(b[6]&0x0f)|0x50;b[8]=(b[8]&0x3f)|0x80;const h=b.toString('hex');
+  return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;
+};
+const USAGE_RECORD_CODES=['INVALID_RECORD_INPUT','DEVICE_UNAVAILABLE','EVENTS_CAPACITY_REACHED','EVENT_IDENTITY_CONFLICT','RECORD_FAILED'];
+const usageLocalHealth=(core,consent,deviceId,outboxState)=>({pending:0,recoveryComplete:true,failures:{},consent,core,deviceId,
+  outbox:{state:outboxState,pending:0,sent:0,duplicate:0,rejected:0,lastUploadAt:null,nextAttemptAt:null,lastError:null},
+  withdrawal:null,
+  inventory:{available:false,source:'none',lastScanAt:null,detail:null}});
+const usageLocal={
+  input:{hanaRef:'@hanamesh/example-app',action:'open',idempotencyKey:'page:fixture-1',sourcePlugin:'@hanamesh/dsh-app-host'},
+  results:{withheld:{disposition:'withheld'},duplicate:{disposition:'duplicate'},
+    EVENT_IDENTITY_CONFLICT:{disposition:'rejected',code:'EVENT_IDENTITY_CONFLICT'},INVALID_RECORD_INPUT:{disposition:'rejected',code:'INVALID_RECORD_INPUT'}},
+  health:usageLocalHealth('present','granted',RFC8032_TEST1.deviceId,'idle'),
+  healthCoreAbsent:usageLocalHealth('absent','unknown',null,'stopped'),
+};
 const {duckCore,signUsageEvent}=await import('../lib/host/core-link.js');
 const {signingJSON}=await import('../lib/core/index.js');
 const {fixtureHost}=await import('./fixtures/host.mjs');
@@ -64,7 +83,7 @@ test('Q376 provider separates new missing-time facts from persisted attribution 
 });
 
 test('C-CORE consumer: duckCore classifies every published handshake case like the contract',()=>{
-  const cases=coreContract.coreHandshakeCases();
+  const cases=coreHandshakeCases();
   assert(cases.length>=13);
   for(const {id,value,expected} of cases){
     const linked=duckCore(value);
@@ -73,14 +92,14 @@ test('C-CORE consumer: duckCore classifies every published handshake case like t
   }
 });
 
-test('C-CORE consumer: usage events signed through the contract fixture verify with its public key',async()=>{
-  const fixture=coreContract.createCoreProviderFixture({deviceId:'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk',initialConsent:'granted'});
+test('C-CORE consumer: usage events signed through Core verify with its public key',async()=>{
+  const fixture=createCoreFake({seed:RFC8032_TEST1.seed,initialConsent:'granted'});
   const linked=duckCore(fixture.service);assert.equal(linked.status,'present');
-  const deviceId=linked.core.getDeviceId();
+  const deviceId=linked.core.getDeviceId();assert.equal(deviceId,RFC8032_TEST1.deviceId);assert.equal(linked.core.getPublicKey(),RFC8032_TEST1.publicKey);
   const event=signUsageEvent(linked.core,createUsageEvent(input({deviceId})));
   const {signature,...six}=wireEvent(event);
-  assert(coreContract.verifyCoreSignature(linked.core.getPublicKey(),new TextEncoder().encode(signingJSON(six)),Buffer.from(signature,'base64url')));
-  assert.equal(coreContract.verifyCoreSignature(linked.core.getPublicKey(),new TextEncoder().encode(signingJSON({...six,action:'open'})),Buffer.from(signature,'base64url')),false);
+  assert(verifyCoreSignature(linked.core.getPublicKey(),new TextEncoder().encode(signingJSON(six)),Buffer.from(signature,'base64url')));
+  assert.equal(verifyCoreSignature(linked.core.getPublicKey(),new TextEncoder().encode(signingJSON({...six,action:'open'})),Buffer.from(signature,'base64url')),false);
   assert.equal(linked.core.getConsent(),'granted');
   assert.equal(linked.core.getSession().deviceId,deviceId);
 });
@@ -94,7 +113,7 @@ const sameShape=(actual,expected,path='health')=>{
 };
 
 test('C-USAGE-LOCAL provider: record returns the published dispositions, eventId and codes',async()=>{
-  const examples=await usageLocal.createUsageLocalContractExamples();
+  const examples=usageLocal;
   const deviceId='If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk';
   const h=await fixtureHost({consent:'withheld',deviceId});
   try{
@@ -102,16 +121,16 @@ test('C-USAGE-LOCAL provider: record returns the published dispositions, eventId
     assert.deepEqual(await h.api.record(call),examples.results.withheld);
     h.setConsent('granted');
     const recorded=await h.api.record(call);
-    assert.deepEqual(recorded,{disposition:'recorded',eventId:usageLocal.usageRecordEventId(deviceId,call.sourcePlugin,call.idempotencyKey)});
+    assert.deepEqual(recorded,{disposition:'recorded',eventId:usageRecordEventId(deviceId,call.sourcePlugin,call.idempotencyKey)});
     assert.deepEqual(await h.api.record(call),{...examples.results.duplicate,eventId:recorded.eventId});
     assert.deepEqual(await h.api.record({...call,hanaRef:'@hanamesh/other-app'}),examples.results.EVENT_IDENTITY_CONFLICT);
     assert.deepEqual(await h.api.record({...call,action:'install'}),examples.results.INVALID_RECORD_INPUT);
-    for(const code of ['EVENT_IDENTITY_CONFLICT','INVALID_RECORD_INPUT'])assert(usageLocal.USAGE_RECORD_CODES.includes(code));
+    for(const code of ['EVENT_IDENTITY_CONFLICT','INVALID_RECORD_INPUT'])assert(USAGE_RECORD_CODES.includes(code));
   }finally{await h.close();}
 });
 
 test('C-USAGE-LOCAL provider: health has the published HealthSnapshot shape, core present and absent',async()=>{
-  const examples=await usageLocal.createUsageLocalContractExamples();
+  const examples=usageLocal;
   for(const [coreStatus,expected] of [['present',examples.health],['absent',examples.healthCoreAbsent]]){
     const h=await fixtureHost({coreStatus,consent:'granted'});
     try{

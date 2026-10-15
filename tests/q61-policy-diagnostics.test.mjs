@@ -6,7 +6,7 @@ import {pathToFileURL} from 'node:url';
 import {join} from 'node:path';
 const core=await import(pathToFileURL(join(root,'lib/core/index.js')).href);
 const {commandPackage}=await import(pathToFileURL(join(root,'lib/host/command-source.js')).href);
-const {createInventory,inspectPackage}=await import(pathToFileURL(join(root,'lib/host/inventory.js')).href);
+const {createInventory}=await import(pathToFileURL(join(root,'lib/host/inventory.js')).href);
 
 class Global {
   constructor(){this.snapshot={schemaVersion:1,events:[],withdrawal:null,inventory:{last:null}};this.writes=0;}
@@ -32,7 +32,7 @@ test('Q61 retention configuration preserves pending and prunes only expired term
   assert.throws(()=>new core.EventStore(new Global(),5000,Date.now,90,1001),{code:'INVALID_FILTER'});
 });
 test('Q61 declarations use configured default while caller limit remains authoritative',()=>{
-  const records=Array.from({length:3},(_,i)=>core.projectTerminal({sessionId:'fixture-'+i,events:[{type:'turn/end',seq:0,time:1000,data:{turn:0,reason:{kind:'completed'}}}],inheritedEventCount:0,sampleKind:'synthetic'},{type:'turn/end',seq:0,time:1000,data:{turn:0,reason:{kind:'completed'}}}));
+  const records=Array.from({length:3},(_,i)=>core.projectTerminal({sessionId:'fixture-'+i,events:[{type:'turn/end',seq:0,time:1000,data:{turn:0,reason:{kind:'completed'}}}],inheritedEventCount:0,sampleKind:'synthetic',hostVersions:{registryVersion:'0.1.0-rc.3',dshVersion:'0.2.1-alpha.2'}},{type:'turn/end',seq:0,time:1000,data:{turn:0,reason:{kind:'completed'}}}));
   assert.equal(core.queryRecords(records,{},1).records.length,1);
   assert.equal(core.queryRecords(records,{limit:2},1).records.length,2);
 });
@@ -50,50 +50,42 @@ test('Q61 missing owner stays gated and explains rejection',()=>{
 });
 test('Q61 inventory scan failure is visible, preserves snapshot, and still releases listeners',async()=>{
   const g=new Global(),notes=[];let stopped=0;
-  const inventory=createInventory({ctx:{loader:{entries(){throw Error('PRIVATE_SOURCE_SHOULD_NOT_APPEAR');}},on:()=>()=>stopped++},store:new core.EventStore(g),link:{get:()=>null},inventoryIntervalMs:300000,note:code=>notes.push(code)});
+  const manager={listBundles:async()=>{throw Error('PRIVATE_SOURCE_SHOULD_NOT_APPEAR');}};
+  const inventory=createInventory({ctx:{get:name=>name==='pluginManager'?manager:undefined,on:()=>()=>stopped++},store:new core.EventStore(g),link:{get:()=>null},inventoryIntervalMs:300000,note:code=>notes.push(code)});
   await assert.rejects(inventory.scan());
   assert.equal(inventory.health().lastError,'INVENTORY_FAILED');assert.equal(inventory.health().available,false);
   assert.deepEqual(notes,['INVENTORY_FAILED']);assert.equal(g.writes,0);
-  await inventory.close();assert.equal(stopped,1);
+  await inventory.close();assert.equal(stopped,3);
 });
-test('Q61 unreadable package metadata carries a bounded reason',async()=>{
-  const result=await inspectPackage('package-that-is-not-installed','file:///nonexistent-fixture/profile.yml');
-  assert.equal(result.kind,'unreadable');assert.equal(result.code,'INVENTORY_PACKAGE_UNRESOLVED');
-});
-
 
 test('Q61 configured policy is visible without changing the formal health shape',async()=>{
  const h=await fixtureHost({eventRetentionDays:30,queryLimit:12});
  try {assert.deepEqual(h.api.panel().policy,{eventRetentionDays:30,queryLimit:12,maxQueryLimit:1000});assert(!Object.hasOwn(h.api.health(),'policy'));}
  finally{await h.close();}
 });
-test('Q61 Loader background rejection is handled, visible in public health, and does not write an empty snapshot',async()=>{
+test('Q61 plugin-manager background rejection is handled, visible in public health, and does not write an empty snapshot',async()=>{
  const h=await fixtureHost();
  try {
   const previous=h.eg.get(),writes=h.eg.writes;
-  h.ctx.loader.entries=()=>{throw Error('PRIVATE_MUST_NOT_SERIALIZE');};
-  h.handlers.get('loader/config-update')();await h.api.drain();
+  h.ctx.get=name=>name==='pluginManager'?{listBundles:async()=>{throw Error('PRIVATE_MUST_NOT_SERIALIZE');}}:undefined;
+  h.handlers.get('plugin-manager/changed')();await h.api.drain();
   assert.equal(h.api.health().inventory.available,false);assert.equal(h.api.health().failures.INVENTORY_FAILED,1);
   assert.deepEqual(h.eg.get(),previous);assert.equal(h.eg.writes,writes);assert(!JSON.stringify(h.api.health()).includes('PRIVATE'));
- }finally{await h.close();assert.equal(h.handlers.has('loader/config-update'),false);}
+ }finally{await h.close();assert.equal(h.handlers.has('plugin-manager/changed'),false);}
 });
 test('Q61 invalid policy is rejected before any Context/storage effect',async()=>{
  const {apply}=await import(pathToFileURL(join(root,'lib/host/index.js')).href);
  for(const config of [{eventRetentionDays:0},{eventRetentionDays:0.5},{eventRetentionDays:NaN},{queryLimit:0},{queryLimit:1001}])await assert.rejects(apply({},config),{code:'INVALID_CONFIG'});
 });
 
-test('Q61 unreadable metadata cannot prove removal of a previously accepted Loader entry',async()=>{
- for(const code of ['INVENTORY_PACKAGE_READ_FAILED','INVENTORY_PACKAGE_UNRESOLVED','INVENTORY_PACKAGE_INVALID',undefined]){
-  const g=new Global();g.snapshot.inventory.last={scannedAt:'2026-09-19T00:00:00.000Z',items:[{hanaRef:'example',version:'1.0.0',entryId:'previous',disabled:false}]};
+test('Q61 an unreadable bundle cannot prove removal of a previously accepted install',async()=>{
+ for(const broken of [{version:'not-a-version'},{error:{code:'BUNDLE_LOAD_FAILED'}},{version:undefined}]){
+  const g=new Global();g.snapshot.inventory.last={scannedAt:'2026-09-19T00:00:00.000Z',items:[{hanaRef:'example',version:'1.0.0',entryId:'bundle:example',disabled:false}]};
   const before=structuredClone(g.get()),notes=[];let signatures=0;
-  const ctx={loader:{entries:()=>[{id:'previous',options:{name:'example'}}].values()},on:()=>()=>{}};
-  const inventory=createInventory({ctx,store:new core.EventStore(g),link:{get:()=>({getConsent:()=> 'granted',getDeviceId:()=> 'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk',sign:()=>{signatures++;return Buffer.alloc(64);}})},inventoryIntervalMs:300000,inspector:async()=>({kind:'unreadable',code}),note:code=>notes.push(code)});
+  const manager={listBundles:async()=>[{name:'example',version:'1.0.0',installed:true,availability:'profile',enabled:true,...broken}]};
+  const ctx={get:name=>name==='pluginManager'?manager:undefined,on:()=>()=>{}};
+  const inventory=createInventory({ctx,store:new core.EventStore(g),link:{get:()=>({getConsent:()=> 'granted',getDeviceId:()=> 'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk',sign:()=>{signatures++;return Buffer.alloc(64);}})},inventoryIntervalMs:300000,note:code=>notes.push(code)});
   try{await assert.rejects(inventory.scan(),{code:'INVENTORY_FAILED'});assert.equal(g.writes,0);assert.deepEqual(g.get(),before);assert.equal(signatures,0);assert.equal(inventory.health().available,false);assert(notes.includes('INVENTORY_FAILED'));}
   finally{await inventory.close();}
  }
-});
-test('Q61 initial metadata read failure cannot publish an empty successful inventory',async()=>{
- const g=new Global(),ctx={loader:{entries:()=>[{id:'new',options:{name:'example'}}].values()},on:()=>()=>{}};
- const inventory=createInventory({ctx,store:new core.EventStore(g),link:{get:()=>null},inventoryIntervalMs:300000,inspector:async()=>({kind:'unreadable',code:'INVENTORY_PACKAGE_READ_FAILED'})});
- try{await assert.rejects(inventory.scan(),{code:'INVENTORY_FAILED'});assert.equal(g.writes,0);assert.equal(g.get().inventory.last,null);}finally{await inventory.close();}
 });

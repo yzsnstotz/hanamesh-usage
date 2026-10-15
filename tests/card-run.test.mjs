@@ -1,11 +1,12 @@
-import test from 'node:test';
+import test,{after} from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync,mkdirSync,writeFileSync,symlinkSync,realpathSync} from 'node:fs';
+import {mkdtempSync,mkdirSync,writeFileSync,symlinkSync,realpathSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
 import {spawnSync} from 'node:child_process';
 const root=resolve(new URL('../',import.meta.url).pathname);
 const parent=mkdtempSync(join(realpathSync(tmpdir()),'usage-card-runs-'));
+after(()=>rmSync(parent,{recursive:true,force:true}));
 const runs=join(parent,'.cache/hanamesh-runs');mkdirSync(runs,{recursive:true});
 const card='J2S2-USAGE-08',run=join(runs,card,'isolated');mkdirSync(run,{recursive:true});
 
@@ -18,12 +19,12 @@ test('Q61 assembly accepts an explicit current card run with original isolated p
   mkdirSync(join(run,'dsh-home/profiles'),{recursive:true});
   const reused=child();assert.notEqual(reused.status,0);assert.match(reused.stderr,/DSH_HOME_NOT_FRESH/);
 });
-test('Q61 missing, mismatched, traversal, symlink and personal paths are rejected before any install',async()=>{
+test('Q61 missing, mismatched, traversal, symlink and personal paths are rejected before any install',async t=>{
   const {cardRun}=await import('../tools/card-run.mjs');
   const env={HANAMESH_RUNS_ROOT:runs};
   assert.throws(()=>cardRun(['--card',card,'--run',run],{HANAMESH_RUNS_ROOT:join(parent,'.dsh')}),/RUNS_ROOT_NOT_ISOLATED/);
   assert.equal(cardRun(['--card',card,'--run',run],env).run,run);
   for(const args of [[],['--card',card,'--run',runs],['--card',card,'--run',join(runs,'OTHER')],['--card','../OTHER','--run',run]])assert.throws(()=>cardRun(args,env));
-  const outside=mkdtempSync(join(tmpdir(),'usage-outside-'));symlinkSync(outside,join(runs,card,'escape'));
+  const outside=mkdtempSync(join(tmpdir(),'usage-outside-'));t.after(()=>rmSync(outside,{recursive:true,force:true}));symlinkSync(outside,join(runs,card,'escape'));
   assert.throws(()=>cardRun(['--card',card,'--run',join(runs,card,'escape')],env),/RUN_NOT_THIS_CARD/);
 });

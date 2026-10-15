@@ -1,14 +1,9 @@
 {
-  "apiContracts": {
-    "package": "@hanamesh/api-contracts",
-    "source": "git+https://github.com/yzsnstotz/hanamesh-api-contracts.git#v0.9.0",
-    "consumes": {
-      "C-CORE": "@hanamesh/api-contracts/core",
-      "C-USAGE": "@hanamesh/api-contracts/usage"
-    },
-    "provides": {
-      "C-USAGE-LOCAL": "@hanamesh/api-contracts/usage-local"
-    }
+  "contracts": {
+    "consumes": ["C-CORE", "C-USAGE"],
+    "provides": ["C-USAGE-LOCAL"],
+    "package": null,
+    "note": "No HanaMesh contract or sibling package is installed. C-CORE is exercised with the in-repo Ed25519 double tests/fixtures/core-fake.mjs; C-USAGE server behaviour is verified only against the real local backend."
   },
   "host": {
     "version": "0.1.5-alpha.1",

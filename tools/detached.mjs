@@ -43,6 +43,9 @@ try {
   }
   console.log('DETACHED_CORE_BUILD_COMPLETE: locked package closure, no sibling source; NOT full target host build.');
 } finally {
-  // Only the freshly created repository copy is disposable; logs and npm diagnostics survive failure.
-  rmSync(copy,{recursive:true,force:true});
+  // Evidence is small: commands.json, the per-command logs and npm's own _logs. The repository copy, the seeded npm
+  // cache copy (hundreds of MB), the isolated home and tmp are deleted every run, success or failure.
+  const logs=join(cache,'_logs');
+  if(existsSync(logs))cpSync(logs,join(parent,'npm-logs'),{recursive:true});
+  for(const path of [copy,cache,home,join(parent,'tmp')])rmSync(path,{recursive:true,force:true});
 }

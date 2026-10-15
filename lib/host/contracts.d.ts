@@ -43,9 +43,8 @@ export interface HealthSnapshot {
   core:'present'|'absent'|'incompatible';
   deviceId:string|null;
   outbox:{state:'idle'|'uploading'|'backoff'|'offline'|'stopped'|'unconfirmed';pending:number;sent:number;duplicate:number;rejected:number;lastUploadAt:string|null;nextAttemptAt:string|null;lastError:string|null};
-  derive:{skipped:{consentWithheld:number;executorUnavailable:number;timeUnavailable:number;noDevice:number}};
   withdrawal:{requestedAt:string;deviceId:string;state:'pending'|'sent'|'offline'|'unconfirmed';attempts:number;deletedEvents:number|null;lastError:string|null}|null;
-  inventory:{available:boolean;source:'loader'|'plugin-inventory'|'none';lastScanAt:string|null;detail:{package:string;serviceKey:string;methods:string[]}|null};
+  inventory:{available:boolean;source:'plugin-manager'|'none';lastScanAt:string|null;detail:{package:string;serviceKey:string;methods:string[]}|null};
 }
 export interface RemoteEvent { eventId:string; hanaRef:string; action:UsageEvent['action']; occurredAt:string; receivedAt:string }
 /** This device's server records, read through the public device-signed route. `total` is null unless `state` is available. */

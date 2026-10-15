@@ -9,7 +9,7 @@ export function session({id='fixture-session-1',turn=0,kind='completed',provider
   ];
   if (usage) events.push({type:'assistant/message',seq:events.length,time:1050,data:{turn,step:0,usage:{unspecifiedContract:31},message:{content:'SYNTHETIC_CONTENT_NOT_TO_EXPORT'}}});
   events.push({type:'turn/end',seq:events.length,time:1100,data:{turn,reason:{kind,error:{message:'SYNTHETIC_ERROR_NOT_TO_EXPORT'}}}});
-  return {sessionId:id,inheritedEventCount,events, binding:{sessionId:id,runtime:'fixture-native',driverVersion:'0.1.5-alpha.1',protocolVersion:'fixture-v1'},sampleKind:'synthetic',...(parentSession ? {parentSession} : {})};
+  return {sessionId:id,inheritedEventCount,events, binding:{sessionId:id,runtime:'fixture-native',driverVersion:'0.1.5-alpha.1',protocolVersion:'fixture-v1'},sampleKind:'synthetic',hostVersions:{registryVersion:'0.1.0-rc.3',dshVersion:'0.2.1-alpha.2'},...(parentSession ? {parentSession} : {})};
 }
 export function record(options={}) { const s = session(options); return core.projectTerminal(s,s.events.at(-1)); }
 export function withUsage(r, state, value) {

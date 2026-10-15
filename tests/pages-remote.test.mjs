@@ -11,7 +11,7 @@ import {pagesContribution} from '../lib/client/index.js';
 test('published Typert Gateway dispatches Usage pages to invocation Peer and rejects replay/peer disposal',async()=>{
  const source={entryId:'include:page',moduleName:'ordinary/client'},entry={id:source.entryId,options:{name:source.moduleName},parent:{tree:{ctx:{baseUrl:'file:///isolated/cordis.yml'}}}};
  const row={entryId:source.entryId,moduleName:source.moduleName,enabled:true,fiberPhase:'active'};
- const h=await fixtureHost({bound:false,consent:'granted',loaderEntries:[entry],packageOf:()=>({name:'ordinary',version:'1.0.0',manifest:{name:'ordinary',version:'1.0.0'}}),pluginInventory:{list:async()=>({entries:[row]})},pluginManager:{listBundles:async()=>[{installed:true,enabled:true,removable:true,rows:[row]}]}});
+ const h=await fixtureHost({bound:false,consent:'granted',loaderEntries:[entry],packageOf:()=>({name:'ordinary',version:'1.0.0',manifest:{name:'ordinary',version:'1.0.0'}}),pluginInventory:{list:async()=>({entries:[row]})},pluginManager:{listBundles:async()=>[{name:'ordinary',installed:true,availability:'profile',enabled:true,removable:true,rows:[row]}]}});
  const host=new Context(),client=new Context();new TypertRegistry(host);new TypertRegistry(client);
  const gateway=new TypertGatewayService(host,{websocketHeartbeatIntervalMs:2000,streamInboxBytes:262144});
  const service=host.plugin({apply(ctx){new UsagePagesRemote(ctx,h.pages);}});await service.await();
