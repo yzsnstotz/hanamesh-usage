@@ -55,9 +55,12 @@ export declare class EventStore {
     private commit;
     put(input: UsageEvent): Promise<'inserted' | 'duplicate'>;
     signPending(signer: (event: UsageEvent) => UsageEvent): Promise<number>;
-    updateInventory(scannedAt: string, items: InventoryItem[], inputs: UsageEvent[]): Promise<{
+    /** `dropPendingLoader`: never-sent loader install/uninstall events for these package names are removed in the same
+     *  commit (an inventory source migration retracting records that were never valid user installs). */
+    updateInventory(scannedAt: string, items: InventoryItem[], inputs: UsageEvent[], dropPendingLoader?: readonly string[]): Promise<{
         inserted: string[];
         duplicates: number;
+        dropped: number;
     }>;
     applyUpload(eventIds: string[], result: IngestBatchResult, sentAt: string): Promise<void>;
     /** Conservative send intent uses the existing local diagnostic slot only.

@@ -52,6 +52,17 @@ test('a snapshot written by the old loader inventory is not a baseline: upgradin
   const result=await f.inventory.scan();assert.deepEqual(actions(result),[['install','a','1.0.0']]);
   assert.deepEqual(f.store.getSnapshot().inventory.last.items,[{hanaRef:'a',version:'1.0.0',entryId:'bundle:a',disabled:false}]);await f.inventory.close();
 });
+test('upgrading from the loader inventory retracts never-sent install events for packages that were not user installs',async()=>{
+  const global=new Global();
+  const legacyEvent=(hanaRef,version,state)=>({...core.createUsageEvent({deviceId:DEVICE,hanaRef,action:'install',occurredAt:'2026-10-01T00:00:00.000Z',eventId:core.eventIdForLoader(DEVICE,'install',hanaRef,version),nonce:Buffer.alloc(16).toString('base64url'),signature:Buffer.alloc(64).toString('base64url'),source:'loader',sourcePlugin:null,evidenceRef:`${hanaRef}@${version}`}),upload:{state,code:null,attempts:state==='pending'?0:1,sentAt:state==='pending'?null:'2026-10-01T00:00:01.000Z'}});
+  global.snapshot.events=[legacyEvent('@deepseek-ai/dsh-agent','0.2.1-alpha.2','pending'),legacyEvent('a','1.0.0','pending'),legacyEvent('@deepseek-ai/dsh-base','0.2.1-alpha.2','sent')];
+  global.snapshot.inventory.last={scannedAt:'2026-10-01T00:00:00.000Z',items:[{hanaRef:'@deepseek-ai/dsh-agent',version:'0.2.1-alpha.2',entryId:'agent',disabled:false},{hanaRef:'a',version:'1.0.0',entryId:'a-entry',disabled:false}]};
+  const f=harness({global,bundles:[bundle('a','1.0.0')],now:()=>Date.parse('2026-10-15T00:00:00.000Z')});
+  const result=await f.inventory.scan();
+  assert.equal(result.retracted,1);assert.deepEqual(result.events,[]);assert.equal(result.duplicates,1);
+  assert.deepEqual(f.store.getSnapshot().events.map(event=>[event.hanaRef,event.upload.state]),[['a','pending'],['@deepseek-ai/dsh-base','sent']],'sent history is not rewritten');
+  assert.equal((await f.inventory.scan()).retracted,0,'once migrated, nothing more is retracted');await f.inventory.close();
+});
 test('without the plugin manager the scan fails visibly, and runs when the service appears',async()=>{
   const f=harness({manager:false});
   await assert.rejects(f.inventory.scan(),error=>error.code==='INVENTORY_FAILED');

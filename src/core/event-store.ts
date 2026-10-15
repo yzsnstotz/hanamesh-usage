@@ -98,17 +98,19 @@ export class EventStore {
     });
     this.tail=run.catch(()=>{});return run.then(()=>count);
   }
-  updateInventory(scannedAt:string,items:InventoryItem[],inputs:UsageEvent[]):Promise<{inserted:string[];duplicates:number}>{
-    const inserted:string[]=[];let duplicates=0;
+  /** `dropPendingLoader`: never-sent loader install/uninstall events for these package names are removed in the same
+   *  commit (an inventory source migration retracting records that were never valid user installs). */
+  updateInventory(scannedAt:string,items:InventoryItem[],inputs:UsageEvent[],dropPendingLoader:readonly string[]=[]):Promise<{inserted:string[];duplicates:number;dropped:number}>{
+    const inserted:string[]=[];let duplicates=0,dropped=0;const drop=new Set(dropPendingLoader);
     const run=this.tail.then(async()=>{
       if(!validIso(scannedAt))throw new UsageError('INVALID_INVENTORY');
       const seenItems=new Set<string>();
       for(const item of items){if(item===null||typeof item!=='object'||Object.keys(item).sort().join('|')!==['hanaRef','version','entryId','disabled'].sort().join('|')||typeof item.hanaRef!=='string'||!/^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/i.test(item.hanaRef)||typeof item.version!=='string'||!/^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/.test(item.version)||!safeMetadata(item.entryId)||typeof item.disabled!=='boolean'||seenItems.has(item.entryId))throw new UsageError('INVALID_INVENTORY');seenItems.add(item.entryId);}
-      const cutoff=this.now()-this.eventRetentionDays*DAY_MS;const events=this.snapshot.events.filter(event=>!(terminal.has(event.upload.state)&&event.upload.sentAt!==null&&Date.parse(event.upload.sentAt)<cutoff));
+      const cutoff=this.now()-this.eventRetentionDays*DAY_MS;const events=this.snapshot.events.filter(event=>!(terminal.has(event.upload.state)&&event.upload.sentAt!==null&&Date.parse(event.upload.sentAt)<cutoff)).filter(event=>{const retract=event.source==='loader'&&event.upload.state==='pending'&&drop.has(event.hanaRef);if(retract)dropped++;return !retract;});
       for(const input of inputs){validateEvent(input);const existing=events.find(event=>event.eventId===input.eventId);if(existing){if(identity(existing)!==identity(input))throw new UsageError('EVENT_IDENTITY_CONFLICT');duplicates++;continue;}if(events.length>=this.maxEvents)throw new UsageError('EVENTS_CAPACITY_REACHED');events.push(structuredClone(input));inserted.push(input.eventId);}
       const next={...structuredClone(this.snapshot),events,inventory:{last:{scannedAt,items:structuredClone(items)}}};await this.commit(next);
     });
-    this.tail=run.catch(()=>{});return run.then(()=>({inserted,duplicates}));
+    this.tail=run.catch(()=>{});return run.then(()=>({inserted,duplicates,dropped}));
   }
   applyUpload(eventIds: string[], result: IngestBatchResult, sentAt: string): Promise<void> {
     const run=this.tail.then(async()=>{
