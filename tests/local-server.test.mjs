@@ -33,6 +33,11 @@ async function registeredDevice(){
   assert.equal(registered.body.deviceId,fake.service.getDeviceId());
   return fake;
 }
+async function signedGet(service,path){
+  const headers=await service.signRequest({method:'GET',path,body:null});
+  const response=await fetch(new URL(path,ORIGIN),{headers});
+  return {status:response.status,body:await response.json()};
+}
 function buffer(service,initial){
   let snapshot=initial??{schemaVersion:1,events:[],withdrawal:null,inventory:{last:null}};
   const port={get:()=>snapshot,set:async value=>{snapshot=structuredClone(value);}};
@@ -58,6 +63,13 @@ test('local backend: signed events are accepted, a replay is a duplicate, the se
       assert.equal(await replay.reporter.runOnce(),'uploaded',JSON.stringify(replay.reporter.health()));
       assert.deepEqual(replay.store.query().events.map(event=>event.upload.state),['duplicate','duplicate']);
     }finally{replay.reporter.stop();}
+
+    // C-POINTS: the accepted use reaches custody as this unbound device's pending points (local-stage1 POINTS_USE).
+    const points=await signedGet(fake.service,'/v1/custody/me/points');
+    assert.equal(points.status,200,JSON.stringify(points.body));
+    assert.equal(points.body.bindingStatus,'UNBOUND');
+    assert.equal(points.body.hanas.length,1,JSON.stringify(points.body));
+    assert(points.body.hanas[0].pending>0&&points.body.hanas[0].points===0,JSON.stringify(points.body));
 
     const remote=await client.reporter.readRemote();
     assert.equal(remote.state,'available',JSON.stringify(remote));
