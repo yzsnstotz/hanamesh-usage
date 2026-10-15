@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "hanamesh-usage": {
+      "command": "node",
+      "args": [
+        "-e",
+        "process.argv[2]='mcp';import(require('node:url').pathToFileURL(require('node:path').join(process.env.CLAUDE_PLUGIN_ROOT||process.env.PLUGIN_ROOT||'.','lib/agent/cli.mjs')).href)"
+      ],
+      "cwd": "."
+    }
+  }
+}

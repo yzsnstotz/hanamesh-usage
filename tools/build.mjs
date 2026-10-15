@@ -32,6 +32,12 @@ const bundle=ts.transpileModule(readFileSync('src/client/index.ts','utf8'),{comp
 writeFileSync('lib/client.js',`window.__ModuleLoader__.load({id:'hanamesh-usage',factory:(require)=>{const module={exports:{}};const exports=module.exports;\n${bundle}\nreturn module.exports;}});\n`);
 mkdirSync('lib/host',{recursive:true});
 for (const file of readdirSync('src/host')) copyFileSync(`src/host/${file}`,`lib/host/${file}`);
+mkdirSync('lib/agent',{recursive:true});
+for (const file of readdirSync('src/agent')) {
+  copyFileSync(`src/agent/${file}`,`lib/agent/${file}`);
+  const syntax=spawnSync(process.execPath,['--check',`lib/agent/${file}`],{stdio:'inherit'});
+  if(syntax.status!==0)process.exit(syntax.status??1);
+}
 copyFileSync('types/host-index.d.ts','lib/host/index.d.ts');
 if (!offline) {
   const host = spawnSync('tsc',['-p','tsconfig.host.json'],{stdio:'inherit'});

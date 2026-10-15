@@ -1,0 +1,25 @@
+---
+name: hm-setup
+description: 检查 HanaMesh 使用记录的同意、钩子、配置、名单与绑定前置条件。
+---
+
+先调用只读 `hanamesh_status`，准确转述未就绪原因。
+
+在 Codex：请用户在 插件 → HanaMesh 使用记录 → Hooks 点 Trust all。安装不等于钩子已获信任；助手不能替用户批准。Claude Code 在下一次会话加载钩子。
+
+首次使用须告知：默认不记录；同意后只在本机保留时间、插件标识、功能、成败和渠道。只上传 HanaMesh 已收录且归属明确的插件；未知插件名只留本机，收录后按后台窗口补报（默认30天）。不读聊天历史、不上传 prompt、工具输入/输出、文件路径或 IP。用户可随时撤回并删除本机及服务端原始记录（历史汇总按服务端规则保留）。
+
+**不能由模型代替用户同意**。先说明数据范围，再请用户亲自在终端运行以下命令（PLUGIN 为实际已安装目录，不能照抄占位符）：
+
+```
+node "$PLUGIN/lib/agent/cli.mjs" setup http://127.0.0.1:<本机后端端口> http://127.0.0.1:<本机网站端口>
+node "$PLUGIN/lib/agent/cli.mjs" consent --agree
+```
+
+需要系统可用的 Node 24（当前打包不包含跨平台 Node 运行时）。安装说明应先说明这个前置条件。后端/网站地址由用户的本地启动输出给出；无默认线上 API，开发测试不连接 api.hanamesh.com。
+
+同意后重开会话，调用 `hanamesh_status`。没有名单或后端协议未提供时，必须明确说上传停止，不把本地记录称为积分。
+
+未绑定时请用户运行 `node "$PLUGIN/lib/agent/cli.mjs" bind-link`，打开输出的网站链接，登录并绑定。该设备身份与本机 DSH 共用；已有绑定会自动生效。
+
+撤回：用户运行 `node "$PLUGIN/lib/agent/cli.mjs" withdraw`。离线删除会显示 pending，下次会话继续；未确认删除前不能重新开启。不得把 pending 说成删除成功。

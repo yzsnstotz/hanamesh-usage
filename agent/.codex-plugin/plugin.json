@@ -1,0 +1,18 @@
+{
+  "name": "hanamesh-usage",
+  "version": "0.2.0-rc.29",
+  "description": "Consent-gated HanaMesh usage",
+  "interface": {
+    "displayName": "HanaMesh 使用记录",
+    "shortDescription": "先审核钩子，再由你同意；仅记已收录插件的最少使用信息",
+    "developerName": "HanaMesh",
+    "category": "Productivity",
+    "defaultPrompt": "检查 HanaMesh 计量是否开启"
+  },
+  "extensions": {
+    "com.openai": {
+      "hooks": "./hooks/hooks.json",
+      "onboardingSkill": "./skills/hm-setup/SKILL.md"
+    }
+  }
+}

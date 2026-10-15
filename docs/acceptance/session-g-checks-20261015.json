@@ -1,0 +1,26 @@
+[
+  {
+    "command": "build",
+    "exit": 0,
+    "tail": "\n> hanamesh-usage@0.2.0-rc.29 build /Users/yzliu/work/projects/hanamesh/hanamesh-usage\n> node tools/build.mjs\n\n{\"node\":\"v24.13.1\",\"compiler\":\"Version 5.9.3\",\"offline\":false,\"platform\":\"darwin\",\"arch\":\"arm64\"}\nTARGET_SEMANTIC_BUILD_COMPLETE\n",
+    "stderr": ""
+  },
+  {
+    "command": "test",
+    "exit": 0,
+    "tail": "s bounded and does not serialize stack/message/cause\n  ---\n  duration_ms: 0.201333\n  type: 'test'\n  ...\n# Subtest: USAGE02-V7 method mismatch cannot trigger a record or expose the editable bridge\nok 317 - USAGE02-V7 method mismatch cannot trigger a record or expose the editable bridge\n  ---\n  duration_ms: 1.44775\n  type: 'test'\n  ...\n# Subtest: USAGE02-V8 normal development configuration may explicitly enable verification; production cannot\nok 318 - USAGE02-V8 normal development configuration may explicitly enable verification; production cannot\n  ---\n  duration_ms: 50.543417\n  type: 'test'\n  ...\n# Subtest: U15 withdrawal clears locally before DELETE and success is never resent\nok 319 - U15 withdrawal clears locally before DELETE and success is never resent\n  ---\n  duration_ms: 29.137958\n  type: 'test'\n  ...\n# Subtest: U15 failed withdrawal retries, then stops after the first success\nok 320 - U15 failed withdrawal retries, then stops after the first success\n  ---\n  duration_ms: 3.642166\n  type: 'test'\n  ...\n# Subtest: U15 offline withdrawal only clears local state\nok 321 - U15 offline withdrawal only clears local state\n  ---\n  duration_ms: 0.322416\n  type: 'test'\n  ...\n1..321\n# tests 321\n# suites 0\n# pass 319\n# fail 0\n# cancelled 0\n# skipped 2\n# todo 0\n# duration_ms 10103.008333\n",
+    "stderr": ""
+  },
+  {
+    "command": "check",
+    "exit": 0,
+    "tail": "\n> hanamesh-usage@0.2.0-rc.29 check /Users/yzliu/work/projects/hanamesh/hanamesh-usage\n> node tools/check.mjs\n\n{\"closureManager\":\"pnpm\",\"packages\":35,\"edges\":92}\n{\n  \"consistencySchemaValid\": true,\n  \"consistencyGroups\": 2,\n  \"consistencyBoundaries\": 3,\n  \"economicFieldMatches\": 0,\n  \"bundleRows\": 1,\n  \"productionFilesScanned\": 33,\n  \"siblingSourceImports\": 0,\n  \"lockScope\": \"PINNED_DEV_BUILD_CLOSURE_NOT_FULL_HOST\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "command": "test:mutations",
+    "exit": 0,
+    "tail": "ledBy\":\"ERR_ASSERTION\",\"evidence\":\"FIXTURE\",\"site\":\"lib/host/mount.js\"}\n{\"mutation\":\"X03-withdraw-remote-first\",\"baselineExit\":0,\"mutantExit\":1,\"killedBy\":\"ERR_ASSERTION\",\"evidence\":\"FIXTURE\",\"site\":\"lib/host/upload.js\"}\n{\"mutation\":\"U14-unauthorized-marked-sent\",\"baselineExit\":0,\"mutantExit\":1,\"killedBy\":\"ERR_ASSERTION\",\"evidence\":\"FIXTURE\",\"site\":\"lib/host/upload.js\"}\n{\"mutation\":\"U16-ignore-withheld-consent\",\"baselineExit\":0,\"mutantExit\":1,\"killedBy\":\"ERR_ASSERTION\",\"evidence\":\"FIXTURE\",\"site\":\"lib/host/upload.js\"}\n{\"mutation\":\"T6-receipt-dropped-from-wire\",\"baselineExit\":0,\"mutantExit\":1,\"killedBy\":\"ERR_ASSERTION\",\"evidence\":\"FIXTURE\",\"site\":\"lib/core/events.js\"}\n{\"mutation\":\"T6-receipt-ignored-by-dedup-identity\",\"baselineExit\":0,\"mutantExit\":1,\"killedBy\":\"ERR_ASSERTION\",\"evidence\":\"FIXTURE\",\"site\":\"lib/core/event-store.js\"}\n{\"mutation\":\"R1-query-in-signed-path\",\"baselineExit\":0,\"mutantExit\":1,\"killedBy\":\"ERR_ASSERTION\",\"evidence\":\"FIXTURE\",\"site\":\"lib/host/upload.js\"}\n{\"mutation\":\"R3-unavailable-reported-as-zero\",\"baselineExit\":0,\"mutantExit\":1,\"killedBy\":\"ERR_ASSERTION\",\"evidence\":\"FIXTURE\",\"site\":\"lib/host/upload.js\"}\n{\"mutation\":\"U19-uninstall-uses-install-key\",\"baselineExit\":0,\"mutantExit\":1,\"killedBy\":\"ERR_ASSERTION\",\"evidence\":\"FIXTURE\",\"site\":\"lib/host/inventory.js\"}\n",
+    "stderr": ""
+  }
+]

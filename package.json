@@ -1,6 +1,6 @@
 {
   "name": "hanamesh-usage",
-  "version": "0.2.0-rc.28",
+  "version": "0.2.0-rc.29",
   "description": "Consent-gated, device-signed HanaMesh usage events for DSH",
   "type": "module",
   "main": "lib/host/index.js",
@@ -28,7 +28,10 @@
     "profile",
     "README.md",
     "LICENSE",
-    "consistency.json"
+    "consistency.json",
+    "lib/agent",
+    "agent",
+    "tools/package-agent.mjs"
   ],
   "license": "MIT",
   "repository": {
@@ -81,7 +84,8 @@
     "preflight:host": "node tools/preflight.mjs",
     "samples": "node tools/samples.mjs",
     "test:detached": "node tools/detached.mjs",
-    "test:contract": "pnpm run build && node --test --test-reporter=tap tests/stage0-contract.test.mjs tests/stage4-contract.test.mjs tests/contract-wire.test.mjs tests/shared-fact.test.mjs"
+    "test:contract": "pnpm run build && node --test --test-reporter=tap tests/stage0-contract.test.mjs tests/stage4-contract.test.mjs tests/contract-wire.test.mjs tests/shared-fact.test.mjs",
+    "package:agent": "node tools/package-agent.mjs"
   },
   "devDependencies": {
     "@deepseek-ai/cordis": "4.0.5-alpha.1",

@@ -1,0 +1,203 @@
+{
+  "scope": "ISOLATED_REAL_CLI_INSTALL_MCP_NOT_MODEL_OR_OWNER",
+  "commands": [
+    {
+      "program": "node",
+      "args": [
+        "tools/package-agent.mjs",
+        "/Users/yzliu/.cache/hanamesh-runs/session-g-20261015/hanamesh-core-0.3.5.tgz",
+        "<isolated>/market/plugins/hanamesh-usage"
+      ],
+      "status": 0
+    },
+    {
+      "program": "git",
+      "args": [
+        "init",
+        "-b",
+        "main",
+        "<isolated>/market"
+      ],
+      "status": 0
+    },
+    {
+      "program": "git",
+      "args": [
+        "-C",
+        "<isolated>/market",
+        "add",
+        "."
+      ],
+      "status": 0
+    },
+    {
+      "program": "git",
+      "args": [
+        "-C",
+        "<isolated>/market",
+        "-c",
+        "user.name=Fixture",
+        "-c",
+        "user.email=fixture@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "commit",
+        "-m",
+        "fixture"
+      ],
+      "status": 0
+    },
+    {
+      "program": "claude",
+      "args": [
+        "--version"
+      ],
+      "status": 0
+    },
+    {
+      "program": "codex",
+      "args": [
+        "--version"
+      ],
+      "status": 0
+    },
+    {
+      "program": "claude",
+      "args": [
+        "plugin",
+        "marketplace",
+        "add",
+        "<isolated>/market"
+      ],
+      "status": 0
+    },
+    {
+      "program": "claude",
+      "args": [
+        "plugin",
+        "install",
+        "hanamesh-usage@hanamesh-g-fixture"
+      ],
+      "status": 0
+    },
+    {
+      "program": "codex",
+      "args": [
+        "plugin",
+        "marketplace",
+        "add",
+        "<isolated>/market"
+      ],
+      "status": 0
+    },
+    {
+      "program": "codex",
+      "args": [
+        "plugin",
+        "add",
+        "hanamesh-usage@hanamesh-g-fixture"
+      ],
+      "status": 0
+    },
+    {
+      "program": "claude",
+      "args": [
+        "plugin",
+        "install",
+        "target@hanamesh-g-fixture"
+      ],
+      "status": 0
+    },
+    {
+      "program": "codex",
+      "args": [
+        "plugin",
+        "add",
+        "target@hanamesh-g-fixture"
+      ],
+      "status": 0
+    },
+    {
+      "program": "node",
+      "args": [
+        "-e",
+        "process.argv[2]='mcp';import(require('node:url').pathToFileURL(require('node:path').join(process.env.CLAUDE_PLUGIN_ROOT||process.env.PLUGIN_ROOT||'.','lib/agent/cli.mjs')).href)"
+      ],
+      "status": 0
+    },
+    {
+      "program": "node",
+      "args": [
+        "-e",
+        "process.argv[2]='mcp';import(require('node:url').pathToFileURL(require('node:path').join(process.env.CLAUDE_PLUGIN_ROOT||process.env.PLUGIN_ROOT||'.','lib/agent/cli.mjs')).href)"
+      ],
+      "status": 0
+    },
+    {
+      "program": "node",
+      "args": [
+        "<isolated>/home/claude/plugins/cache/hanamesh-g-fixture/hanamesh-usage/0.2.0-rc.29/lib/agent/hook.mjs"
+      ],
+      "status": 0
+    },
+    {
+      "program": "node",
+      "args": [
+        "<isolated>/home/claude/plugins/cache/hanamesh-g-fixture/hanamesh-usage/0.2.0-rc.29/lib/agent/cli.mjs",
+        "consent",
+        "--agree"
+      ],
+      "status": 0
+    },
+    {
+      "program": "node",
+      "args": [
+        "<isolated>/home/claude/plugins/cache/hanamesh-g-fixture/hanamesh-usage/0.2.0-rc.29/lib/agent/hook.mjs"
+      ],
+      "status": 0
+    },
+    {
+      "program": "node",
+      "args": [
+        "<isolated>/home/codex/plugins/cache/hanamesh-g-fixture/hanamesh-usage/0.2.0-rc.29/lib/agent/hook.mjs"
+      ],
+      "status": 0
+    },
+    {
+      "program": "node",
+      "args": [
+        "<isolated>/home/claude/plugins/cache/hanamesh-g-fixture/hanamesh-usage/0.2.0-rc.29/lib/agent/cli.mjs",
+        "status"
+      ],
+      "status": 0
+    },
+    {
+      "program": "node",
+      "args": [
+        "<isolated>/home/claude/plugins/cache/hanamesh-g-fixture/hanamesh-usage/0.2.0-rc.29/lib/agent/cli.mjs",
+        "withdraw"
+      ],
+      "status": 0
+    },
+    {
+      "program": "node",
+      "args": [
+        "<isolated>/home/claude/plugins/cache/hanamesh-g-fixture/hanamesh-usage/0.2.0-rc.29/lib/agent/cli.mjs",
+        "status"
+      ],
+      "status": 0
+    }
+  ],
+  "install": {
+    "claude": true,
+    "codex": true,
+    "mcpReadonlyState": true,
+    "preConsentWrites": 0
+  },
+  "syntheticHooks": {
+    "bothChannelAttribution": true,
+    "minimalLocalProjection": true,
+    "withdrawClearsLocal": true,
+    "actualModelUse": false
+  }
+}

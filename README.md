@@ -1,4 +1,4 @@
-# hanamesh-usage · 0.2.0-rc.28
+# hanamesh-usage · 0.2.0-rc.29
 
 rc.26 消费项目批准的官方 `d743267388641bc76f17c45ce8b4c231aed1d32c`：DSH `0.2.1-alpha.2`、Cordis `4.0.5-alpha.1`、实际共享 zod `4.6.5`，各公开包独立核对后精确锁定。开发依赖的正式 JS/声明与该 SHA 的官方 pack 核验一致，移除本模块旧版本 override；不再安装 api-contracts 或任何 HanaMesh 邻仓包。事件、归属、签名、同意/撤回和 schema v1 不变；新观察记录的 DSH provenance 跟随本构建，旧记录不重写。
 
@@ -145,3 +145,19 @@ Inventory 暴露 `INVENTORY_FAILED/INVENTORY_ENTRY_UNREADABLE/INVENTORY_PACKAGE_
 `npm run test:contract` 自带目标构建。
 框架 peer 与 React 宿主外部供给沿用，独立声明消费需正常 TypeScript/Node/React 类型工具。
 本模块无 ABI 生成器或链上接口，ABI/模板/签名广播门不在本卡范围。
+
+## Session G · Claude Code / Codex preview（rc.29）
+
+新增 `src/agent`：默认关闭、hook 最小投影、本机原子队列、收录名单过滤、可配补报窗口、stdio MCP 常驻发送及只读状态。与 DSH 共用 `src/core` 的事件身份和隐私/签名投影；Core 通过本地进程合约调用，不 import 邻仓插件。DSH 插件原入口不变。
+
+独立插件需从已构建本仓与 **Core 已打包产物**生成：`node tools/package-agent.mjs <hanamesh-core.tgz> <新输出目录>`；不会下载或安装 DSH peers。`node tools/verify-agent-package.mjs <core.tgz>` 在一次性 Claude/Codex 配置目录做真实 CLI 安装与只读 MCP 启动检查，结束全部删除，不调用模型。需要本机 Node 24 和待测的两个 CLI；当前包未附带跨平台 Node。
+
+两家 manifest 与 setup 技能在 `agent/`。用户亲自 `setup <本机后端origin> <本机网站origin> [bootstrapIntervalMs=60000] [requestTimeoutMs=10000]`，再 `consent --agree`；MCP 没有代替用户开启同意或信任的写工具。Codex 插件页另点 Trust all。`withdraw` 先停采集、清本机，再请求服务端删除，失败保持 pending。
+
+**预览边界**：C-USAGE v2 与 registry 收录名单/后台设置仍待提供方实现、移交；本地状态会停止并显示缺项，绝不丢渠道向旧协议上报。Codex app 代码模式的外层 exec 结果不能证明内层插件成败：目前只留本机 unverified，不上传计分。在线市场未部署，真实模型/网站积分/owner 验收未完成。详见 `docs/acceptance/session-g-20261015.md`。
+
+依赖未增加：Node24.13.1（MIT，nodejs.org）运行时、TypeScript5.9.3（Apache-2.0，microsoft/TypeScript）既有编译器、Git2.50.1（GPL-2.0，git-scm.com）市场安装。MCP 使用标准JSON-RPC，无新增SDK依赖。
+
+本轮平台证据：macOS arm64 / Node24.13.1。Intel macOS、Windows x64、Linux x64 真机为 NOT_RUN（无本轮机器）；Linux/Windows arm64 无本轮支持承诺。CLI/单元/包检查不能替代真实宿主和 owner 验收。
+
+Node24.13.1 内置 SQLite3.51.2（public domain，https://sqlite.org）仅作操作系统进程互斥：不存事件或密钥，不新增npm依赖。Node当前仍标SQLite实验性，本轮只对锁API做了并行及SIGKILL恢复测试，不据此扩大平台承诺。未知POST提交的标记独立于本地队列保留；若无法确认删除顺序，撤回保持unconfirmed，后台屏障缺口见合约更新请求。
