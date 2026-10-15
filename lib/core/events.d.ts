@@ -41,9 +41,13 @@ export declare function validTargetRef(value: unknown): value is string;
 export declare function validReceipt(value: unknown): value is UsageReceipt;
 /** Preserve all 128 random bits while satisfying the server token grammar. */
 export declare function eventNonceFromBytes(bytes: Uint8Array): string;
+export declare function hasLegacyNonce(input: UsageEvent): boolean;
 /** A Loader row must be safe for both the signed event and its local evidence reference. */
 export declare function validLoaderReference(hanaRef: unknown, version: unknown): boolean;
+/** New facts and upload boundaries always use the current public token grammar. */
 export declare function validateEvent(input: unknown): asserts input is UsageEvent;
+/** Retain historical signed facts verbatim; this must not be used for new facts or wire upload. */
+export declare function validateStoredEvent(input: unknown): asserts input is UsageEvent;
 export type CreateUsageEventInput = Omit<UsageEvent, 'schemaVersion' | 'sourceHanaRef' | 'targetRef' | 'receipt' | 'upload'> & {
     sourceHanaRef?: string | null;
     targetRef?: string | null;

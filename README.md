@@ -1,3 +1,5 @@
+> 2026-10-16 · rc.32：兼容读取旧版随机 nonce 的历史事件，保持原 nonce/签名/终态；新建和上传仍按当前严格契约。无法按当前格式上传的旧 pending 记录仅改为具名本机拒绝，保留记录并说明再次使用插件产生新记录。升级无需删除 storage；修复真实历史配置中 Usage 加载失败。详见 docs/compatibility/legacy-nonce-upgrade-20261016.md。
+
 # hanamesh-usage · 0.2.0-rc.31
 
 rc.31 接受官方 DSH rc.2 与当前 alpha 的公开宿主 peer：DSH `>=0.2.0-rc.2 <0.3.0-0 || >=0.2.1-0 <0.3.0-0`，Cordis `>=4.0.4 <4.1.0-0 || >=4.0.5-alpha.1 <4.1.0-0`，zod `^4.5.4`。开发闭包仍精确锁定 DSH `0.2.1-alpha.2` / Cordis `4.0.5-alpha.1` / zod `4.6.5`，无 override。安装与页面归属兼容 rc.2 的公开 `installed/removable` 和 alpha 的显式 `availability`；显式 `missing` 不降级猜为已安装。范围准入不代表范围内每个版本已在真实 Desktop 验过，证据与尚未运行的门见 [rc.2 兼容报告](docs/compatibility/dsh-rc2-rc31.md)。

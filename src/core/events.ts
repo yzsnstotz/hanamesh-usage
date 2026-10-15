@@ -69,6 +69,13 @@ export function eventNonceFromBytes(bytes: Uint8Array): string {
   if (!(bytes instanceof Uint8Array) || bytes.length !== 16) invalid();
   return `n${Buffer.from(bytes).toString('base64url')}`;
 }
+/** Historical rc.6 random-byte nonce encoding. Read-only compatibility: never a new wire admission. */
+function historicalNonce(value: unknown): value is string {
+  return typeof value === 'string' && base64url.test(value)
+    && Buffer.from(value, 'base64url').length === 16
+    && Buffer.from(value, 'base64url').toString('base64url') === value;
+}
+export function hasLegacyNonce(input: UsageEvent): boolean { return !validNonce(input.nonce) && historicalNonce(input.nonce); }
 function validEvidence(value: unknown): value is string {
   return typeof value === 'string' && value.length > 0 && value.length <= 160 && !/[\u0000-\u001f]/.test(value)
     && !/(?:sk-|ghp_|github_pat_|xox[baprs]-|bearer|private.?key|password|secret|api.?key|https?:|file:|\/Users\/|\/home\/|\/mnt\/)/i.test(value);
@@ -79,12 +86,12 @@ export function validLoaderReference(hanaRef: unknown, version: unknown): boolea
 }
 function invalid(): never { throw new UsageError('INVALID_USAGE_EVENT'); }
 
-export function validateEvent(input: unknown): asserts input is UsageEvent {
+function validateEventShape(input: unknown, stored: boolean): asserts input is UsageEvent {
   if (!isObject(input) || !exactWithOptional(input, REQUIRED_KEYS, OPTIONAL_KEYS)) invalid();
   if (input.schemaVersion !== 1 || typeof input.eventId !== 'string' || !uuid.test(input.eventId)) invalid();
   if (typeof input.deviceId !== 'string' || input.deviceId.length < 8 || input.deviceId.length > 160 || !base64url.test(input.deviceId)) invalid();
   if (!validHanaRef(input.hanaRef) || !['install','open','use','uninstall'].includes(String(input.action))) invalid();
-  if (!validIso(input.occurredAt) || !validNonce(input.nonce)) invalid();
+  if (!validIso(input.occurredAt) || !(validNonce(input.nonce) || stored && historicalNonce(input.nonce))) invalid();
   if (input.signature !== null && (typeof input.signature !== 'string' || !base64url.test(input.signature))) invalid();
   if (input.sourceHanaRef !== null && !validHanaRef(input.sourceHanaRef)) invalid();
   if (input.targetRef !== null && !validTargetRef(input.targetRef)) invalid();
@@ -95,6 +102,11 @@ export function validateEvent(input: unknown): asserts input is UsageEvent {
   if (!isObject(input.upload) || !exact(input.upload, ['state','code','attempts','sentAt'])) invalid();
   if (!['pending','sent','duplicate','rejected'].includes(String(input.upload.state)) || (input.upload.code !== null && !safeMetadata(input.upload.code)) || !Number.isSafeInteger(input.upload.attempts) || Number(input.upload.attempts) < 0 || (input.upload.sentAt !== null && !validIso(input.upload.sentAt))) invalid();
 }
+
+/** New facts and upload boundaries always use the current public token grammar. */
+export function validateEvent(input: unknown): asserts input is UsageEvent { validateEventShape(input, false); }
+/** Retain historical signed facts verbatim; this must not be used for new facts or wire upload. */
+export function validateStoredEvent(input: unknown): asserts input is UsageEvent { validateEventShape(input, true); }
 
 export type CreateUsageEventInput = Omit<UsageEvent,'schemaVersion'|'sourceHanaRef'|'targetRef'|'receipt'|'upload'>
   & { sourceHanaRef?: string | null; targetRef?: string | null; receipt?: UsageReceipt | null };
@@ -122,7 +134,7 @@ export function wireEvent(input: UsageEvent): WireUsageEvent {
 
 /** Rebuild every locally exposed field so later private additions cannot leak by spread. */
 export function exportEventProjection(input: UsageEvent): UsageEvent {
-  validateEvent(input);
+  validateStoredEvent(input);
   const receipt = input.receipt ?? null;
   return {
     schemaVersion:1,

@@ -1,6 +1,6 @@
 import { UsageError } from './privacy.js';
 import { safeMetadata } from './privacy.js';
-import { validateEvent, type UsageEvent, type UploadState } from './events.js';
+import { validateEvent, validateStoredEvent, hasLegacyNonce, type UsageEvent, type UploadState } from './events.js';
 import { DEFAULT_EVENT_RETENTION_DAYS, DEFAULT_QUERY_LIMIT, DAY_MS, validateRetentionDays, validateQueryLimit } from './policy.js';
 
 export interface WithdrawalState {
@@ -48,9 +48,20 @@ export function validateEventSnapshot(value: unknown): asserts value is EventSna
   const snapshot = value as Record<string, unknown>;
   if (Object.keys(snapshot).sort().join('|') !== ['schemaVersion','events','withdrawal','inventory'].sort().join('|') || snapshot.schemaVersion !== 1 || !Array.isArray(snapshot.events)) throw new UsageError('INVALID_EVENT_SNAPSHOT');
   const ids = new Set<string>();
-  for (const event of snapshot.events) { validateEvent(event); if (ids.has(event.eventId)) throw new UsageError('INVALID_EVENT_SNAPSHOT'); ids.add(event.eventId); }
+  for (const event of snapshot.events) { validateStoredEvent(event); if (ids.has(event.eventId)) throw new UsageError('INVALID_EVENT_SNAPSHOT'); ids.add(event.eventId); }
   if (snapshot.withdrawal !== null) validateWithdrawal(snapshot.withdrawal);
   if (snapshot.inventory === null || typeof snapshot.inventory !== 'object' || Array.isArray(snapshot.inventory) || !Object.hasOwn(snapshot.inventory,'last')) throw new UsageError('INVALID_EVENT_SNAPSHOT');
+}
+
+/** Retire only old, wire-incompatible pending facts before mounting a sender. Keep identity/signature/history intact. */
+export function retireLegacyPendingNonces(snapshot: EventSnapshot): EventSnapshot {
+  validateEventSnapshot(snapshot);
+  if (!snapshot.events.some(event => event.upload.state === 'pending' && hasLegacyNonce(event))) return snapshot;
+  const next = structuredClone(snapshot);
+  for (const event of next.events) if (event.upload.state === 'pending' && hasLegacyNonce(event)) {
+    event.upload = {...event.upload, state: 'rejected', code: 'LEGACY_NONCE_UNSUPPORTED'};
+  }
+  return next;
 }
 
 export class EventStore {
@@ -150,7 +161,9 @@ export class EventStore {
       if(this.snapshot.withdrawal!==null)return;
       const ids=new Set(eventIds);
       const events=this.snapshot.events.map(event=>{
-        if(!ids.has(event.eventId)||event.upload.state!=='rejected'||!isHostRejection(event.upload.code))return structuredClone(event);
+        // Historical signed bytes cannot pass today's wire format. Keep their
+        // terminal history intact instead of poisoning the pending sender queue.
+        if(!ids.has(event.eventId)||event.upload.state!=='rejected'||!isHostRejection(event.upload.code)||hasLegacyNonce(event))return structuredClone(event);
         count++;return {...structuredClone(event),upload:{...event.upload,state:'pending' as const,code:null,sentAt:null}};
       });
       if(count>0)await this.commit({...structuredClone(this.snapshot),events});

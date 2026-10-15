@@ -57,3 +57,9 @@ test('test-supply display declaration is explicit, closed and boolean-only',asyn
     await assert.rejects(applyUsage({}, {panelTestSupply}),{code:'INVALID_CONFIG'});
   }
 });
+
+test('legacy local disposition is not described as a server rejection',async()=>{
+ const {renderUsagePanel}=await import('../lib/host/panel.js');const row=event();row.upload={...row.upload,state:'rejected',code:'LEGACY_NONCE_UNSUPPORTED'};
+ const h=await fixtureHost({eventSnapshot:{schemaVersion:1,events:[row],withdrawal:null,inventory:{last:null}}});
+ try{const html=renderUsagePanel(h.api.panel());assert.match(html,/保留本机 · 旧版记录不再上传/);assert.doesNotMatch(html,/失败 · 接收端拒绝/);}finally{await h.close();}
+});

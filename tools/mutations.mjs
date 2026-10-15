@@ -1,10 +1,14 @@
 /** Mutate actual compiled implementation in independent temp copies; require assertion failures. */
-import {mkdtempSync,cpSync,readFileSync,writeFileSync,rmSync,mkdirSync} from 'node:fs';
+import {mkdtempSync,cpSync,readFileSync,writeFileSync,rmSync,mkdirSync,symlinkSync} from 'node:fs';
 import {tmpdir} from 'node:os';import {join,resolve} from 'node:path';import {fileURLToPath} from 'node:url';import {spawnSync} from 'node:child_process';import assert from 'node:assert/strict';
 const root=fileURLToPath(new URL('../',import.meta.url));process.chdir(root);const evidence=process.env.USAGE_MUTATION_EVIDENCE_DIR??'artifacts/mutations';mkdirSync(evidence,{recursive:true});
 // Retired U06 executor->usage derivation: Session D removed chat-turn usage by owner decision.
 // Keep X03 on the current local-summary path; no retired mutation is counted as passed.
 const cases=[
+ {name:'UPGRADE-reopen-legacy-rejection',requiresPeers:true,file:'lib/core/event-store.js',from:' || hasLegacyNonce(event)',to:'',test:'tests/legacy-nonce-upgrade.test.mjs',pattern:'explicit resend leaves legacy'},
+ {name:'UPGRADE-reject-old-stored-nonce',file:'lib/core/event-store.js',from:'validateStoredEvent(event);',to:'validateEvent(event);',test:'tests/legacy-nonce-upgrade.test.mjs',pattern:'historical sent'},
+ {name:'UPGRADE-admit-old-nonce-to-wire',file:'lib/core/events.js',from:'export function wireEvent(input) {\n    validateEvent(input);',to:'export function wireEvent(input) {\n    validateStoredEvent(input);',test:'tests/legacy-nonce-upgrade.test.mjs',pattern:'legacy read compatibility'},
+ {name:'UPGRADE-publish-before-migration-durable',requiresPeers:true,file:'lib/host/index.js',from:'await eventDomain.global.set(compatible);',to:'void eventDomain.global.set(compatible);',test:'tests/legacy-nonce-upgrade.test.mjs',pattern:'production apply waits'},
  {name:'G-missing-response-is-success',file:'lib/agent/project.mjs',from:'let success=null;',to:'let success=true;',test:'tests/agent-lifecycle.test.mjs',pattern:'G real host hook shape'},
  {name:'G-pre-post-duplicate-identity',file:'lib/agent/project.mjs',from:'[channel,payload.session_id,payload.tool_use_id ?? payload.tool_call_id]',to:'[channel,payload.session_id,payload.tool_use_id ?? payload.tool_call_id,payload.hook_event_name]',test:'tests/agent-lifecycle.test.mjs',pattern:'G real host hook shape'},
  {name:'G-ignore-unknown-policy',file:'lib/agent/store.mjs',from:'catalog.settings.countUnconfirmedCalls!==true',to:'false',test:'tests/agent-lifecycle.test.mjs',pattern:'G one attempt promotes'},
@@ -39,6 +43,7 @@ for(const item of cases){
   assert.equal(baseline.status,0,'baseline must pass');
   assert.doesNotMatch(baseline.stdout??'',/\b1\.\.0\b/,'mutation baseline must execute a matching test');
   cpSync('lib',join(dir,'lib'),{recursive:true});writeFileSync(join(dir,'package.json'),' {"type":"module"}\n');
+  if(item.requiresPeers)symlinkSync(resolve(root,'node_modules'),join(dir,'node_modules'),'dir');
   const path=resolve(dir,item.file);let mutated=readFileSync(path,'utf8');
   // A behavior guarded both at admission and after durable intent must lose
   // both checks to represent the same original "ignore consent" mutation.

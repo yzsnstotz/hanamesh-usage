@@ -29,3 +29,7 @@ test('panel read uses the selected carrier with receiver and refuses non-HTML/er
   const refused=materialize(()=>Promise.resolve(new Response('{}',{status:503,headers:{'content-type':'application/json'}})));
   await assert.rejects(refused.fetchUsagePanel(new AbortController().signal),/USAGE_PANEL_UNAVAILABLE/);
 });
+
+test('legacy pending disposition gives a readable retained-data explanation',()=>{
+ const client=materialize();const text=client.usageReason('LEGACY_NONCE_UNSUPPORTED');assert.match(text,/已保留本机/);assert.match(text,/再次使用插件/);assert.notEqual(text,'LEGACY_NONCE_UNSUPPORTED');
+});

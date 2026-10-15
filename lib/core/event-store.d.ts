@@ -45,6 +45,8 @@ export interface IngestBatchResult {
     durability: 'committed' | 'pending-host-commit';
 }
 export declare function validateEventSnapshot(value: unknown): asserts value is EventSnapshot;
+/** Retire only old, wire-incompatible pending facts before mounting a sender. Keep identity/signature/history intact. */
+export declare function retireLegacyPendingNonces(snapshot: EventSnapshot): EventSnapshot;
 export declare class EventStore {
     private readonly global;
     private readonly maxEvents;
