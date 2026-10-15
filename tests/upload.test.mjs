@@ -25,6 +25,17 @@ test('a reachable server answering an error keeps its C-USAGE code; an unreadabl
     assert.deepEqual(f.store.query().events.map(event=>event.upload.state),['pending','pending','pending']);f.reporter.stop();
   }
 });
+test('uploads wait, visibly, until Core reports the device registered (registration follows consent)',async()=>{
+  let registration='unregistered';
+  const f=await fixture();
+  const store=f.store,requests=[];
+  const core={getConsent:()=> 'granted',getDeviceId:()=> 'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk',getServerOrigin:()=> 'https://usage.example',getSession:()=>({registration}),signRequest:async()=>({'x-hm-device-id':'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk','x-hm-timestamp':'1','x-hm-nonce':'n','x-hm-signature':'s'})};
+  const reporter=host.createUsageReporter({store,link:{get:()=>core},uploadIntervalMs:60000,uploadBatchSize:200,fetchImpl:async(url,options)=>{requests.push(options);const n=JSON.parse(options.body).length;return new Response(JSON.stringify({accepted:n,duplicates:0,rejected:[],durability:'committed'}),{status:200});}});
+  try{
+    assert.equal(await reporter.runOnce(),'backoff');assert.equal(reporter.health().lastError,'DEVICE_NOT_REGISTERED');assert.equal(requests.length,0,'nothing is sent before registration');
+    registration='registered';assert.equal(await reporter.runOnce(),'uploaded');assert.equal(requests.length,1);
+  }finally{reporter.stop();}
+});
 test('U13 upload reporter module is present',()=>assert.equal(typeof host?.createUsageReporter,'function'));
 test('U13 committed mixed counts confirm non-rejected events without inventing per-event accepted or duplicate membership',async()=>{
   const f=await fixture({respond:async()=>new Response(JSON.stringify({accepted:1,duplicates:1,rejected:[{eventId:f.events[2].eventId,code:'USAGE_INPUT_INVALID'}],durability:'committed'}),{status:200})});

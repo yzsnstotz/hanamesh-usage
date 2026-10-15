@@ -49,7 +49,7 @@ export function verifyEventSignature(event,publicKey){
 }
 
 /**
- * @param {{key?:ReturnType<typeof createCoreKey>,seed?:string,deviceId?:string,initialConsent?:'granted'|'withheld',serverOrigin?:string|null,clock?:()=>number}} [options]
+ * @param {{key?:ReturnType<typeof createCoreKey>,seed?:string,deviceId?:string,initialConsent?:'granted'|'withheld',serverOrigin?:string|null,clock?:()=>number,registration?:'unregistered'|'registered'|'failed'}} [options]
  * `deviceId` overrides the key-derived id only for tests that need a mismatched identity.
  */
 export function createCoreFake(options={}){
@@ -72,7 +72,7 @@ export function createCoreFake(options={}){
     },
     getConsent:()=>consent,
     onConsentChange(listener){listeners.add(listener);return ()=>{listeners.delete(listener);};},
-    getSession:()=>Object.freeze({protocolVersion:'1',deviceId,registration:'unregistered',principalId:null,bound:null,serverReachable:null,checkedAt:null,reason:null}),
+    getSession:()=>Object.freeze({protocolVersion:'1',deviceId,registration:options.registration??'registered',principalId:null,bound:null,serverReachable:null,checkedAt:null,reason:null}),
     getServerOrigin:()=>origin,
     getHealth:()=>Object.freeze({revision:0,mode:'restricted',components:Object.freeze([]),fault:'TEST_FAKE'}),
   });
