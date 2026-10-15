@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { core, session, record, withUsage, MemoryGlobal } from './fixtures/helpers.mjs';
-import { REGISTRY_VERSION, isSnapshot } from '../lib/core/index.js';
+import { isSnapshot } from '../lib/core/index.js';
+import { REGISTRY_VERSION } from '../lib/host/pins.js';
 
 test('event nonce encodes 16 random bytes with a server-safe first character',()=>{
   const serverToken=/^[A-Za-z0-9][A-Za-z0-9_.:-]*$/;

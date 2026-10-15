@@ -20,7 +20,7 @@ export interface EventSnapshot {
 }
 export interface EventGlobalPort { get(): EventSnapshot; set(value: EventSnapshot): Promise<void> }
 /** Local storage admission DTO; public declarations stay independent of dev-only contracts. */
-export interface IngestBatchResult { accepted:number; duplicates:number; rejected:readonly {eventId:string;code:string}[]; durability:'committed'|'pending-host-commit' }
+export interface IngestBatchResult { accepted:number; duplicates:number; rejected:readonly {eventId:string;code:string;reason?:{code?:string;need?:string}}[]; durability:'committed'|'pending-host-commit' }
 
 const terminal = new Set<UploadState>(['sent','duplicate','rejected']);
 /** 去重身份：rc.7 起把归因两字段与回执纳入；同 eventId 不同归因/回执是 EVENT_IDENTITY_CONFLICT。 */
@@ -114,7 +114,10 @@ export class EventStore {
     const run=this.tail.then(async()=>{
       if(!validIso(sentAt)||!Number.isSafeInteger(result.accepted)||result.accepted<0||!Number.isSafeInteger(result.duplicates)||result.duplicates<0||result.durability!=='committed'||!Array.isArray(result.rejected)||new Set(eventIds).size!==eventIds.length)throw new UsageError('INVALID_UPLOAD_RESULT');
       const rejected=new Map<string,string>();
-      for(const item of result.rejected){if(!item||typeof item!=='object'||!eventIds.includes(item.eventId)||rejected.has(item.eventId)||!safeMetadata(item.code))throw new UsageError('INVALID_UPLOAD_RESULT');rejected.set(item.eventId,item.code);}
+      for(const item of result.rejected){if(!item||typeof item!=='object'||!eventIds.includes(item.eventId)||rejected.has(item.eventId)||!safeMetadata(item.code))throw new UsageError('INVALID_UPLOAD_RESULT');
+        // C-USAGE per-item host reason ({code, need}): keep the more specific reason code when it is a safe token.
+        const reason:unknown=item.reason?.code;
+        rejected.set(item.eventId,typeof reason==='string'&&/^[A-Z][A-Z0-9_]{0,63}$/.test(reason)&&safeMetadata(reason)?reason:item.code);}
       const remaining=eventIds.filter(id=>!rejected.has(id));
       if(result.accepted+result.duplicates!==remaining.length)throw new UsageError('INVALID_UPLOAD_RESULT');
       // Mixed counts identify no individual membership. `sent` means confirmed

@@ -1,6 +1,4 @@
 import type { Declaration, EventObservation, Observation, ResultState, SessionObservation } from './types.js';
-import { DSH_VERSION, REGISTRY_VERSION } from './pins.js';
-import type { TokenUsage } from '@deepseek-ai/dsh-llm';
 import { UsageError, missing, numberValue, object, sourceId, text } from './privacy.js';
 
 export function eventReference(sessionId: string, turn: number): string {
@@ -47,7 +45,8 @@ function tokenUsage(events: readonly EventObservation[], startSeq: number, endSe
   const payloads = events.filter(e => e.seq >= startSeq && e.seq <= endSeq && e.type === 'assistant/message'
     && object(e.data).turn === turn && object(e.data).usage !== undefined).map(e => object(e.data).usage);
   if (payloads.length === 0) return { inputTokens: missing('usage_not_reported'), outputTokens: missing('usage_not_reported'), totalTokens: missing('usage_not_reported') };
-  const fields = ['inputTokens','outputTokens','totalTokens'] as const satisfies readonly (keyof TokenUsage)[];
+  // Field names of DSH's TokenUsage on assistant/message; read as data, without a DSH type dependency.
+  const fields = ['inputTokens','outputTokens','totalTokens'] as const;
   const sum = (field: typeof fields[number]): Observation<number> => {
     let total = 0;
     for (const payload of payloads) {
@@ -89,7 +88,7 @@ export function projectTerminal(session: SessionObservation, end: EventObservati
     time: { startedAt: start ? numberValue(start.time, 'reported', 'session.turn/start', 'unix-epoch-ms') : missing('not_provided'), endedAt: numberValue(end.time, 'reported', 'session.turn/end', 'unix-epoch-ms') },
     ...terminalResult(data.reason),
     usage,
-    provenance: { source: 'registry-session-log', eventType: 'turn/end', terminalSeq: end.seq, registryVersion: REGISTRY_VERSION, dshVersion: DSH_VERSION, sampleKind: session.sampleKind },
+    provenance: { source: 'registry-session-log', eventType: 'turn/end', terminalSeq: end.seq, registryVersion: session.hostVersions.registryVersion, dshVersion: session.hostVersions.dshVersion, sampleKind: session.sampleKind },
     evidenceCommitment: null, signature: null, policyVersion: null, redactionPolicyVersion: 'activity-summary-v1',
   };
 }

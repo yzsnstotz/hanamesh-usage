@@ -112,6 +112,17 @@ test('U13 EventStore atomically confirms the non-rejected mixed set without gues
   assert.deepEqual(store.query().events.map(payload),events.map(payload),'confirmation preserves every original fact/signature/nonce');
 });
 
+test('A host rejection reason (C-USAGE per-item reason) is kept as the event code; an unsafe reason falls back to the item code', async () => {
+  const global=new EventGlobal();const store=new core.EventStore(global);const events=[];
+  for(const [index,nonce] of ['AQIDBAUGBwgJCgsMDQ4PEA','QkJCQkJCQkJCQkJCQkJCQg','Q0NDQ0NDQ0NDQ0NDQ0NDQw'].entries()){
+    const event=core.createUsageEvent({...base(),eventId:core.eventIdForSeat('If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk','app-host',`reason-${index}`),nonce,signature:'c2lnbmF0dXJl'});events.push(event);await store.put(event);
+  }
+  await store.applyUpload(events.map(event=>event.eventId),{accepted:1,duplicates:0,rejected:[
+    {eventId:events[1].eventId,code:'USAGE_EVENT_HOST_REJECTED',reason:{code:'USAGE_POINTS_HANA_REF_UNRESOLVED',need:'catalog-entry'}},
+    {eventId:events[2].eventId,code:'USAGE_EVENT_HOST_REJECTED',reason:{code:'sk-not a token/ok',need:'x'}}],durability:'committed'},'2026-09-19T00:01:00.000Z');
+  assert.deepEqual(store.query().events.map(event=>[event.upload.state,event.upload.code]),[['sent',null],['rejected','USAGE_POINTS_HANA_REF_UNRESOLVED'],['rejected','USAGE_EVENT_HOST_REJECTED']]);
+});
+
 test('U15 EventStore withdrawal clears all events in one publication before remote work', async () => {
   const global=new EventGlobal();const store=new core.EventStore(global);await store.put(core.createUsageEvent(base()));const before=global.writes;
   await store.withdrawLocal('2026-09-19T00:02:00.000Z','If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk');assert.equal(global.writes,before+1);assert.equal(store.query().total,0);assert.equal(store.getSnapshot().withdrawal.state,'pending');

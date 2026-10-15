@@ -14,7 +14,7 @@ test('U04 package is the standalone hanamesh-usage DSH bundle', () => {
   assert.equal(pkg.peerDependencies['@deepseek-ai/cordis'], '4.0.5-alpha.1');
   assert.equal(pkg.devDependencies['@deepseek-ai/dsh-storage-domain'], '0.2.1-alpha.2');
   assert.equal(pkg.devDependencies['@deepseek-ai/cordis'], '4.0.5-alpha.1');
-  assert.match(read('src/core/pins.ts'), /DSH_VERSION = '0\.2\.1-alpha\.2'/);
+  assert.match(read('src/host/pins.js'), /DSH_VERSION = '0\.2\.1-alpha\.2'/);
   assert.deepEqual(pkg.dsh.bundle, {patch:'./profile/cordis.patch.yml'});
   assert.equal(pkg.files.includes('profile'), true);
   assert.equal(pkg.dsh.client.platform, 'web');assert.equal(pkg.exports['./client'].default,'./lib/client.js');

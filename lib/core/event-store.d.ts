@@ -35,6 +35,10 @@ export interface IngestBatchResult {
     rejected: readonly {
         eventId: string;
         code: string;
+        reason?: {
+            code?: string;
+            need?: string;
+        };
     }[];
     durability: 'committed' | 'pending-host-commit';
 }

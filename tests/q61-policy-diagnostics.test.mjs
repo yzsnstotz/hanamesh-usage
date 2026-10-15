@@ -32,7 +32,7 @@ test('Q61 retention configuration preserves pending and prunes only expired term
   assert.throws(()=>new core.EventStore(new Global(),5000,Date.now,90,1001),{code:'INVALID_FILTER'});
 });
 test('Q61 declarations use configured default while caller limit remains authoritative',()=>{
-  const records=Array.from({length:3},(_,i)=>core.projectTerminal({sessionId:'fixture-'+i,events:[{type:'turn/end',seq:0,time:1000,data:{turn:0,reason:{kind:'completed'}}}],inheritedEventCount:0,sampleKind:'synthetic'},{type:'turn/end',seq:0,time:1000,data:{turn:0,reason:{kind:'completed'}}}));
+  const records=Array.from({length:3},(_,i)=>core.projectTerminal({sessionId:'fixture-'+i,events:[{type:'turn/end',seq:0,time:1000,data:{turn:0,reason:{kind:'completed'}}}],inheritedEventCount:0,sampleKind:'synthetic',hostVersions:{registryVersion:'0.1.0-rc.3',dshVersion:'0.2.1-alpha.2'}},{type:'turn/end',seq:0,time:1000,data:{turn:0,reason:{kind:'completed'}}}));
   assert.equal(core.queryRecords(records,{},1).records.length,1);
   assert.equal(core.queryRecords(records,{limit:2},1).records.length,2);
 });

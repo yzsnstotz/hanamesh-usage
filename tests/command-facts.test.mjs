@@ -6,8 +6,11 @@ const source={entryId:'include:update-notifier',moduleName:'dsh-update-notifier/
 const baseUrl='file:///isolated-profile/cordis.yml';
 const entry={id:source.entryId,options:{name:source.moduleName},parent:{tree:{ctx:{baseUrl}}}};
 const canonical={name:'dsh-update-notifier',version:'0.2.1',manifest:{name:'dsh-update-notifier',version:'0.2.1'}};
+/** Shape of the plugin manager's BundleInfo for a bundle the person installed into the profile. */
+const profileBundle=(name,rows)=>({name,installed:true,availability:'profile',enabled:true,removable:true,rows:rows.map(row=>({rowId:row.entryId,moduleName:row.moduleName,entryId:row.entryId}))});
+const manager=(...bundles)=>({listBundles:async()=>bundles});
 async function host(options={}) {
-  return fixtureHost({bound:false,consent:'granted',loaderEntries:[entry],packageOf:()=>canonical,...options});
+  return fixtureHost({bound:false,consent:'granted',loaderEntries:[entry],packageOf:()=>canonical,pluginManager:manager(profileBundle('dsh-update-notifier',[source])),...options});
 }
 function register(h,{owner=entry,handler=()=>({kind:'success'}),name='check-updates'}={}) {
   let registered;
@@ -67,11 +70,19 @@ test('command errors, missing invocation, orphan done and cross-session pairs wr
 
 test('registration ownership follows the selected handler rather than the command name',async()=>{
   const other={...entry,id:'include:shadow',options:{name:'shadow/commands'}};
-  const h=await host({loaderEntries:[entry,other],packageOf:name=>name===source.moduleName?canonical:{name:'shadow',version:'1.0.0',manifest:{name:'shadow',version:'1.0.0'}}});
+  const h=await host({loaderEntries:[entry,other],pluginManager:manager(profileBundle('dsh-update-notifier',[source]),profileBundle('shadow',[{entryId:other.id,moduleName:other.options.name}])),packageOf:name=>name===source.moduleName?canonical:{name:'shadow',version:'1.0.0',manifest:{name:'shadow',version:'1.0.0'}}});
   try {
     register(h);const shadow=register(h,{owner:other});
     run(h,shadow);await h.api.drain();assert.equal(h.api.events().events[0].hanaRef,'shadow');
   } finally {await h.close();}
+});
+
+test('a command the installation supplies (no profile-installed bundle owns it) is not plugin use',async()=>{
+  const builtIn={name:'@deepseek-ai/dsh-web-app',installed:false,availability:'installation',enabled:true,removable:false,rows:[{rowId:source.entryId,moduleName:source.moduleName,entryId:source.entryId}]};
+  for(const pluginManager of [manager(),manager(builtIn),manager({...profileBundle('dsh-update-notifier',[source]),enabled:false})]){
+    const h=await host({pluginManager});
+    try{run(h,register(h));await h.api.drain();assert.equal(h.api.events().total,0);}finally{await h.close();}
+  }
 });
 
 test('withheld consent, unknown owner, mismatched manifest and failed event writes remain gated',async()=>{
