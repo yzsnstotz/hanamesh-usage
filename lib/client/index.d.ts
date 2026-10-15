@@ -93,11 +93,18 @@ interface HealthSnapshot {
         available: boolean;
         source: 'plugin-manager' | 'none';
         lastScanAt: string | null;
+        lastError: string | null;
+        failureKind: string | null;
+        unreadable: number;
         detail: {
             package: string;
             serviceKey: string;
             methods: string[];
         } | null;
+    };
+    filtered: {
+        commands: number;
+        pages: number;
     };
 }
 export interface ResendEventsResult {
@@ -147,6 +154,15 @@ export interface UsageRecordsSnapshot {
     };
     withdrawal: WithdrawalSnapshot | null;
     rows: UsageRecordRow[];
+    inventory: {
+        lastError: string | null;
+        failureKind: string | null;
+        unreadable: number;
+    } | null;
+    filtered: {
+        commands: number;
+        pages: number;
+    } | null;
 }
 export declare const usageReason: (code: string | null) => string;
 /** The person's view of their usage records. Reading never collects, uploads or resends anything. */

@@ -25,7 +25,7 @@ test('R1 remote readback pages the device-signed public route to the end and nev
   const result=await f.reporter.readRemote();
   assert.equal(result.state,'available');assert.equal(result.total,3);assert.equal(result.deviceId,'device_FIXTURE');
   assert.deepEqual(result.events.map(e=>e.eventId),[row(1).eventId,row(2).eventId,row(3).eventId]);
-  assert.deepEqual(Object.keys(result.events[0]),['eventId','hanaRef','action','occurredAt','receivedAt']);
+  assert.deepEqual(Object.keys(result.events[0]),['eventId','hanaRef','action','occurredAt','receivedAt','hostNote']);assert.equal(result.events[0].hostNote,null,'absent note is null');
   assert.equal(f.requests.length,2);
   for(const [i,request] of f.requests.entries()){
     assert.equal(request.options.method,'GET');assert.equal(request.url.pathname,'/v1/usage/me/devices/device_FIXTURE/events');
@@ -73,4 +73,9 @@ test('R5 remote readback is only on the authenticated exact registry, GET-only a
   assert.equal((await call('','POST')).status,405);assert.equal((await call('?deviceId=other')).status,400);assert.equal(calls,0);
   const response=await call();assert.equal(response.status,200);assert.equal(response.headers.get('cache-control'),'no-store');assert.deepEqual(await response.json(),snapshot);assert.equal(calls,1);
   for(const dispose of disposers)dispose();
+});
+test('the server listing keeps its optional host note (official plugin, no points); an unreadable note stays visible',async()=>{
+  const f=fixture({respond:()=>json({items:[{...row(1),hostNote:{code:'USAGE_POINTS_SCORING_DISABLED'}},{...row(2),hostNote:{code:'sk-x y'}},row(3)],nextAfter:null,window:WINDOW})});
+  const result=await f.reporter.readRemote();
+  assert.deepEqual(result.events.map(e=>e.hostNote),[{code:'USAGE_POINTS_SCORING_DISABLED'},{code:'HOST_NOTE_UNREADABLE'},null]);
 });

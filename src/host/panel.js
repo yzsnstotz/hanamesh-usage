@@ -27,7 +27,7 @@ export function projectUsagePanel(health, events, core, testSupply, policy={even
     policy:{...policy},
     subject:{deviceId:health.deviceId,principalId,reason:health.deviceId===null?'DEVICE_UNAVAILABLE':principalId===null?'PRINCIPAL_UNAVAILABLE':null},
     testSupply:{...testSupply},consent:health.consent,core:health.core,total:scoped.length,withdrawal:health.withdrawal??null,
-    outbox:{...health.outbox,pending:scoped.filter(e=>e.upload.state==='pending').length,sent:scoped.filter(e=>e.upload.state==='sent').length,duplicate:scoped.filter(e=>e.upload.state==='duplicate').length,rejected:scoped.filter(e=>e.upload.state==='rejected').length},failures:{...health.failures},
+    outbox:{...health.outbox,pending:scoped.filter(e=>e.upload.state==='pending').length,sent:scoped.filter(e=>e.upload.state==='sent').length,duplicate:scoped.filter(e=>e.upload.state==='duplicate').length,rejected:scoped.filter(e=>e.upload.state==='rejected').length},failures:{...health.failures},inventory:{...health.inventory},filtered:{...health.filtered},
     events:scoped.map(event=>{
       /** @type {import('./contracts.js').PanelEvent['signature']} */
       let signature={state:'unknown',code:event.signature===null?'SIGNATURE_MISSING':'SIGNER_KEY_UNAVAILABLE'};

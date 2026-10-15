@@ -169,7 +169,8 @@ interface HealthSnapshot {
   consent:'granted'|'withheld'|'unknown';core:'present'|'absent'|'incompatible';deviceId:string|null;
   outbox:{state:'idle'|'uploading'|'backoff'|'offline'|'stopped'|'unconfirmed';pending:number;sent:number;duplicate:number;rejected:number;lastUploadAt:string|null;nextAttemptAt:string|null;lastError:string|null};
   withdrawal:WithdrawalSnapshot|null;
-  inventory:{available:boolean;source:'plugin-manager'|'none';lastScanAt:string|null;detail:{package:string;serviceKey:string;methods:string[]}|null};
+  inventory:{available:boolean;source:'plugin-manager'|'none';lastScanAt:string|null;lastError:string|null;failureKind:string|null;unreadable:number;detail:{package:string;serviceKey:string;methods:string[]}|null};
+  filtered:{commands:number;pages:number};
 }
 export interface ResendEventsResult {
   readonly state:'processed'|'withheld'|'rejected';
@@ -330,6 +331,7 @@ export interface UsageRecordsSnapshot {
   deviceId:string|null;consent:HealthSnapshot['consent'];core:HealthSnapshot['core'];total:number;
   outbox:{state:HealthSnapshot['outbox']['state'];pending:number;sent:number;duplicate:number;rejected:number;lastUploadAt:string|null;lastError:string|null};
   withdrawal:WithdrawalSnapshot|null;rows:UsageRecordRow[];
+  inventory:{lastError:string|null;failureKind:string|null;unreadable:number}|null;filtered:{commands:number;pages:number}|null;
 }
 const actionText:Record<UsageRecordRow['action'],string>={install:'安装',open:'打开',use:'使用',uninstall:'卸载'};
 /** Plain-language reasons. Unknown tokens are shown as-is rather than hidden. */
@@ -350,10 +352,17 @@ const reasonText:Record<string,string>={
   USAGE_STORAGE_UNAVAILABLE:'服务端存储结果未知，暂停自动重传；可在下方「诊断」里手动重发',
   UPLOAD_STATE_PERSIST_FAILED:'本机保存上报状态失败',
   WITHDRAW_UNAVAILABLE:'删除服务端记录的请求暂时没有送达，会再试',
+  REASON_UNREADABLE:'服务端给了原因，但格式无法识别',
+  DEVICE_NOT_REGISTERED:'设备正在向服务端注册（打开数据授权后才注册），注册后自动上报',
+  CORE_SESSION_UNAVAILABLE:'暂时读不到 HanaMesh Core 的设备状态，稍后自动重试',
+  INVENTORY_SOURCE_UNAVAILABLE:'DSH 的插件管理服务不在，暂时读不到你装了哪些插件',
+  INVENTORY_SOURCE_UNREADABLE:'读取 DSH 插件管理服务出错',
+  INVENTORY_FAILED:'读取插件清单出错',
 };
-export const usageReason=(code:string|null):string=>{if(code===null)return '';const own=code.includes(':')?code.slice(code.indexOf(':')+1):code;return reasonText[own]??reasonText[code]??own;};
-function uploadText(row:UsageRecordRow):string {
-  if(row.upload==='sent'||row.upload==='duplicate')return '服务端已收到';
+export const usageReason=(code:string|null):string=>{if(code===null)return '';const http=/^UPLOAD_HTTP_(\d{3})$/.exec(code);if(http)return `服务端回了 HTTP ${http[1]}，没有可读的错误码；稍后会自动再传`;const own=code.includes(':')?code.slice(code.indexOf(':')+1):code;return reasonText[own]??reasonText[code]??own;};
+const hostNoteText:Record<string,string>={USAGE_POINTS_SCORING_DISABLED:'官方插件 · 不计积分',HOST_NOTE_UNREADABLE:'服务端附了说明，但格式无法识别'};
+function uploadText(row:UsageRecordRow,note?:string):string {
+  if(row.upload==='sent'||row.upload==='duplicate')return note?`服务端已收到 · ${hostNoteText[note]??note}`:'服务端已收到';
   if(row.upload==='rejected')return `未被接收：${usageReason(row.code)}${hostRejection(row.code)?'（条件满足后可在「诊断」里重发）':''}`;
   return row.code?`等待上报（${usageReason(row.code)}）`:'等待上报';
 }
@@ -384,17 +393,21 @@ async function fetchUsageRecords(signal:AbortSignal):Promise<UsageRecordsSnapsho
     outbox:{state:o.state as HealthSnapshot['outbox']['state'],pending:Number(o.pending)||0,sent:Number(o.sent)||0,duplicate:Number(o.duplicate)||0,rejected:Number(o.rejected)||0,
       lastUploadAt:typeof o.lastUploadAt==='string'?o.lastUploadAt:null,lastError:typeof o.lastError==='string'?o.lastError:null},
     withdrawal:value.withdrawal,
+    inventory:object(value.inventory)?{lastError:typeof value.inventory.lastError==='string'?value.inventory.lastError:null,failureKind:typeof value.inventory.failureKind==='string'?value.inventory.failureKind:null,unreadable:Number(value.inventory.unreadable)||0}:null,
+    filtered:object(value.filtered)?{commands:Number(value.filtered.commands)||0,pages:Number(value.filtered.pages)||0}:null,
     rows:value.events.map(event=>({eventId:event.eventId as string,hanaRef:event.hanaRef as string,action:event.action as UsageRecordRow['action'],occurredAt:event.occurredAt as string,
       upload:(event.upload as {state:UsageRecordRow['upload']}).state,code:(event.upload as {code:string|null}).code}))
       .sort((a,b)=>b.occurredAt.localeCompare(a.occurredAt))};
 }
-interface RemoteView {state:'available'|'unknown'|'offline';total:number|null;code:string|null}
+interface RemoteView {state:'available'|'unknown'|'offline';total:number|null;code:string|null;notes:Record<string,string>}
 async function fetchRemoteRecords(signal:AbortSignal):Promise<RemoteView> {
   const response=await verificationFetch('api/hanamesh/usage/panel/remote',{method:'GET',credentials:'same-origin',cache:'no-store',signal});
   if(!response.ok)throw new Error('REMOTE_UNAVAILABLE');
   const value=await resendJson(response).catch(()=>{throw new Error('REMOTE_UNAVAILABLE');});
   if(!object(value)||!['available','unknown','offline'].includes(value.state as string))throw new Error('REMOTE_UNAVAILABLE');
-  return {state:value.state as RemoteView['state'],total:Number.isSafeInteger(value.total)?value.total as number:null,code:typeof value.code==='string'?value.code:null};
+  const notes:Record<string,string>={};
+  if(Array.isArray(value.events))for(const event of value.events)if(object(event)&&typeof event.eventId==='string'&&object(event.hostNote)&&typeof event.hostNote.code==='string')notes[event.eventId]=event.hostNote.code;
+  return {state:value.state as RemoteView['state'],total:Number.isSafeInteger(value.total)?value.total as number:null,code:typeof value.code==='string'?value.code:null,notes};
 }
 const localTime=(iso:string)=>{const date=new Date(iso);return Number.isNaN(date.getTime())?iso:date.toLocaleString();};
 
@@ -408,13 +421,14 @@ export function UsageRecords({revision=0}:{revision?:number}) {
   useEffect(()=>()=>remoteRequest.current?.abort(),[]);
   useEffect(()=>{
     const controller=new AbortController();setError(null);setRemote(null);
-    void fetchUsageRecords(controller.signal).then(value=>{if(!controller.signal.aborted)setSnapshot(value);},()=>{if(!controller.signal.aborted){setSnapshot(null);setError('USAGE_PANEL_UNAVAILABLE');}});
+    // With consent, also read the server's listing once so stored rows can carry its notes (e.g. official plugin, no points).
+    void fetchUsageRecords(controller.signal).then(value=>{if(!controller.signal.aborted){setSnapshot(value);if(value.consent==='granted'&&value.outbox.state!=='offline')checkRemote();}},()=>{if(!controller.signal.aborted){setSnapshot(null);setError('USAGE_PANEL_UNAVAILABLE');}});
     return ()=>controller.abort();
   },[revision]);
   function checkRemote(){
     if(remoteRequest.current!==null)return;
     const controller=new AbortController();remoteRequest.current=controller;setRemoteBusy(true);
-    void fetchRemoteRecords(controller.signal).then(value=>{if(!controller.signal.aborted)setRemote(value);},()=>{if(!controller.signal.aborted)setRemote({state:'unknown',total:null,code:'REMOTE_UNAVAILABLE'});})
+    void fetchRemoteRecords(controller.signal).then(value=>{if(!controller.signal.aborted)setRemote(value);},()=>{if(!controller.signal.aborted)setRemote({state:'unknown',total:null,code:'REMOTE_UNAVAILABLE',notes:{}});})
       .finally(()=>{if(remoteRequest.current===controller)remoteRequest.current=null;if(!controller.signal.aborted)setRemoteBusy(false);});
   }
   if(error!==null)return h('p',{role:'alert','data-hanamesh-usage-records':'unavailable'},'使用记录读取失败（USAGE_PANEL_UNAVAILABLE）。可以点「刷新」再试；刷新不会采集或上报任何东西。');
@@ -428,6 +442,9 @@ export function UsageRecords({revision=0}:{revision?:number}) {
     h('p',{'data-hanamesh-usage-consent':snapshot.consent},consentLine),
     h('p',{'data-hanamesh-usage-outbox':snapshot.outbox.state},outboxText(snapshot)),
     snapshot.withdrawal?h('p',{role:'status','data-hanamesh-usage-withdrawal':snapshot.withdrawal.state},withdrawalText(snapshot.withdrawal)):null,
+    snapshot.inventory?.lastError?h('p',{role:'alert','data-hanamesh-usage-inventory':snapshot.inventory.lastError},`插件清单：${usageReason(snapshot.inventory.lastError)}${snapshot.inventory.failureKind?`（${snapshot.inventory.failureKind}）`:''}；安装/卸载记录暂停，恢复后自动补上。`):null,
+    snapshot.inventory&&snapshot.inventory.unreadable>0?h('p',{'data-hanamesh-usage-unreadable':String(snapshot.inventory.unreadable)},`有 ${snapshot.inventory.unreadable} 个已装插件这次读不到版本信息，暂未记录。`):null,
+    snapshot.filtered&&(snapshot.filtered.commands>0||snapshot.filtered.pages>0)?h('p',{'data-hanamesh-usage-filtered':'true'},`已忽略 ${snapshot.filtered.commands} 次命令、${snapshot.filtered.pages} 次页面打开：它们属于 DSH 自带或不是你装的插件，不记录。`):null,
     h('p',null,'撤回：到「设置 → HanaMesh」关闭「数据授权」。关闭后不再记录，本机记录立即删除，并请求服务端删除本设备的原始记录。'),
     h('div',null,
       h('button',{type:'button',disabled:remoteBusy,onClick:checkRemote},remoteBusy?'查询中…':'查看服务端记录数'),
@@ -439,7 +456,7 @@ export function UsageRecords({revision=0}:{revision?:number}) {
       :h('table',{'aria-label':'本设备使用记录'},
         h('thead',null,h('tr',null,h('th',null,'时间'),h('th',null,'插件'),h('th',null,'动作'),h('th',null,'状态'))),
         h('tbody',null,...snapshot.rows.map(row=>h('tr',{key:row.eventId,'data-hanamesh-usage-row':row.upload},
-          h('td',null,localTime(row.occurredAt)),h('td',null,row.hanaRef),h('td',null,actionText[row.action]),h('td',null,uploadText(row)))))),
+          h('td',null,localTime(row.occurredAt)),h('td',null,row.hanaRef),h('td',null,actionText[row.action]),h('td',null,uploadText(row,remote?.notes[row.eventId])))))),
   );
 }
 

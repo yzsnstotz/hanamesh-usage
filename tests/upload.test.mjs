@@ -18,12 +18,23 @@ async function fixture({count=3,consent='granted',origin='https://usage.example'
   return {store,events,requests,reporter,setConsent:value=>{currentConsent=value;},setOrigin:value=>{currentOrigin=value;}};
 }
 
-test('a reachable server answering an error keeps its C-USAGE code; only an unreadable answer is UPLOAD_UNAVAILABLE',async()=>{
-  for(const [body,code] of [['{"error":{"code":"USAGE_EVENT_HOOK_FAILED","message":"x"}}','USAGE_EVENT_HOOK_FAILED'],['{"error":{"code":"sk-not a token"}}','UPLOAD_UNAVAILABLE'],['<html>bad gateway</html>','UPLOAD_UNAVAILABLE']]){
+test('a reachable server answering an error keeps its C-USAGE code; an unreadable answer keeps its HTTP status',async()=>{
+  for(const [body,code] of [['{"error":{"code":"USAGE_EVENT_HOOK_FAILED","message":"x"}}','USAGE_EVENT_HOOK_FAILED'],['{"error":{"code":"sk-not a token"}}','UPLOAD_HTTP_503'],['<html>bad gateway</html>','UPLOAD_HTTP_503']]){
     const f=await fixture({respond:async()=>new Response(body,{status:503,headers:{'content-type':'application/json'}})});
     assert.equal(await f.reporter.runOnce(),'backoff');assert.equal(f.reporter.health().lastError,code);
     assert.deepEqual(f.store.query().events.map(event=>event.upload.state),['pending','pending','pending']);f.reporter.stop();
   }
+});
+test('uploads wait, visibly, until Core reports the device registered (registration follows consent)',async()=>{
+  let registration='unregistered';
+  const f=await fixture();
+  const store=f.store,requests=[];
+  const core={getConsent:()=> 'granted',getDeviceId:()=> 'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk',getServerOrigin:()=> 'https://usage.example',getSession:()=>({registration}),signRequest:async()=>({'x-hm-device-id':'If4x36FUomFia_hUBG_SJxt77UtqvkWqWId-9H-XIbk','x-hm-timestamp':'1','x-hm-nonce':'n','x-hm-signature':'s'})};
+  const reporter=host.createUsageReporter({store,link:{get:()=>core},uploadIntervalMs:60000,uploadBatchSize:200,fetchImpl:async(url,options)=>{requests.push(options);const n=JSON.parse(options.body).length;return new Response(JSON.stringify({accepted:n,duplicates:0,rejected:[],durability:'committed'}),{status:200});}});
+  try{
+    assert.equal(await reporter.runOnce(),'backoff');assert.equal(reporter.health().lastError,'DEVICE_NOT_REGISTERED');assert.equal(requests.length,0,'nothing is sent before registration');
+    registration='registered';assert.equal(await reporter.runOnce(),'uploaded');assert.equal(requests.length,1);
+  }finally{reporter.stop();}
 });
 test('U13 upload reporter module is present',()=>assert.equal(typeof host?.createUsageReporter,'function'));
 test('U13 committed mixed counts confirm non-rejected events without inventing per-event accepted or duplicate membership',async()=>{
@@ -39,7 +50,7 @@ test('Q376 HTTP200 pending-host-commit cannot confirm even when its aggregate co
   f.reporter.stop();
 });
 test('U14 401 and 5xx retain pending events, increment attempts and expose only bounded errors',async()=>{
-  for(const [status,code] of [[401,'UPLOAD_UNAUTHORIZED'],[503,'UPLOAD_UNAVAILABLE']]){const f=await fixture({respond:async()=>new Response('sk-SYNTHETIC_RESPONSE_SECRET',{status})});assert.equal(await f.reporter.runOnce(),'backoff');const event=f.store.query().events[0];assert.equal(event.upload.state,'pending');assert.equal(event.upload.attempts,1);assert.equal(f.reporter.health().lastError,code);assert.doesNotMatch(JSON.stringify(f.store.getSnapshot())+JSON.stringify(f.reporter.health()),/SYNTHETIC|sk-/);}
+  for(const [status,code] of [[401,'UPLOAD_UNAUTHORIZED'],[503,'UPLOAD_HTTP_503']]){const f=await fixture({respond:async()=>new Response('sk-SYNTHETIC_RESPONSE_SECRET',{status})});assert.equal(await f.reporter.runOnce(),'backoff');const event=f.store.query().events[0];assert.equal(event.upload.state,'pending');assert.equal(event.upload.attempts,1);assert.equal(f.reporter.health().lastError,code);assert.doesNotMatch(JSON.stringify(f.store.getSnapshot())+JSON.stringify(f.reporter.health()),/SYNTHETIC|sk-/);}
 });
 test('U14 64KiB limit halves a large batch and offline origin sends nothing',async()=>{
   const large=await fixture({count:200,respond:async(_n,_url,options)=>{const body=JSON.parse(options.body);return new Response(JSON.stringify({accepted:body.length,duplicates:0,rejected:[],durability:'committed'}),{status:200});}});await large.reporter.runOnce();const bytes=Buffer.byteLength(large.requests[0].options.body);assert(bytes<=65536);assert(large.store.query({state:'pending',limit:1000}).total>0);

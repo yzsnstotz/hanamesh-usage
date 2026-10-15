@@ -89,6 +89,16 @@ test('without the plugin manager the scan fails visibly, and runs when the servi
   assert.deepEqual(f.inventory.health().detail,{package:'@deepseek-ai/dsh-plugin-manager',serviceKey:'pluginManager',methods:['listBundles']});
   assert.equal(f.inventory.health().source,'plugin-manager');await f.inventory.close();
 });
+test('a failing scan keeps what failed: Usage codes as-is, other errors as INVENTORY_FAILED with a bounded kind',async()=>{
+  const ctxFail={get:()=>{const e=new TypeError('private detail must not appear');throw e;},on:()=>()=>{}};
+  const store=new core.EventStore(new Global());
+  const broken=host.createInventory({ctx:ctxFail,store,link:{get:()=>null},inventoryIntervalMs:300000});
+  await assert.rejects(broken.scan(),error=>error.code==='INVENTORY_FAILED');
+  assert.equal(broken.health().lastError,'INVENTORY_SOURCE_UNREADABLE');assert.equal(broken.health().failureKind,'TypeError');
+  assert(!JSON.stringify(broken.health()).includes('private detail'));await broken.close();
+  const odd=host.createInventory({ctx:{get:()=>({listBundles:async()=>{throw Object.assign(new Error('x'),{code:'EACCES'});}}),on:()=>()=>{}},store,link:{get:()=>null},inventoryIntervalMs:300000});
+  await assert.rejects(odd.scan());assert.equal(odd.health().lastError,'INVENTORY_FAILED');assert.equal(odd.health().failureKind,'EACCES');await odd.close();
+});
 test('a plugin-manager change triggers a rescan',async()=>{
   const f=harness();await f.inventory.scan();f.setBundles([bundle('a','1.0.0'),bundle('b','2.0.0'),bundle('c','3.0.0')]);
   f.listeners.get('plugin-manager/changed')?.({});await f.inventory.drain();
