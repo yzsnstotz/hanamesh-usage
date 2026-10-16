@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {EventStore,createUsageEvent} from '../lib/core/index.js';
 import {createUsageReporter} from '../lib/host/upload.js';
-const settings={version:2,uploadIntervalMs:6000,catalogRefreshMs:1000,backfillWindowDays:30,countUnconfirmedCalls:false,channelWeights:{dsh:1,claude:1,codex:1}};
+const settings={version:2,uploadIntervalMs:6000,catalogRefreshMs:1000,backfillWindowDays:30,countUnconfirmedCalls:false};
 function fixture(t,fetchImpl){
  let snapshot={schemaVersion:1,events:[],withdrawal:null,inventory:{last:null}},consent='granted',now=0;const store=new EventStore({get:()=>snapshot,set:async x=>{snapshot=structuredClone(x);}});
  const core={getConsent:()=>consent,getDeviceId:()=> 'A'.repeat(43),getServerOrigin:()=> 'https://fixture.invalid',signRequest:async()=>({})};

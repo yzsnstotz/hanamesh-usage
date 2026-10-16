@@ -37,7 +37,7 @@ export interface PanelSnapshot {
 /** rc.7：`sourceHanaRef` / `targetRef` / `receipt` 可选；`receipt` 只允许配 `action:'use'`。 */
 export interface RecordInput { hanaRef:string; action:'open'|'use'; occurredAt?:string; idempotencyKey:string; sourcePlugin:string; sourceHanaRef?:string|null; targetRef?:string|null; receipt?:UsageReceipt|null }
 export interface RecordResult { disposition:'recorded'|'duplicate'|'withheld'|'rejected'; eventId?:string; code?:string }
-export interface SharedUsageSettings {version:number;uploadIntervalMs:number;catalogRefreshMs:number;backfillWindowDays:number;countUnconfirmedCalls:boolean;channelWeights:{dsh:number;claude:number;codex:number}}
+export interface SharedUsageSettings {version:number;uploadIntervalMs:number;catalogRefreshMs:number;backfillWindowDays:number;countUnconfirmedCalls:boolean}
 export interface HealthSnapshot {
   pending:number;
   recoveryComplete:boolean;
