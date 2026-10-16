@@ -167,3 +167,5 @@ Inventory 暴露 `INVENTORY_FAILED/INVENTORY_ENTRY_UNREADABLE/INVENTORY_PACKAGE_
 本轮平台证据：macOS arm64 / Node24.13.1。Intel macOS、Windows x64、Linux x64 真机为 NOT_RUN（无本轮机器）；Linux/Windows arm64 无本轮支持承诺。CLI/单元/包检查不能替代真实宿主和 owner 验收。
 
 Node24.13.1 内置 SQLite3.51.2（public domain，https://sqlite.org）仅作操作系统进程互斥：不存事件或密钥，不新增npm依赖。Node当前仍标SQLite实验性，本轮只对锁API做了并行及SIGKILL恢复测试，不据此扩大平台承诺。未知POST提交的标记独立于本地队列保留；若无法确认删除顺序，撤回保持unconfirmed，后台屏障缺口见合约更新请求。
+
+0.3.0-rc.1 adapts only shared collection settings to server-usage1.0.0: uploadIntervalMs/catalogRefreshMs/backfillWindowDays/countUnconfirmedCalls plus version. The unused channelWeights key is removed from types/decoder/health and is rejected if supplied. Event signatures/protocol1 and other defaults/consent are unchanged. Upgrade client and backend together; an old four-plus-weights response is explicitly USAGE_SETTINGS_INVALID. This release is based on publishedrc33 and excludes the pendingrc34 native/suite candidate. No new native/UI acceptance is claimed.
