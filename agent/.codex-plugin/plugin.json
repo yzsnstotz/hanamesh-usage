@@ -1,6 +1,6 @@
 {
-  "name": "hanamesh-usage",
-  "version": "0.2.0-rc.33",
+  "name": "hanamesh",
+  "version": "0.1.0",
   "description": "Consent-gated HanaMesh usage",
   "interface": {
     "displayName": "HanaMesh 使用记录",
