@@ -169,3 +169,9 @@ Inventory 暴露 `INVENTORY_FAILED/INVENTORY_ENTRY_UNREADABLE/INVENTORY_PACKAGE_
 Node24.13.1 内置 SQLite3.51.2（public domain，https://sqlite.org）仅作操作系统进程互斥：不存事件或密钥，不新增npm依赖。Node当前仍标SQLite实验性，本轮只对锁API做了并行及SIGKILL恢复测试，不据此扩大平台承诺。未知POST提交的标记独立于本地队列保留；若无法确认删除顺序，撤回保持unconfirmed，后台屏障缺口见合约更新请求。
 
 0.3.0-rc.1 adapts only shared collection settings to server-usage1.0.0: uploadIntervalMs/catalogRefreshMs/backfillWindowDays/countUnconfirmedCalls plus version. The unused channelWeights key is removed from types/decoder/health and is rejected if supplied. Event signatures/protocol1 and other defaults/consent are unchanged. Upgrade client and backend together; an old four-plus-weights response is explicitly USAGE_SETTINGS_INVALID. This release is based on publishedrc33 and excludes the pendingrc34 native/suite candidate. No new native/UI acceptance is claimed.
+
+0.3.0-rc.3 的 Claude/Codex 首次 SessionStart 使用同步 hook JSON `systemMessage` 发出用户通知，附带实际 Node、安装目录和本地配置根的一行 `agree` 命令，必须由本人在终端显式执行。`agree` 与 `consent --agree` 共用撤回屏障；默认关闭，工具钩子未同意时静默且不解析 stdin，不扫描插件、不接触事件队列、不联网。设置可用通知中 `withdraw` 命令关闭。后端/网站必填，缺失按配置名报告，通知不自动配置、绑定或批准 Trust。
+
+通知范围：开启后，符合规则的插件使用可计贡献积分并支持作者收入；仅记录时间、插件、功能、成败和渠道，不保存/上传对话、工具内容、文件或凭据；设置可随时关闭。`notices/<sha256(channel, canonical host home)>.json` 只保存 `schemaVersion/state:emitted/channel/emittedAt` 提示元数据，不是使用记录或同意。成功写出通知后才原子写入；输出失败不写标记。按实际宿主配置根和渠道去重；原有同意、显式关闭和撤回不再提示。`emitted` 不证明宿主展示或用户已阅读：公开 hook 没有展示回执。本轮复制命令使用 POSIX shell；Windows 真机路径仍 NOT_RUN。
+
+官方依据：[Codex hooks](https://developers.openai.com/codex/hooks) 的 Common output fields 定义 `systemMessage` 为 UI/event-stream warning；[Claude hooks](https://code.claude.com/docs/en/hooks) 的通用 JSON 输出定义同步 `systemMessage` 为用户通知，普通 SessionStart stdout 为模型上下文。验证版本 Codex CLI 0.162.1、Claude Code 2.1.301；工程与包证据不代替真实 UI 或 owner 验收。

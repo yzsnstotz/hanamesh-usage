@@ -11,8 +11,8 @@ export function hostContext(env=process.env,pluginRoot=fileURLToPath(new URL('..
   const root=canonical(pluginRoot);
   const inside=home=>home&&root.startsWith(canonical(home)+'/');
   let channel=env.HANAMESH_AGENT_CHANNEL;
-  if(!channel)channel=inside(env.CLAUDE_CONFIG_DIR)||root.includes('/.claude/plugins/cache/')?'claude':inside(env.CODEX_HOME)||env.CODEX_HOME?'codex':'claude';
-  return {channel,home:channel==='codex'?env.CODEX_HOME:(env.CLAUDE_CONFIG_DIR ?? join(homedir(),'.claude'))};
+  if(!channel)channel=inside(env.CLAUDE_CONFIG_DIR)||root.includes('/.claude/plugins/cache/')?'claude':inside(env.CODEX_HOME)||root.includes('/.codex/plugins/cache/')||env.CODEX_HOME?'codex':'claude';
+  return {channel,home:channel==='codex'?(env.CODEX_HOME ?? join(homedir(),'.codex')):(env.CLAUDE_CONFIG_DIR ?? join(homedir(),'.claude'))};
 }
 
 export function locations(env=process.env) {

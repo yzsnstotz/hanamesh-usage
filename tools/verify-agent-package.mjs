@@ -23,18 +23,18 @@ try {
   const target=join(market,'plugins/target');await mkdir(join(target,'.claude-plugin'),{recursive:true});
   await writeFile(join(target,'.claude-plugin/plugin.json'),JSON.stringify({name:'target',version:'1.0.0',description:'Synthetic hook fixture; no model/tool execution'}));
   await writeFile(join(target,'.mcp.json'),JSON.stringify({mcpServers:{probe:{command:'node',args:['-e','process.stdin.resume()']}}}));
-  await writeFile(join(market,'.claude-plugin/marketplace.json'),JSON.stringify({name:'hanamesh-g-fixture',owner:{name:'HanaMesh fixture'},plugins:[{name:'hanamesh-usage',source:'./plugins/hanamesh-usage'},{name:'target',source:'./plugins/target'}]}));
+  await writeFile(join(market,'.claude-plugin/marketplace.json'),JSON.stringify({name:'hanamesh-g-fixture',owner:{name:'HanaMesh fixture'},plugins:[{name:'hanamesh',source:'./plugins/hanamesh-usage'},{name:'target',source:'./plugins/target'}]}));
   run('git',['init','-b','main',market]);run('git',['-C',market,'add','.']);
   run('git',['-C',market,'-c','user.name=Fixture','-c','user.email=fixture@example.invalid','-c','commit.gpgsign=false','commit','-m','fixture']);
   run('claude',['--version']);run('codex',['--version']);
-  run('claude',['plugin','marketplace','add',market]);run('claude',['plugin','install','hanamesh-usage@hanamesh-g-fixture']);
-  run('codex',['plugin','marketplace','add',market]);run('codex',['plugin','add','hanamesh-usage@hanamesh-g-fixture']);
+  run('claude',['plugin','marketplace','add',market]);run('claude',['plugin','install','hanamesh@hanamesh-g-fixture']);
+  run('codex',['plugin','marketplace','add',market]);run('codex',['plugin','add','hanamesh@hanamesh-g-fixture']);
   run('claude',['plugin','install','target@hanamesh-g-fixture']);run('codex',['plugin','add','target@hanamesh-g-fixture']);
   const cc=await installedPlugins('claude',env.CLAUDE_CONFIG_DIR),cx=await installedPlugins('codex',env.CODEX_HOME);
-  assert(cc.some(row=>row.pluginName==='hanamesh-usage'));assert(cx.some(row=>row.pluginName==='hanamesh-usage'));
+  assert(cc.some(row=>row.pluginName==='hanamesh'));assert(cx.some(row=>row.pluginName==='hanamesh'));
   for(const installed of [cc,cx]){
-    const root=installed.find(row=>row.pluginName==='hanamesh-usage').root;
-    const config=JSON.parse(await readFile(join(root,'.mcp.json'),'utf8')).mcpServers['hanamesh-usage'];
+    const root=installed.find(row=>row.pluginName==='hanamesh').root;
+    const config=JSON.parse(await readFile(join(root,'.mcp.json'),'utf8')).mcpServers['hanamesh'];
     const input=[{jsonrpc:'2.0',id:1,method:'initialize',params:{protocolVersion:'2024-11-05'}},{jsonrpc:'2.0',id:2,method:'tools/list'},{jsonrpc:'2.0',id:3,method:'tools/call',params:{name:'hanamesh_status',arguments:{}}}].map(x=>JSON.stringify(x)).join('\n')+'\n';
     const output=run(config.command,config.args,{cwd:root,input,env:{...env,CLAUDE_PLUGIN_ROOT:root}});
     const replies=output.trim().split('\n').map(line=>JSON.parse(line));
@@ -43,17 +43,21 @@ try {
   }
   await assert.rejects(access(env.HANAMESH_SHARED_HOME));await assert.rejects(access(env.HANAMESH_AGENT_HOME));
   // Invoke the installed hook process with synthetic host payloads. This verifies wiring/privacy, not a real model use.
-  const hookRoots=[cc,cx].map(rows=>rows.find(row=>row.pluginName==='hanamesh-usage').root);
+  const hookRoots=[cc,cx].map(rows=>rows.find(row=>row.pluginName==='hanamesh').root);
   const before=run(process.execPath,[join(hookRoots[0],'lib/agent/hook.mjs')],{input:'not JSON',env:{...env,CLAUDE_PLUGIN_ROOT:hookRoots[0]}});
-  assert.match(before,/尚未同意/);await assert.rejects(access(env.HANAMESH_AGENT_HOME));
-  run(process.execPath,[join(hookRoots[0],'lib/agent/cli.mjs'),'consent','--agree']);
+  assert.equal(before,'');await assert.rejects(access(env.HANAMESH_AGENT_HOME));
+  const notice=JSON.parse(run(process.execPath,[join(hookRoots[0],'lib/agent/hook.mjs'),'--event','SessionStart'],{input:'not JSON',env:{...env,CLAUDE_PLUGIN_ROOT:hookRoots[0]}}));
+  assert.match(notice.systemMessage,/开启（本人在终端执行）/);assert.ok(notice.systemMessage.includes(join(hookRoots[0],'lib/agent/cli.mjs')));
+  assert.equal(run(process.execPath,[join(hookRoots[0],'lib/agent/hook.mjs'),'--event','SessionStart'],{env:{...env,CLAUDE_PLUGIN_ROOT:hookRoots[0]}}),'');
+  const agreeLine=notice.systemMessage.split('\n').find(line=>line.endsWith(' agree'));assert.ok(agreeLine);
+  run('/bin/sh',['-c',agreeLine]);
   for(const [i,root]of hookRoots.entries())run(process.execPath,[join(root,'lib/agent/hook.mjs')],{env:{...env,CLAUDE_PLUGIN_ROOT:root},input:JSON.stringify({hook_event_name:'PostToolUse',session_id:'fixture-session',tool_use_id:'fixture-call',tool_name:i?'mcp__probe__echo':'mcp__plugin_target_probe__echo',tool_input:{secret:'SYNTHETIC_PRIVATE_INPUT',path:'/private/fixture'},tool_response:{isError:false,text:'SYNTHETIC_PRIVATE_OUTPUT'},transcript_path:'/private/must-not-read'})});
   const local=JSON.parse(run(process.execPath,[join(hookRoots[0],'lib/agent/cli.mjs'),'status']));
   assert.equal(local.counts.local,2);assert.deepEqual(new Set(local.records.map(row=>row.channel)),new Set(['claude','codex']));
   assert.doesNotMatch(JSON.stringify(local.records),/SYNTHETIC_PRIVATE|fixture-session|private\/|transcript/);
   run(process.execPath,[join(hookRoots[0],'lib/agent/cli.mjs'),'withdraw']);
   const after=JSON.parse(run(process.execPath,[join(hookRoots[0],'lib/agent/cli.mjs'),'status']));assert.equal(after.counts.local,0);assert.equal(after.consent.state,'withheld');
-  receipt.install={claude:true,codex:true,mcpReadonlyState:true,preConsentWrites:0};
+  receipt.install={claude:true,codex:true,mcpReadonlyState:true,preConsentUsageWrites:0,sessionNoticeEmitted:true,noticeIsNotDisplayAcknowledgement:true,personalCopyCommand:true};
   receipt.syntheticHooks={bothChannelAttribution:true,minimalLocalProjection:true,withdrawClearsLocal:true,actualModelUse:false};
   console.log(JSON.stringify(receipt,null,2));
 }finally{await rm(root,{recursive:true,force:true});}
