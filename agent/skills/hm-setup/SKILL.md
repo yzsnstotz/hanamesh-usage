@@ -9,7 +9,7 @@ description: 只读检查 HanaMesh 使用记录的同意、配置、钩子与绑
 
 开启后，符合规则的插件使用可计贡献积分并支持作者收入；仅记录时间、插件、功能、成败和渠道，不保存/上传对话、工具内容、文件或凭据；设置可随时关闭。通知内的 `withdraw` 一行命令用于关闭；原有 `consent --agree` 继续有效。
 
-`serverOrigin` 和 `websiteOrigin` 都必填；缺失时按变量名报告 blocked，不编造默认地址，也不声称已自动配置。需要系统 Node 24（含 node:sqlite），包内不附跨平台 Node 运行时。实际后端/网站地址由用户独立配置；不得猜测端口或连接生产。
+`serverOrigin` 和 `websiteOrigin` 都必填；缺失时按变量名报告 blocked，不编造默认地址，也不声称已自动配置。本机运行时使用套件的固定 Node 24.13.1（含 node:sqlite），不查系统 PATH；目前此启动器支持 macOS arm64/x64，其它平台具名 unsupported，尚未验证。首次由用户在终端运行 `/bin/sh "$PLUGIN/bin/hm-agent" install-runtime`（PLUGIN 为实际已安装目录），按本机架构直接从 nodejs.org 下载并校验固定 SHA256，打印阶段/进度。`setup` 也会先完成同一运行时准备；原有 Node 25/其它版本不改动。运行时位于 Core 共享根下的 runtime 目录；未就绪/校验失败时报告具名错误，不偷偷回落系统 Node。实际后端/网站地址由用户独立配置；不得猜测端口或连接生产。
 
 安装不等于钩子已获信任；只说明宿主当前状态与现有审核入口，不能替用户 Trust。通知成功写出只记 `emitted` 提示元数据，不能声称宿主已展示、用户已阅读或已同意。
 

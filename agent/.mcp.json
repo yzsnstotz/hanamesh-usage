@@ -1,10 +1,10 @@
 {
   "mcpServers": {
     "hanamesh": {
-      "command": "node",
+      "command": "/bin/sh",
       "args": [
-        "-e",
-        "process.argv[2]='mcp';import(require('node:url').pathToFileURL(require('node:path').join(process.env.CLAUDE_PLUGIN_ROOT||process.env.PLUGIN_ROOT||'.','lib/agent/cli.mjs')).href)"
+        "-c",
+        "exec /bin/sh \"${CLAUDE_PLUGIN_ROOT:-${PLUGIN_ROOT:?HANAMESH_PLUGIN_ROOT_REQUIRED}}/bin/hm-agent\" mcp"
       ],
       "cwd": ".",
       "env_vars": [

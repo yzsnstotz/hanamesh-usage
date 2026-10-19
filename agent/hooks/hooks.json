@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node -e \"import(require('node:url').pathToFileURL(require('node:path').join(process.env.CLAUDE_PLUGIN_ROOT||process.env.PLUGIN_ROOT||'.','lib/agent/hook.mjs')).href)\" -- --event SessionStart"
+            "command": "/bin/sh \"${CLAUDE_PLUGIN_ROOT:-${PLUGIN_ROOT:?HANAMESH_PLUGIN_ROOT_REQUIRED}}/bin/hm-agent\" hook --event SessionStart"
           }
         ]
       }
@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node -e \"import(require('node:url').pathToFileURL(require('node:path').join(process.env.CLAUDE_PLUGIN_ROOT||process.env.PLUGIN_ROOT||'.','lib/agent/hook.mjs')).href)\" -- --event PostToolUse"
+            "command": "/bin/sh \"${CLAUDE_PLUGIN_ROOT:-${PLUGIN_ROOT:?HANAMESH_PLUGIN_ROOT_REQUIRED}}/bin/hm-agent\" hook --event PostToolUse"
           }
         ]
       }
@@ -28,7 +28,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node -e \"import(require('node:url').pathToFileURL(require('node:path').join(process.env.CLAUDE_PLUGIN_ROOT||process.env.PLUGIN_ROOT||'.','lib/agent/hook.mjs')).href)\" -- --event PostToolUseFailure"
+            "command": "/bin/sh \"${CLAUDE_PLUGIN_ROOT:-${PLUGIN_ROOT:?HANAMESH_PLUGIN_ROOT_REQUIRED}}/bin/hm-agent\" hook --event PostToolUseFailure"
           }
         ]
       }
@@ -39,7 +39,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node -e \"import(require('node:url').pathToFileURL(require('node:path').join(process.env.CLAUDE_PLUGIN_ROOT||process.env.PLUGIN_ROOT||'.','lib/agent/hook.mjs')).href)\" -- --event PreToolUse"
+            "command": "/bin/sh \"${CLAUDE_PLUGIN_ROOT:-${PLUGIN_ROOT:?HANAMESH_PLUGIN_ROOT_REQUIRED}}/bin/hm-agent\" hook --event PreToolUse"
           }
         ]
       }
