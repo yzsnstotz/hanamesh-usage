@@ -4,7 +4,7 @@
       "command": "/bin/sh",
       "args": [
         "-c",
-        "exec /bin/sh \"${CLAUDE_PLUGIN_ROOT:-${PLUGIN_ROOT:?HANAMESH_PLUGIN_ROOT_REQUIRED}}/bin/hm-agent\" mcp"
+        "hm_plugin_root=${CLAUDE_PLUGIN_ROOT:-${PLUGIN_ROOT:-.}}; test -f \"$hm_plugin_root/bin/hm-agent\" || { printf \"%s\\n\" HANAMESH_PLUGIN_ROOT_REQUIRED >&2; exit 1; }; exec /bin/sh \"$hm_plugin_root/bin/hm-agent\" mcp"
       ],
       "cwd": ".",
       "env_vars": [

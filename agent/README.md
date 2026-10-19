@@ -7,3 +7,5 @@ Before the first session, run `/bin/sh "$PLUGIN/bin/hm-agent" install-runtime`, 
 `/bin/sh "$PLUGIN/bin/hm-agent" setup <serverOrigin> <websiteOrigin>` also prepares the runtime first. Origins remain required; the remote acceptance entry configures them automatically from its verified ready file. This installer does not grant usage consent, bind an account or trust hooks. Users explicitly review hooks and agree, and may withdraw at any time. The first-session notice uses the actual fixed Node path. Installation is separate from recording, upload, attribution and scoring.
 
 The suite receipt declares `runtime.bootstrap` (path, exact nodeVersion, official downloadOrigin and supported platforms) and hashes the launcher with the remaining payload. The bootstrap file may be used by the remote entry before Node exists; it contains no executable runtime. Nothing in this source change publishes a package or updates an already installed market artifact.
+
+MCP 与 hooks 的路径规则不同：Claude/Codex hooks 注入根变量；Codex MCP 按已声明 `cwd: "."` 在插件根运行，但不展开参数内的 `${CLAUDE_PLUGIN_ROOT}`。MCP shell 优先使用宿主根变量；否则使用该插件 cwd，并核对公开启动器存在。不存在时具名 `HANAMESH_PLUGIN_ROOT_REQUIRED`，不会选择 PATH Node。
