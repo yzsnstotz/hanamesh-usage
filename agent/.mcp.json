@@ -4,7 +4,9 @@
       "command": "/bin/sh",
       "args": [
         "-c",
-        "hm_plugin_root=${CLAUDE_PLUGIN_ROOT:-${PLUGIN_ROOT:-.}}; test -f \"$hm_plugin_root/bin/hm-agent\" || { printf \"%s\\n\" HANAMESH_PLUGIN_ROOT_REQUIRED >&2; exit 1; }; exec /bin/sh \"$hm_plugin_root/bin/hm-agent\" mcp"
+        "hm_root_placeholder='$'; hm_root_placeholder=\"$hm_root_placeholder\"'{CLAUDE_PLUGIN_ROOT}'; case \"$1\" in /*) hm_plugin_root=$1 ;; \"$hm_root_placeholder\") hm_plugin_root=. ;; *) printf \"%s\\n\" HANAMESH_PLUGIN_ROOT_INVALID >&2; exit 1 ;; esac; test -f \"$hm_plugin_root/bin/hm-agent\" || { printf \"%s\\n\" HANAMESH_PLUGIN_ROOT_REQUIRED >&2; exit 1; }; exec /bin/sh \"$hm_plugin_root/bin/hm-agent\" mcp",
+        "hanamesh-mcp",
+        "${CLAUDE_PLUGIN_ROOT}"
       ],
       "cwd": ".",
       "env_vars": [
