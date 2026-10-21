@@ -175,3 +175,11 @@ Node24.13.1 内置 SQLite3.51.2（public domain，https://sqlite.org）仅作操
 通知范围：开启后，符合规则的插件使用可计贡献积分并支持作者收入；仅记录时间、插件、功能、成败和渠道，不保存/上传对话、工具内容、文件或凭据；设置可随时关闭。`notices/<sha256(channel, canonical host home)>.json` 只保存 `schemaVersion/state:emitted/channel/emittedAt` 提示元数据，不是使用记录或同意。成功写出通知后才原子写入；输出失败不写标记。按实际宿主配置根和渠道去重；原有同意、显式关闭和撤回不再提示。`emitted` 不证明宿主展示或用户已阅读：公开 hook 没有展示回执。本轮复制命令使用 POSIX shell；Windows 真机路径仍 NOT_RUN。
 
 官方依据：[Codex hooks](https://developers.openai.com/codex/hooks) 的 Common output fields 定义 `systemMessage` 为 UI/event-stream warning；[Claude hooks](https://code.claude.com/docs/en/hooks) 的通用 JSON 输出定义同步 `systemMessage` 为用户通知，普通 SessionStart stdout 为模型上下文。验证版本 Codex CLI 0.162.1、Claude Code 2.1.301；工程与包证据不代替真实 UI 或 owner 验收。
+
+## B17 normal package ownership
+
+Usage supplies its own normal package (`npm run build`, then ordinary `npm pack`), manifest/exports/profile and pinned producer inputs. It consumes consent, device signing, session and server-origin facts only through Core's public Cordis contract; it does not start a suite source, discover archives, edit another plugin's settings, rewrite DSH profile/locks, install itself or add a client hook. Core owns the optional ordinary-lifecycle local package source and its own configuration; AppHost/Brand remain their own providers.
+
+For isolated official-DSH verification use a new HOME/DSH_HOME/shared identity root and --user-data-dir with env -i, normal file:tgz installation and full Core config with serverOrigin:null, websiteOrigin:null, allowSystemBrowser:false. Keep consent withheld and run no model: installation/loading/settings visibility does not prove real upload, public npm availability, package preinstallation or owner acceptance. Static seed delivery and first-profile timing precede plugin activation and belong to coordinator PKG-SEEDS/PRE-PROFILE, not an upstream request.
+
+The producer's normal target build/full/mutations/check, required offline detached semantic check and official CLI installation are different evidence gates. The detached check uses the locked cache with no sibling sources and explicitly is not a target-host build. Optional real-backend tests remain visibly skipped when their explicit isolated test origin is absent; they are not replaced by fixture acceptance. No Usage rc.34 is selected or published by this migration.
