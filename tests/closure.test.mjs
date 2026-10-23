@@ -16,3 +16,16 @@ test('Q67 full physical closure rejects missing required dependencies and incomp
   put('a',{name:'a',version:'1.0.0',peerDependencies:{b:'^2.0.0'}});
   assert.throws(()=>assertPhysicalClosure(root,pkg,lock),/INCOMPATIBLE_DEPENDENCY/);
 });
+
+test('approved release tool is a frozen dev-only archive, other non-registry and runtime sources remain forbidden',async()=>{
+ const {assertPhysicalClosure}=await import('../tools/closure.mjs');
+ const {readFileSync}=await import('node:fs');
+ const pkg=JSON.parse(readFileSync('package.json','utf8')),lock=JSON.parse(readFileSync('package-lock.json','utf8'));
+ assert.ok(assertPhysicalClosure(process.cwd(),pkg,lock).packages>0);
+ const runtime=structuredClone(pkg);runtime.dependencies={'@hanamesh/release-platform-gate':pkg.devDependencies['@hanamesh/release-platform-gate']};
+ assert.throws(()=>assertPhysicalClosure(process.cwd(),runtime,lock),/DEV_ONLY_RELEASE_TOOL/);
+ const drift=structuredClone(lock);drift.packages['node_modules/@hanamesh/release-platform-gate'].integrity='sha512-invalid';
+ assert.throws(()=>assertPhysicalClosure(process.cwd(),pkg,drift),/RELEASE_TOOL_INTEGRITY/);
+ const spec=structuredClone(pkg);spec.devDependencies['@hanamesh/release-platform-gate']='file:vendor/other.tgz';
+ assert.throws(()=>assertPhysicalClosure(process.cwd(),spec,lock),/RELEASE_TOOL_SOURCE/);
+});

@@ -80,12 +80,15 @@
     "build:offline": "node tools/build.mjs --offline",
     "test": "node --test --test-reporter=tap tests/*.test.mjs tests/crash/*.test.mjs",
     "test:mutations": "node tools/mutations.mjs",
-    "check": "node tools/check.mjs",
+    "check": "node tools/check.mjs && npm run release:check",
     "preflight:host": "node tools/preflight.mjs",
     "samples": "node tools/samples.mjs",
     "test:detached": "node tools/detached.mjs",
     "test:contract": "pnpm run build && node --test --test-reporter=tap tests/stage0-contract.test.mjs tests/stage4-contract.test.mjs tests/contract-wire.test.mjs tests/shared-fact.test.mjs",
-    "package:agent": "node tools/package-agent.mjs"
+    "package:agent": "node tools/package-agent.mjs",
+    "release:check": "hanamesh-release check --lockfile pnpm-lock.yaml",
+    "release:publish": "hanamesh-release publish --lockfile pnpm-lock.yaml",
+    "prepublishOnly": "hanamesh-release source-guard"
   },
   "devDependencies": {
     "@deepseek-ai/cordis": "4.0.5-alpha.1",
@@ -106,6 +109,7 @@
     "@types/react": "18.3.1",
     "react": "18.3.1",
     "typescript": "5.9.3",
-    "zod": "4.6.5"
+    "zod": "4.6.5",
+    "@hanamesh/release-platform-gate": "file:vendor/hanamesh-release-platform-gate-0.1.9.tgz"
   }
 }

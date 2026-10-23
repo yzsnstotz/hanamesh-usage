@@ -1,0 +1,31 @@
+name: release-check
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  release-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.13.1
+      - run: pnpm install --frozen-lockfile --strict-peer-dependencies
+      - run: npm run build
+      - run: npm test
+      - run: npm run test:mutations
+      - run: npm run test:contract
+      - run: npm run check
+      - run: npm run test:detached
+      - run: npm run release:check
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: release-platform-receipt
+          path: artifacts/release-platform/

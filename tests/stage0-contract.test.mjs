@@ -33,14 +33,15 @@ test('U04 package is the standalone hanamesh-usage DSH bundle', () => {
   );
 });
 
-test('J1S2 no HanaMesh sibling or contract package is installed in any dependency section', () => {
+test('J1S2 no HanaMesh sibling or contract package is installed; only the approved dev-only release tool is admitted', () => {
   const pkg = JSON.parse(read('package.json'));
   for (const section of ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']) {
     assert.deepEqual(
-      Object.keys(pkg[section] ?? {}).filter(name => name.startsWith('@hanamesh/') || name.startsWith('hanamesh-')),
+      Object.keys(pkg[section] ?? {}).filter(name => (name.startsWith('@hanamesh/') || name.startsWith('hanamesh-')) && !(section === 'devDependencies' && name === '@hanamesh/release-platform-gate')),
       [], section,
     );
   }
+  assert.equal(pkg.devDependencies['@hanamesh/release-platform-gate'],'file:vendor/hanamesh-release-platform-gate-0.1.9.tgz');
   assert.equal(pkg.scripts['test:contract'], 'pnpm run build && node --test --test-reporter=tap tests/stage0-contract.test.mjs tests/stage4-contract.test.mjs tests/contract-wire.test.mjs tests/shared-fact.test.mjs');
 });
 

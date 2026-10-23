@@ -19,9 +19,9 @@ assert.deepEqual(pkg.dependencies??{},{});assert.equal(Object.keys(pkg.peerDepen
 assert.equal(pkg.dsh?.bundle?.patch,'./profile/cordis.patch.yml');assert.equal(pkg.dsh?.client?.platform,'web');assert.equal(pkg.exports['./client'].default,'./lib/client.js');assert(pkg.files.includes('profile'));assert(existsSync(pkg.dsh.bundle.patch));
 // No HanaMesh sibling or contract package is installed; contracts are documented, tests run against in-repo doubles or the real backend.
 for(const section of ['dependencies','devDependencies','peerDependencies','optionalDependencies'])
- assert.deepEqual(Object.keys(pkg[section]??{}).filter(name=>name.startsWith('@hanamesh/')||name.startsWith('hanamesh-')),[],`sibling module in ${section}`);
+ assert.deepEqual(Object.keys(pkg[section]??{}).filter(name=>(name.startsWith('@hanamesh/')||name.startsWith('hanamesh-'))&&!(section==='devDependencies'&&name==='@hanamesh/release-platform-gate')),[],`sibling module in ${section}`);
 assert.equal(existsSync('docs/contracts/hanamesh-core'),false);
-assert.equal(Object.keys(lock.packages).some(key=>/node_modules\/(?:@hanamesh\/|hanamesh-)/.test(key)),false,'sibling module in package-lock.json');
+assert.equal(Object.keys(lock.packages).some(key=>/node_modules\/(?:@hanamesh\/|hanamesh-)/.test(key)&&key!=='node_modules/@hanamesh/release-platform-gate'),false,'sibling module in package-lock.json');
 const patch=read(pkg.dsh.bundle.patch);assert.equal((patch.match(/^\s*- id:/gm)??[]).length,1);assert.match(patch,/^\s*- id: hanamesh-usage$/m);assert.match(patch,/^\s*name: hanamesh-usage$/m);
 const walk=dir=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(join(dir,e.name)):[join(dir,e.name)]);
 const sources=walk('src').filter(p=>/\.(ts|js)$/.test(p));
