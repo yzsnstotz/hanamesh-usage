@@ -26,7 +26,7 @@ try {
   for(const name of ['core','agent'])await cp(`lib/${name}`,join(output,'lib',name),{recursive:true});
   await mkdir(join(output,'runtime/core'),{recursive:true});
   // The standalone entry's import closure is all Node builtins plus these modules. No DSH peers are installed.
-  for(const name of ['agent-cli','agent','shared-device','device','errors','validation','contracts','transport','registration']) {
+  for(const name of ['agent-cli','agent','shared-device','device','errors','validation','contracts','transport','registration','bind-link']) {
     await mkdir(join(output,'runtime/core/lib'),{recursive:true});
     await cp(join(temp,`package/lib/${name}.js`),join(output,`runtime/core/lib/${name}.js`));
   }
