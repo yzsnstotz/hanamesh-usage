@@ -26,9 +26,9 @@ rc.31 接受官方 DSH rc.2 与当前 alpha 的公开宿主 peer：DSH `>=0.2.0-
 
 ## 安装
 
-`hanamesh-usage` 是一个 DSH bundle（`package.json` 声明 `dsh.bundle.patch`）：
+`@hanamesh/usage` 是一个 DSH bundle（`package.json` 声明 `dsh.bundle.patch`）：
 
-    dsh plugin --profile <p> add hanamesh-usage
+    dsh plugin --profile <p> add --save-exact '@hanamesh/usage@0.3.0-rc.6'
 
 装完即激活，不需要手写 `cordis.patch.yml`。`hanamesh-core` 与本包各只插入自己的 Loader 条目；新客户端负责分别安装三插件。本包不从 Core 传递安装，也不导入其他 HanaMesh 插件。
 

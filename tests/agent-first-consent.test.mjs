@@ -21,7 +21,9 @@ test('withheld tool hooks are silent and do not create collection state or parse
 });
 test('SessionStart emits a user notification with ready-to-run installed agree and never grants',async t=>{
  const f=await fixture(t);const r=f.run('SessionStart');assert.equal(r.status,0,r.stderr);
- assert.match(r.stdout,/^\{"systemMessage":/);const message=JSON.parse(r.stdout).systemMessage;assert.match(message,/开启/);assert.match(message,/贡献积分.*作者收入/);assert.match(message,/时间、插件、功能、成败和渠道/);assert.match(message,/不保存.*对话.*工具内容.*文件.*凭据/);assert.match(message,/随时关闭/);assert.match(message,/agree/);assert.ok(message.includes(process.execPath));assert.ok(message.includes(join(implementationRoot,'lib/agent/cli.mjs')));assert.doesNotMatch(message,/第4段|leo|bind.*自动|<插件|\$PLUGIN/);
+ assert.match(r.stdout,/^\{"systemMessage":/);const message=JSON.parse(r.stdout).systemMessage;assert.match(message,/开启/);assert.match(message,/贡献积分.*作者收入/);assert.match(message,/时间、插件、功能、成败和渠道/);assert.match(message,/不保存.*对话.*工具内容.*文件.*凭据/);assert.match(message,/随时关闭/);assert.match(message,/agree/);assert.ok(message.includes(process.execPath));assert.ok(message.includes(join(implementationRoot,'lib/agent/cli.mjs')));// Exact installed paths were checked above; their real username is not notice prose.
+ const wording=message.replaceAll(process.execPath,'<runtime-node>').replaceAll(join(implementationRoot,'lib/agent/cli.mjs'),'<installed-cli>');
+ assert.doesNotMatch(wording,/第4段|leo|bind.*自动|<插件|\$PLUGIN/);
  assert.doesNotMatch(r.stdout,/NOT JSON|RAW TOOL/);
 });
 test('prior explicit refusal or withdrawal and prior grant never prompt',async t=>{

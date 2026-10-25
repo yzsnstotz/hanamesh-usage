@@ -1,9 +1,9 @@
 # hanamesh-usage 自己的 bundle 片段（简报 §A.2 Bundle 规则）：只插本模块一条。
-# `dsh plugin add hanamesh-usage` 插入本模块一条；Core 的独立 bundle 不插入 Usage。
+# `dsh plugin add @hanamesh/usage` 插入本模块一条；Core 的独立 bundle 不插入 Usage。
 # maxEvents / uploadIntervalMs / uploadBatchSize / inventoryIntervalMs 使用本插件默认值。
 - insert:
     - id: hanamesh-usage
-      name: hanamesh-usage
+      name: '@hanamesh/usage'
       config:
         maxRecords: 5000
         maxPending: 128

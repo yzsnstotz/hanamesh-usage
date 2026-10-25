@@ -1,3 +1,4 @@
+import {load} from 'js-yaml';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
@@ -7,8 +8,8 @@ const read = path => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8'
 
 test('U04 package is the standalone hanamesh-usage DSH bundle', () => {
   const pkg = JSON.parse(read('package.json'));
-  assert.equal(pkg.name, 'hanamesh-usage');
-  assert.equal(pkg.version, '0.3.0-rc.5');
+  assert.equal(pkg.name, '@hanamesh/usage');
+  assert.equal(pkg.version, '0.3.0-rc.6');
   for (const [name, version] of Object.entries(pkg.peerDependencies)) {
     if (name.startsWith('@deepseek-ai/dsh-')) {
       for(const host of ['0.2.0-rc.2','0.2.0','0.2.1-alpha.2','0.2.1','0.2.9'])assert.equal(satisfies(host,version),true,`${name} admits ${host}`);
@@ -48,7 +49,7 @@ test('U04 bundle patch inserts exactly one hanamesh-usage loader row', () => {
   const patch = read('profile/cordis.patch.yml');
   assert.equal((patch.match(/^\s*- id:/gm) ?? []).length, 1);
   assert.match(patch, /^\s*- id: hanamesh-usage$/m);
-  assert.match(patch, /^\s*name: hanamesh-usage$/m);
+  assert.equal(load(patch)[0].insert[0].name,'@hanamesh/usage');
 });
 
 test('U02 runtime-registry is absent from package, source, vendor and contract inventory', () => {

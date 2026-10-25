@@ -17,7 +17,7 @@ function client(fetch){
   };
   const carrier={fetch};
   runInNewContext(readFileSync(new URL('../lib/client.js',import.meta.url),'utf8'),{window:{__DSH_TRANSPORT__:carrier,__ModuleLoader__:{load:r=>{registration=r;}}},globalThis:{fetch:()=>assert.fail('must use normal carrier')},AbortController,Response,Headers,URL,setTimeout,clearTimeout});
-  assert.equal(registration.id,'hanamesh-usage');const api=registration.factory(name=>{assert.equal(name,'react');return react;});
+  assert.equal(registration.id,'@hanamesh/usage');const api=registration.factory(name=>{assert.equal(name,'react');return react;});
   function expand(node,path='root'){
     if(Array.isArray(node))return node.map((n,i)=>expand(n,`${path}.${i}`));
     if(!node||typeof node!=='object')return node;
