@@ -492,7 +492,7 @@ function requestCodec(method:string):import('@deepseek-ai/dsh-typert-protocol').
   }})};
 }
 export const pagesContribution:import('@deepseek-ai/dsh-typert-protocol').TypertRemoteContribution={
-  package:'hanamesh-usage',descriptors:['issue','presented'].map(method=>({
+  package:'@hanamesh/usage',descriptors:['issue','presented'].map(method=>({
     id:`hanamesh-usage#hanameshUsagePages/${method}`,service:'hanameshUsagePages',namespace:'hanameshUsagePages',method,
     invocation:{kind:'direct'},parameters:[{name:'request',wire:'request',source:'json',codec:requestCodec(method)}],result:{mode:'src-json'},
   })),

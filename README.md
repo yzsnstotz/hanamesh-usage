@@ -26,7 +26,7 @@ rc.31 接受官方 DSH rc.2 与当前 alpha 的公开宿主 peer：DSH `>=0.2.0-
 
 ## 安装
 
-`hanamesh-usage` 是一个 DSH bundle（`package.json` 声明 `dsh.bundle.patch`）：
+`@hanamesh/usage` 是一个 DSH bundle（`package.json` 声明 `dsh.bundle.patch`）：
 
     dsh plugin --profile <p> add hanamesh-usage
 

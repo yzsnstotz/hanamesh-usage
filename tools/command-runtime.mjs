@@ -61,13 +61,13 @@ try{
   ctx.on('agent/request',()=>{result.modelRequests++;throw Error('MODEL_REQUEST_FORBIDDEN');});
   ctx.provide('hanameshCore',core);
   if(process.env.USAGE_GATE_CANDIDATE){
-    const loaded=[...ctx.loader.entries()].find(e=>e.options.name==='hanamesh-usage');assert(loaded?.fiber);
-    const pkg=ctx.get('pluginPackages').packageOf('hanamesh-usage',loaded.parent.tree.ctx.baseUrl);
+    const loaded=[...ctx.loader.entries()].find(e=>e.options.name==='@hanamesh/usage');assert(loaded?.fiber);
+    const pkg=ctx.get('pluginPackages').packageOf('@hanamesh/usage',loaded.parent.tree.ctx.baseUrl);
     assert.equal(pkg.version,JSON.parse(await readFile(new URL('../package.json',import.meta.url),'utf8')).version);
     result.candidate={version:pkg.version,sha256:createHash('sha256').update(await readFile(process.env.USAGE_GATE_CANDIDATE)).digest('hex'),installation:'PUBLIC_CLI_PLUGIN_ADD_BUNDLE'};
   }else{fork=ctx.plugin(usage,{uploadIntervalMs:5000,panelTestSupply:{identity:true,receiver:true}});await fork;}
   const api=ctx.get('hanameshUsage');assert(api);await api.drain();
-  const graphRow=ctx.clientModules.graph().entries.find(row=>row.id==='hanamesh-usage');assert(graphRow);assert(graphRow.external.includes('react'));
+  const graphRow=ctx.clientModules.graph().entries.find(row=>row.id==='@hanamesh/usage');assert(graphRow);assert(graphRow.external.includes('react'));
   result.panelClient={scope:'REAL_HOST_PUBLIC_CLIENT_GRAPH_NOT_RENDERER',id:graphRow.id,inject:graphRow.inject,external:graphRow.external};
   const entry=[...ctx.loader.entries()].find(e=>e.options.name==='dsh-update-notifier');assert(entry?.fiber);
   const owner=ctx.get('pluginPackages').packageOf(entry.options.name,entry.parent.tree.ctx.baseUrl);

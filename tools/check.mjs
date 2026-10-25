@@ -14,7 +14,7 @@ const closureTree=JSON.parse(closure.stdout);
 for(const entry of Array.isArray(closureTree)?closureTree:[closureTree])assert.deepEqual(entry.problems??[],[]);
 const physical=assertPhysicalClosure(process.cwd(),pkg,lock);
 console.log(JSON.stringify({closureManager:pnpmLayout?'pnpm':'npm',...physical}));
-assert.equal(pkg.name,'hanamesh-usage');assert.equal(pkg.version,'0.3.0-rc.5');assert.equal(pkg.private,undefined);assert.equal(pkg.license,'MIT');
+assert.equal(pkg.name,'@hanamesh/usage');assert.equal(pkg.version,'0.3.0-rc.6');assert.equal(pkg.private,undefined);assert.equal(pkg.license,'MIT');
 assert.deepEqual(pkg.dependencies??{},{});assert.equal(Object.keys(pkg.peerDependencies).filter(name=>name.startsWith('@hanamesh/')||name.startsWith('hanamesh-')).length,0);
 assert.equal(pkg.dsh?.bundle?.patch,'./profile/cordis.patch.yml');assert.equal(pkg.dsh?.client?.platform,'web');assert.equal(pkg.exports['./client'].default,'./lib/client.js');assert(pkg.files.includes('profile'));assert(existsSync(pkg.dsh.bundle.patch));
 // No HanaMesh sibling or contract package is installed; contracts are documented, tests run against in-repo doubles or the real backend.
@@ -22,7 +22,7 @@ for(const section of ['dependencies','devDependencies','peerDependencies','optio
  assert.deepEqual(Object.keys(pkg[section]??{}).filter(name=>name.startsWith('@hanamesh/')||name.startsWith('hanamesh-')),[],`sibling module in ${section}`);
 assert.equal(existsSync('docs/contracts/hanamesh-core'),false);
 assert.equal(Object.keys(lock.packages).some(key=>/node_modules\/(?:@hanamesh\/|hanamesh-)/.test(key)),false,'sibling module in package-lock.json');
-const patch=read(pkg.dsh.bundle.patch);assert.equal((patch.match(/^\s*- id:/gm)??[]).length,1);assert.match(patch,/^\s*- id: hanamesh-usage$/m);assert.match(patch,/^\s*name: hanamesh-usage$/m);
+const patch=read(pkg.dsh.bundle.patch);assert.equal((patch.match(/^\s*- id:/gm)??[]).length,1);assert.match(patch,/^\s*- id: hanamesh-usage$/m);assert.match(patch,/^\s*name: @hanamesh\/usage$/m);
 const walk=dir=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(join(dir,e.name)):[join(dir,e.name)]);
 const sources=walk('src').filter(p=>/\.(ts|js)$/.test(p));
 const forbiddenSibling=/(?:from\s+|import\s*\()['"](?:hanamesh-[^'"]*|@hanamesh\/[^'"]*)['"]/;

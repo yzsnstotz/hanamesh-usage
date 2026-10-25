@@ -57,7 +57,7 @@ function materialize(fetch, globalFetch) {
     window: { __ModuleLoader__: { load(value) { registration = value; } }, __DSH_TRANSPORT__: carrier },
     globalThis: globals, AbortController, Response, Headers, URL, setTimeout, clearTimeout,
   });
-  assert.equal(registration?.id, 'hanamesh-usage');
+  assert.equal(registration?.id, '@hanamesh/usage');
   const api = registration.factory(name => { assert.equal(name, 'react'); return react; });
   function expand(node, path) {
     if (node === null || node === undefined || typeof node === 'boolean') return null;

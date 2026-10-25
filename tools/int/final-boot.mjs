@@ -19,7 +19,7 @@ const app=await runProfile({profile:'web',patchFiles:[path.join(run,'state/final
 const ctx=app.ctx;
 const core=ctx.get('hanameshCore');const usage=ctx.get('hanameshUsage');
 if(!core||!usage)throw Error('REAL_INSTALLED_SERVICE_MISSING');
-const {wireEvent}=await import(pathToFileURL(path.join(run,'dsh-home/profiles/web/node_modules/hanamesh-usage/lib/core/index.js')).href);
+const {wireEvent}=await import(pathToFileURL(path.join(run,'dsh-home/profiles/web/node_modules/@hanamesh/usage/lib/core/index.js')).href);
 let modelRequests=0;let lastFact=null;const facts=[];
 ctx.on('agent/request',()=>{modelRequests++;});
 ctx.on('commands/operation',fact=>{if(fact?.phase==='succeeded'){lastFact=fact;facts.push({commandId:fact.commandId,phase:fact.phase,source:fact.source,occurredAt:fact.occurredAt});void writeFile(path.join(run,'evidence/ordinary-facts.json'),JSON.stringify(facts,null,2)+'\n');}});
@@ -31,7 +31,7 @@ const operations={
   // Read the already captured native fact for diagnosis only; never emit it or record an event.
   const prior=JSON.parse(await readFile(path.join(run,'evidence/local-action-state.json'),'utf8'));
   const fact=lastFact??prior.facts.at(-1);if(!fact)throw Error('NO_OBSERVED_FACT_FOR_DIAGNOSIS');
-  const {commandPackage}=await import(pathToFileURL(path.join(run,'dsh-home/profiles/web/node_modules/hanamesh-usage/lib/host/command-source.js')).href);
+  const {commandPackage}=await import(pathToFileURL(path.join(run,'dsh-home/profiles/web/node_modules/@hanamesh/usage/lib/host/command-source.js')).href);
   const selected=[...ctx.loader.entries()].filter(entry=>entry.id===fact.source.entryId).map(entry=>({id:entry.id,name:entry.options.name,group:entry.options.group??null,parentBaseUrl:entry.parent?.tree?.ctx?.baseUrl??null}));
   const service=ctx.get('pluginPackages');
   const lookups=selected.map(entry=>{try{const pkg=service.packageOf(entry.name,entry.parentBaseUrl);return {entryId:entry.id,name:pkg?.name??null,version:pkg?.version??null,dir:pkg?.dir??null};}catch(error){return {entryId:entry.id,error:error.message};}});

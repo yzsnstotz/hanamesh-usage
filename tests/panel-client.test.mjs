@@ -10,7 +10,7 @@ function materialize(fetch){
   let registration;
   const window={__ModuleLoader__:{load:value=>{registration=value;}},__DSH_TRANSPORT__:fetch?{fetch}:undefined};
   runInNewContext(readFileSync(bundle,'utf8'),{window,globalThis:{fetch:()=>{throw Error('unexpected global fetch');}},AbortController});
-  assert.equal(registration.id,'hanamesh-usage');
+  assert.equal(registration.id,'@hanamesh/usage');
   return registration.factory(name=>{assert.equal(name,'react');return require('react');});
 }
 test('normal client export contributes exactly its own Settings section',async()=>{

@@ -13,7 +13,7 @@ function setup(c){let hook;let mounted;const registered=[],disposer=()=>{};const
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
 test('client wraps only four functional slots, preserves native receivers and options, mounts Usage remote',async()=>{
  const c=client(),s=setup(c);await c.api.apply(s.ctx);assert(s.hook,'Usage must intercept slots');
- assert.equal(s.mounted.package,'hanamesh-usage');
+ assert.equal(s.mounted.package,'@hanamesh/usage');
  const owner={fiber:{entry:{id:'include:ordinary',options:{name:'ordinary/client'}}}};
  const wrapped=s.hook(owner,'slots',null,()=>s.service);assert.equal(wrapped.other(),true);
  for(const name of ['main','settings.section','plugins.bundle.config','plugins.row.config','sidebar']){

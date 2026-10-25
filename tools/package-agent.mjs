@@ -16,7 +16,7 @@ try {
   const result=spawnSync('tar',['-xzf',resolve(coreTarball),'-C',temp],{encoding:'utf8'});
   if(result.status!==0)throw new Error('CORE_ARTIFACT_UNREADABLE');
   const core=JSON.parse(await readFile(join(temp,'package/package.json'),'utf8'));
-  if(core.name!=='hanamesh-core')throw new Error('CORE_ARTIFACT_INVALID');
+  if(core.name!=='@hanamesh/core')throw new Error('CORE_ARTIFACT_INVALID');
   const usage=JSON.parse(await readFile('package.json')),plugin=JSON.parse(await readFile('agent/.claude-plugin/plugin.json')),codex=JSON.parse(await readFile('agent/.codex-plugin/plugin.json'));
   if(plugin.name!=='hanamesh'||codex.name!==plugin.name||codex.version!==plugin.version)throw Error('SUITE_MANIFEST_MISMATCH');
   for(const file of await inventory('src/agent'))if(sha256(await readFile(join('lib/agent',file.path)))!==file.sha256)throw Error('SUITE_BUILD_STALE');
