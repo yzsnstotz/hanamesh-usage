@@ -3,7 +3,7 @@
 # maxEvents / uploadIntervalMs / uploadBatchSize / inventoryIntervalMs 使用本插件默认值。
 - insert:
     - id: hanamesh-usage
-      name: @hanamesh/usage
+      name: '@hanamesh/usage'
       config:
         maxRecords: 5000
         maxPending: 128

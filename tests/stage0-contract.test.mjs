@@ -1,3 +1,4 @@
+import {load} from 'js-yaml';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
@@ -48,7 +49,7 @@ test('U04 bundle patch inserts exactly one hanamesh-usage loader row', () => {
   const patch = read('profile/cordis.patch.yml');
   assert.equal((patch.match(/^\s*- id:/gm) ?? []).length, 1);
   assert.match(patch, /^\s*- id: hanamesh-usage$/m);
-  assert.match(patch, /^\s*name: @hanamesh\/usage$/m);
+  assert.equal(load(patch)[0].insert[0].name,'@hanamesh/usage');
 });
 
 test('U02 runtime-registry is absent from package, source, vendor and contract inventory', () => {

@@ -1,5 +1,6 @@
 import {readFileSync,readdirSync,existsSync} from 'node:fs';import {join} from 'node:path';import {fileURLToPath} from 'node:url';import assert from 'node:assert/strict';import {validateConsistency} from './consistency-schema.mjs';
 import {spawnSync} from 'node:child_process';
+import {load} from 'js-yaml';
 import {assertPhysicalClosure} from './closure.mjs';
 process.chdir(fileURLToPath(new URL('../',import.meta.url)));
 const read=p=>readFileSync(p,'utf8');
@@ -22,7 +23,16 @@ for(const section of ['dependencies','devDependencies','peerDependencies','optio
  assert.deepEqual(Object.keys(pkg[section]??{}).filter(name=>name.startsWith('@hanamesh/')||name.startsWith('hanamesh-')),[],`sibling module in ${section}`);
 assert.equal(existsSync('docs/contracts/hanamesh-core'),false);
 assert.equal(Object.keys(lock.packages).some(key=>/node_modules\/(?:@hanamesh\/|hanamesh-)/.test(key)),false,'sibling module in package-lock.json');
-const patch=read(pkg.dsh.bundle.patch);assert.equal((patch.match(/^\s*- id:/gm)??[]).length,1);assert.match(patch,/^\s*- id: hanamesh-usage$/m);assert.match(patch,/^\s*name: @hanamesh\/usage$/m);
+// Parse the actual YAML consumed by DSH; textual name matching cannot validate scoped names.
+const assertPatch=(text,manifest)=>{const patch=load(text);assert.equal(patch[0].insert.length,1);assert.equal(patch[0].insert[0].id,'hanamesh-usage');assert.equal(patch[0].insert[0].name,manifest.name);};
+assertPatch(read(pkg.dsh.bundle.patch),pkg);
+const tarball=process.argv.slice(2).find(value=>value.endsWith('.tgz'));
+if(tarball){
+ const packedRead=path=>{const result=spawnSync('tar',['-xOf',tarball,'package/'+path],{encoding:'utf8'});assert.equal(result.status,0,result.stderr);return result.stdout;};
+ const packed=JSON.parse(packedRead('package.json'));assert.equal(packed.name,pkg.name);assert.equal(packed.version,pkg.version);
+ assertPatch(packedRead(packed.dsh.bundle.patch.replace(/^\.\//,'')),packed);
+ console.log(JSON.stringify({packedPatchYamlValid:true,tarball,name:packed.name,version:packed.version}));
+}
 const walk=dir=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(join(dir,e.name)):[join(dir,e.name)]);
 const sources=walk('src').filter(p=>/\.(ts|js)$/.test(p));
 const forbiddenSibling=/(?:from\s+|import\s*\()['"](?:hanamesh-[^'"]*|@hanamesh\/[^'"]*)['"]/;
