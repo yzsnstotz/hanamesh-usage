@@ -28,7 +28,7 @@ rc.31 接受官方 DSH rc.2 与当前 alpha 的公开宿主 peer：DSH `>=0.2.0-
 
 `@hanamesh/usage` 是一个 DSH bundle（`package.json` 声明 `dsh.bundle.patch`）：
 
-    dsh plugin --profile <p> add --save-exact '@hanamesh/usage@0.3.0-rc.6'
+    dsh plugin --profile <p> add --save-exact '@hanamesh/usage@0.3.0-rc.7'
 
 装完即激活，不需要手写 `cordis.patch.yml`。`hanamesh-core` 与本包各只插入自己的 Loader 条目；新客户端负责分别安装三插件。本包不从 Core 传递安装，也不导入其他 HanaMesh 插件。
 
@@ -183,3 +183,7 @@ Usage supplies its own normal package (`npm run build`, then ordinary `npm pack`
 For isolated official-DSH verification use a new HOME/DSH_HOME/shared identity root and --user-data-dir with env -i, normal file:tgz installation and full Core config with serverOrigin:null, websiteOrigin:null, allowSystemBrowser:false. Keep consent withheld and run no model: installation/loading/settings visibility does not prove real upload, public npm availability, package preinstallation or owner acceptance. Static seed delivery and first-profile timing precede plugin activation and belong to coordinator PKG-SEEDS/PRE-PROFILE, not an upstream request.
 
 The producer's normal target build/full/mutations/check, required offline detached semantic check and official CLI installation are different evidence gates. The detached check uses the locked cache with no sibling sources and explicitly is not a target-host build. Optional real-backend tests remain visibly skipped when their explicit isolated test origin is absent; they are not replaced by fixture acceptance. No Usage rc.34 is selected or published by this migration.
+
+### Claude Skill results (Usage 0.3.0-rc.7 / Agent 0.1.4)
+
+Claude `Skill` PostToolUse results with an explicit boolean `success` now retain that success or failure as the minimal usage result. Unknown outcomes remain unverified; `countUnconfirmedCalls` is unchanged. Existing error/exit-status handling and other tools/channels retain their prior behavior. Agent marketplaces consume the generated 0.1.4 payload; updating the npm package alone does not replace an already-installed agent plugin.

@@ -6,17 +6,18 @@ import {join} from 'node:path';
 import {createHash,generateKeyPairSync,sign,verify} from 'node:crypto';
 import {AgentStore} from '../src/agent/store.mjs';
 import {uploadOnce} from '../lib/agent/upload.mjs';
+import {projectHook} from '../src/agent/project.mjs';
 import {agentSigningJSON} from '../lib/core/agent-event.js';
 
 // Contract doubles only: no production backend or account. Real Ed25519 signatures over actual upload bytes.
-async function fixture(t){
+async function fixture(t,channel='codex'){
  const root=await mkdtemp(join(tmpdir(),'hm-agent-upload-'));t.after(()=>rm(root,{recursive:true,force:true}));
  const {publicKey,privateKey}=generateKeyPairSync('ed25519');
  const deviceId=createHash('sha256').update(publicKey.export({format:'der',type:'spki'}).subarray(-32)).digest('base64url');
  const consentId='11111111-1111-4111-8111-111111111111';let consent='granted';const calls=[],posted=[];
  const r={agentHome:root,config:{serverOrigin:'http://127.0.0.1:34111',websiteOrigin:'http://127.0.0.1:34112'},store:new AgentStore(root),async call(input){calls.push(input.operation);if(input.operation==='state')return {consent:{state:consent,consentId},deviceId};if(input.operation==='sign')return {signature:sign(null,Buffer.from(input.bytes,'base64'),privateKey).toString('base64url')};if(input.operation==='signRequest')return {'x-fixture':'signed'};return {deviceId};}};
- const catalog={schemaVersion:1,eventProtocol:'hm-agent-v1',generatedAt:'2026-10-15T00:00:00.000Z',settings:{uploadIntervalMs:60000,catalogRefreshMs:300000,backfillWindowDays:30,countUnconfirmedCalls:false},plugins:[{hanaRef:'hana-target',githubRepo:'owner/repo',channel:'codex',pluginName:'target',marketplace:'market',pluginId:'target@market',mcpServers:['probe'],skills:['hello']}]};
- const request=async(origin,path,init)=>{calls.push(path);if(path==='/v1/registry/agent-catalog')return catalog;if(path.endsWith('/consents/'+consentId)){assert.equal(init.body,'{}');assert.equal(init.method,'POST');return {consentId,state:'active',barrier:'committed'};}if(path.startsWith('/v1/usage/me/contributions'))return {bound:true};assert.equal(path,'/v2/usage/events');const rows=JSON.parse(init.body);posted.push(...rows);for(const row of rows){assert.ok(verify(null,Buffer.from(agentSigningJSON(row)),publicKey,Buffer.from(row.signature,'base64url')));assert.equal(verify(null,Buffer.from(agentSigningJSON({...row,channel:'claude'})),publicKey,Buffer.from(row.signature,'base64url')),false);}return {durability:'committed',accepted:rows.length,duplicates:0,rejected:[]};};
+ const catalog={schemaVersion:1,eventProtocol:'hm-agent-v1',generatedAt:'2026-10-15T00:00:00.000Z',settings:{uploadIntervalMs:60000,catalogRefreshMs:300000,backfillWindowDays:30,countUnconfirmedCalls:false},plugins:[{hanaRef:'hana-target',githubRepo:'owner/repo',channel,pluginName:'target',marketplace:'market',pluginId:'target@market',mcpServers:['probe'],skills:['hello']}]};
+ const request=async(origin,path,init)=>{calls.push(path);if(path==='/v1/registry/agent-catalog')return catalog;if(path.endsWith('/consents/'+consentId)){assert.equal(init.body,'{}');assert.equal(init.method,'POST');return {consentId,state:'active',barrier:'committed'};}if(path.startsWith('/v1/usage/me/contributions'))return {bound:true};assert.equal(path,'/v2/usage/events');const rows=JSON.parse(init.body);posted.push(...rows);for(const row of rows){assert.ok(verify(null,Buffer.from(agentSigningJSON(row)),publicKey,Buffer.from(row.signature,'base64url')));assert.equal(verify(null,Buffer.from(agentSigningJSON({...row,channel:row.channel==='codex'?'claude':'codex'})),publicKey,Buffer.from(row.signature,'base64url')),false);}return {durability:'committed',accepted:rows.length,duplicates:0,rejected:[]};};
  const row={factId:'a'.repeat(64),channel:'codex',pluginId:'target@market',feature:'mcp:echo',success:true,occurredAt:'2026-10-15T10:00:00.000Z',disposition:'attributed'};
  return {r,row,request,calls,posted,catalog,consentId,setConsent(value){consent=value;}};
 }
@@ -58,4 +59,16 @@ test('G invalid activation barrier or consent changed during activation sends no
   }}),/AGENT_(?:CONSENT|ACTIVATION)/);
   assert.equal(f.posted.length,0);assert.equal((await f.r.store.rows())[0].wire,undefined);
  }
+});
+
+test('Claude Skill boolean results upload with countUnconfirmedCalls=false while unknown remains local',async t=>{
+ const f=await fixture(t,'claude');const plugin={pluginId:'frontend-design@claude-code-plugins',pluginName:'frontend-design',marketplace:'claude-code-plugins',root:'/fixture/frontend-design',mcpServers:[],skills:['frontend-design']};
+ f.catalog.plugins=[{...f.catalog.plugins[0],...plugin}];assert.equal(f.catalog.settings.countUnconfirmedCalls,false);
+ for(const success of [true,false,null]){
+  const row=projectHook({hook_event_name:'PostToolUse',session_id:'fixture-r2-skill',tool_use_id:'fixture-skill-'+success,tool_name:'Skill',tool_input:{skill:'frontend-design:frontend-design'},tool_response:{success,commandName:'frontend-design:frontend-design'}},'claude',[plugin],Date.parse(f.row.occurredAt));
+  await f.r.store.record(row,true);
+ }
+ await uploadOnce(f.r,{now:Date.parse('2026-10-16T00:00:00.000Z'),request:f.request});
+ assert.equal(f.posted.length,2);assert.deepEqual(f.posted.map(r=>r.success).sort(),[false,true]);assert(f.posted.every(r=>r.channel==='claude'&&r.feature==='skill:frontend-design'));
+ const rows=await f.r.store.rows();assert.equal(rows.filter(r=>r.delivery?.state==='sent').length,2);assert.equal(rows.filter(r=>r.success===null&&!r.delivery).length,1);assert.equal(f.catalog.settings.countUnconfirmedCalls,false);
 });

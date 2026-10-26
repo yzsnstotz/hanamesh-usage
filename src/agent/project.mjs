@@ -71,6 +71,8 @@ export function projectHook(payload,channel,installed,now=Date.now()) {
     else if(Object.hasOwn(response,'isError'))success=typeof response.isError==='boolean'?!response.isError:null;
     else if(Object.hasOwn(response,'is_error'))success=typeof response.is_error==='boolean'?!response.is_error:null;
     else if(Object.hasOwn(response,'exit_code'))success=Number.isSafeInteger(response.exit_code)?response.exit_code===0:null;
+    // Claude Skill reports an explicit boolean; no tool result text or command metadata is retained.
+    else if(channel==='claude'&&name==='Skill'&&typeof response.success==='boolean')success=response.success;
     else if(name.startsWith('mcp__')&&Array.isArray(response.content))success=true; // MCP isError is optional and defaults to false.
     // Claude emits successful MCP results as bare content blocks; failures use PostToolUseFailure.
     // Inspect block structure only, never text, attachments or other result data.
