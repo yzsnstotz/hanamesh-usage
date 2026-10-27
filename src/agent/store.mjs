@@ -14,7 +14,7 @@ const tails=new Map();
 const owner=row=>typeof row.pluginId==='string'&&/^[A-Za-z0-9][A-Za-z0-9_.-]*@[A-Za-z0-9][A-Za-z0-9_.-]*$/.test(row.pluginId)&&typeof row.feature==='string'&&/^(mcp|skill):[A-Za-z0-9][A-Za-z0-9_.:-]*$/.test(row.feature);
 /** A call owns one row and one signed event. All modifications serialize across hook/sender processes. */
 export class AgentStore {
-  constructor(root,{timeoutMs=10000}={}){this.root=root;this.dir=join(root,'events');this.timeoutMs=timeoutMs;}
+  constructor(root,{timeoutMs=10000}={}){this.root=root;this.dir=join(root,'events');this.installDir=join(root,'installs');this.timeoutMs=timeoutMs;}
   async mutate(task){
     const run=(tails.get(this.root) ?? Promise.resolve()).then(async()=>{
       await mkdir(this.root,{recursive:true,mode:0o700});
@@ -44,14 +44,34 @@ export class AgentStore {
     let names;try{names=await readdir(this.dir);}catch(error){if(error.code==='ENOENT')return [];throw error;}
     return Promise.all(names.filter(name=>/^[a-f0-9]{64}\.json$/.test(name)).sort().map(name=>readJSON(join(this.dir,name),null)));
   }
-  async pending(catalog,now=Date.now()){
-    const cutoff=now-catalog.settings.backfillWindowDays*86400000,result=[];
+  async prune(now=Date.now()){
+    return this.mutate(async()=>{
+      for(const row of await this.rows())if(Date.parse(row.occurredAt)<now-30*86400000)await rm(join(this.dir,`${row.factId}.json`),{force:true});
+      let names;try{names=await readdir(this.installDir);}catch(error){if(error.code!=='ENOENT')throw error;names=[];}
+      for(const name of names.filter(n=>/^[a-f0-9-]{36}\.json$/.test(n))){const path=join(this.installDir,name),entry=await readJSON(path,null);if(entry?.wire&&Date.parse(entry.wire.occurredAt)<now-30*86400000)await atomicJSON(path,{eventId:entry.eventId,delivery:{state:'expired',code:'INSTALL_WINDOW_EXPIRED'}});}
+    });
+  }
+  async eligible(catalog,now=Date.now()){
+    const cutoff=now-Math.min(30,catalog.settings.backfillWindowDays)*86400000,result=[];
     for(const row of await this.rows()){
-      if(!['attributed','unverified'].includes(row.disposition)||!owner(row)||row.delivery||Date.parse(row.occurredAt)<cutoff||Date.parse(row.occurredAt)>now||(row.success===null&&catalog.settings.countUnconfirmedCalls!==true))continue;
+      if(!['attributed','unverified'].includes(row.disposition)||!owner(row)||Date.parse(row.occurredAt)<cutoff||Date.parse(row.occurredAt)>now||(row.success===null&&catalog.settings.countUnconfirmedCalls!==true))continue;
       const owners=catalog.plugins.filter(item=>item.channel===row.channel&&item.pluginId===row.pluginId);
       if(owners.length===1)result.push({...row,hanaRef:owners[0].hanaRef});
     }return result;
   }
+  async pending(catalog,now=Date.now()){return (await this.eligible(catalog,now)).filter(row=>!row.delivery);}
+  async installState(eventId){if(!/^[a-f0-9-]{36}$/.test(eventId))throw Error('AGENT_EVENT_INVALID');return readJSON(join(this.installDir,`${eventId}.json`),null);}
+  async freezeInstall(factId,wire){return this.mutate(async()=>{
+    const existing=await this.installState(wire.eventId);if(existing)return existing.wire??null;
+    const row=await readJSON(join(this.dir,`${factId}.json`),null);
+    if(!row||wire.action!=='install'||['success','channel','feature','occurredAt'].some(key=>row[key]!==wire[key]))throw Error('AGENT_FACT_CHANGED');
+    await mkdir(this.installDir,{recursive:true,mode:0o700});await atomicJSON(join(this.installDir,`${wire.eventId}.json`),{eventId:wire.eventId,wire});return wire;
+  });}
+  async markInstall(eventId,delivery){return this.mutate(async()=>{
+    const path=join(this.installDir,`${eventId}.json`),entry=await readJSON(path,null);if(!entry)throw Error('AGENT_FACT_CHANGED');
+    // Terminal dedup metadata is not a retained usage record. Unknown signed bytes stay frozen until local expiry.
+    await atomicJSON(path,delivery.state==='unconfirmed'?{...entry,delivery}:{eventId,delivery});
+  });}
   async mark(factId,delivery){return this.mutate(async()=>{const path=join(this.dir,`${factId}.json`),row=await readJSON(path,null);if(row)await atomicJSON(path,{...row,delivery});});}
   async freezeWire(factId,wire){return this.mutate(async()=>{
     const path=join(this.dir,`${factId}.json`),row=await readJSON(path,null);if(!row)throw new Error('AGENT_FACT_CHANGED');
@@ -59,5 +79,5 @@ export class AgentStore {
     if(['success','channel','feature','occurredAt'].some(key=>row[key]!==wire[key]))throw new Error('AGENT_FACT_CHANGED');
     await atomicJSON(path,{...row,wire});return wire;
   });}
-  async withdraw(){return this.mutate(()=>rm(this.dir,{recursive:true,force:true}));}
+  async withdraw(){return this.mutate(async()=>{await rm(this.dir,{recursive:true,force:true});await rm(this.installDir,{recursive:true,force:true});});}
 }

@@ -1,10 +1,10 @@
 {
   "name": "hanamesh",
-  "version": "0.1.4",
-  "description": "Consent-gated HanaMesh usage",
+  "version": "0.2.0",
+  "description": "HanaMesh：宿主允许执行后自动仅本机记录；网站一次同意并绑定才上传。可在原生插件管理中禁用停止。",
   "interface": {
     "displayName": "HanaMesh 使用记录",
-    "shortDescription": "先审核钩子，再由你同意；仅记已收录插件的最少使用信息",
+    "shortDescription": "先审核并Trust hooks；随后自动仅本机记录，网站同意绑定后才上传。Trust前无记录/会话提醒。",
     "developerName": "HanaMesh",
     "category": "Productivity",
     "defaultPrompt": "检查 HanaMesh 计量是否开启"

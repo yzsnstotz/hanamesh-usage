@@ -28,7 +28,7 @@ rc.31 接受官方 DSH rc.2 与当前 alpha 的公开宿主 peer：DSH `>=0.2.0-
 
 `@hanamesh/usage` 是一个 DSH bundle（`package.json` 声明 `dsh.bundle.patch`）：
 
-    dsh plugin --profile <p> add --save-exact '@hanamesh/usage@0.3.0-rc.7'
+    dsh plugin --profile <p> add --save-exact '@hanamesh/usage@0.3.0-rc.8'
 
 装完即激活，不需要手写 `cordis.patch.yml`。`hanamesh-core` 与本包各只插入自己的 Loader 条目；新客户端负责分别安装三插件。本包不从 Core 传递安装，也不导入其他 HanaMesh 插件。
 
@@ -152,29 +152,17 @@ Inventory 暴露 `INVENTORY_FAILED/INVENTORY_ENTRY_UNREADABLE/INVENTORY_PACKAGE_
 框架 peer 与 React 宿主外部供给沿用，独立声明消费需正常 TypeScript/Node/React 类型工具。
 本模块无 ABI 生成器或链上接口，ABI/模板/签名广播门不在本卡范围。
 
-## Session G · Claude Code / Codex preview（rc.29）
+## Claude Code / Codex · Usage rc.8 / Agent0.2.0候选
 
-新增 `src/agent`：默认关闭、hook 最小投影、本机原子队列、收录名单过滤、可配补报窗口、stdio MCP 常驻发送及只读状态。与 DSH 共用 `src/core` 的事件身份和隐私/签名投影；Core 通过本地进程合约调用，不 import 邻仓插件。DSH 插件原入口不变。
+宿主允许执行后自动准备固定Node24.13.1并开启仅本机的最小记录；不需setup/agree/connect。Codex安装不等于Trust，须本人通过原生审核入口允许hooks；Trust前不记录且无会话提示。网站一次同意并绑定后，经Core capability2直读提交审计/绑定事实才上传与补报；旧终端granted保留、不造网页审计。DSH原同意弹窗不变。
 
-独立插件需从已构建本仓与 **Core 已打包产物**生成：`node tools/package-agent.mjs <hanamesh-core.tgz> <新输出目录>`；不会下载或安装 DSH peers。`node tools/verify-agent-package.mjs <core.tgz>` 在一次性 Claude/Codex 配置目录做真实 CLI 安装与只读 MCP 启动检查，结束全部删除，不调用模型。需要本机 Node 24 和待测的两个 CLI；当前包未附带跨平台 Node。
+事实只含插件、功能、时间、成败、渠道，不保留对话、工具正文、文件或凭据；滚动30天，执行采集/后台时清除过期。两渠道各每天首个新主会话最多提醒一次，N/最早期限/7天/1天加强，不因提醒自动上传/绑定。安装说明与hm-setup提前说明原生禁用停止的入口；禁用不等于清理或远端撤回，无真实回调控件的表面不提供假清理/静音按钮。
 
-两家 manifest 与 setup 技能在 `agent/`。用户亲自 `setup <本机后端origin> <本机网站origin> [bootstrapIntervalMs=60000] [requestTimeoutMs=10000]`，再 `consent --agree`；MCP 没有代替用户开启同意或信任的写工具。Codex 插件页另点 Trust all。`withdraw` 先停采集、清本机，再请求服务端删除，失败保持 pending。
+独立插件从本仓正常目标构建及固定Core正常tgz物化：`node tools/package-agent.mjs <core.tgz> <新输出目录>`；不读邻仓源码、不安装DSH peers。source/payload及Node bootstrap、两个manifest/Skill由suite-receipt逐文件绑定。MCP仍只读hanamesh_status，维护用setup/withdraw不是普通开通步骤。详见[Agent说明](agent/README.md)。正常包内置api.hanamesh.com/market.hanamesh.com；本地/staging完整显式覆盖，测试不得请求正式服务。
 
-**预览边界**：C-USAGE v2 与 registry 收录名单/后台设置仍待提供方实现、移交；本地状态会停止并显示缺项，绝不丢渠道向旧协议上报。Codex app 代码模式的外层 exec 结果不能证明内层插件成败：目前只留本机 unverified，不上传计分。在线市场未部署，真实模型/网站积分/owner 验收未完成。详见 `docs/acceptance/session-g-20261015.md`。
+已收录插件首次实际调用补install，稳定每设备/Hana一次、跨Claude/Codex去重；单装不用、ambiguous/outer-only/未收录不构成安装事实，成败不伪造。use独立；未知提交冻结字节不自动重放。NodeSQLite仅作进程互斥，不存事件或密钥；仅过滤其确切实验性提示，其他警告及错误保留，不用全局NODE_NO_WARNINGS。macOS arm64/x64启动器受控摘要固定，非本轮实测架构与真实UI明确NOT_RUN。
 
-依赖未增加：Node24.13.1（MIT，nodejs.org）运行时、TypeScript5.9.3（Apache-2.0，microsoft/TypeScript）既有编译器、Git2.50.1（GPL-2.0，git-scm.com）市场安装。MCP 使用标准JSON-RPC，无新增SDK依赖。
-
-本轮平台证据：macOS arm64 / Node24.13.1。Intel macOS、Windows x64、Linux x64 真机为 NOT_RUN（无本轮机器）；Linux/Windows arm64 无本轮支持承诺。CLI/单元/包检查不能替代真实宿主和 owner 验收。
-
-Node24.13.1 内置 SQLite3.51.2（public domain，https://sqlite.org）仅作操作系统进程互斥：不存事件或密钥，不新增npm依赖。Node当前仍标SQLite实验性，本轮只对锁API做了并行及SIGKILL恢复测试，不据此扩大平台承诺。未知POST提交的标记独立于本地队列保留；若无法确认删除顺序，撤回保持unconfirmed，后台屏障缺口见合约更新请求。
-
-0.3.0-rc.1 adapts only shared collection settings to server-usage1.0.0: uploadIntervalMs/catalogRefreshMs/backfillWindowDays/countUnconfirmedCalls plus version. The unused channelWeights key is removed from types/decoder/health and is rejected if supplied. Event signatures/protocol1 and other defaults/consent are unchanged. Upgrade client and backend together; an old four-plus-weights response is explicitly USAGE_SETTINGS_INVALID. This release is based on publishedrc33 and excludes the pendingrc34 native/suite candidate. No new native/UI acceptance is claimed.
-
-0.3.0-rc.3 的 Claude/Codex 首次 SessionStart 使用同步 hook JSON `systemMessage` 发出用户通知，附带实际 Node、安装目录和本地配置根的一行 `agree` 命令，必须由本人在终端显式执行。`agree` 与 `consent --agree` 共用撤回屏障；默认关闭，工具钩子未同意时静默且不解析 stdin，不扫描插件、不接触事件队列、不联网。设置可用通知中 `withdraw` 命令关闭。后端/网站必填，缺失按配置名报告，通知不自动配置、绑定或批准 Trust。
-
-通知范围：开启后，符合规则的插件使用可计贡献积分并支持作者收入；仅记录时间、插件、功能、成败和渠道，不保存/上传对话、工具内容、文件或凭据；设置可随时关闭。`notices/<sha256(channel, canonical host home)>.json` 只保存 `schemaVersion/state:emitted/channel/emittedAt` 提示元数据，不是使用记录或同意。成功写出通知后才原子写入；输出失败不写标记。按实际宿主配置根和渠道去重；原有同意、显式关闭和撤回不再提示。`emitted` 不证明宿主展示或用户已阅读：公开 hook 没有展示回执。本轮复制命令使用 POSIX shell；Windows 真机路径仍 NOT_RUN。
-
-官方依据：[Codex hooks](https://developers.openai.com/codex/hooks) 的 Common output fields 定义 `systemMessage` 为 UI/event-stream warning；[Claude hooks](https://code.claude.com/docs/en/hooks) 的通用 JSON 输出定义同步 `systemMessage` 为用户通知，普通 SessionStart stdout 为模型上下文。验证版本 Codex CLI 0.162.1、Claude Code 2.1.301；工程与包证据不代替真实 UI 或 owner 验收。
+本候选仍需组合/独审与公开发行隐私文案专业审阅，不npm/部署；工程CLI/单元/正常包检查不冒真实模型、完整网站或owner验收。
 
 ## B17 normal package ownership
 

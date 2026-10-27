@@ -1,16 +1,14 @@
 ---
 name: hm-setup
-description: 只读检查 HanaMesh 使用记录的同意、配置、钩子与绑定前置条件。
+description: 查看HanaMesh本机记录、待上传期限和网站绑定链接；不授予上传或宿主Trust。
 ---
 
-先调用只读 `hanamesh_status`，准确转述未就绪原因；不要执行 setup、agree、consent、withdraw、bind-link，不要替用户批准钩子或绑定账号。
+先调用只读 `hanamesh_status`，准确显示localCollection、pendingLocal、bindingLink、onboarding与失败原因。不执行setup、agree、consent、withdraw，不替用户Trust或绑定账号，不把模型对话当本人同意。
 
-首次 SessionStart 会通过宿主的 `systemMessage` 通知给出“开启（本人在终端执行）”一行命令，使用当前实际 Node、安装目录及配置根；仅本人显式执行才开启。未操作保持关闭。普通工具钩子在未同意时静默。
+安装后宿主允许执行时自动准备固定Node24.13.1并开启最小本机记录，不需要终端命令、connect或运行本Skill。只记录插件、功能、时间、成败和渠道，不保存对话、工具输入输出正文、文件或凭据；滚动保留30天，超期在下次插件执行时清除。网站同意绑定前使用记录不上传。自动准备会下载固定运行时、发送设备公钥等绑定准备信息，与上传使用记录区分说明。
 
-开启后，符合规则的插件使用可计贡献积分并支持作者收入；仅记录时间、插件、功能、成败和渠道，不保存/上传对话、工具内容、文件或凭据；设置可随时关闭。通知内的 `withdraw` 一行命令用于关闭；原有 `consent --agree` 继续有效。
+若bindingLink为真实返回链接，展示「去HanaMesh网站同意并绑定」外链；没有账户时由网站引导注册/登录，本人点一次「同意并绑定」后，插件核实后端事实才上传并补报窗口内历史。没有链接或状态未知就如实显示未就绪原因，不猜地址、签名、绑定或计分。显示本机待上传候选条数及最早30天期限；名单/可计分资格未知应标未知。过期不再计分，建议尽快绑定上传。两渠道均每天首个新主会话最多提醒一次，7天/1天加强但不加频，已绑定或关闭停止。
 
-`serverOrigin` 和 `websiteOrigin` 都必填；缺失时按变量名报告 blocked，不编造默认地址，也不声称已自动配置。本机运行时使用套件的固定 Node 24.13.1（含 node:sqlite），不查系统 PATH；目前此启动器支持 macOS arm64/x64，其它平台具名 unsupported，尚未验证。首次由用户在终端运行 `/bin/sh "$PLUGIN/bin/hm-agent" install-runtime`（PLUGIN 为实际已安装目录），按本机架构直接从 nodejs.org 下载并校验固定 SHA256，打印阶段/进度。`setup` 也会先完成同一运行时准备；原有 Node 25/其它版本不改动。运行时位于 Core 共享根下的 runtime 目录；未就绪/校验失败时报告具名错误，不偷偷回落系统 Node。实际后端/网站地址由用户独立配置；不得猜测端口或连接生产。
+Codex安装不等于已Trust。请使用宿主真实插件详情的Hooks审核/Trust入口；Trust前hook不运行，没有本机记录或会话提示，本说明是提前告知。onboardingSkill由本人在宿主提供的setup入口运行，并非安装自动弹出；自动本机记录不依赖运行Skill。不得替本人批准Trust。Claude/Codex的原生启用/禁用是当前可用停止入口；无可回调控件的界面不展示假清理/静音按钮，不宣称禁用已清除本机记录或完成远端撤回。DSH旧同意弹窗本期保留，后续再迁移。
 
-安装不等于钩子已获信任；只说明宿主当前状态与现有审核入口，不能替用户 Trust。通知成功写出只记 `emitted` 提示元数据，不能声称宿主已展示、用户已阅读或已同意。
-
-同意、上传、服务端接收、账号绑定与计分是独立事实。没有名单/协议时明确上传停止。未知成败保持 null；外层脚本成功不证明内层插件成功。撤回 pending 保持关闭，只有匹配代次的 committed 屏障或 Core 公开的 no-device 屏障才确认删除；完成前不能重新开启。
+普通包内置api.hanamesh.com/market.hanamesh.com；local/staging由维护者显式完整覆盖，不能缺一个就回落正式地址、猜端口或在测试中连正式服务。已用旧终端同意的granted保留，不补造网站审计。已接收、已绑定与已计分分别显示；未知成败保持null，ambiguous/outer-only不上传。已收录插件首次实际调用才补install，每设备/Hana一次，单装不用无积分；失败不得伪造成成功。

@@ -33,10 +33,10 @@ test('signed channel/feature/result, minimal fields, stable bytes on explicit re
  let sentBody;
  await assert.rejects(uploadOnce(f.r,{now:Date.parse('2026-10-16T00:00:00.000Z'),request:async(o,p,i)=>{if(p==='/v2/usage/events'){sentBody=i.body;throw new Error('commit unknown');}return f.request(o,p,i);}}));
  assert.equal((await f.r.store.rows())[0].delivery.state,'unconfirmed');
- await uploadOnce(f.r,{now:Date.parse('2026-10-16T00:00:00.000Z'),request:f.request});assert.equal(f.posted.length,0);
+ await uploadOnce(f.r,{now:Date.parse('2026-10-16T00:00:00.000Z'),request:f.request});assert.equal(f.posted.filter(row=>row.action==='use').length,0,'unknown use must not replay');assert.equal(f.posted.filter(row=>row.action==='install').length,1,'independent first actual call install');
  await f.r.store.mark(f.row.factId,null);
- await uploadOnce(f.r,{now:Date.parse('2026-10-16T00:00:00.000Z'),request:async(o,p,i)=>{if(p==='/v2/usage/events')assert.equal(i.body,sentBody);return f.request(o,p,i);}});
- assert.deepEqual(Object.keys(f.posted[0]),['deviceId','hanaRef','action','occurredAt','eventId','nonce','channel','feature','success','signature']);
+ await uploadOnce(f.r,{now:Date.parse('2026-10-16T00:00:00.000Z'),request:async(o,p,i)=>{if(p==='/v2/usage/events'&&JSON.parse(i.body)[0].action==='use')assert.equal(i.body,sentBody);return f.request(o,p,i);}});
+ assert.deepEqual(Object.keys(f.posted.find(row=>row.action==='use')),['deviceId','hanaRef','action','occurredAt','eventId','nonce','channel','feature','success','signature']);
  assert.equal((await f.r.store.rows())[0].delivery.state,'sent');
 });
 test('failed tool use is visible as success=false and a malformed receipt never becomes confirmed',async t=>{
@@ -69,6 +69,6 @@ test('Claude Skill boolean results upload with countUnconfirmedCalls=false while
   await f.r.store.record(row,true);
  }
  await uploadOnce(f.r,{now:Date.parse('2026-10-16T00:00:00.000Z'),request:f.request});
- assert.equal(f.posted.length,2);assert.deepEqual(f.posted.map(r=>r.success).sort(),[false,true]);assert(f.posted.every(r=>r.channel==='claude'&&r.feature==='skill:frontend-design'));
+ const uses=f.posted.filter(r=>r.action==='use'),installs=f.posted.filter(r=>r.action==='install');assert.equal(uses.length,2);assert.equal(installs.length,1);assert.deepEqual(uses.map(r=>r.success).sort(),[false,true]);assert(f.posted.every(r=>r.channel==='claude'&&r.feature==='skill:frontend-design'));
  const rows=await f.r.store.rows();assert.equal(rows.filter(r=>r.delivery?.state==='sent').length,2);assert.equal(rows.filter(r=>r.success===null&&!r.delivery).length,1);assert.equal(f.catalog.settings.countUnconfirmedCalls,false);
 });

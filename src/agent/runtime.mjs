@@ -1,3 +1,4 @@
+import {DEFAULT_AGENT_ORIGINS} from './profile.mjs';
 import {spawn} from 'node:child_process';
 import {realpathSync} from 'node:fs';
 import {homedir} from 'node:os';
@@ -23,13 +24,19 @@ export function locations(env=process.env) {
 export async function runtime(env=process.env) {
   if(Number(process.versions.node.split('.')[0])!==24||!process.versions.sqlite)throw new Error('AGENT_NODE24_SQLITE_REQUIRED');
   const paths=locations(env);
-  const config={bootstrapIntervalMs:60000,requestTimeoutMs:10000,...await readJSON(join(paths.agentHome,'config.json'),{serverOrigin:null,websiteOrigin:null})};
+  const saved=await readJSON(join(paths.agentHome,'config.json'),null);
+  if(saved!==null&&(!saved||!Object.hasOwn(saved,'serverOrigin')||!Object.hasOwn(saved,'websiteOrigin')))throw Error('AGENT_CONFIGURATION_REQUIRED');
+  const defaults=DEFAULT_AGENT_ORIGINS;
+  const config={bootstrapIntervalMs:60000,requestTimeoutMs:10000,...(saved??defaults)};
+  if(!config.serverOrigin||!config.websiteOrigin)throw Error('AGENT_CONFIGURATION_REQUIRED');
+  const local=v=>['127.0.0.1','localhost','[::1]'].includes(new URL(v).hostname);
+  if(local(config.serverOrigin)!==local(config.websiteOrigin)||(config.serverOrigin===defaults.serverOrigin)!==(config.websiteOrigin===defaults.websiteOrigin))throw Error('AGENT_CONFIGURATION_PAIR_REQUIRED');
   if(!Number.isSafeInteger(config.bootstrapIntervalMs)||config.bootstrapIntervalMs<1||config.bootstrapIntervalMs>2147483647||!Number.isSafeInteger(config.requestTimeoutMs)||config.requestTimeoutMs<10||config.requestTimeoutMs>60000)throw new Error('AGENT_SETTINGS_INVALID');
   for(const key of ['serverOrigin','websiteOrigin'])if(config[key]!==null){const url=new URL(config[key]);if((url.protocol!=='https:' && !(url.protocol==='http:'&&['127.0.0.1','localhost','[::1]'].includes(url.hostname)))||url.origin!==config[key])throw new Error('AGENT_ORIGIN_INVALID');}
   const call= input=>new Promise((resolveResult,reject)=>{
     const child=spawn(process.execPath,[paths.coreCLI],{stdio:['pipe','pipe','pipe'],env:{PATH:env.PATH,HOME:env.HOME ?? homedir(),TMPDIR:env.TMPDIR}});
     let stdout='';child.stdout.setEncoding('utf8').on('data',chunk=>{stdout+=chunk;});
-    child.stderr.resume();child.on('error',()=>reject(new Error('CORE_AGENT_UNAVAILABLE')));
+    child.stderr.on('data',chunk=>process.stderr.write(chunk));child.on('error',()=>reject(new Error('CORE_AGENT_UNAVAILABLE')));
     child.on('close',()=>{try{const value=JSON.parse(stdout);if(value.error)reject(new Error(value.error.code));else resolveResult(value.result);}catch{reject(new Error('CORE_AGENT_RESPONSE_INVALID'));}});
     child.stdin.on('error',()=>{});child.stdin.end(JSON.stringify({config:{...config,timeoutMs:config.requestTimeoutMs,sharedHome:paths.sharedHome},input}));
   });

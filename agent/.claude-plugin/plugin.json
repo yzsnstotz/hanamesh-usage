@@ -1,5 +1,5 @@
 {
   "name": "hanamesh",
-  "version": "0.1.4",
-  "description": "HanaMesh 使用记录：默认关闭；同意后只上传已收录插件的时间、功能、成败和渠道。"
+  "version": "0.2.0",
+  "description": "HanaMesh：宿主允许执行后自动仅本机记录；网站一次同意并绑定才上传。可在原生插件管理中禁用停止。"
 }

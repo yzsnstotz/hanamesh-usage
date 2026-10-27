@@ -1,11 +1,11 @@
-# HanaMesh agent suite
+# HanaMesh Agent 0.2.0
 
-Hooks and MCP use `bin/hm-agent`, not `node` from PATH. The public launcher currently supports macOS arm64 and x64; other platforms return `HANAMESH_NODE_PLATFORM_UNSUPPORTED` and are not claimed as tested. System Node 25 or other runtimes are left alone.
+使用 Claude Code / Codex 原生插件市场安装。宿主允许执行后会自动下载并校验固定Node24.13.1（macOS arm64/x64），开始仅本机的最小使用记录；不需终端setup、connect或会话内授权。Codex须先由本人审核并Trust hooks，Trust前不记录且无法发hook提示；安装详情提前说明此点。其他平台具名unsupported，未验证。
 
-Before the first session, run `/bin/sh "$PLUGIN/bin/hm-agent" install-runtime`, where PLUGIN is the actual installed directory. The launcher selects this architecture, downloads Node 24.13.1 directly over HTTPS from nodejs.org, verifies the fixed official archive SHA256, and publishes a private cache under `${HANAMESH_SHARED_HOME:-$HOME/.hanamesh-shared}/runtime/`. Stages and transfer progress go to stderr. Concurrent identical downloads may publish the same bytes; conflicting or corrupt caches stop with a named error, never a PATH fallback or retry. Hooks/MCP only execute an already prepared runtime and never begin a download.
+记录插件、功能、时间、成败、渠道，不保存对话、工具输入输出正文、文件或凭据。记录滚动保留30天，超期在下次插件执行时清除。网站同意绑定前不上传使用记录；自动准备的运行时下载与设备公钥等注册/绑定准备信息不含本机使用记录。新会话最多每天每渠道提醒一次，含候选待上传条数、最早期限、过期不计分和绑定链接，7天/1天加强但不增频。
 
-`/bin/sh "$PLUGIN/bin/hm-agent" setup <serverOrigin> <websiteOrigin>` also prepares the runtime first. Origins remain required; the remote acceptance entry configures them automatically from its verified ready file. This installer does not grant usage consent, bind an account or trust hooks. Users explicitly review hooks and agree, and may withdraw at any time. The first-session notice uses the actual fixed Node path. Installation is separate from recording, upload, attribution and scoring.
+在插件hm-setup查看只读状态及真实链接，去HanaMesh注册/登录，点一次「同意并绑定」。插件核实服务端提交审计与设备绑定后才上传，并按真实发生时间补报窗口内历史；不把绑定或已接收等同计分。旧终端granted继续有效，不补造网站审计。DSH本期仍按原同意弹窗。
 
-The suite receipt declares `runtime.bootstrap` (path, exact nodeVersion, official downloadOrigin and supported platforms) and hashes the launcher with the remaining payload. The bootstrap file may be used by the remote entry before Node exists; it contains no executable runtime. Nothing in this source change publishes a package or updates an already installed market artifact.
+可在宿主原生插件管理中禁用以停止执行。禁用不等于清除本机记录/远端撤回；没有真实回调控件的CLI/详情页目前无法提供一键清理，不能用文本假按钮替代。维护诊断保留withdraw入口，经Core先关闭再清本机并取得原代次提交墓碑；不是普通开通的必需步骤。MCP只暴露只读hanamesh_status，模型不能授予上传或替本人Trust。
 
-MCP 与 hooks 的路径规则不同：Claude MCP 由宿主展开独立参数 `${CLAUDE_PLUGIN_ROOT}`；Codex 0.163 不展开它，按已声明 `cwd: "."` 在插件根运行。MCP shell 用单独位置参数接收路径，明确识别该未展开占位符时才用插件 cwd；绝对路径、含空格/引号路径不进入 shell 代码。缺公开启动器时具名 `HANAMESH_PLUGIN_ROOT_REQUIRED`，非法参数具名拒绝，不扫描目录或选择 PATH Node。
+正式地址对随包固定api.hanamesh.com与market.hanamesh.com；本地/staging仅维护者用完整显式config覆盖，不猜端口或缺项回落。运行时不查PATH、不使用宿主Node25；缓存篡改/下载失败具名报错，保留真实stderr。发布前隐私文字仍须专业审阅；本候选不npm/部署，不声称所有宿主原生界面已验。

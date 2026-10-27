@@ -74,6 +74,6 @@ test('outbox does not record before consent, unknown names stay local, later lis
  const catalog={plugins:[{hanaRef:'hana-target',channel:'codex',pluginId:'target@market'}],settings:{backfillWindowDays:30}};
  assert.equal((await store.pending(catalog,Date.parse('2026-10-16T00:00:00.000Z')))[0].hanaRef,'hana-target');
  assert.deepEqual(await store.pending(catalog,Date.parse('2026-11-16T00:00:00.000Z')),[]);
- catalog.settings.backfillWindowDays=60;assert.equal((await store.pending(catalog,Date.parse('2026-11-16T00:00:00.000Z'))).length,1);
+ catalog.settings.backfillWindowDays=60;assert.equal((await store.pending(catalog,Date.parse('2026-11-16T00:00:00.000Z'))).length,0,'rolling local retention caps even a wider catalog window');
  await store.withdraw();assert.equal((await store.rows()).length,0);
 });
