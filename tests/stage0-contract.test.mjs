@@ -9,7 +9,7 @@ const read = path => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8'
 test('U04 package is the standalone hanamesh-usage DSH bundle', () => {
   const pkg = JSON.parse(read('package.json'));
   assert.equal(pkg.name, '@hanamesh/usage');
-  assert.equal(pkg.version, '0.3.0-rc.8');
+  assert.equal(pkg.version, '0.3.0-rc.9');
   for (const [name, version] of Object.entries(pkg.peerDependencies)) {
     if (name.startsWith('@deepseek-ai/dsh-')) {
       for(const host of ['0.2.0-rc.2','0.2.0','0.2.1-alpha.2','0.2.1','0.2.9'])assert.equal(satisfies(host,version),true,`${name} admits ${host}`);

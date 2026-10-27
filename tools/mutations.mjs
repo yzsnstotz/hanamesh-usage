@@ -38,6 +38,10 @@ const cases=[
  {name:'U20-agent-default-local',file:'lib/agent/onboarding.mjs',from:"if(core.consent.changedAt!==null)return false;",to:"if(core.consent.state!=='granted')return false;",test:'tests/agent-onboarding-v2.test.mjs',pattern:'local recording eligibility'},
  {name:'U21-agent-daily-cap',file:'lib/agent/notice.mjs',from:'marker.day===day||marker.session===session',to:'false||marker.session===session',test:'tests/agent-onboarding-v2.test.mjs',pattern:'both channels remind'},
  {name:'U22-agent-retention-cap',file:'lib/agent/store.mjs',from:'Math.min(30,catalog.settings.backfillWindowDays)',to:'catalog.settings.backfillWindowDays',test:'tests/agent-onboarding-v2.test.mjs',pattern:'30-day retention'},
+ {name:'RC9-handoff-never-starts-tick',file:'lib/agent/cli.mjs',from:"if(command==='mcp-ready')active=tick();",to:"if(false)active=tick();",test:'tests/agent-onboarding-v2.test.mjs',pattern:'mcp-ready starts'},
+ {name:'RC9-late-post-backfills-gap',file:'lib/agent/hook.mjs',from:'const beganAfterPreparation=!preparation||',to:'const beganAfterPreparation=true||',test:'tests/agent-onboarding-v2.test.mjs',pattern:'late Post from the preparation'},
+ {name:'RC9-retry-within-same-session',file:'agent/bin/runtime-bootstrap.pl',from:"$is_session&&$new_session&&!($first_session&&($s->{initialEntry}//'non-session') eq 'non-session')",to:'$is_session',test:'tests/agent-runtime-background.test.mjs',pattern:'failure stays named'},
+ {name:'RC9-fragment-loss-during-takeover',file:'agent/bin/runtime-bootstrap.pl',from:"if($line eq ''&&($s->{code}//'') eq 'RUNTIME_READY'&&-e $node)",to:"if(($s->{code}//'') eq 'RUNTIME_READY'&&-e $node)",also:[{from:"my $s=$line eq ''?readstate():undef;",to:'my $s=readstate();'}],test:'tests/agent-runtime-background.test.mjs',pattern:'fragmented'},
 ];
 for(const item of cases){
  const dir=mkdtempSync(join(tmpdir(),'usage-mutant-'));
@@ -47,7 +51,7 @@ for(const item of cases){
   writeFileSync(`${evidence}/${item.name}-baseline.tap`,(baseline.stdout??'')+(baseline.stderr??''));
   assert.equal(baseline.status,0,'baseline must pass');
   assert.doesNotMatch(baseline.stdout??'',/\b1\.\.0\b/,'mutation baseline must execute a matching test');
-  cpSync('lib',join(dir,'lib'),{recursive:true});writeFileSync(join(dir,'package.json'),' {"type":"module"}\n');
+  cpSync('lib',join(dir,'lib'),{recursive:true});if(item.file.startsWith('agent/'))cpSync('agent',join(dir,'agent'),{recursive:true});writeFileSync(join(dir,'package.json'),' {"type":"module"}\n');
   if(item.requiresPeers)symlinkSync(resolve(root,'node_modules'),join(dir,'node_modules'),'dir');
   const path=resolve(dir,item.file);let mutated=readFileSync(path,'utf8');
   // A behavior guarded both at admission and after durable intent must lose

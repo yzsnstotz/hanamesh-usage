@@ -100,3 +100,18 @@ test('readonly status exposes preparation failure and unknown listing without cl
  const value=await status(f.r);assert.equal(value.code,'CORE_UPSTREAM_UNAVAILABLE');assert.match(value.nextStep,/CORE_UPSTREAM_UNAVAILABLE/);assert.match(value.nextStep,/本机/);assert.equal(value.records[0].listed,null);assert.equal(value.counts.unlisted,0);assert.equal(value.counts.listingUnknown,1);
  assert.deepEqual(f.calls.map(c=>c.operation),['state']);
 });
+test('a late Post from the preparation window is not reconstructed; a subsequent observed Pre/Post records normally',async t=>{
+ const f=await fixture(t);const {spawnSync}=await import('node:child_process');const host=join(f.home,'claude'),plugin=join(f.home,'target'),core=join(f.home,'core.mjs'),shared=join(f.home,'shared');
+ await mkdir(join(host,'plugins'),{recursive:true});await mkdir(plugin);await writeFile(join(plugin,'.mcp.json'),JSON.stringify({mcpServers:{probe:{command:'fixture'}}}));await writeFile(join(host,'plugins/installed_plugins.json'),JSON.stringify({plugins:{'target@market':[{installPath:plugin}]}}));await writeFile(core,`let s='';for await(const c of process.stdin)s+=c;console.log(JSON.stringify({result:${JSON.stringify(f.state())}}));`);
+ const dir=join(shared,'runtime',`node-v24.13.1-darwin-${process.arch}`);await mkdir(dir,{recursive:true});await writeFile(join(dir,'prepare-state.json'),JSON.stringify({code:'RUNTIME_READY',finishedAt:new Date().toISOString()}));
+ const env={HOME:f.home,PATH:process.env.PATH,HANAMESH_SHARED_HOME:shared,HANAMESH_AGENT_HOME:f.home,HANAMESH_CORE_AGENT_CLI:core,HANAMESH_AGENT_CHANNEL:'claude',CLAUDE_CONFIG_DIR:host};
+ const run=(event,id)=>spawnSync(process.execPath,[join(codeRoot,'lib/agent/hook.mjs'),'--event',event],{env,input:JSON.stringify({hook_event_name:event,session_id:'fixture-window',tool_use_id:id,tool_name:'mcp__plugin_target_probe__echo',tool_response:{isError:false,content:[]}}),encoding:'utf8'});
+ let p=run('PostToolUse','began-during-preparation');assert.equal(p.status,0,p.stderr);assert.equal((await f.r.store.rows()).length,0,'without a post-ready Pre, the preparation-window call is never backfilled');
+ for(const event of ['PreToolUse','PostToolUse']){p=run(event,'began-after-ready');assert.equal(p.status,0,p.stderr);}const rows=await f.r.store.rows();assert.equal(rows.length,1);assert.equal(rows[0].success,true);
+});
+test('mcp-ready starts the original background state check without waiting for a second initialize',async t=>{
+ const f=await fixture(t),{spawn}=await import('node:child_process'),core=join(f.home,'core-tick.mjs'),marker=join(f.home,'tick-observed');
+ await writeFile(core,`import{writeFileSync}from'node:fs';let s='';for await(const c of process.stdin)s+=c;writeFileSync(${JSON.stringify(marker)},JSON.parse(s).input.operation);console.log(JSON.stringify({result:${JSON.stringify({...f.state(),consent:{state:'withheld',changedAt:new Date().toISOString(),consentId:null}})}}));`);
+ const p=spawn(process.execPath,[join(codeRoot,'lib/agent/cli.mjs'),'mcp-ready'],{env:{HOME:f.home,PATH:process.env.PATH,HANAMESH_SHARED_HOME:f.home,HANAMESH_AGENT_HOME:f.home,HANAMESH_CORE_AGENT_CLI:core},stdio:['pipe','pipe','pipe']});p.stdout.resume();p.stderr.resume();t.after(()=>{if(p.exitCode===null)p.kill('SIGTERM');});
+ const end=Date.now()+1000;let tick;while(Date.now()<end){try{tick=await readFile(marker,'utf8');break;}catch{await new Promise(r=>setTimeout(r,10));}}assert.equal(tick,'state','takeover must start the original tick without another initialize');p.stdin.end();await new Promise(resolve=>p.on('close',resolve));
+});

@@ -1,66 +1,7 @@
 #!/bin/sh
-# Public suite launcher: automatic fixed runtime, local-only by default; no implicit upload consent.
+# macOS bootstrap uses only built-in Perl while fixed Node prepares asynchronously.
 set -eu
 umask 077
-fail() { printf '%s\n' "$1" >&2; exit 1; }
-action=${1:-}
-[ -n "$action" ] || fail HANAMESH_AGENT_ACTION_REQUIRED
-shift
-case "$(/usr/bin/uname -s):$(/usr/bin/uname -m)" in
- Darwin:arm64) arch=arm64; digest=8c039d59f2fec6195e4281ad5b0d02b9a940897b4df7b849c6fb48be6787bba6 ;;
- Darwin:x86_64) arch=x64; digest=527f0578d9812e7dfa225121bda0b1546a6a0e4b5f556295fc8299c272de5fbf ;;
- *) fail HANAMESH_NODE_PLATFORM_UNSUPPORTED ;;
-esac
-shared=${HANAMESH_SHARED_HOME:-${HOME:?HANAMESH_HOME_REQUIRED}/.hanamesh-shared}
-case "$shared" in /*) ;; *) fail HANAMESH_NODE_RUNTIME_HOME_INVALID ;; esac
-cache="$shared/runtime/node-v24.13.1-darwin-$arch"
-node="$cache/bin/node"
-check_runtime() {
- [ -f "$node" ] && [ -x "$node" ] || fail HANAMESH_NODE_RUNTIME_REQUIRED
- [ ! -L "$cache" ] && [ ! -L "$cache/bin" ] && [ ! -L "$node" ] && [ ! -L "$cache/node.sha256" ] && [ ! -L "$cache/archive.sha256" ] || fail HANAMESH_NODE_RUNTIME_SYMLINK_REJECTED
- [ -f "$cache/archive.sha256" ] && [ "$(/bin/cat "$cache/archive.sha256")" = "$digest" ] || fail HANAMESH_NODE_RUNTIME_CHECKSUM_MISMATCH
- [ -f "$cache/node.sha256" ] || fail HANAMESH_NODE_RUNTIME_CHECKSUM_MISMATCH
- sum=$(LC_ALL=C /usr/bin/shasum -a 256 "$node")
- [ "$(/bin/cat "$cache/node.sha256")" = "${sum%% *}  bin/node" ] || fail HANAMESH_NODE_RUNTIME_CHECKSUM_MISMATCH
- [ "$("$node" --version)" = v24.13.1 ] || fail HANAMESH_NODE_RUNTIME_VERSION_MISMATCH
-}
-install_runtime() {
- if [ -e "$node" ] || [ -L "$node" ]; then check_runtime; return; fi
- [ ! -L "$shared/runtime" ] && [ ! -L "$cache" ] && [ ! -L "$cache/bin" ] || fail HANAMESH_NODE_RUNTIME_SYMLINK_REJECTED
- /bin/mkdir -p "$cache/bin" || fail HANAMESH_NODE_RUNTIME_DIRECTORY_FAILED
- scratch=$(/usr/bin/mktemp -d "$shared/runtime/.node-download-XXXXXX") || fail HANAMESH_NODE_RUNTIME_TEMP_FAILED
- trap '/bin/rm -rf "$scratch"' EXIT
- trap 'exit 130' INT
- trap 'exit 143' TERM HUP
- name="node-v24.13.1-darwin-$arch"
- printf 'HanaMesh [Node 1/3] Download %s directly from nodejs.org\n' "$name" >&2
- /usr/bin/curl --fail --show-error --location --progress-bar --proto '=https' --proto-redir '=https' --connect-timeout 15 "https://nodejs.org/dist/v24.13.1/$name.tar.gz" -o "$scratch/node.tar.gz" || fail HANAMESH_NODE_DOWNLOAD_FAILED
- sum=$(LC_ALL=C /usr/bin/shasum -a 256 "$scratch/node.tar.gz")
- [ "${sum%% *}" = "$digest" ] || fail HANAMESH_NODE_ARCHIVE_CHECKSUM_MISMATCH
- printf 'HanaMesh [Node 2/3] SHA256 verified; extract this architecture only\n' >&2
- LC_ALL=C /usr/bin/tar -xzf "$scratch/node.tar.gz" -C "$scratch" "$name/bin/node" "$name/LICENSE" || fail HANAMESH_NODE_EXTRACT_FAILED
- [ "$("$scratch/$name/bin/node" --version)" = v24.13.1 ] || fail HANAMESH_NODE_RUNTIME_VERSION_MISMATCH
- sum=$(LC_ALL=C /usr/bin/shasum -a 256 "$scratch/$name/bin/node")
- printf '%s  bin/node\n' "${sum%% *}" > "$scratch/node.sha256"
- printf '%s\n' "$digest" > "$scratch/archive.sha256"
- # Publish identical metadata first and the executable last. Concurrent installers
- # may share identical bytes; a conflicting cache is never overwritten or retried.
- publish() { /bin/ln "$1" "$2" 2>/dev/null || /usr/bin/cmp -s "$1" "$2" || fail HANAMESH_NODE_RUNTIME_CACHE_CONFLICT; }
- publish "$scratch/node.sha256" "$cache/node.sha256"
- publish "$scratch/archive.sha256" "$cache/archive.sha256"
- publish "$scratch/$name/LICENSE" "$cache/LICENSE"
- publish "$scratch/$name/bin/node" "$node"
- check_runtime
- printf 'HanaMesh [Node 3/3] Fixed runtime ready (%s)\n' "$arch" >&2
- /bin/rm -rf "$scratch"
- trap - EXIT INT TERM HUP
-}
-case "$action" in install-runtime) install_runtime; exit 0 ;; setup|hook|mcp) install_runtime ;; esac
-check_runtime
-# Hooks/MCP automatically prepare this same verified runtime; no PATH fallback or upload consent.
-plugin=$(CDPATH= cd -- "$(/usr/bin/dirname "$0")/.." && pwd -P) || fail HANAMESH_PLUGIN_ROOT_REQUIRED
-case "$action" in
- node) exec "$node" "$@" ;;
- hook) exec "$node" "$plugin/lib/agent/hook.mjs" "$@" ;;
- *) exec "$node" "$plugin/lib/agent/cli.mjs" "$action" "$@" ;;
-esac
+[ -n "${1:-}" ] || { printf '%s\n' HANAMESH_AGENT_ACTION_REQUIRED >&2; exit 1; }
+plugin=$(CDPATH= cd -- "$(/usr/bin/dirname "$0")/.." && pwd -P)
+exec /usr/bin/env LC_ALL=C /usr/bin/perl "$plugin/bin/runtime-bootstrap.pl" "$@"

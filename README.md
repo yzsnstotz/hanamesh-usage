@@ -28,7 +28,7 @@ rc.31 接受官方 DSH rc.2 与当前 alpha 的公开宿主 peer：DSH `>=0.2.0-
 
 `@hanamesh/usage` 是一个 DSH bundle（`package.json` 声明 `dsh.bundle.patch`）：
 
-    dsh plugin --profile <p> add --save-exact '@hanamesh/usage@0.3.0-rc.8'
+    dsh plugin --profile <p> add --save-exact '@hanamesh/usage@0.3.0-rc.9'
 
 装完即激活，不需要手写 `cordis.patch.yml`。`hanamesh-core` 与本包各只插入自己的 Loader 条目；新客户端负责分别安装三插件。本包不从 Core 传递安装，也不导入其他 HanaMesh 插件。
 
@@ -152,9 +152,9 @@ Inventory 暴露 `INVENTORY_FAILED/INVENTORY_ENTRY_UNREADABLE/INVENTORY_PACKAGE_
 框架 peer 与 React 宿主外部供给沿用，独立声明消费需正常 TypeScript/Node/React 类型工具。
 本模块无 ABI 生成器或链上接口，ABI/模板/签名广播门不在本卡范围。
 
-## Claude Code / Codex · Usage rc.8 / Agent0.2.0候选
+## Claude Code / Codex · Usage rc.9 / Agent0.2.1候选
 
-宿主允许执行后自动准备固定Node24.13.1并开启仅本机的最小记录；不需setup/agree/connect。Codex安装不等于Trust，须本人通过原生审核入口允许hooks；Trust前不记录且无会话提示。网站一次同意并绑定后，经Core capability2直读提交审计/绑定事实才上传与补报；旧终端granted保留、不造网页审计。DSH原同意弹窗不变。
+宿主允许执行后用带锁的独立后台进程准备本架构固定Node24.13.1官方tar.xz；入口立即返回，准备期不记录/不补录。MCP先返回具名RUNTIME_PREPARING及真实字节进度，就绪后自动交接Node并开始仅本机记录；不需setup/agree/connect。Codex安装不等于Trust，须本人通过原生审核入口允许hooks；Trust前不记录且无会话提示。网站一次同意并绑定后，经Core capability2直读提交审计/绑定事实才上传与补报；旧终端granted保留、不造网页审计。DSH原同意弹窗不变。
 
 事实只含插件、功能、时间、成败、渠道，不保留对话、工具正文、文件或凭据；滚动30天，执行采集/后台时清除过期。两渠道各每天首个新主会话最多提醒一次，N/最早期限/7天/1天加强，不因提醒自动上传/绑定。安装说明与hm-setup提前说明原生禁用停止的入口；禁用不等于清理或远端撤回，无真实回调控件的表面不提供假清理/静音按钮。
 

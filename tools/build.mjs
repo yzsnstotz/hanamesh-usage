@@ -6,6 +6,7 @@ import ts from 'typescript';
 import { createRequire } from 'node:module';
 import { installedPeer, satisfies } from './pins.mjs';
 const offline = process.argv.includes('--offline');
+const bootstrap=spawnSync('/usr/bin/perl',['-c','agent/bin/runtime-bootstrap.pl'],{encoding:'utf8',env:{...process.env,LC_ALL:'C'}});if(bootstrap.status!==0){process.stderr.write(bootstrap.stderr??'RUNTIME_BRIDGE_SYNTAX_FAILED');process.exit(2);}
 const require = createRequire(import.meta.url);
 const tsc = spawnSync('tsc',['--version'],{encoding:'utf8'});
 console.log(JSON.stringify({node:process.version, compiler:tsc.stdout.trim(), offline, platform:process.platform, arch:process.arch}));

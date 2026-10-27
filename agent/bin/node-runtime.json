@@ -1,0 +1,17 @@
+{
+  "version": "24.13.1",
+  "archiveFormat": "tar.xz",
+  "downloadOrigin": "https://nodejs.org",
+  "architectures": {
+    "arm64": {
+      "sha256": "d82a321541d65109c696505135be3b7dd46e3358f0f04d664f50f0d1e1ccb8a6",
+      "legacyGzipSha256": "8c039d59f2fec6195e4281ad5b0d02b9a940897b4df7b849c6fb48be6787bba6",
+      "bytes": 26464732
+    },
+    "x64": {
+      "sha256": "013a8f786a022ad1729cf435e3675e097a77d5a42eaf139a2d5d1d5309a027d4",
+      "legacyGzipSha256": "527f0578d9812e7dfa225121bda0b1546a6a0e4b5f556295fc8299c272de5fbf",
+      "bytes": 28117144
+    }
+  }
+}
