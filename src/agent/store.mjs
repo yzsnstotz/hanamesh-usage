@@ -2,6 +2,7 @@ import {mkdir,readFile,readdir,open,rm,rename} from 'node:fs/promises';
 import {join} from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {agentLock} from './sender-lock.mjs';
+import {sameRemote,remoteVersion} from './remote-proof.mjs';
 
 export async function readJSON(path,fallback) {
   try{return JSON.parse(await readFile(path,'utf8'));}catch(error){if(error.code === 'ENOENT')return fallback;throw error;}
@@ -27,17 +28,22 @@ export class AgentStore {
     if(!consent)return 'withheld';
     if(!row || !/^[a-f0-9]{64}$/.test(row.factId))throw new Error('AGENT_FACT_INVALID');
     const value={factId:row.factId,channel:row.channel,occurredAt:row.occurredAt,disposition:row.disposition,pluginId:row.pluginId,feature:row.feature,success:row.success};
+    if(row.remote){
+      const v=row.remote;
+      if(value.channel!=='codex'||!value.pluginId?.endsWith('@openai-curated-remote')||typeof v.remotePluginId!=='string'||!v.remotePluginId||!remoteVersion(v.version)||!['bundleSha256','contentSha256'].every(k=>/^[a-f0-9]{64}$/.test(v[k]??''))||typeof v.verified!=='boolean'||(!v.verified&&value.success!==null))throw Error('AGENT_FACT_INVALID');
+      value.remote={remotePluginId:v.remotePluginId,version:v.version,bundleSha256:v.bundleSha256,contentSha256:v.contentSha256,verified:v.verified};
+    }
     if(!['codex','claude'].includes(value.channel)||!['attributed','ambiguous','unverified','outer-only'].includes(value.disposition)||new Date(value.occurredAt).toISOString()!==value.occurredAt||(value.success!==null&&typeof value.success!=='boolean')||(value.disposition==='attributed'&&(typeof value.success!=='boolean'||!owner(value)))||(['unverified','outer-only'].includes(value.disposition)&&(!owner(value)||value.success!==null))||(value.disposition==='ambiguous'&&(value.pluginId!==null||value.feature!==null||value.success!==null)))throw new Error('AGENT_FACT_INVALID');
     return this.mutate(async()=>{
       await mkdir(this.dir,{recursive:true,mode:0o700});const path=join(this.dir,`${row.factId}.json`),existing=await readJSON(path,null);
       if(!existing){await atomicJSON(path,value);return 'recorded';}
-      if(existing.channel!==value.channel||existing.pluginId!==value.pluginId||existing.feature!==value.feature||existing.disposition==='outer-only'||existing.success!==null||typeof value.success!=='boolean')return 'duplicate';
+      if(existing.channel!==value.channel||existing.pluginId!==value.pluginId||existing.feature!==value.feature||(existing.remote||value.remote)&&!sameRemote(existing.remote,value.remote)||existing.disposition==='outer-only'||existing.success!==null||typeof value.success!=='boolean')return 'duplicate';
       if(existing.wire){
         // Signed bytes/delivery never change. A late result is a local observation, not another credit.
         if(typeof existing.observedSuccess==='boolean')return 'duplicate';
         await atomicJSON(path,{...existing,observedSuccess:value.success});return 'observed';
       }
-      await atomicJSON(path,{...existing,success:value.success,disposition:'attributed'});return 'promoted';
+      await atomicJSON(path,{...existing,...(value.remote?{remote:value.remote}:{}),success:value.success,disposition:'attributed'});return 'promoted';
     });
   }
   async rows(){
@@ -56,7 +62,10 @@ export class AgentStore {
     for(const row of await this.rows()){
       if(!['attributed','unverified'].includes(row.disposition)||!owner(row)||Date.parse(row.occurredAt)<cutoff||Date.parse(row.occurredAt)>now||(row.success===null&&catalog.settings.countUnconfirmedCalls!==true))continue;
       const owners=catalog.plugins.filter(item=>item.channel===row.channel&&item.pluginId===row.pluginId);
-      if(owners.length===1)result.push({...row,hanaRef:owners[0].hanaRef});
+      if(owners.length===1){
+        if(owners[0].marketplace==='openai-curated-remote'||owners[0].remote||row.remote){if(!row.remote?.verified||!sameRemote(row.remote,owners[0].remote))continue;}
+        result.push({...row,hanaRef:owners[0].hanaRef});
+      }
     }return result;
   }
   async pending(catalog,now=Date.now()){return (await this.eligible(catalog,now)).filter(row=>!row.delivery);}

@@ -3,7 +3,7 @@ import {mkdir,rm} from 'node:fs/promises';
 import {agentEventForFact,agentInstallEventForFact,agentSigningJSON} from '../core/agent-event.js';
 import {atomicJSON,readJSON} from './store.mjs';
 import {requestJSON} from './runtime.mjs';
-import {validateCatalog} from './catalog.mjs';
+import {refreshAgentCatalog} from './remote-catalog.mjs';
 
 export async function uploadOnce(r,{now=Date.now(),request=(origin,path,init)=>requestJSON(origin,path,init,r.config.requestTimeoutMs)}={}) {
   let state=await r.call({operation:'state'});
@@ -11,8 +11,7 @@ export async function uploadOnce(r,{now=Date.now(),request=(origin,path,init)=>r
   if(state.consent.state!=='granted')return {state:'withheld',code:'CONSENT_WITHHELD'};
   if(!r.config.serverOrigin)return {state:'offline',code:'SERVER_ORIGIN_UNAVAILABLE'};
   // No downgrade: missing endpoint/protocol means stopped, never send new bytes to v1.
-  const catalog= r.cachedCatalog && now-r.cachedCatalog.fetchedAt<r.cachedCatalog.value.settings.catalogRefreshMs ? r.cachedCatalog.value : validateCatalog(await request(r.config.serverOrigin,'/v1/registry/agent-catalog'));
-  if(r.cachedCatalog?.value!==catalog)r.cachedCatalog={value:catalog,fetchedAt:now};
+  const catalog=await refreshAgentCatalog(r,{now,request});
   await mkdir(r.agentHome,{recursive:true,mode:0o700});
   await atomicJSON(join(r.agentHome,'catalog.json'),catalog);
   await r.store.prune(now);
