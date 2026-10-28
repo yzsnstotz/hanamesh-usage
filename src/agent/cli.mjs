@@ -31,7 +31,13 @@ if(command==='mcp'||command==='mcp-ready') {
         allowed=true;
         await mkdir(r.agentHome,{recursive:true,mode:0o700});
         release=await senderLock(r.agentHome);
-        if(release){await r.store.prune();await refreshOnboarding(r);try{await refreshAgentCatalog(r);}catch{await atomicJSON(join(r.agentHome,'remote-proof-diagnostics.json'),{diagnostics:[{pluginId:null,code:'AGENT_CODEX_REMOTE_CATALOG_UNAVAILABLE'}]});}const result=await uploadOnce(r);r.senderError=null;await atomicJSON(join(r.agentHome,'sender.json'),{...result,checkedAt:new Date().toISOString()});}
+        if(release){
+          await r.store.prune();await refreshOnboarding(r);
+          const current=await r.call({operation:'state'});
+          // A granted sender refreshes once inside uploadOnce. Local-only collection reads public metadata here.
+          if(current.consent.state!=='granted')try{await refreshAgentCatalog(r);}catch{await atomicJSON(join(r.agentHome,'remote-proof-diagnostics.json'),{diagnostics:[{pluginId:null,code:'AGENT_CODEX_REMOTE_CATALOG_UNAVAILABLE'}]});}
+          const result=await uploadOnce(r);r.senderError=null;await atomicJSON(join(r.agentHome,'sender.json'),{...result,checkedAt:new Date().toISOString()});
+        }
       }
     }catch(error){r.senderError=safeCode(error);if(allowed)await atomicJSON(join(r.agentHome,'sender.json'),{state:'stopped',code:safeCode(error),checkedAt:new Date().toISOString()});}
     finally{if(release)await release();}

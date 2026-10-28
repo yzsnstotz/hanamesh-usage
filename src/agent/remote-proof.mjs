@@ -1,5 +1,4 @@
 import {createHash} from 'node:crypto';
-import {requestJSON} from './runtime.mjs';
 
 export const REMOTE_MARKET='openai-curated-remote';
 export const remoteVersion=v=>typeof v==='string'&&/^[A-Za-z0-9][A-Za-z0-9._+-]*$/.test(v)&&v!=='.'&&v!=='..';
@@ -15,8 +14,8 @@ const fail=()=>{throw Error('AGENT_CODEX_REMOTE_PROOF_INVALID');};
 export const formattedManifest=value=>JSON.stringify(value,null,2)+'\n';
 
 /** Fixed public Git objects only; never download a remote backend URL or execute source. */
-export async function createRemoteProof(entry,registration,{request=(o,p)=>requestJSON(o,p)}={}){
- if(!validRemote(entry))fail();
+export async function createRemoteProof(entry,registration,{request}={}){
+ if(!validRemote(entry)||typeof request!=='function')fail();
  const installation=registration?.installation,s=installation?.source;
  if(registration?.pluginId!==entry.pluginId||registration?.channel!=='codex'||registration?.hanaRef!==entry.hanaRef||registration?.githubRepo!==entry.githubRepo||installation?.version!==entry.remote.version||s?.source!=='codex-remote'||s.repo!==entry.githubRepo||!hex(s.ref,40)||!hex(s.tree,40)||!sameRemote({...s,version:installation.version},entry.remote)||(s.path!==undefined&&!staticPath(s.path)))fail();
  const api=`/repos/${entry.githubRepo}/git`,tree=await request('https://api.github.com',`${api}/trees/${s.ref}?recursive=1`);
