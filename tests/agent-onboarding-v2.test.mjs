@@ -100,6 +100,12 @@ test('readonly status exposes preparation failure and unknown listing without cl
  const value=await status(f.r);assert.equal(value.code,'CORE_UPSTREAM_UNAVAILABLE');assert.match(value.nextStep,/CORE_UPSTREAM_UNAVAILABLE/);assert.match(value.nextStep,/本机/);assert.equal(value.records[0].listed,null);assert.equal(value.counts.unlisted,0);assert.equal(value.counts.listingUnknown,1);
  assert.deepEqual(f.calls.map(c=>c.operation),['state']);
 });
+test('readonly status keeps preparation honest and reconciliation cannot reopen an explicit local close',async t=>{
+ const f=await fixture(t),{status}=await load('agent/status.mjs');let preparation={code:'RUNTIME_PREPARING',phase:'publishing',startedAt:new Date().toISOString()};f.r.runtimePreparation=async()=>preparation;
+ let value=await status(f.r);assert.equal(value.runtime.code,'RUNTIME_PREPARING');assert.equal(value.code,'RUNTIME_PREPARING');assert.equal(value.localCollection.enabled,false);assert.match(value.nextStep,/当前不记录/);
+ f.state().consent.changedAt=new Date().toISOString();value=await status(f.r);assert.equal(value.code,'CONSENT_WITHHELD');assert.equal(value.localCollection.enabled,false);
+ preparation={...preparation,code:'RUNTIME_READY',finishedAt:new Date().toISOString()};value=await status(f.r);assert.equal(value.runtime.code,'RUNTIME_READY');assert.equal(value.localCollection.enabled,false);assert.equal(value.onboarding.state,'closed');assert.equal(value.bindingLink,null);
+});
 test('a late Post from the preparation window is not reconstructed; a subsequent observed Pre/Post records normally',async t=>{
  const f=await fixture(t);const {spawnSync}=await import('node:child_process');const host=join(f.home,'claude'),plugin=join(f.home,'target'),core=join(f.home,'core.mjs'),shared=join(f.home,'shared');
  await mkdir(join(host,'plugins'),{recursive:true});await mkdir(plugin);await writeFile(join(plugin,'.mcp.json'),JSON.stringify({mcpServers:{probe:{command:'fixture'}}}));await writeFile(join(host,'plugins/installed_plugins.json'),JSON.stringify({plugins:{'target@market':[{installPath:plugin}]}}));await writeFile(core,`let s='';for await(const c of process.stdin)s+=c;console.log(JSON.stringify({result:${JSON.stringify(f.state())}}));`);

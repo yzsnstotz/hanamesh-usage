@@ -28,7 +28,7 @@ rc.31 接受官方 DSH rc.2 与当前 alpha 的公开宿主 peer：DSH `>=0.2.0-
 
 `@hanamesh/usage` 是一个 DSH bundle（`package.json` 声明 `dsh.bundle.patch`）：
 
-    dsh plugin --profile <p> add --save-exact '@hanamesh/usage@0.3.0-rc.9'
+    dsh plugin --profile <p> add --save-exact '@hanamesh/usage@0.3.0-rc.10'
 
 装完即激活，不需要手写 `cordis.patch.yml`。`hanamesh-core` 与本包各只插入自己的 Loader 条目；新客户端负责分别安装三插件。本包不从 Core 传递安装，也不导入其他 HanaMesh 插件。
 
@@ -152,7 +152,7 @@ Inventory 暴露 `INVENTORY_FAILED/INVENTORY_ENTRY_UNREADABLE/INVENTORY_PACKAGE_
 框架 peer 与 React 宿主外部供给沿用，独立声明消费需正常 TypeScript/Node/React 类型工具。
 本模块无 ABI 生成器或链上接口，ABI/模板/签名广播门不在本卡范围。
 
-## Claude Code / Codex · Usage rc.9 / Agent0.2.1候选
+## Claude Code / Codex · Usage rc.10 / Agent0.2.2候选
 
 宿主允许执行后用带锁的独立后台进程准备本架构固定Node24.13.1官方tar.xz；入口立即返回，准备期不记录/不补录。MCP先返回具名RUNTIME_PREPARING及真实字节进度，就绪后自动交接Node并开始仅本机记录；不需setup/agree/connect。Codex安装不等于Trust，须本人通过原生审核入口允许hooks；Trust前不记录且无会话提示。网站一次同意并绑定后，经Core capability2直读提交审计/绑定事实才上传与补报；旧终端granted保留、不造网页审计。DSH原同意弹窗不变。
 
@@ -175,3 +175,5 @@ The producer's normal target build/full/mutations/check, required offline detach
 ### Claude Skill results (Usage 0.3.0-rc.7 / Agent 0.1.4)
 
 Claude `Skill` PostToolUse results with an explicit boolean `success` now retain that success or failure as the minimal usage result. Unknown outcomes remain unverified; `countUnconfirmedCalls` is unchanged. Existing error/exit-status handling and other tools/channels retain their prior behavior. Agent marketplaces consume the generated 0.1.4 payload; updating the npm package alone does not replace an already-installed agent plugin.
+
+R3发布中断修复：完整固定摘要/二进制版本通过且非阻塞取得准备锁，才修复发布后遗留PREPARING并记录finishedAt；锁仍由准备者持有时不改状态，Node status与hook均按未就绪暂停采集。旧rc.9/Agent0.2.1原件保持冻结；此修复不赋予上传同意、不重开主动关闭、不回填准备空窗。

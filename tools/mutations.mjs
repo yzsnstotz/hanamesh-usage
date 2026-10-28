@@ -42,6 +42,9 @@ const cases=[
  {name:'RC9-late-post-backfills-gap',file:'lib/agent/hook.mjs',from:'const beganAfterPreparation=!preparation||',to:'const beganAfterPreparation=true||',test:'tests/agent-onboarding-v2.test.mjs',pattern:'late Post from the preparation'},
  {name:'RC9-retry-within-same-session',file:'agent/bin/runtime-bootstrap.pl',from:"$is_session&&$new_session&&!($first_session&&($s->{initialEntry}//'non-session') eq 'non-session')",to:'$is_session',test:'tests/agent-runtime-background.test.mjs',pattern:'failure stays named'},
  {name:'RC9-fragment-loss-during-takeover',file:'agent/bin/runtime-bootstrap.pl',from:"if($line eq ''&&($s->{code}//'') eq 'RUNTIME_READY'&&-e $node)",to:"if(($s->{code}//'') eq 'RUNTIME_READY'&&-e $node)",also:[{from:"my $s=$line eq ''?readstate():undef;",to:'my $s=readstate();'}],test:'tests/agent-runtime-background.test.mjs',pattern:'fragmented'},
+ {name:'R3-abandoned-publication-never-recovers',file:'agent/bin/runtime-bootstrap.pl',from:"if($old&&$old->{code} ne 'RUNTIME_READY'){",to:"if($old&&$old->{code} ne 'RUNTIME_READY'&&$old->{code} ne 'RUNTIME_PREPARING'){",test:'tests/agent-runtime-recovery.test.mjs',pattern:'published valid Node with an abandoned'},
+ {name:'R3-active-preparation-lock-overwritten',file:'agent/bin/runtime-bootstrap.pl',from:'if(flock($fd,LOCK_EX|LOCK_NB)){',to:'if(1){',test:'tests/agent-runtime-recovery.test.mjs',pattern:'active preparation lock'},
+ {name:'R3-status-recording-enabled-while-preparing',file:'lib/agent/status.mjs',from:'localCollection:{enabled:localEnabled&&runtimeReady,',to:'localCollection:{enabled:localEnabled,',test:'tests/agent-onboarding-v2.test.mjs',pattern:'readonly status keeps preparation honest'},
 ];
 for(const item of cases){
  const dir=mkdtempSync(join(tmpdir(),'usage-mutant-'));

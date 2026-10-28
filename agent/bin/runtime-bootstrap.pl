@@ -30,7 +30,20 @@ sub ready {
 }
 sub launch_node {my($mode)=@_;my @args=$mode eq 'hook'?('lib/agent/hook.mjs',@ARGV):$mode eq 'node'?@ARGV:('lib/agent/cli.mjs',$mode,@ARGV);my $entry=shift @args;$entry="$plugin/$entry" unless $mode eq 'node';exec {$node} $node,$entry,@args or fail('RUNTIME_EXEC_FAILED');}
 # A ready entry never touches hook stdin; the existing Node projector owns it.
-if(ready()){my $old=readstate();if($old&&$old->{code} ne 'RUNTIME_READY'&&$old->{code} ne 'RUNTIME_PREPARING'){sysopen my $fd,$lockfile,O_WRONLY|O_CREAT,0600 or fail('RUNTIME_STATE_UNAVAILABLE');if(flock($fd,LOCK_EX|LOCK_NB)){atomic($statefile,{%$old,code=>'RUNTIME_READY',phase=>'ready',previousError=>$old->{code},finishedAt=>stamp()});}close $fd;}if($action eq 'install-runtime'){print $json->encode({runtime=>{code=>'RUNTIME_READY'}})."\n";exit 0;}launch_node($action);}
+if(ready()){
+ my $old=readstate();
+ if($old&&$old->{code} ne 'RUNTIME_READY'){
+  sysopen my $fd,$lockfile,O_WRONLY|O_CREAT,0600 or fail('RUNTIME_STATE_UNAVAILABLE');
+  if(flock($fd,LOCK_EX|LOCK_NB)){
+   # A producer may have finished since the first read. Re-read and validate while owning its lock.
+   $old=readstate();
+   if($old&&$old->{code} ne 'RUNTIME_READY'&&ready()){atomic($statefile,{%$old,code=>'RUNTIME_READY',phase=>'ready',previousError=>$old->{code},finishedAt=>stamp()});}
+  }
+  close $fd;
+ }
+ if($action eq 'install-runtime'){my $s=readstate();print $json->encode({runtime=>{code=>$s?$s->{code}:'RUNTIME_READY'}})."\n";exit 0;}
+ launch_node($action);
+}
 my $is_session=$action eq 'hook'&&grep {$ARGV[$_] eq '--event'&&($ARGV[$_+1]//'') eq 'SessionStart'} 0..$#ARGV;
 my $session;
 if($is_session){
@@ -94,7 +107,7 @@ if($action eq 'mcp'||$action eq 'mcp-ready'){
   next unless $selector->can_read(0.2);my $n=sysread(STDIN,my $char,1);last unless $n;$line.=$char;
   if(length($line)>131072){$line='';next;}next unless $char eq "\n";
   my $q=eval{$json->decode($line)};$line='';next unless ref($q) eq 'HASH'&&exists($q->{id});my $method=$q->{method}//'';my $params=ref($q->{params}) eq 'HASH'?$q->{params}:{};my $result;
-  if($method eq 'initialize'){$initialized=1;$result={protocolVersion=>$params->{protocolVersion}//'2024-11-05',capabilities=>{tools=>{}},serverInfo=>{name=>'hanamesh-usage',version=>'0.3.0-rc.9'}};}
+  if($method eq 'initialize'){$initialized=1;$result={protocolVersion=>$params->{protocolVersion}//'2024-11-05',capabilities=>{tools=>{}},serverInfo=>{name=>'hanamesh-usage',version=>'0.3.0-rc.10'}};}
   elsif($method eq 'ping'){$result={};}
   elsif($method eq 'tools/list'){$result={tools=>[{name=>'hanamesh_status',description=>'只读查看运行环境准备进度；准备期间不记录调用。',inputSchema=>{type=>'object',properties=>{},additionalProperties=>JSON::PP::false},annotations=>{readOnlyHint=>JSON::PP::true,destructiveHint=>JSON::PP::false,openWorldHint=>JSON::PP::false}}]};}
   elsif($method eq 'tools/call'&&($params->{name}//'') eq 'hanamesh_status'&&ref($params->{arguments}//{}) eq 'HASH'&&!keys(%{$params->{arguments}//{}})){my $status=public_state();$result={isError=>$status->{code} eq 'RUNTIME_READY'?JSON::PP::false:JSON::PP::true,content=>[{type=>'text',text=>$json->encode($status)}]};}
