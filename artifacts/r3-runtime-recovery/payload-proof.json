@@ -1,0 +1,20 @@
+{
+  "usageSource": "e0ef289d88b98e869b9d792534b299766b1fc091",
+  "usageVersion": "0.3.0-rc.10",
+  "usageNormalSha256": "870c909508af7f3af02156e366a40b7f7962e40179db7ada637bd326776770ba",
+  "coreVersion": "0.3.25",
+  "coreNormalSha256": "391a839eda529f443e1329335a03ca67376ba28e0b3df2b1989fd5428d23e5d5",
+  "pluginVersion": "0.2.2",
+  "payloadSha256": "f5b7ce80a9195ecab37e2550ba7b46afadb84874fae2793becf433de7a607c4b",
+  "files": 71,
+  "allPayloadFilesVerified": true,
+  "normalInputByteAndModeEqualFiles": 70,
+  "generatedMetadataProjection": "runtime/core/package.json",
+  "projectionMatchesNormalCoreFields": true,
+  "receiptSourceHashesEqualCommittedSource": true,
+  "workingTreeDirty": false,
+  "productionProfile": {
+    "serverOrigin": "https://api.hanamesh.com",
+    "websiteOrigin": "https://market.hanamesh.com"
+  }
+}

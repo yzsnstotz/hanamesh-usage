@@ -1,0 +1,310 @@
+{
+  "firstCold": "FAIL TLS connection timeout0B, own root hm-agent-install-UyIdId unchanged",
+  "independentColdAfterVerifiedConnectivity": {
+    "root": "/var/folders/x9/m1mvrnls3zj1k38mgrgjw0kw0000gn/T/hm-agent-install-VeLF5O",
+    "durationSeconds": 70.127,
+    "scope": "ISOLATED_NATIVE_INSTALL_AND_BOOTSTRAP_SYNTHETIC_HOOKS_NOT_MODEL_UI_OR_OWNER",
+    "commands": [
+      {
+        "program": "node",
+        "args": [
+          "tools/package-agent.mjs",
+          "/Users/leoventory/.cache/hanamesh-runs/c-agent-onboarding-impl-20261028/core/artifacts/hanamesh-core-0.3.25.tgz",
+          "<isolated>/market/plugins/hanamesh-usage"
+        ],
+        "status": 0,
+        "elapsedMs": 189
+      },
+      {
+        "program": "git",
+        "args": [
+          "init",
+          "-b",
+          "main",
+          "<isolated>/market"
+        ],
+        "status": 0,
+        "elapsedMs": 23
+      },
+      {
+        "program": "git",
+        "args": [
+          "-C",
+          "<isolated>/market",
+          "add",
+          "."
+        ],
+        "status": 0,
+        "elapsedMs": 36
+      },
+      {
+        "program": "git",
+        "args": [
+          "-C",
+          "<isolated>/market",
+          "-c",
+          "user.name=Fixture",
+          "-c",
+          "user.email=fixture@example.invalid",
+          "-c",
+          "commit.gpgsign=false",
+          "commit",
+          "-m",
+          "fixture"
+        ],
+        "status": 0,
+        "elapsedMs": 36
+      },
+      {
+        "program": "claude",
+        "args": [
+          "--version"
+        ],
+        "status": 0,
+        "elapsedMs": 117
+      },
+      {
+        "program": "codex",
+        "args": [
+          "--version"
+        ],
+        "status": 0,
+        "elapsedMs": 11
+      },
+      {
+        "program": "claude",
+        "args": [
+          "plugin",
+          "marketplace",
+          "add",
+          "<isolated>/market"
+        ],
+        "status": 0,
+        "elapsedMs": 737
+      },
+      {
+        "program": "claude",
+        "args": [
+          "plugin",
+          "install",
+          "hanamesh@hanamesh-g-fixture"
+        ],
+        "status": 0,
+        "elapsedMs": 649
+      },
+      {
+        "program": "claude",
+        "args": [
+          "plugin",
+          "install",
+          "target@hanamesh-g-fixture"
+        ],
+        "status": 0,
+        "elapsedMs": 663
+      },
+      {
+        "program": "codex",
+        "args": [
+          "plugin",
+          "marketplace",
+          "add",
+          "<isolated>/market"
+        ],
+        "status": 0,
+        "elapsedMs": 44
+      },
+      {
+        "program": "codex",
+        "args": [
+          "plugin",
+          "add",
+          "hanamesh@hanamesh-g-fixture"
+        ],
+        "status": 0,
+        "elapsedMs": 29
+      },
+      {
+        "program": "codex",
+        "args": [
+          "plugin",
+          "add",
+          "target@hanamesh-g-fixture"
+        ],
+        "status": 0,
+        "elapsedMs": 14
+      },
+      {
+        "program": "/bin/sh",
+        "args": [
+          "<isolated>/home/claude/plugins/cache/hanamesh-g-fixture/hanamesh/0.2.2/bin/hm-agent",
+          "hook",
+          "--event",
+          "SessionStart"
+        ],
+        "status": 0,
+        "elapsedMs": 77
+      },
+      {
+        "program": "/bin/sh",
+        "args": [
+          "-c",
+          "hm_root_placeholder='$'; hm_root_placeholder=\"$hm_root_placeholder\"'{CLAUDE_PLUGIN_ROOT}'; case \"$1\" in /*) hm_plugin_root=$1 ;; \"$hm_root_placeholder\") hm_plugin_root=. ;; *) printf \"%s\\n\" HANAMESH_PLUGIN_ROOT_INVALID >&2; exit 1 ;; esac; test -f \"$hm_plugin_root/bin/hm-agent\" || { printf \"%s\\n\" HANAMESH_PLUGIN_ROOT_REQUIRED >&2; exit 1; }; exec /bin/sh \"$hm_plugin_root/bin/hm-agent\" mcp",
+          "hanamesh-mcp",
+          "${CLAUDE_PLUGIN_ROOT}"
+        ],
+        "status": 0,
+        "elapsedMs": 41,
+        "runtimeCode": "RUNTIME_PREPARING"
+      },
+      {
+        "program": "/bin/sh",
+        "args": [
+          "-c",
+          "hm_root_placeholder='$'; hm_root_placeholder=\"$hm_root_placeholder\"'{CLAUDE_PLUGIN_ROOT}'; case \"$1\" in /*) hm_plugin_root=$1 ;; \"$hm_root_placeholder\") hm_plugin_root=. ;; *) printf \"%s\\n\" HANAMESH_PLUGIN_ROOT_INVALID >&2; exit 1 ;; esac; test -f \"$hm_plugin_root/bin/hm-agent\" || { printf \"%s\\n\" HANAMESH_PLUGIN_ROOT_REQUIRED >&2; exit 1; }; exec /bin/sh \"$hm_plugin_root/bin/hm-agent\" mcp",
+          "hanamesh-mcp",
+          "${CLAUDE_PLUGIN_ROOT}"
+        ],
+        "status": 0,
+        "elapsedMs": 42,
+        "runtimeCode": "RUNTIME_PREPARING"
+      },
+      {
+        "program": "/bin/sh",
+        "args": [
+          "<isolated>/home/claude/plugins/cache/hanamesh-g-fixture/hanamesh/0.2.2/bin/hm-agent",
+          "hook",
+          "--event",
+          "PostToolUse"
+        ],
+        "status": 0,
+        "elapsedMs": 39
+      },
+      {
+        "program": "/bin/sh",
+        "args": [
+          "<isolated>/home/claude/plugins/cache/hanamesh-g-fixture/hanamesh/0.2.2/bin/hm-agent",
+          "hook",
+          "--event",
+          "SessionStart"
+        ],
+        "status": 0,
+        "elapsedMs": 784
+      },
+      {
+        "program": "/bin/sh",
+        "args": [
+          "<isolated>/home/claude/plugins/cache/hanamesh-g-fixture/hanamesh/0.2.2/bin/hm-agent",
+          "hook",
+          "--event",
+          "PostToolUse"
+        ],
+        "status": 0,
+        "elapsedMs": 571
+      },
+      {
+        "program": "/bin/sh",
+        "args": [
+          "<isolated>/home/claude/plugins/cache/hanamesh-g-fixture/hanamesh/0.2.2/bin/hm-agent",
+          "hook",
+          "--event",
+          "PreToolUse"
+        ],
+        "status": 0,
+        "elapsedMs": 601
+      },
+      {
+        "program": "/bin/sh",
+        "args": [
+          "<isolated>/home/claude/plugins/cache/hanamesh-g-fixture/hanamesh/0.2.2/bin/hm-agent",
+          "hook",
+          "--event",
+          "PostToolUse"
+        ],
+        "status": 0,
+        "elapsedMs": 591
+      },
+      {
+        "program": "/bin/sh",
+        "args": [
+          "<isolated>/home/codex/plugins/cache/hanamesh-g-fixture/hanamesh/0.2.2/bin/hm-agent",
+          "hook",
+          "--event",
+          "PostToolUse"
+        ],
+        "status": 0,
+        "elapsedMs": 561
+      },
+      {
+        "program": "/bin/sh",
+        "args": [
+          "<isolated>/home/codex/plugins/cache/hanamesh-g-fixture/hanamesh/0.2.2/bin/hm-agent",
+          "hook",
+          "--event",
+          "PreToolUse"
+        ],
+        "status": 0,
+        "elapsedMs": 570
+      },
+      {
+        "program": "/bin/sh",
+        "args": [
+          "<isolated>/home/codex/plugins/cache/hanamesh-g-fixture/hanamesh/0.2.2/bin/hm-agent",
+          "hook",
+          "--event",
+          "PostToolUse"
+        ],
+        "status": 0,
+        "elapsedMs": 566
+      },
+      {
+        "program": "/bin/sh",
+        "args": [
+          "<isolated>/home/claude/plugins/cache/hanamesh-g-fixture/hanamesh/0.2.2/bin/hm-agent",
+          "status"
+        ],
+        "status": 0,
+        "elapsedMs": 522
+      },
+      {
+        "program": "/bin/sh",
+        "args": [
+          "<isolated>/home/claude/plugins/cache/hanamesh-g-fixture/hanamesh/0.2.2/bin/hm-agent",
+          "withdraw"
+        ],
+        "status": 0,
+        "elapsedMs": 594
+      },
+      {
+        "program": "/bin/sh",
+        "args": [
+          "<isolated>/home/claude/plugins/cache/hanamesh-g-fixture/hanamesh/0.2.2/bin/hm-agent",
+          "status"
+        ],
+        "status": 0,
+        "elapsedMs": 523
+      }
+    ],
+    "coldSessionStartMs": 77,
+    "preparation": {
+      "code": "RUNTIME_READY",
+      "downloadedBytes": 26464732,
+      "totalBytes": 26464732,
+      "startedAt": "2026-10-28T12:21:00.991Z",
+      "finishedAt": "2026-10-28T12:22:11.118Z",
+      "attemptCount": 1,
+      "noHostTimeoutIncrease": true,
+      "preparingWindowRecorded": false
+    },
+    "syntheticHooks": {
+      "bothChannelsRecordedAfterReady": true,
+      "latePreparationPostNotBackfilled": true,
+      "minimalProjection": true,
+      "uploadConsent": "withheld",
+      "actualModelUse": false
+    },
+    "withdrawal": {
+      "localCleared": true,
+      "remoteBarrier": "PENDING_OFFLINE_NOT_PASS"
+    }
+  }
+}

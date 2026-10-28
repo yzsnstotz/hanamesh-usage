@@ -1,0 +1,6 @@
+{
+  "strictPeerOfflineCi": true,
+  "javascript": true,
+  "strictTypesSkipLibCheckFalse": true,
+  "allOtherLockEntriesUnchanged": true
+}

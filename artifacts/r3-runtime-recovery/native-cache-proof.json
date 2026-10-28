@@ -1,0 +1,12 @@
+[
+  {
+    "channel": "claude",
+    "files": 72,
+    "allBytesAndExecutableBitsMatchMaterializedAndReceipt": true
+  },
+  {
+    "channel": "codex",
+    "files": 72,
+    "allBytesAndExecutableBitsMatchMaterializedAndReceipt": true
+  }
+]

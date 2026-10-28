@@ -1,0 +1,30 @@
+{
+  "source": "e0ef289d88b98e869b9d792534b299766b1fc091",
+  "version": "0.3.0-rc.10",
+  "full": {
+    "pass": 405,
+    "fail": 0,
+    "skip": 2,
+    "skipScope": "unchanged backend opt-in"
+  },
+  "mutations": {
+    "original": 37,
+    "R3Added": 3,
+    "baselinePass": 40,
+    "assertionKilled": 40
+  },
+  "contract": 44,
+  "check": "37packages94edges economic0 sibling0",
+  "detached": "PASS frozen offline core-semantic scope, not target build",
+  "targetBuild": "PASS",
+  "boundary": 0,
+  "normalPackage": "83 files byte/mode match",
+  "consumer": "strict offline peer CI, JS/strict TS and unrelated lock entries unchanged",
+  "firstCold": "FAIL15s official TLS0B; preserved",
+  "independentColdAfterVerifiedConnectivity": "PASS70.127s,attempt1,official fixed SHA,77ms entry",
+  "realModel": "NOT_RUN",
+  "ownerProfiles": "UNTOUCHED",
+  "remoteWithdrawalBarrier": "PENDING_OFFLINE_NOT_PASS",
+  "productMainMerge": false,
+  "npmPublish": false
+}
