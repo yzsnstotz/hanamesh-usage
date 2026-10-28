@@ -75,6 +75,8 @@ test('unknown content remains local and is never uploaded even when unknown outc
  const store=new AgentStore(join(f.home,'agent'));await store.record(row,true);
  assert.deepEqual(await store.eligible(catalog),[]);assert.equal((await store.rows()).length,1);
  assert.equal(diagnostics[0].code,'AGENT_CODEX_REMOTE_CONTENT_MISMATCH');
+ await writeFile(join(store.root,'remote-inventory-diagnostics.json'),JSON.stringify({diagnostics}));await store.withdraw();
+ await assert.rejects(readFile(join(store.root,'remote-inventory-diagnostics.json')),{code:'ENOENT'});assert.deepEqual(await store.rows(),[]);
 });
 test('static whitelist rejects symlinks, extra user files and JSON value changes without reading their content',async t=>{
  for(const variant of ['link','extra','json']){

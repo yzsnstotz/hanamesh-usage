@@ -88,5 +88,5 @@ export class AgentStore {
     if(['success','channel','feature','occurredAt'].some(key=>row[key]!==wire[key]))throw new Error('AGENT_FACT_CHANGED');
     await atomicJSON(path,{...row,wire});return wire;
   });}
-  async withdraw(){return this.mutate(async()=>{await rm(this.dir,{recursive:true,force:true});await rm(this.installDir,{recursive:true,force:true});});}
+  async withdraw(){return this.mutate(async()=>{await rm(this.dir,{recursive:true,force:true});await rm(this.installDir,{recursive:true,force:true});await rm(join(this.root,'remote-inventory-diagnostics.json'),{force:true});});}
 }
