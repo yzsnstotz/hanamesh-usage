@@ -11,7 +11,7 @@ export async function status(r) {
   const sender=await readJSON(join(r.agentHome,'sender.json'),null);
   const withdrawal=await readJSON(join(r.agentHome,'withdrawal.json'),null);
   const onboarding=await readJSON(join(r.agentHome,'onboarding.json'),null),localEnabled=await localRecordingEnabled(r,core),pending=localPending(rows);
-  const classified=rows.map(row=>({...row,listed:catalog?.plugins.some(p=>p.pluginId===row.pluginId&&p.channel===row.channel) ?? null}));
+  const classified=rows.map(row=>({...row,listed:catalog?.plugins.some(p=>p.channel===row.channel&&(row.remote?(p.remotePluginId??p.remote?.remotePluginId)===row.remote.remotePluginId:p.pluginId===row.pluginId)) ?? null}));
   const issue=r.senderError??sender?.code??null;
   const preparation=await r.runtimePreparation?.()??null;
   const remoteInventory=await readJSON(join(r.agentHome,'remote-inventory-diagnostics.json'),{diagnostics:[]});
@@ -22,5 +22,5 @@ export async function status(r) {
     remoteInstallations:{diagnostics:remoteInventory.diagnostics,nextStep:remoteInventory.diagnostics.length?'无法读取宿主的远程插件清单。':null},
     hookTrust:await hookTrust(r.host?.channel==='codex'?(r.env ?? {}):{}),
     hooksObserved:rows.length>0,counts:{local:rows.length,unlisted:classified.filter(r=>r.listed===false).length,listingUnknown:classified.filter(r=>r.listed===null).length,ambiguous:rows.filter(r=>r.disposition==='ambiguous').length,unverified:rows.filter(r=>r.disposition==='unverified').length,sent:rows.filter(r=>['sent','duplicate'].includes(r.delivery?.state)).length,unconfirmed:rows.filter(r=>r.delivery?.state==='unconfirmed').length},
-    records:classified.map(({factId,channel,pluginId,feature,success,observedSuccess,disposition,listed,delivery})=>({factId,channel,pluginId,feature,success,observedSuccess,disposition,listed,delivery})),sender,withdrawal,code,nextStep};
+    records:classified.map(({factId,channel,pluginId,feature,success,observedSuccess,disposition,listed,delivery,remote})=>({factId,channel,pluginId,feature,success,observedSuccess,disposition,listed,delivery,...(remote?{remotePluginId:remote.remotePluginId,remotePluginName:remote.name}:{})})),sender,withdrawal,code,nextStep};
 }
