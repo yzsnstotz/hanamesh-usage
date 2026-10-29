@@ -61,3 +61,12 @@ for(const unknown of [false,true])for(const mode of ['retention-hook-prune','ret
  const afterFresh=await f.store.eligible(f.catalog);assert.ok(afterFresh.some(r=>r.factId!==f.oldId&&r.success===true),'a genuinely new call must remain eligible');
  assert.equal(replayEligible.some(r=>r.factId===f.oldId),false,'an old call identity must not become new when its activity row disappears or never existed');
 });
+for(const unknown of [false,true])test(`a pristine orphan Post never admits an invocation (unknown=${unknown})`,async t=>{
+ const f=await fixture(t,'enabled',unknown);
+ await f.hook('PostToolUse');
+ const orphanEligible=await f.store.eligible(f.catalog);
+ // Exercise a distinct, genuinely observed invocation even when the mutant admits the orphan.
+ await f.hook('PreToolUse',true);await f.hook('PostToolUse',true);
+ assert.ok((await f.store.eligible(f.catalog)).some(r=>r.factId!==f.oldId&&r.success===true),'a genuinely new Pre/Post remains eligible');
+ assert.equal(orphanEligible.some(r=>r.factId===f.oldId),false,'Post without any prior Pre cannot establish the first call origin');
+});
