@@ -11,7 +11,7 @@ export function hookCallIdentity(payload,channel,now=Date.now()) {
 /** A result completes the original invocation, independently of later inventory. */
 export function hookOutcome(payload,channel) {
   const name=payload.tool_name,response=payload.tool_response;
-  if(payload.hook_event_name==='PreToolUse'||channel==='codex'&&['exec','functions.exec'].includes(name))return null;
+  if(payload.hook_event_name==='PreToolUse')return null;
   if(payload.hook_event_name==='PostToolUseFailure')return false;
   if(payload.hook_event_name!=='PostToolUse'||!response||typeof response!=='object')return null;
   if(response.error!=null)return false;
@@ -22,21 +22,6 @@ export function hookOutcome(payload,channel) {
   if(typeof name==='string'&&name.startsWith('mcp__')&&Array.isArray(response.content))return true;
   if(channel==='claude'&&typeof name==='string'&&name.startsWith('mcp__')&&Array.isArray(response)&&response.length>0&&response.every(block=>block&&typeof block==='object'&&typeof block.type==='string'))return true;
   return null;
-}
-// Mask comments and string/template literals before identifying code-mode calls. This is intentionally
-// conservative: template interpolation and computed/dynamic calls are not attributed.
-function codeOnly(code) {
-  let out='',quote=null,comment=null;
-  for(let i=0;i<code.length;i++){
-    const c=code[i],next=code[i+1];
-    if(comment==='line'){if(c==='\n'){comment=null;out+='\n';}else out+=' ';continue;}
-    if(comment==='block'){if(c==='*'&&next==='/'){comment=null;out+='  ';i++;}else out+=c==='\n'?'\n':' ';continue;}
-    if(quote){if(c==='\\'){out+='  ';i++;}else{out+=c==='\n'?'\n':' ';if(c===quote)quote=null;}continue;}
-    if(c==='/'&&next==='/'){comment='line';out+='  ';i++;continue;}
-    if(c==='/'&&next==='*'){comment='block';out+='  ';i++;continue;}
-    if(['"',"'",'`'].includes(c)){quote=c;out+=' ';continue;}
-    out+=c;
-  }return out;
 }
 /** Only the tool identifier and a narrowly recognized call/read expression are inspected in memory.
  * Never open transcript_path, persist tool_input/tool_response, evaluate code, or record prompts. */
@@ -57,33 +42,19 @@ export function projectHook(payload,channel,installed,now=Date.now()) {
   if (name === 'Skill' && typeof input.skill === 'string') {
     for(const plugin of installed) for(const skill of plugin.skills) if(input.skill === `${plugin.pluginName}:${skill}`) add(plugin,`skill:${skill}`);
   }
-  // Code-mode statements may invoke several plugins; an outer result cannot establish their separate outcomes.
-  // Reject comments/quoted-only matches: only direct await tools.mcp__...(...) statements are recognized.
-  if(channel === 'codex' && ['exec','functions.exec'].includes(name) && typeof input.code === 'string') {
-    const code = codeOnly(input.code);
-    for(const call of code.matchAll(/(?:^|[;\n}]|(?:const|let|var)\s+\w+\s*=)\s*await\s+tools\.(mcp__[A-Za-z0-9_]+)\s*\(/g)) matchMcp(call[1]);
-  }
-  let command = ['Bash','exec_command','functions.exec_command'].includes(name) ? (input.command ?? input.cmd) : null;
-  if(channel === 'codex' && ['exec','functions.exec'].includes(name) && typeof input.code === 'string') {
-    // Recognize a literal shell read only. No variable interpolation or execution is performed here.
-    const literal=/(?:cmd|command)\s*:\s*(['"])(cat [^'"\n]+\/SKILL\.md)\1/.exec(input.code);
-    command=literal && /^(?:cmd|command)\s*:/.test(codeOnly(input.code).slice(literal.index)) ? literal[2] : null;
-  }
+  const command = ['Bash','exec_command','functions.exec_command'].includes(name) ? (input.command ?? input.cmd) : null;
   if(channel === 'codex' && typeof command === 'string') {
     for(const plugin of installed) for(const skill of plugin.skills) {
       const path = `${plugin.root}/skills/${skill}/SKILL.md`;
       if(command.trim() === `cat ${path}` || command.trim() === `cat "${path}"` || command.trim() === `cat '${path}'`) add(plugin,`skill:${skill}`);
     }
   }
-  const unique = [...new Map(candidates.map(row=>[JSON.stringify(row),row])).values()];
+  const unique = [...new Map(candidates.map(row=>[JSON.stringify([row.remote?.remotePluginId??row.pluginId,row.feature]),row])).values()];
   if(unique.length === 0) return null;
   // More than one installed owner or more than one feature is deliberately not scored.
   const identity=hookCallIdentity(payload,channel,now);if(!identity)return null;
   const {factId,occurredAt}=identity;
   if(unique.length !== 1) return {factId,channel,occurredAt,disposition:'ambiguous',pluginId:null,feature:null,success:null};
-  if(unique[0].remote?.verified===false)return {factId,channel,occurredAt,disposition:'unverified',...unique[0],success:null};
-  // Outer script recognition is local-only: its nested calls have their own call ids/hooks.
-  if(channel==='codex'&&['exec','functions.exec'].includes(name))return {factId,channel,occurredAt,disposition:'outer-only',...unique[0],success:null};
   const success=hookOutcome(payload,channel);
   return {factId,channel,occurredAt,disposition:success===null?'unverified':'attributed',...unique[0],success};
 }

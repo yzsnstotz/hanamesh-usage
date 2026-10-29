@@ -1,6 +1,6 @@
 import {join} from 'node:path';
 import {mkdir,rm} from 'node:fs/promises';
-import {agentEventForFact,agentInstallEventForFact} from '../core/agent-event.js';
+import {agentEventForFact,agentInstallEventForFact,agentSigningJSON} from '../core/agent-event.js';
 import {atomicJSON,readJSON} from './store.mjs';
 import {requestJSON} from './runtime.mjs';
 import {refreshAgentCatalog} from './remote-catalog.mjs';
@@ -8,7 +8,7 @@ import {refreshAgentCatalog} from './remote-catalog.mjs';
 export async function uploadOnce(r,{now=Date.now(),request=(origin,path,init)=>requestJSON(origin,path,init,r.config.requestTimeoutMs)}={}) {
   let state=await r.call({operation:'state'});
   if(state.consent.state==='granted'&&state.consent.authorization==='website'){await r.call({operation:'syncOnboarding'});state=await r.call({operation:'state'});}
-  if(state.consent.state!=='granted')return {state:'withheld',code:'CONSENT_WITHHELD'};
+  if(state.consent.state!=='granted'||state.consent.authorization!=='website')return {state:'withheld',code:'CONSENT_WITHHELD'};
   if(!r.config.serverOrigin)return {state:'offline',code:'SERVER_ORIGIN_UNAVAILABLE'};
   // No downgrade: missing endpoint/protocol means stopped, never send new bytes to v1.
   const catalog=await refreshAgentCatalog(r,{now,request});
@@ -20,22 +20,8 @@ export async function uploadOnce(r,{now=Date.now(),request=(origin,path,init)=>r
   await r.call({operation:'register'});
   const device=await r.call({operation:'state'});
   const consentId=device.consent.consentId;
-  if(device.consent.state!=='granted'||consentId!==state.consent.consentId||typeof consentId!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(consentId))throw new Error('AGENT_CONSENT_INVALID');
-  const active=async()=>{const current=await r.call({operation:'state'});if(current.consent.state!=='granted'||current.consent.consentId!==consentId||current.deviceId!==device.deviceId)throw new Error('AGENT_CONSENT_CHANGED');};
-  // Only pre-existing terminal grants use the legacy activation endpoint. A website generation is already audited.
-  let bound=true;
-  if(device.consent.authorization!=='website'){
-    const consentPath=`/v2/usage/me/devices/${encodeURIComponent(device.deviceId)}/consents/${consentId}`,activationBody='{}';
-    const activationHeaders=await r.call({operation:'signRequest',method:'POST',path:consentPath,body:activationBody});
-    const activation=await request(r.config.serverOrigin,consentPath,{method:'POST',headers:{...activationHeaders,origin:r.config.serverOrigin,'content-type':'application/json'},body:activationBody});
-    if(!activation||Object.keys(activation).sort().join('|')!=='barrier|consentId|state'||activation.consentId!==consentId||activation.state!=='active'||activation.barrier!=='committed')throw Error('AGENT_ACTIVATION_UNCONFIRMED');
-    await active();
-    const from=new Date(now-86400000).toISOString(),to=new Date(now).toISOString();
-    const path=`/v1/usage/me/contributions?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
-    const readHeaders=await r.call({operation:'signRequest',method:'GET',path,body:null});
-    const contributions=await request(r.config.serverOrigin,path,{headers:readHeaders});
-    if(typeof contributions.bound!=='boolean')throw Error('AGENT_BINDING_UNAVAILABLE');bound=contributions.bound;
-  }
+  if(device.consent.state!=='granted'||device.consent.authorization!=='website'||consentId!==state.consent.consentId||typeof consentId!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(consentId))throw new Error('AGENT_CONSENT_INVALID');
+  const active=async()=>{const current=await r.call({operation:'state'});if(current.consent.state!=='granted'||current.consent.authorization!=='website'||current.consent.consentId!==consentId||current.deviceId!==device.deviceId)throw new Error('AGENT_CONSENT_CHANGED');};
   const send=async(wire,mark,key)=>{
     const body=JSON.stringify([wire]),path='/v2/usage/events';
     const headers=await r.call({operation:'signRequest',method:'POST',path,body});await active();
@@ -48,36 +34,29 @@ export async function uploadOnce(r,{now=Date.now(),request=(origin,path,init)=>r
     const rejection=result.rejected[0],code=rejection?(/^[A-Z][A-Z0-9_]{0,79}$/.test(rejection.code)?rejection.code:'REJECTION_UNREADABLE'):null;
     await mark({state:rejection?'rejected':result.duplicates?'duplicate':'sent',code});await rm(marker,{force:true});
   };
-  const coreRejectedFacts=new Set(eligible.filter(row=>row.delivery?.state==='rejected'&&/^CORE_/.test(row.delivery.code??'')).map(row=>row.factId));
   for(const row of pending) {
     const entry=(await r.store.rows()).find(item=>item.factId===row.factId);
     await active();
     if(!entry)throw new Error('AGENT_FACT_CHANGED');
     let wire=entry.wire;
     if(wire && (wire.deviceId!==device.deviceId||wire.hanaRef!==row.hanaRef||!wire.nonce.startsWith(`g${consentId}.`)))throw new Error('AGENT_ATTRIBUTION_CHANGED');
-    try{
     if(!wire) {
       const event=agentEventForFact(device.deviceId,{...entry,hanaRef:row.hanaRef},consentId);
-      const {signature}=await r.call({operation:'signAgentEvent',factId:row.factId,event});
+      const {signature}=await r.call({operation:'sign',message:agentSigningJSON(event)});
       wire={...event,signature};
       wire=await r.store.freezeWire(row.factId,wire);
     }
-    else{const {signature:prior,...event}=wire;const signed=await r.call({operation:'signAgentEvent',factId:row.factId,event});if(signed.signature!==prior)throw Error('AGENT_FROZEN_SIGNATURE_CHANGED');}
-    }catch(error){if(!/^CORE_ORIGIN_(?:UNKNOWN|DENIED|CONSUMED|LEDGER_INVALID)$|^CORE_INPUT_INVALID$/.test(error.message))throw error;await r.store.mark(row.factId,{state:'rejected',code:error.message});coreRejectedFacts.add(row.factId);continue;}
     await send(wire,delivery=>r.store.mark(row.factId,delivery),row.factId);
   }
   const firstByHana=new Map();
-  for(const row of eligible.sort((a,b)=>a.occurredAt.localeCompare(b.occurredAt)||a.factId.localeCompare(b.factId)))if(!coreRejectedFacts.has(row.factId)&&!firstByHana.has(row.hanaRef))firstByHana.set(row.hanaRef,row);
+  for(const row of eligible.sort((a,b)=>a.occurredAt.localeCompare(b.occurredAt)||a.factId.localeCompare(b.factId)))if(!firstByHana.has(row.hanaRef))firstByHana.set(row.hanaRef,row);
   for(const row of firstByHana.values()){
     await active();
     const event=agentInstallEventForFact(device.deviceId,row,consentId),existing=await r.store.installState(event.eventId);
     if(existing?.delivery)continue; // No automatic replay after an unknown commit or a terminal decision.
     let wire=existing?.wire;
-    try{
-      if(!wire){const {signature}=await r.call({operation:'signAgentEvent',factId:row.factId,event});wire=await r.store.freezeInstall(row.factId,{...event,signature});}
-      else{const {signature:prior,...frozen}=wire;const signed=await r.call({operation:'signAgentEvent',factId:row.factId,event:frozen});if(signed.signature!==prior)throw Error('AGENT_FROZEN_SIGNATURE_CHANGED');}
-    }catch(error){if(!/^CORE_ORIGIN_(?:UNKNOWN|DENIED|CONSUMED|LEDGER_INVALID)$|^CORE_INPUT_INVALID$/.test(error.message))throw error;await r.store.rejectInstall(event.eventId,error.message);continue;}
+    if(!wire){const {signature}=await r.call({operation:'sign',message:agentSigningJSON(event)});wire=await r.store.freezeInstall(row.factId,{...event,signature});}
     if(wire)await send(wire,delivery=>r.store.markInstall(wire.eventId,delivery),wire.eventId);
   }
-  return {state:'idle',code:null,bound,websiteOrigin:r.config.websiteOrigin,settings:catalog.settings};
+  return {state:'idle',code:null,bound:true,websiteOrigin:r.config.websiteOrigin,settings:catalog.settings};
 }

@@ -152,19 +152,19 @@ Inventory 暴露 `INVENTORY_FAILED/INVENTORY_ENTRY_UNREADABLE/INVENTORY_PACKAGE_
 框架 peer 与 React 宿主外部供给沿用，独立声明消费需正常 TypeScript/Node/React 类型工具。
 本模块无 ABI 生成器或链上接口，ABI/模板/签名广播门不在本卡范围。
 
-## Claude Code / Codex · Usage rc.13 / Agent0.2.5结构返修源码候选
+## Claude Code / Codex · Usage rc.14 / Agent0.2.6按owner口径删减候选
 
-宿主允许执行后用带锁的独立后台进程准备本架构固定Node24.13.1官方tar.xz；入口立即返回，准备期不记录/不补录。MCP先返回具名RUNTIME_PREPARING及真实字节进度，就绪后自动交接Node并开始仅本机记录；不需setup/agree/connect。Codex安装不等于Trust，须本人通过原生审核入口允许hooks；Trust前不记录且无会话提示。网站一次同意并绑定后，经Core capability2直读提交审计/绑定事实才上传与补报；旧终端granted保留、不造网页审计。DSH原同意弹窗不变。
+宿主允许执行后用带锁的独立后台进程准备本架构固定Node24.13.1官方tar.xz；入口立即返回，准备期间在本机暂存插件调用的最小标识、原时间与成败，就绪后处理。MCP先返回具名RUNTIME_PREPARING及真实字节进度，就绪后自动交接Node并处理本机暂存；不需setup/agree/connect。Codex安装不等于Trust，须本人通过原生审核入口允许hooks；Trust前不记录且无会话提示。网站一次同意并绑定后，经Core capability2直读提交审计/绑定事实才上传与补报；终端agree与旧终端激活路径已删除，只有网站同意并绑定才授予上传。DSH原同意弹窗不变。
 
 事实只含插件、功能、时间、成败、渠道，不保留对话、工具正文、文件或凭据；滚动30天，执行采集/后台时清除过期。两渠道各每天首个新主会话最多提醒一次，N/最早期限/7天/1天加强，不因提醒自动上传/绑定。安装说明与hm-setup提前说明原生禁用停止的入口；禁用不等于清理或远端撤回，无真实回调控件的表面不提供假清理/静音按钮。
 
 独立插件从本仓正常目标构建及固定Core正常tgz物化：`node tools/package-agent.mjs <core.tgz> <新输出目录>`；不读邻仓源码、不安装DSH peers。source/payload及Node bootstrap、两个manifest/Skill由suite-receipt逐文件绑定。MCP仍只读hanamesh_status，维护用setup/withdraw不是普通开通步骤。详见[Agent说明](agent/README.md)。正常包内置api.hanamesh.com/market.hanamesh.com；本地/staging完整显式覆盖，测试不得请求正式服务。
 
-已收录插件首次实际调用补install，稳定每设备/Hana一次、跨Claude/Codex去重；单装不用、ambiguous/outer-only/未收录不构成安装事实，成败不伪造。use独立；未知提交冻结字节不自动重放。NodeSQLite仅作进程互斥，不存事件或密钥；仅过滤其确切实验性提示，其他警告及错误保留，不用全局NODE_NO_WARNINGS。macOS arm64/x64启动器受控摘要固定，非本轮实测架构与真实UI明确NOT_RUN。
+已收录插件首次实际调用补install，稳定每设备/Hana一次、跨Claude/Codex去重；单装不用、ambiguous/未收录不构成安装事实，成败不伪造。use独立；未知提交冻结字节不自动重放。NodeSQLite仅作进程互斥，不存事件或密钥；仅过滤其确切实验性提示，其他警告及错误保留，不用全局NODE_NO_WARNINGS。macOS arm64/x64启动器受控摘要固定，非本轮实测架构与真实UI明确NOT_RUN。
 
-远程安装证明固定于调用的首次观察：当时内容未通过核验的事实，后来修复安装并重放同一调用也不能晋升或补出旧use/install；仅修复后的新调用可成为首次合格调用。30天补传适用于当时已核验、只是尚未收录的事实，不追认失败的安装证明。当时已核验的Pre仍可在精确身份不变时补齐晚到结果。调用身份另存最小不可晋升凭据，不随30天清理或撤回删除；无原点证明的旧记录不补造历史。当前仅源码定向转绿，完整门、新版本正常包及server-usage1.1.2组合仍待编排代建锁，P2保持OPEN。
+远程插件以宿主的remote_plugin_id归属，不比较版本、下载包指纹或文件内容，不钉Codex CLI具体版本。任何版本都按同一个远程ID查收录映射；Gmail、Google Drive等连接器没有默认排除。记录与上报保留宿主ID和名字，是否归属Hana由收录侧决定。没有本地call-origins seal、永久否决或Core方案D账本。30天内待补传事实不因收录版本变化而失效。
 
-本候选仍需组合/独审与公开发行隐私文案专业审阅，不npm/部署；工程CLI/单元/正常包检查不冒真实模型、完整网站或owner验收。
+本候选需完整工程门、正常包组合与R2复审；固定产物与验收日志只放HanaMesh docs的证据目录或R2 relay，产品仓库只留SHA清单和链接。不发布、不部署。
 
 ## B17 normal package ownership
 
@@ -178,4 +178,4 @@ The producer's normal target build/full/mutations/check, required offline detach
 
 Claude `Skill` PostToolUse results with an explicit boolean `success` now retain that success or failure as the minimal usage result. Unknown outcomes remain unverified; `countUnconfirmedCalls` is unchanged. Existing error/exit-status handling and other tools/channels retain their prior behavior. Agent marketplaces consume the generated 0.1.4 payload; updating the npm package alone does not replace an already-installed agent plugin.
 
-R3发布中断修复：完整固定摘要/二进制版本通过且非阻塞取得准备锁，才修复发布后遗留PREPARING并记录finishedAt；锁仍由准备者持有时不改状态，Node status与hook均按未就绪暂停采集。旧rc.9/Agent0.2.1原件保持冻结；此修复不赋予上传同意、不重开主动关闭、不回填准备空窗。
+R3发布中断修复：完整固定摘要/二进制版本通过且非阻塞取得准备锁，才修复发布后遗留PREPARING并记录finishedAt；锁仍由准备者持有时不改状态，Node status如实显示运行环境准备状态，插件调用仍在本机暂存或记录。旧rc.9/Agent0.2.1原件保持冻结；此修复不赋予上传同意、不重开主动关闭、准备期间调用就绪后处理。

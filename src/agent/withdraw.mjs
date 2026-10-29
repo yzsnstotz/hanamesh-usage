@@ -35,14 +35,7 @@ export async function beginWithdrawal(r) {
   await mkdir(r.agentHome,{recursive:true,mode:0o700});
   const release=await agentLock(r.agentHome,'collection',r.config?.requestTimeoutMs ?? 10000);
   if(!release)throw new Error('AGENT_COLLECTION_BUSY');
-  try{const stopped=await r.call({operation:'consent',state:'withheld'});await atomicJSON(join(r.agentHome,'withdrawal.json'),{state:'pending',consentId:stopped.consent.consentId});await r.store.withdraw();await rm(join(r.agentHome,'onboarding.json'),{force:true});}
+  try{const stopped=await r.call({operation:'consent',state:'withheld'});await atomicJSON(join(r.agentHome,'withdrawal.json'),{state:'pending',consentId:stopped.consent.consentId});await r.store.withdraw();await rm(join(r.agentHome,'preparation'),{recursive:true,force:true});await rm(join(r.agentHome,'onboarding.json'),{force:true});}
   finally{await release();}
   return await finishWithdrawal(r);
-}
-export async function grantConsent(r) {
-  await mkdir(r.agentHome,{recursive:true,mode:0o700});
-  const release=await agentLock(r.agentHome,'collection',r.config?.requestTimeoutMs ?? 10000);
-  if(!release)throw new Error('AGENT_COLLECTION_BUSY');
-  try{const withdrawal=await readJSON(join(r.agentHome,'withdrawal.json'),null);if(withdrawal&&withdrawal.state!=='sent')throw new Error('WITHDRAWAL_PENDING');const core=await r.call({operation:'state'});if(core.consent.state!=='granted')throw Error('CORE_AGENT_WEB_CONSENT_REQUIRED');return await r.call({operation:'consent',state:'granted'});}
-  finally{await release();}
 }

@@ -1,4 +1,3 @@
-import {fixtureAgentStore} from './fixtures/agent-core.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,rm,readFile,readdir,writeFile} from 'node:fs/promises';
@@ -21,8 +20,7 @@ test('both hosts attribute tools and skills; code mode; ambiguous servers stop a
  assert.equal(row.pluginId,'target@market'); assert.equal(row.feature,'mcp:echo'); assert.equal(row.success,true);
  assert.doesNotMatch(JSON.stringify(row),/sk-private|private output|Users|transcript|secret-session/);
  assert.equal(projectHook({...input,tool_name:'mcp__probe__echo'},'codex',installed).pluginId,'target@market');
- assert.equal(projectHook({...input,tool_name:'exec',tool_input:{code:'const r = await tools.mcp__probe__echo({text:"private"});text(r);'}},'codex',installed).pluginId,'target@market');
- assert.equal(projectHook({...input,tool_name:'exec',tool_input:{code:'const r = await tools.mcp__probe__echo({text:"private"});text(r);'}},'codex',installed).disposition,'outer-only');
+ assert.equal(projectHook({...input,tool_name:'exec',tool_input:{code:'const r = await tools.mcp__probe__echo({text:"private"});text(r);'}},'codex',installed),null);
  assert.equal(projectHook({...input,tool_name:'exec',tool_input:{code:'text(`\n await tools.mcp__probe__echo({})\n`);'}},'codex',installed),null);
  assert.equal(projectHook({...input,tool_name:'mcp__probe__echo'},'codex',[...installed,{...installed[0],pluginId:'other@market'}]).disposition,'ambiguous');
  assert.equal(projectHook({...input,tool_name:'Skill',tool_input:{skill:'target:hello'}},'claude',installed).feature,'skill:hello');
@@ -47,7 +45,7 @@ test('parallel host environments choose the installed host, and sender ownership
 });
 test('withdrawing clears local first and waits for the last sender before deleting remote',async t=>{
  const root=await mkdtemp(join(tmpdir(),'hm-agent-withdraw-'));t.after(()=>rm(root,{recursive:true,force:true}));
- const {AgentStore:BaseAgentStore}=await import('../src/agent/store.mjs');const AgentStore=fixtureAgentStore(BaseAgentStore);const {senderLock}=await import('../src/agent/sender-lock.mjs');
+ const {AgentStore}=await import('../src/agent/store.mjs');const {senderLock}=await import('../src/agent/sender-lock.mjs');
  const {beginWithdrawal,finishWithdrawal}=await import('../src/agent/withdraw.mjs');
  const release=await senderLock(root);const calls=[];const store=new AgentStore(root);
  const r={agentHome:root,store,async call(input){calls.push(input.operation);return input.operation==='withdraw'?{deletedEvents:1,consentId:'11111111-1111-4111-8111-111111111111',state:'withdrawn',barrier:'committed'}:{consent:{state:'withheld',consentId:'11111111-1111-4111-8111-111111111111'}};}};
@@ -58,15 +56,14 @@ test('DELETE acknowledgement cannot clear unknown-upload evidence or reopen cons
  const root=await mkdtemp(join(tmpdir(),'hm-agent-withdraw-unknown-'));t.after(()=>rm(root,{recursive:true,force:true}));
  const {mkdir}=await import('node:fs/promises');await mkdir(join(root,'inflight'));
  await writeFile(join(root,'inflight',`${'b'.repeat(64)}.json`),JSON.stringify({eventId:'fixture'}));
- const {AgentStore:BaseAgentStore}=await import('../src/agent/store.mjs');const AgentStore=fixtureAgentStore(BaseAgentStore);const {beginWithdrawal,grantConsent}=await import('../src/agent/withdraw.mjs');
+ const {AgentStore}=await import('../src/agent/store.mjs');const {beginWithdrawal}=await import('../src/agent/withdraw.mjs');
  const r={agentHome:root,store:new AgentStore(root),call:async x=>x.operation==='consent'?{consent:{state:'withheld',consentId:'11111111-1111-4111-8111-111111111111'}}:{deletedEvents:1}};
  const result=await beginWithdrawal(r);assert.equal(result.state,'pending');assert.equal(result.code,'AGENT_WITHDRAWAL_UNCONFIRMED');
- await assert.rejects(grantConsent(r),/WITHDRAWAL_PENDING/);
+
  assert.equal((await readdir(join(root,'inflight'))).length,1);
 });
 test('outbox does not record before consent, unknown names stay local, later listing backfills inside configurable window',async t=>{
- const {AgentStore:BaseAgentStore}=await import('../src/agent/store.mjs');const AgentStore=fixtureAgentStore(BaseAgentStore);
- const root=await mkdtemp(join(tmpdir(),'hm-agent-store-'));t.after(()=>rm(root,{recursive:true,force:true}));
+ const {AgentStore}=await import('../src/agent/store.mjs'); const root=await mkdtemp(join(tmpdir(),'hm-agent-store-'));t.after(()=>rm(root,{recursive:true,force:true}));
  const store=new AgentStore(root); const row={factId:'a'.repeat(64),pluginId:'target@market',feature:'mcp:echo',success:true,channel:'codex',occurredAt:'2026-10-15T10:00:00.000Z',disposition:'attributed'};
  assert.equal(await store.record(row,false),'withheld'); assert.deepEqual(await readdir(root),[]);
  await store.record(row,true);await store.record(row,true);

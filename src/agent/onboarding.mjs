@@ -6,7 +6,7 @@ export async function localRecordingEnabled(r,state=null){
  const core=state ?? await r.call({operation:'state'});
  const withdrawal=await readJSON(join(r.agentHome,'withdrawal.json'),null);
  if(withdrawal&&!(withdrawal.state==='sent'&&core.consent.state==='granted'))return false;
- if(core.consent.state==='granted')return true; // Existing terminal grants remain valid.
+ if(core.consent.state==='granted')return true;
  if(core.consent.changedAt!==null)return false;
  if(core.agentProtocolVersion!==2)throw Error('AGENT_CORE_CAPABILITY_REQUIRED');
  return true;
@@ -14,19 +14,13 @@ export async function localRecordingEnabled(r,state=null){
 export async function refreshOnboarding(r,{link=false}={}){
  let core=await r.call({operation:'state'});
  if(!await localRecordingEnabled(r,core))return {state:'closed'};
- if(core.consent.state==='granted'){
-  if(core.consent.authorization==='website'){
-   await r.call({operation:'syncOnboarding'});await mkdir(r.agentHome,{recursive:true,mode:0o700});await atomicJSON(join(r.agentHome,'onboarding.json'),{state:'active'});return {state:'active'};
-  }
-  if(!link)return {state:'legacy-terminal'};
-  await r.call({operation:'register'});
-  const result=await r.call({operation:'bindLink'});
-  await mkdir(r.agentHome,{recursive:true,mode:0o700});await atomicJSON(join(r.agentHome,'onboarding.json'),{...result,state:'legacy-terminal'});return result;
+ if(core.consent.state==='granted'&&core.consent.authorization==='website'){
+  await r.call({operation:'syncOnboarding'});await mkdir(r.agentHome,{recursive:true,mode:0o700});await atomicJSON(join(r.agentHome,'onboarding.json'),{state:'active'});return {state:'active'};
  }
  if(core.agentProtocolVersion!==2)throw Error('AGENT_CORE_CAPABILITY_REQUIRED');
  if(core.consent.consentId){
   const synced=await r.call({operation:'syncOnboarding'});
-  if(synced.consent.state==='granted'){await mkdir(r.agentHome,{recursive:true,mode:0o700});await atomicJSON(join(r.agentHome,'onboarding.json'),{state:'active'});return {state:'active'};}
+  if(synced.consent.state==='granted'&&synced.consent.authorization==='website'){await mkdir(r.agentHome,{recursive:true,mode:0o700});await atomicJSON(join(r.agentHome,'onboarding.json'),{state:'active'});return {state:'active'};}
   // A committed device binding stops reminders even if the later usage audit is still pending.
   if(synced.onboarding?.binding){await mkdir(r.agentHome,{recursive:true,mode:0o700});await atomicJSON(join(r.agentHome,'onboarding.json'),{state:'bound-pending-audit'});return {state:'bound-pending-audit'};}
  }

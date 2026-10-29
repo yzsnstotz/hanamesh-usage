@@ -39,13 +39,13 @@ const cases=[
  {name:'U21-agent-daily-cap',file:'lib/agent/notice.mjs',from:'marker.day===day||marker.session===session',to:'false||marker.session===session',test:'tests/agent-onboarding-v2.test.mjs',pattern:'both channels remind'},
  {name:'U22-agent-retention-cap',file:'lib/agent/store.mjs',from:'Math.min(30,catalog.settings.backfillWindowDays)',to:'catalog.settings.backfillWindowDays',test:'tests/agent-onboarding-v2.test.mjs',pattern:'30-day retention'},
  {name:'RC9-handoff-never-starts-tick',file:'lib/agent/cli.mjs',from:"if(command==='mcp-ready')active=tick();",to:"if(false)active=tick();",test:'tests/agent-onboarding-v2.test.mjs',pattern:'mcp-ready starts'},
- {name:'RC9-late-post-backfills-gap',file:'lib/agent/hook.mjs',from:"allowNew:event==='PreToolUse'",to:'allowNew:true',test:'tests/agent-onboarding-v2.test.mjs',pattern:'late Post from the preparation'},
  {name:'RC9-retry-within-same-session',file:'agent/bin/runtime-bootstrap.pl',from:"$is_session&&$new_session&&!($first_session&&($s->{initialEntry}//'non-session') eq 'non-session')",to:'$is_session',test:'tests/agent-runtime-background.test.mjs',pattern:'failure stays named'},
  {name:'RC9-fragment-loss-during-takeover',file:'agent/bin/runtime-bootstrap.pl',from:"if($line eq ''&&($s->{code}//'') eq 'RUNTIME_READY'&&-e $node)",to:"if(($s->{code}//'') eq 'RUNTIME_READY'&&-e $node)",also:[{from:"my $s=$line eq ''?readstate():undef;",to:'my $s=readstate();'}],test:'tests/agent-runtime-background.test.mjs',pattern:'fragmented'},
  {name:'R3-abandoned-publication-never-recovers',file:'agent/bin/runtime-bootstrap.pl',from:"if($old&&$old->{code} ne 'RUNTIME_READY'){",to:"if($old&&$old->{code} ne 'RUNTIME_READY'&&$old->{code} ne 'RUNTIME_PREPARING'){",test:'tests/agent-runtime-recovery.test.mjs',pattern:'published valid Node with an abandoned'},
  {name:'R3-active-preparation-lock-overwritten',file:'agent/bin/runtime-bootstrap.pl',from:'if(flock($fd,LOCK_EX|LOCK_NB)){',to:'if(1){',test:'tests/agent-runtime-recovery.test.mjs',pattern:'active preparation lock'},
- {name:'R3-status-recording-enabled-while-preparing',file:'lib/agent/status.mjs',from:'localCollection:{enabled:localEnabled&&runtimeReady,',to:'localCollection:{enabled:localEnabled,',test:'tests/agent-onboarding-v2.test.mjs',pattern:'readonly status keeps preparation honest'},
 ];
+cases.push({name:'B7-preparation-call-dropped',file:'agent/bin/runtime-bootstrap.pl',from:'retain_preparing_hook();',to:'# drop buffered calls',test:'tests/agent-preparation-recording.test.mjs'});
+cases.push({name:'REMOTE-version-rule-reintroduced',file:'lib/agent/codex-remote.mjs',from:'for(const row of state.installed){',to:"for(const row of state.installed){if(row.version!=='1.0')continue;",test:'tests/agent-codex-remote.test.mjs',pattern:'remote ID and native name survive'});
 const results=[];
 for(const item of cases){
  const dir=mkdtempSync(join(tmpdir(),'usage-mutant-'));

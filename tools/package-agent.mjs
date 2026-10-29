@@ -17,11 +17,11 @@ try {
   const result=spawnSync('tar',['-xzf',resolve(coreTarball),'-C',temp],{encoding:'utf8',env:{...process.env,LC_ALL:'C'}});
   if(result.status!==0)throw new Error('CORE_ARTIFACT_UNREADABLE');
   const core=JSON.parse(await readFile(join(temp,'package/package.json'),'utf8'));
-  if(core.name!=='@hanamesh/core'||core.version!=='0.3.26')throw new Error('CORE_ARTIFACT_INVALID');
+  if(core.name!=='@hanamesh/core'||core.version!=='0.3.25')throw new Error('CORE_ARTIFACT_INVALID');
   const probeHome=join(temp,'core-probe');await mkdir(probeHome);
   const probe=spawnSync(process.execPath,[join(temp,'package/lib/agent-cli.js')],{encoding:'utf8',input:JSON.stringify({config:{sharedHome:probeHome,serverOrigin:null,websiteOrigin:null},input:{operation:'state'}}),env:{PATH:process.env.PATH,HOME:temp}});
-  let capability,originCapability;try{const result=JSON.parse(probe.stdout).result;capability=result?.agentProtocolVersion;originCapability=result?.agentOriginProtocolVersion;}catch{throw Error('CORE_AGENT_CAPABILITY_REQUIRED');}
-  if(probe.status!==0||capability!==2||originCapability!==1||(await readdir(probeHome)).length!==0)throw Error('CORE_AGENT_CAPABILITY_REQUIRED');
+  let capability;try{const result=JSON.parse(probe.stdout).result;capability=result?.agentProtocolVersion;}catch{throw Error('CORE_AGENT_CAPABILITY_REQUIRED');}
+  if(probe.status!==0||capability!==2||(await readdir(probeHome)).length!==0)throw Error('CORE_AGENT_CAPABILITY_REQUIRED');
   const nodeRecipe=JSON.parse(await readFile('agent/bin/node-runtime.json'));
   const usage=JSON.parse(await readFile('package.json')),plugin=JSON.parse(await readFile('agent/.claude-plugin/plugin.json')),codex=JSON.parse(await readFile('agent/.codex-plugin/plugin.json'));
   if(plugin.name!=='hanamesh'||codex.name!==plugin.name||codex.version!==plugin.version)throw Error('SUITE_MANIFEST_MISMATCH');
@@ -32,7 +32,7 @@ try {
   for(const name of ['core','agent'])await cp(`lib/${name}`,join(output,'lib',name),{recursive:true});
   await mkdir(join(output,'runtime/core'),{recursive:true});
   // The standalone entry's import closure is all Node builtins plus these modules. No DSH peers are installed.
-  for(const name of ['agent-cli','agent','agent-origins','shared-device','device','errors','validation','contracts','transport','registration','bind-link']) {
+  for(const name of ['agent-cli','agent','shared-device','device','errors','validation','contracts','transport','registration','bind-link']) {
     await mkdir(join(output,'runtime/core/lib'),{recursive:true});
     await cp(join(temp,`package/lib/${name}.js`),join(output,`runtime/core/lib/${name}.js`));
   }
@@ -45,7 +45,7 @@ try {
   const sourceRevision=git(['rev-parse','HEAD']);if(!/^[a-f0-9]{40}$/.test(sourceRevision))throw Error('SUITE_SOURCE_REVISION_INVALID');
   const sourceFiles=[...(await inventory('src/agent')).map(f=>({...f,path:'src/agent/'+f.path})),...(await inventory('agent')).map(f=>({...f,path:'agent/'+f.path}))];
   for(const path of ['package.json','package-lock.json','tools/package-agent.mjs','src/core/agent-event.ts','src/core/identity.ts'])sourceFiles.push({path,sha256:sha256(await readFile(path))});
-  const files=await inventory(output),receipt={schemaVersion:1,identityKind:'composite-artifact',plugin:{name:plugin.name,version:plugin.version},capabilities:{readonlyTools:['hanamesh_status']},runtime:{node:usage.engines.node,bundled:false,defaultOrigins:DEFAULT_AGENT_ORIGINS,agentProtocolVersion:2,agentOriginProtocolVersion:1,bootstrap:{path:'bin/hm-agent',automatic:true,preparation:'detached',readinessBridge:'bin/runtime-bootstrap.pl',recipePath:'bin/node-runtime.json',archiveFormat:nodeRecipe.archiveFormat,expectedArchives:nodeRecipe.architectures,nodeVersion:nodeRecipe.version,downloadOrigin:'https://nodejs.org',platforms:['darwin-arm64','darwin-x64']}},components:{usage:{name:usage.name,version:usage.version,sourceRevision,workingTreeDirty:Boolean(git(['status','--porcelain','--untracked-files=normal'])),sourceFiles,sourceSha256:sha256(JSON.stringify(sourceFiles))},core:{name:core.name,version:core.version,agentProtocolVersion:capability,agentOriginProtocolVersion:originCapability,tarballSha256:sha256(await readFile(coreTarball))}},payloadSha256:sha256(JSON.stringify(files)),files};
+  const files=await inventory(output),receipt={schemaVersion:1,identityKind:'composite-artifact',plugin:{name:plugin.name,version:plugin.version},capabilities:{readonlyTools:['hanamesh_status']},runtime:{node:usage.engines.node,bundled:false,defaultOrigins:DEFAULT_AGENT_ORIGINS,agentProtocolVersion:2,bootstrap:{path:'bin/hm-agent',automatic:true,preparation:'detached',readinessBridge:'bin/runtime-bootstrap.pl',recipePath:'bin/node-runtime.json',archiveFormat:nodeRecipe.archiveFormat,expectedArchives:nodeRecipe.architectures,nodeVersion:nodeRecipe.version,downloadOrigin:'https://nodejs.org',platforms:['darwin-arm64','darwin-x64']}},components:{usage:{name:usage.name,version:usage.version,sourceRevision,workingTreeDirty:Boolean(git(['status','--porcelain','--untracked-files=normal'])),sourceFiles,sourceSha256:sha256(JSON.stringify(sourceFiles))},core:{name:core.name,version:core.version,agentProtocolVersion:capability,tarballSha256:sha256(await readFile(coreTarball))}},payloadSha256:sha256(JSON.stringify(files)),files};
   await writeFile(join(output,'suite-receipt.json'),JSON.stringify(receipt,null,2)+'\n');
   console.log(JSON.stringify({plugin:output,coreVersion:core.version,usageVersion:usage.version,payloadSha256:receipt.payloadSha256,scope:'LOCAL_COMPOSITE_ARTIFACT_NOT_PUBLISHED'}));
 } finally {await rm(temp,{recursive:true,force:true});}

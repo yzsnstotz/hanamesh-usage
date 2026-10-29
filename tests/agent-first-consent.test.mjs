@@ -31,11 +31,7 @@ test('all registered hooks carry a fixed control event independent from stdin',a
  const h=JSON.parse(await readFile('agent/hooks/hooks.json'));
  for(const [event,groups] of Object.entries(h.hooks))assert.match(groups[0].hooks[0].command,new RegExp('--event '+event));
 });
-test('legacy agree alias retains the real withdrawal barrier and is not the new onboarding path',async t=>{
- const f=await fixture(t,{state:'granted',authorization:'legacy-terminal',changedAt:'2026-10-17T00:00:00.000Z',consentId:'11111111-1111-4111-8111-111111111111'});const r=spawnSync(process.execPath,[join(implementationRoot,'lib/agent/cli.mjs'),'agree'],{env:f.env,encoding:'utf8'});assert.equal(r.status,0,r.stderr);assert.equal(JSON.parse(r.stdout).consent.state,'granted');
- await writeFile(join(f.env.HANAMESH_AGENT_HOME,'withdrawal.json'),JSON.stringify({state:'pending'}));
- const blocked=spawnSync(process.execPath,[join(implementationRoot,'lib/agent/cli.mjs'),'agree'],{env:f.env,encoding:'utf8'});assert.equal(blocked.status,1);assert.match(blocked.stderr,/WITHDRAWAL_PENDING/);
-});
+test('terminal agree is absent and cannot authorize upload',async t=>{const f=await fixture(t);const r=spawnSync(process.execPath,[join(implementationRoot,'lib/agent/cli.mjs'),'agree'],{env:f.env,encoding:'utf8'});assert.equal(r.status,1);assert.match(r.stderr,/AGENT_COMMAND_INVALID/);});
 test('first notice persists emitted metadata daily per shared root/channel; no usage queue or identity',async t=>{
  const f=await fixture(t);const first=f.run('SessionStart');assert.equal(first.status,0,first.stderr);assert.ok(first.stdout);
  assert.equal(f.run('SessionStart').stdout,'');

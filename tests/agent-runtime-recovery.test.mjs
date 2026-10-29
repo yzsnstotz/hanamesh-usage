@@ -1,4 +1,3 @@
-import {fixtureCoreCLI} from './fixtures/agent-core.mjs';
 // Recreate the valid publication boundary, not a cold download or owner profile.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -22,7 +21,7 @@ async function fixture(t){
  await writeFile(join(cache,'prepare-state.json'),JSON.stringify(initial));
  await mkdir(agent);await writeFile(join(agent,'config.json'),JSON.stringify({serverOrigin:'http://127.0.0.1:1',websiteOrigin:'http://127.0.0.1:2',requestTimeoutMs:1000,bootstrapIntervalMs:60000}));
  const state={agentProtocolVersion:2,deviceId:'A'.repeat(43),consent:{state:'withheld',changedAt:null,consentId:null,authorization:null}},core=join(root,'core-fixture.mjs');
- await writeFile(core,fixtureCoreCLI(agent,state,join(shared,'identity/core-origin-fixture.json')));
+ await writeFile(core,`for await(const c of process.stdin){};console.log(JSON.stringify({result:${JSON.stringify(state)}}));`);
  const host=join(root,'claude'),targetPlugin=join(root,'target');await mkdir(join(host,'plugins'),{recursive:true});await mkdir(targetPlugin);
  await writeFile(join(targetPlugin,'.mcp.json'),JSON.stringify({mcpServers:{probe:{command:'FIXTURE'}}}));await writeFile(join(host,'plugins/installed_plugins.json'),JSON.stringify({plugins:{'target@market':[{installPath:targetPlugin}]}}));
  const env={HOME:root,PATH:'/usr/bin:/bin',HANAMESH_SHARED_HOME:shared,HANAMESH_AGENT_HOME:agent,HANAMESH_CORE_AGENT_CLI:core,HANAMESH_AGENT_CHANNEL:'claude',CLAUDE_CONFIG_DIR:host};
@@ -36,13 +35,13 @@ async function fixture(t){
 test('published valid Node with an abandoned PREPARING state recovers before status, new session and actual Pre/Post',async t=>{
  const f=await fixture(t),value=f.run('status');assert.equal(value.runtime.code,'RUNTIME_READY');const recovered=await f.disk();
  assert.equal(recovered.code,'RUNTIME_READY','validated published cache and free lock must reconcile abandoned publication');assert.equal(recovered.phase,'ready');assert.ok(Date.parse(recovered.finishedAt)>=Date.parse(f.initial.startedAt));assert.equal(recovered.attemptCount,1);assert.equal(recovered.downloadedBytes,f.initial.totalBytes);
- f.hook('SessionStart');assert.equal((await f.disk()).attemptCount,1,'reconciliation must not download again');f.hook('PostToolUse','began-before-ready');assert.equal((await f.facts()).length,0,'no backfill without a post-ready Pre');
- f.hook('PreToolUse');f.hook('PostToolUse');assert.equal((await f.facts()).length,1);assert.equal(f.run('status').localCollection.enabled,true);
+ f.hook('SessionStart');assert.equal((await f.disk()).attemptCount,1,'reconciliation must not download again');f.hook('PostToolUse','began-before-ready');assert.equal((await f.facts()).length,1,'an actual Post remains a local call');
+ f.hook('PreToolUse');f.hook('PostToolUse');assert.equal((await f.facts()).length,2);assert.equal(f.run('status').localCollection.enabled,true);
 });
 
 test('an active preparation lock cannot be reclaimed and Node status agrees with hooks until its owner releases it',async t=>{
  const f=await fixture(t),release=await f.lock(),before=await readFile(join(f.cache,'prepare-state.json'),'utf8');
- try{const value=f.run('status');assert.equal(value.runtime.code,'RUNTIME_PREPARING');assert.equal(value.localCollection.enabled,false);f.hook('PreToolUse');f.hook('PostToolUse');assert.equal((await f.facts()).length,0);assert.equal(await readFile(join(f.cache,'prepare-state.json'),'utf8'),before);}finally{await release();}
+ try{const value=f.run('status');assert.equal(value.runtime.code,'RUNTIME_PREPARING');assert.equal(value.localCollection.enabled,true);f.hook('PreToolUse');f.hook('PostToolUse');assert.equal((await f.facts()).length,1);assert.equal(await readFile(join(f.cache,'prepare-state.json'),'utf8'),before);}finally{await release();}
  f.hook('SessionStart');assert.equal((await f.disk()).code,'RUNTIME_READY');f.hook('PreToolUse');f.hook('PostToolUse');assert.equal((await f.facts()).length,1);
 });
 

@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'node:url';
 process.chdir(fileURLToPath(new URL('../', import.meta.url)));
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, copyFileSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, rmSync, copyFileSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import ts from 'typescript';
 import { createRequire } from 'node:module';
 import { installedPeer, satisfies } from './pins.mjs';
@@ -33,6 +33,7 @@ const bundle=ts.transpileModule(readFileSync('src/client/index.ts','utf8'),{comp
 writeFileSync('lib/client.js',`window.__ModuleLoader__.load({id:'@hanamesh/usage',factory:(require)=>{const module={exports:{}};const exports=module.exports;\n${bundle}\nreturn module.exports;}});\n`);
 mkdirSync('lib/host',{recursive:true});
 for (const file of readdirSync('src/host')) copyFileSync(`src/host/${file}`,`lib/host/${file}`);
+rmSync('lib/agent',{recursive:true,force:true});
 mkdirSync('lib/agent',{recursive:true});
 for (const file of readdirSync('src/agent')) {
   copyFileSync(`src/agent/${file}`,`lib/agent/${file}`);

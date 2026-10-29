@@ -44,6 +44,32 @@ if(ready()){
  if($action eq 'install-runtime'){my $s=readstate();print $json->encode({runtime=>{code=>$s?$s->{code}:'RUNTIME_READY'}})."\n";exit 0;}
  launch_node($action);
 }
+# During the first download, retain only plugin-call selectors and the original time.
+sub retain_preparing_hook {
+ return unless $action eq 'hook'&&grep {$ARGV[$_] eq '--event'&&($ARGV[$_+1]//'')=~/^(?:PreToolUse|PostToolUse|PostToolUseFailure)$/} 0..$#ARGV;
+ my $home=$ENV{HANAMESH_AGENT_HOME}//"$shared/agent/usage";return if -e "$home/withdrawal.json";
+ my $raw;{local $/;$raw=<STDIN>;}my $p=eval{$json->decode($raw//'' )};return unless ref($p) eq 'HASH';
+ my $event=$p->{hook_event_name}//'';my $call=$p->{tool_use_id}//$p->{tool_call_id};my $session=$p->{session_id};my $name=$p->{tool_name}//'';
+ return unless $event=~/^(PreToolUse|PostToolUse|PostToolUseFailure)$/&&defined($call)&&!ref($call)&&length($call)&&defined($session)&&!ref($session)&&length($session);
+ my $channel=$ENV{HANAMESH_AGENT_CHANNEL}//(($ENV{CODEX_HOME}&&index($plugin,$ENV{CODEX_HOME})==0)?'codex':'claude');
+ my $input=ref($p->{tool_input}) eq 'HASH'?$p->{tool_input}:{};my %selector;
+ if($name=~/^mcp__[A-Za-z0-9_]+$/){}
+ elsif($name eq 'Skill'&&defined($input->{skill})&&!ref($input->{skill})&&$input->{skill}=~/^[A-Za-z0-9_.:@-]+$/){$selector{skill}=$input->{skill};}
+ elsif($channel eq 'codex'&&$name=~/^(?:functions\.)?exec_command$/){my $cmd=$input->{cmd}//$input->{command}//'';return if ref($cmd);if($cmd=~/^\s*cat (?:"([^"\n]+\/SKILL\.md)"|'([^'\n]+\/SKILL\.md)'|([^\s]+\/SKILL\.md))\s*$/){$selector{skillPathHash}=sha256_hex(encode('UTF-8',$1//$2//$3));}else{return;}}
+ else{return;}
+ my $success=undef;my $response=$p->{tool_response};
+ if($event eq 'PostToolUseFailure'){$success=JSON::PP::false;}
+ elsif($event eq 'PostToolUse'&&ref($response) eq 'HASH'){
+  if(defined($response->{error})){$success=JSON::PP::false;}
+  elsif(exists($response->{isError})||exists($response->{is_error})){my $v=$response->{isError}//$response->{is_error};$success=$v?JSON::PP::false:JSON::PP::true if JSON::PP::is_bool($v);}
+  elsif(defined($response->{exit_code})&&!ref($response->{exit_code})&&$response->{exit_code}=~/^-?\d+$/){$success=$response->{exit_code}==0?JSON::PP::true:JSON::PP::false;}
+  elsif($name eq 'Skill'&&JSON::PP::is_bool($response->{success})){$success=$response->{success};}
+  elsif($name=~/^mcp__/&&ref($response->{content}) eq 'ARRAY'){$success=JSON::PP::true;}
+ }elsif($event eq 'PostToolUse'&&$name=~/^mcp__/&&ref($response) eq 'ARRAY'&&@$response){$success=JSON::PP::true;}
+ my $fact=sha256_hex($json->encode([$channel,$session,$call]));my $dir="$home/preparation";make_path($dir,{mode=>0700});my $path="$dir/$fact-$event.json";
+ my $tmp="$path.$$-".int(rand(1_000_000)).'.tmp';sysopen my $f,$tmp,O_WRONLY|O_CREAT|O_EXCL,0600 or fail('RUNTIME_STATE_UNAVAILABLE');print $f $json->encode({factId=>$fact,channel=>$channel,occurredAt=>stamp(),event=>$event,toolName=>$name,success=>$success,%selector});$f->sync or fail('RUNTIME_STATE_UNAVAILABLE');close $f;if(!link($tmp,$path)&&!$!{EEXIST}){unlink $tmp;fail('RUNTIME_STATE_UNAVAILABLE');}unlink $tmp;
+}
+retain_preparing_hook();
 my $is_session=$action eq 'hook'&&grep {$ARGV[$_] eq '--event'&&($ARGV[$_+1]//'') eq 'SessionStart'} 0..$#ARGV;
 my $session;
 if($is_session){
@@ -58,9 +84,9 @@ sub public_state {
  my $s=readstate()//{code=>'RUNTIME_PREPARING',phase=>'starting',downloadedBytes=>0,totalBytes=>$spec->{bytes}};
  my %v=map {exists $s->{$_}?($_=>$s->{$_}):()} qw(code phase downloadedBytes totalBytes attemptCount startedAt finishedAt previousError);
  $v{progress}=defined($s->{totalBytes})&&$s->{totalBytes}>0?0+sprintf('%.1f',100*($s->{downloadedBytes}//0)/$s->{totalBytes}):undef;
- $v{recordingDuringPreparation}=JSON::PP::false;
- $v{message}=$s->{code} eq 'RUNTIME_READY'?'HanaMesh 运行环境已准备完成，后续调用按本机记录设置处理。':$s->{code} eq 'RUNTIME_PREPARING'?'HanaMesh 正在准备运行环境（约 1 分钟），完成后开始本机记录；准备期间的调用不记录且不补录，已关闭者保持关闭。':'HanaMesh 运行环境准备失败；下次新会话开始时会自动再尝试一次。准备期间的调用未记录，不会补录。';
- return {runtime=>\%v,localCollection=>{enabled=>JSON::PP::false,preparingCallsRecorded=>JSON::PP::false},code=>$s->{code}};
+ my $collect=!-e (($ENV{HANAMESH_AGENT_HOME}//"$shared/agent/usage").'/withdrawal.json');$v{recordingDuringPreparation}=$collect?JSON::PP::true:JSON::PP::false;
+ $v{message}=$s->{code} eq 'RUNTIME_READY'?'HanaMesh 运行环境已准备完成，后续调用按本机记录设置处理。':$s->{code} eq 'RUNTIME_PREPARING'?'HanaMesh 正在准备运行环境（约 1 分钟），准备期间的插件调用已在本机暂存，就绪后处理；已关闭者保持关闭。':'HanaMesh 运行环境准备失败；下次新会话开始时会自动再尝试一次。准备期间的插件调用仍在本机暂存，就绪后处理。';
+ return {runtime=>\%v,localCollection=>{enabled=>$collect?JSON::PP::true:JSON::PP::false,preparingCallsRecorded=>$collect?JSON::PP::true:JSON::PP::false},code=>$s->{code}};
 }
 sub publish_file {my($src,$dst)=@_;if(!link($src,$dst)){fail('RUNTIME_CACHE_CONFLICT') unless -f $dst&&!(-l $dst)&&filehash($src) eq filehash($dst);}}
 sub producer {
@@ -85,6 +111,7 @@ sub producer {
   ready();$state->{code}='RUNTIME_READY';$state->{phase}='ready';$state->{finishedAt}=stamp();atomic($statefile,$state);1;
  };
  if(!$ok){my $e=$@;$e=~s/\s+$//;$e='RUNTIME_PREPARATION_FAILED' unless $e=~/^(?:RUNTIME|HANAMESH_NODE)_[A-Z_]+$/;$state->{code}=$e=~/^RUNTIME_/?$e:'RUNTIME_CACHE_INVALID';$state->{phase}='failed';$state->{finishedAt}=stamp();atomic($statefile,$state);print STDERR "$e\n";}
+ if($ok){system {$node} $node,"$plugin/lib/agent/preparation.mjs";}
  remove_tree($scratch) if defined($scratch)&&index($scratch,"$base/.node-download-")==0;close $lock;exit($ok?0:1);
 }
 my $old=readstate();sysopen my $lock,$lockfile,O_WRONLY|O_CREAT,0600 or fail('RUNTIME_STATE_UNAVAILABLE');
@@ -107,9 +134,9 @@ if($action eq 'mcp'||$action eq 'mcp-ready'){
   next unless $selector->can_read(0.2);my $n=sysread(STDIN,my $char,1);last unless $n;$line.=$char;
   if(length($line)>131072){$line='';next;}next unless $char eq "\n";
   my $q=eval{$json->decode($line)};$line='';next unless ref($q) eq 'HASH'&&exists($q->{id});my $method=$q->{method}//'';my $params=ref($q->{params}) eq 'HASH'?$q->{params}:{};my $result;
-  if($method eq 'initialize'){$initialized=1;$result={protocolVersion=>$params->{protocolVersion}//'2024-11-05',capabilities=>{tools=>{}},serverInfo=>{name=>'hanamesh-usage',version=>'0.3.0-rc.12'}};}
+  if($method eq 'initialize'){$initialized=1;$result={protocolVersion=>$params->{protocolVersion}//'2024-11-05',capabilities=>{tools=>{}},serverInfo=>{name=>'hanamesh-usage',version=>'0.3.0-rc.14'}};}
   elsif($method eq 'ping'){$result={};}
-  elsif($method eq 'tools/list'){$result={tools=>[{name=>'hanamesh_status',description=>'只读查看运行环境准备进度；准备期间不记录调用。',inputSchema=>{type=>'object',properties=>{},additionalProperties=>JSON::PP::false},annotations=>{readOnlyHint=>JSON::PP::true,destructiveHint=>JSON::PP::false,openWorldHint=>JSON::PP::false}}]};}
+  elsif($method eq 'tools/list'){$result={tools=>[{name=>'hanamesh_status',description=>'只读查看运行环境准备进度；准备期间插件调用在本机暂存。',inputSchema=>{type=>'object',properties=>{},additionalProperties=>JSON::PP::false},annotations=>{readOnlyHint=>JSON::PP::true,destructiveHint=>JSON::PP::false,openWorldHint=>JSON::PP::false}}]};}
   elsif($method eq 'tools/call'&&($params->{name}//'') eq 'hanamesh_status'&&ref($params->{arguments}//{}) eq 'HASH'&&!keys(%{$params->{arguments}//{}})){my $status=public_state();$result={isError=>$status->{code} eq 'RUNTIME_READY'?JSON::PP::false:JSON::PP::true,content=>[{type=>'text',text=>$json->encode($status)}]};}
   else{print $json->encode({jsonrpc=>'2.0',id=>$q->{id},error=>{code=>-32601,message=>'Method not found'}})."\n";next;}
   print $json->encode({jsonrpc=>'2.0',id=>$q->{id},result=>$result})."\n";

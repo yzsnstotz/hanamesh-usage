@@ -1,4 +1,3 @@
-import {fixtureAgentStore,fixtureCoreCLI} from './fixtures/agent-core.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,mkdir,writeFile,rm,readFile} from 'node:fs/promises';
@@ -11,8 +10,7 @@ const now=Date.parse('2026-10-28T10:00:00.000Z'),cid='11111111-1111-4111-8111-11
 const row={factId:'a'.repeat(64),channel:'claude',pluginId:'target@market',feature:'mcp:echo',success:true,occurredAt:new Date(now).toISOString(),disposition:'attributed'};
 const catalog={plugins:[{hanaRef:'hana-target',channel:'claude',pluginId:'target@market'},{hanaRef:'hana-target',channel:'codex',pluginId:'target@market'}],settings:{backfillWindowDays:30,countUnconfirmedCalls:false}};
 async function fixture(t){
- const home=await mkdtemp(join(tmpdir(),'hm-onboarding-v2-'));t.after(()=>rm(home,{recursive:true,force:true}));const {AgentStore:BaseAgentStore}=await load('agent/store.mjs');const AgentStore=fixtureAgentStore(BaseAgentStore);
- let state={agentProtocolVersion:2,deviceId:'A'.repeat(43),consent:{state:'withheld',changedAt:null,consentId:null,authorization:null}};const calls=[],messages=[];
+ const home=await mkdtemp(join(tmpdir(),'hm-onboarding-v2-'));t.after(()=>rm(home,{recursive:true,force:true}));const {AgentStore}=await load('agent/store.mjs'); let state={agentProtocolVersion:2,deviceId:'A'.repeat(43),consent:{state:'withheld',changedAt:null,consentId:null,authorization:null}};const calls=[],messages=[];
  const r={agentHome:home,sharedHome:home,host:{channel:'claude',home:join(home,'claude')},config:{serverOrigin:'http://127.0.0.1:32101',websiteOrigin:'http://127.0.0.1:32102',requestTimeoutMs:10000},store:new AgentStore(home),async call(input){calls.push(input);if(input.operation==='state')return structuredClone(state);if(input.operation==='prepareOnboarding'){state.consent.consentId=cid;return{url:'http://127.0.0.1:32102/me/bind?flow=agent&consentId='+cid,expiresAt:'2026-10-28T20:00:00.000Z',consentId:cid,deviceId:state.deviceId};}if(input.operation==='syncOnboarding')return{consent:state.consent,onboarding:{state:'pending',binding:null}};throw Error('UNEXPECTED_OPERATION');}};
  return {home,r,calls,messages,emit:async m=>messages.push(m),setState:s=>{state=s;},state:()=>state};
 }
@@ -58,18 +56,18 @@ test('real hook process records only minimal local facts before website consent 
  const f=await fixture(t);const {spawnSync}=await import('node:child_process');const host=join(f.home,'claude'),plugin=join(f.home,'target'),core=join(f.home,'core.mjs');
  await mkdir(join(host,'plugins'),{recursive:true});await mkdir(plugin);await writeFile(join(plugin,'.mcp.json'),JSON.stringify({mcpServers:{probe:{command:'fixture'}}}));
  await writeFile(join(host,'plugins/installed_plugins.json'),JSON.stringify({plugins:{'target@market':[{installPath:plugin}]}}));
- const initial=()=>JSON.stringify(f.state());const writeCore=()=>writeFile(core,fixtureCoreCLI(f.home,JSON.parse(initial()),join(f.home,'shared/identity/core-origin-fixture.json')));await writeCore();
+ const initial=()=>JSON.stringify(f.state());const writeCore=()=>writeFile(core,`for await(const c of process.stdin){};console.log(JSON.stringify({result:${initial()}}));`);await writeCore();
  const env={HOME:f.home,PATH:process.env.PATH,HANAMESH_SHARED_HOME:join(f.home,'shared'),HANAMESH_AGENT_HOME:f.home,HANAMESH_CORE_AGENT_CLI:core,HANAMESH_AGENT_CHANNEL:'claude',CLAUDE_CONFIG_DIR:host};
  const payload={hook_event_name:'PostToolUse',session_id:'private-session',tool_use_id:'one',tool_name:'mcp__plugin_target_probe__echo',tool_input:{secret:'NEVER_PERSIST_INPUT'},tool_response:{isError:false,content:[{type:'text',text:'NEVER_PERSIST_OUTPUT'}]},transcript_path:'/NEVER_OPEN_TRANSCRIPT'};
  const run=(event='PostToolUse')=>spawnSync(process.execPath,[join(codeRoot,'lib/agent/hook.mjs'),'--event',event],{env,input:JSON.stringify({...payload,hook_event_name:event}),encoding:'utf8'});
- // A real invocation starts with Pre. Orphan Posts are covered by the origin counterexamples.
+ // Pre/Post share one minimal activity row.
  const pre=run('PreToolUse');assert.equal(pre.status,0,pre.stderr);assert.equal(pre.stdout,'');
  const a=run();assert.equal(a.status,0,a.stderr);assert.equal(a.stdout,'');let rows=await f.r.store.rows();assert.equal(rows.length,1);assert.equal(rows[0].pluginId,'target@market');assert.doesNotMatch(JSON.stringify(rows),/NEVER_|private-session|transcript/);
  f.state().consent.changedAt=new Date(now).toISOString();await writeCore();payload.tool_use_id='two';const b=run();assert.equal(b.status,0,b.stderr);assert.equal((await f.r.store.rows()).length,1);
 });
 async function sender(t){
  const f=await fixture(t);const {generateKeyPairSync,sign,verify}=await import('node:crypto');const {publicKey,privateKey}=generateKeyPairSync('ed25519');
- f.state().consent={state:'granted',consentId:cid,authorization:'website',changedAt:new Date(now).toISOString()};const before=f.r.call;f.r.call=async input=>{if(input.operation==='signAgentEvent')return{signature:sign(null,Buffer.from(agentSigningJSON(input.event)),privateKey).toString('base64url')};if(input.operation==='signRequest')return{'x-fixture':'signed'};if(input.operation==='register')return{};return before(input);};
+ f.state().consent={state:'granted',consentId:cid,authorization:'website',changedAt:new Date(now).toISOString()};const before=f.r.call;f.r.call=async input=>{if(input.operation==='sign')return{signature:sign(null,Buffer.from(input.message),privateKey).toString('base64url')};if(input.operation==='signRequest')return{'x-fixture':'signed'};if(input.operation==='register')return{};return before(input);};
  const full={schemaVersion:1,eventProtocol:'hm-agent-v1',generatedAt:new Date(now).toISOString(),plugins:catalog.plugins.map(p=>({...p,githubRepo:'owner/target',pluginName:'target',marketplace:'market',mcpServers:['probe'],skills:[]})),settings:{...catalog.settings,uploadIntervalMs:60000,catalogRefreshMs:300000}};
  const {agentSigningJSON}=await load('core/agent-event.js');const posted=[];const request=async(origin,path,init)=>{if(path==='/v1/registry/agent-catalog')return full;assert.equal(path,'/v2/usage/events','website grants must never call old activate or legacy contributions');const [wire]=JSON.parse(init.body);assert.ok(verify(null,Buffer.from(agentSigningJSON(wire)),publicKey,Buffer.from(wire.signature,'base64url')));posted.push(wire);return{accepted:1,duplicates:0,rejected:[],durability:'committed'};};return{...f,request,posted};
 }
@@ -78,9 +76,9 @@ test('website upload skips legacy activation; two actual channels produce two us
  await uploadOnce(f.r,{now:now+1000,request:f.request});assert.equal(f.posted.filter(w=>w.action==='use').length,2);assert.equal(f.posted.filter(w=>w.action==='install').length,1);const install=f.posted.find(w=>w.action==='install');assert.equal(install.occurredAt,row.occurredAt);
  await f.r.store.record({...row,factId:'c'.repeat(64)},true);await uploadOnce(f.r,{now:now+2000,request:f.request});assert.equal(f.posted.filter(w=>w.action==='install').length,1);assert.equal(f.posted.filter(w=>w.action==='use').length,3);assert.ok(f.calls.some(c=>c.operation==='syncOnboarding'));
 });
-test('unbound data stays local; unlisted/ambiguous/outer-only never create an install',async t=>{
+test('unbound data stays local; unlisted and ambiguous never create an install',async t=>{
  const f=await fixture(t);await f.r.store.record(row,true);const {uploadOnce}=await load('agent/upload.mjs');assert.equal((await uploadOnce(f.r,{now,request:()=>assert.fail('usage request before consent')})).state,'withheld');
- const g=await sender(t);await g.r.store.record({...row,pluginId:'unknown@market'},true);await g.r.store.record({...row,factId:'b'.repeat(64),disposition:'ambiguous',pluginId:null,feature:null,success:null},true);await g.r.store.record({...row,factId:'c'.repeat(64),disposition:'outer-only',success:null},true);await uploadOnce(g.r,{now:now+1000,request:g.request});assert.deepEqual(g.posted,[]);
+ const g=await sender(t);await g.r.store.record({...row,pluginId:'unknown@market'},true);await g.r.store.record({...row,factId:'b'.repeat(64),disposition:'ambiguous',pluginId:null,feature:null,success:null},true);await uploadOnce(g.r,{now:now+1000,request:g.request});assert.deepEqual(g.posted,[]);
 });
 test('unknown install commit freezes bytes and never automatically replays or invents a later success',async t=>{
  const f=await sender(t);await f.r.store.record({...row,success:false},true);const {uploadOnce}=await load('agent/upload.mjs');let original;
@@ -93,8 +91,8 @@ test('only the exact SQLite experimental notice is filtered; genuine warnings an
  const script=`import {agentLock} from ${JSON.stringify(url)};const done=await agentLock(${JSON.stringify(f.home)},'warning-test');await done();process.emitWarning('VISIBLE_OTHER_WARNING','ExperimentalWarning');process.stderr.write('VISIBLE_REAL_ERROR\\n');`;
  const child=spawnSync(process.execPath,['--input-type=module','-e',script],{encoding:'utf8',env:{PATH:process.env.PATH,HOME:f.home}});assert.equal(child.status,0,child.stderr);assert.doesNotMatch(child.stderr,/SQLite is an experimental feature/);assert.match(child.stderr,/VISIBLE_OTHER_WARNING/);assert.match(child.stderr,/VISIBLE_REAL_ERROR/);
 });
-test('a historical completed withdrawal marker does not revoke an existing legacy re-grant; pending still blocks',async t=>{
- const f=await fixture(t);const {localRecordingEnabled}=await load('agent/onboarding.mjs');f.state().consent={state:'granted',authorization:'legacy-terminal',consentId:cid,changedAt:new Date(now).toISOString()};
+test('a historical completed withdrawal marker does not revoke an website re-grant; pending still blocks',async t=>{
+ const f=await fixture(t);const {localRecordingEnabled}=await load('agent/onboarding.mjs');f.state().consent={state:'granted',authorization:'website',consentId:cid,changedAt:new Date(now).toISOString()};
  await writeFile(join(f.home,'withdrawal.json'),JSON.stringify({state:'sent',consentId:'22222222-2222-4222-8222-222222222222'}));assert.equal(await localRecordingEnabled(f.r),true);
  await writeFile(join(f.home,'withdrawal.json'),JSON.stringify({state:'pending',consentId:cid}));assert.equal(await localRecordingEnabled(f.r),false);
 });
@@ -105,18 +103,9 @@ test('readonly status exposes preparation failure and unknown listing without cl
 });
 test('readonly status keeps preparation honest and reconciliation cannot reopen an explicit local close',async t=>{
  const f=await fixture(t),{status}=await load('agent/status.mjs');let preparation={code:'RUNTIME_PREPARING',phase:'publishing',startedAt:new Date().toISOString()};f.r.runtimePreparation=async()=>preparation;
- let value=await status(f.r);assert.equal(value.runtime.code,'RUNTIME_PREPARING');assert.equal(value.code,'RUNTIME_PREPARING');assert.equal(value.localCollection.enabled,false);assert.match(value.nextStep,/当前不记录/);
+ let value=await status(f.r);assert.equal(value.runtime.code,'RUNTIME_PREPARING');assert.equal(value.code,'RUNTIME_PREPARING');assert.equal(value.localCollection.enabled,true);assert.match(value.nextStep,/暂存/);
  f.state().consent.changedAt=new Date().toISOString();value=await status(f.r);assert.equal(value.code,'CONSENT_WITHHELD');assert.equal(value.localCollection.enabled,false);
  preparation={...preparation,code:'RUNTIME_READY',finishedAt:new Date().toISOString()};value=await status(f.r);assert.equal(value.runtime.code,'RUNTIME_READY');assert.equal(value.localCollection.enabled,false);assert.equal(value.onboarding.state,'closed');assert.equal(value.bindingLink,null);
-});
-test('a late Post from the preparation window is not reconstructed; a subsequent observed Pre/Post records normally',async t=>{
- const f=await fixture(t);const {spawnSync}=await import('node:child_process');const host=join(f.home,'claude'),plugin=join(f.home,'target'),core=join(f.home,'core.mjs'),shared=join(f.home,'shared');
- await mkdir(join(host,'plugins'),{recursive:true});await mkdir(plugin);await writeFile(join(plugin,'.mcp.json'),JSON.stringify({mcpServers:{probe:{command:'fixture'}}}));await writeFile(join(host,'plugins/installed_plugins.json'),JSON.stringify({plugins:{'target@market':[{installPath:plugin}]}}));await writeFile(core,`let s='';for await(const c of process.stdin)s+=c;console.log(JSON.stringify({result:${JSON.stringify(f.state())}}));`);
- const dir=join(shared,'runtime',`node-v24.13.1-darwin-${process.arch}`);await mkdir(dir,{recursive:true});await writeFile(join(dir,'prepare-state.json'),JSON.stringify({code:'RUNTIME_READY',finishedAt:new Date().toISOString()}));
- const env={HOME:f.home,PATH:process.env.PATH,HANAMESH_SHARED_HOME:shared,HANAMESH_AGENT_HOME:f.home,HANAMESH_CORE_AGENT_CLI:core,HANAMESH_AGENT_CHANNEL:'claude',CLAUDE_CONFIG_DIR:host};
- const run=(event,id)=>spawnSync(process.execPath,[join(codeRoot,'lib/agent/hook.mjs'),'--event',event],{env,input:JSON.stringify({hook_event_name:event,session_id:'fixture-window',tool_use_id:id,tool_name:'mcp__plugin_target_probe__echo',tool_response:{isError:false,content:[]}}),encoding:'utf8'});
- let p=run('PostToolUse','began-during-preparation');assert.equal(p.status,0,p.stderr);assert.equal((await f.r.store.rows()).length,0,'without a post-ready Pre, the preparation-window call is never backfilled');
- for(const event of ['PreToolUse','PostToolUse']){p=run(event,'began-after-ready');assert.equal(p.status,0,p.stderr);}const rows=await f.r.store.rows();assert.equal(rows.length,1);assert.equal(rows[0].success,true);
 });
 test('mcp-ready starts the original background state check without waiting for a second initialize',async t=>{
  const f=await fixture(t),{spawn}=await import('node:child_process'),core=join(f.home,'core-tick.mjs'),marker=join(f.home,'tick-observed');

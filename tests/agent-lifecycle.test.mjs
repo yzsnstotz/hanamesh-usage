@@ -1,4 +1,3 @@
-import {fixtureAgentStore} from './fixtures/agent-core.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,rm} from 'node:fs/promises';
@@ -7,8 +6,7 @@ import {tmpdir} from 'node:os';
 import {pathToFileURL} from 'node:url';
 import {root} from './fixtures/helpers.mjs';
 const {projectHook}=await import(pathToFileURL(join(root,'lib/agent/project.mjs')).href);
-const {AgentStore:BaseAgentStore}=await import(pathToFileURL(join(root,'lib/agent/store.mjs')).href);const AgentStore=fixtureAgentStore(BaseAgentStore);
-const {agentEventForFact,agentSigningJSON}=await import(pathToFileURL(join(root,'lib/core/agent-event.js')).href);
+const {AgentStore}=await import(pathToFileURL(join(root,'lib/agent/store.mjs')).href);const {agentEventForFact,agentSigningJSON}=await import(pathToFileURL(join(root,'lib/core/agent-event.js')).href);
 const installed=[{pluginId:'target@market',pluginName:'target',mcpServers:['probe'],skills:[]}];
 const payload={session_id:'disposable-session',tool_use_id:'call',tool_name:'mcp__probe__echo',tool_input:{secret:'DO_NOT_PERSIST'},transcript_path:'/must-not-read'};
 const now=Date.parse('2026-10-15T10:00:00.000Z');
@@ -22,13 +20,12 @@ test('G real host hook shape: Pre unknown and Post same call identity; missing r
  assert.equal(projectHook({...payload,hook_event_name:'PostToolUse',tool_response:{isError:true,content:[]}},'codex',installed,now).success,false);
  assert.doesNotMatch(JSON.stringify([a,b]),/DO_NOT_PERSIST|must-not-read|disposable-session/);
 });
-test('G one attempt promotes before freeze, unknown gated by policy and outer extraction stays local',async t=>{
+test('G one attempt promotes before freeze, unknown result follows the configured policy',async t=>{
  const store=await fixture(t);await store.record(pre(),true);assert.equal((await store.pending(catalog,now+1000)).length,0);
  assert.equal((await store.pending({...catalog,settings:{...catalog.settings,countUnconfirmedCalls:true}},now+1000)).length,1);
  assert.equal(await store.record(post(),true),'promoted');let rows=await store.rows();assert.equal(rows.length,1);assert.equal(rows[0].success,true);assert.equal(rows[0].occurredAt,new Date(now).toISOString());
  await store.record(pre(),true);assert.equal((await store.rows())[0].success,true);
- const outer=projectHook({...payload,tool_use_id:'outer',hook_event_name:'PostToolUse',tool_name:'exec',tool_input:{code:'const r = await tools.mcp__probe__echo({});'},tool_response:{isError:false}},'codex',installed,now);
- await store.record(outer,true);assert.equal((await store.pending({...catalog,settings:{...catalog.settings,countUnconfirmedCalls:true}},now+1000)).length,1);
+
 });
 test('G frozen unknown event remains byte-identical after late success and cannot earn a second event',async t=>{
  const store=await fixture(t);await store.record(pre(),true);const wire={success:null,feature:'mcp:echo',channel:'codex',occurredAt:new Date(now).toISOString(),signature:'fixture'};

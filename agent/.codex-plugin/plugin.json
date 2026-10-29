@@ -1,10 +1,10 @@
 {
   "name": "hanamesh",
   "version": "0.2.6",
-  "description": "HanaMesh：宿主允许执行后后台准备；准备期间不记录。就绪后仅本机记录，网站一次同意绑定才上传，可原生禁用停止。清除记录只删载荷；防重指纹随设备永久保留，删除设备身份后须重新网站绑定。",
+  "description": "HanaMesh：安装后默认本机记录插件调用；运行时准备期间暂存，网站同意并绑定后上传，可原生禁用停止。",
   "interface": {
     "displayName": "HanaMesh 使用记录",
-    "shortDescription": "先审核并Trust hooks；后台准备期间不记录，就绪后仅本机，网站同意绑定才上传。",
+    "shortDescription": "先审核并Trust hooks；调用仅留本机，网站同意并绑定才上传。",
     "developerName": "HanaMesh",
     "category": "Productivity",
     "defaultPrompt": "检查 HanaMesh 计量是否开启"

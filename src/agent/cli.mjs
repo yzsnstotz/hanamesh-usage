@@ -3,12 +3,13 @@ import {mkdir,rm} from 'node:fs/promises';
 import {join} from 'node:path';
 import {createInterface} from 'node:readline';
 import {runtime} from './runtime.mjs';
+import {drainPreparation} from './preparation.mjs';
 import {atomicJSON,readJSON} from './store.mjs';
 import {status} from './status.mjs';
 import {uploadOnce} from './upload.mjs';
 import {senderLock} from './sender-lock.mjs';
 import {localRecordingEnabled,refreshOnboarding} from './onboarding.mjs';
-import {beginWithdrawal,finishWithdrawal,grantConsent} from './withdraw.mjs';
+import {beginWithdrawal,finishWithdrawal} from './withdraw.mjs';
 import {refreshAgentCatalog} from './remote-catalog.mjs';
 
 const safeCode=error=>/^[A-Z][A-Z0-9_]{0,79}$/.test(error.message)?error.message:'AGENT_FAILED';
@@ -32,10 +33,10 @@ if(command==='mcp'||command==='mcp-ready') {
         await mkdir(r.agentHome,{recursive:true,mode:0o700});
         release=await senderLock(r.agentHome);
         if(release){
-          await r.store.prune();await refreshOnboarding(r);
+          await drainPreparation(r);await r.store.prune();await refreshOnboarding(r);
           const current=await r.call({operation:'state'});
           // A granted sender refreshes once inside uploadOnce. Local-only collection reads public metadata here.
-          if(current.consent.state!=='granted')try{await refreshAgentCatalog(r);}catch{await atomicJSON(join(r.agentHome,'remote-proof-diagnostics.json'),{diagnostics:[{pluginId:null,code:'AGENT_CODEX_REMOTE_CATALOG_UNAVAILABLE'}]});}
+          if(current.consent.state!=='granted'||current.consent.authorization!=='website')try{await refreshAgentCatalog(r);}catch{await atomicJSON(join(r.agentHome,'remote-inventory-diagnostics.json'),{diagnostics:[{pluginId:null,code:'AGENT_CODEX_REMOTE_CATALOG_UNAVAILABLE'}]});}
           const result=await uploadOnce(r);r.senderError=null;await atomicJSON(join(r.agentHome,'sender.json'),{...result,checkedAt:new Date().toISOString()});
         }
       }
@@ -51,7 +52,7 @@ if(command==='mcp'||command==='mcp-ready') {
     if(request.id===undefined)continue;
     try {
       let result;
-      if(request.method==='initialize') {result={protocolVersion:request.params?.protocolVersion ?? '2024-11-05',capabilities:{tools:{}},serverInfo:{name:'hanamesh-usage',version:'0.3.0-rc.12'}};if(!active)active=tick();}
+      if(request.method==='initialize') {result={protocolVersion:request.params?.protocolVersion ?? '2024-11-05',capabilities:{tools:{}},serverInfo:{name:'hanamesh-usage',version:'0.3.0-rc.14'}};if(!active)active=tick();}
       else if(request.method==='ping')result={};
       else if(request.method==='tools/list')result={tools:[{name:'hanamesh_status',description:'只读检查 HanaMesh 同意、配置、计量前置条件、记录和发送原因；不修改宿主信任。',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true,destructiveHint:false,openWorldHint:false}}]};
       else if(request.method==='tools/call' && request.params?.name==='hanamesh_status' && Object.keys(request.params?.arguments ?? {}).length===0)result={content:[{type:'text',text:JSON.stringify(await status(r))}]};
@@ -70,8 +71,6 @@ if(command==='mcp'||command==='mcp-ready') {
       const bootstrapIntervalMs=Number(process.argv[5] ?? 60000);if(!Number.isSafeInteger(bootstrapIntervalMs)||bootstrapIntervalMs<=0||bootstrapIntervalMs>2147483647)throw new Error('AGENT_SETTINGS_INVALID');
       const requestTimeoutMs=Number(process.argv[6] ?? 10000);if(!Number.isSafeInteger(requestTimeoutMs)||requestTimeoutMs<10||requestTimeoutMs>60000)throw new Error('AGENT_SETTINGS_INVALID');
       await r.configure({serverOrigin,websiteOrigin,bootstrapIntervalMs,requestTimeoutMs});result={configured:true,consent:'unchanged',notice:'维护用显式地址覆盖已保存；普通安装自动仅留本机，网站一次同意绑定后才上传，不需终端授予。'};
-    } else if(command==='agree' || (command==='consent' && process.argv[3]==='--agree')) {
-      result=await grantConsent(r);
     } else if(command==='withdraw') {
       const deleted=await beginWithdrawal(r);result={consent:'withheld',localDeleted:true,remoteDeletion:deleted.state,...deleted};
     } else if(command==='bind-link') {
