@@ -1,0 +1,39 @@
+{
+  "scope": "AUTHOR_ENGINEERING_COMPLETE_PENDING_R2_DELTA",
+  "finding": "R2-AGENT-REMOTE-BACKFILL-01",
+  "normalCandidateCommit": "7252ed46d2f251e3844944b65bcbe669fc0561a7",
+  "normal": {
+    "version": "0.3.0-rc.12",
+    "sourceHead": "9984771534b09c2c582d1d678f627f9d156a0102",
+    "sha256": "28adc5f03f805f6d48d1cb0dfc9c49bd224fbbbe4c4b1f4273c8fcd303b67a3a",
+    "bytes": 113887,
+    "artifact": "/Users/leoventory/.cache/hanamesh-runs/i-agent-remote-backfill-20261029/packages/hanamesh-usage-0.3.0-rc.12.tgz",
+    "published": false,
+    "finalHead": "7252ed46d2f251e3844944b65bcbe669fc0561a7"
+  },
+  "supplement": {
+    "pass": 19,
+    "fail": 0,
+    "skip": 0,
+    "normalSha256": "28adc5f03f805f6d48d1cb0dfc9c49bd224fbbbe4c4b1f4273c8fcd303b67a3a",
+    "freshMinimalEnvironment": true,
+    "frozenConsumerAndNormalBytes": true,
+    "reverifiedInstalledFiles": 86,
+    "consumerLockStillFrozen": true,
+    "fixtureMatchesCommittedSource": true,
+    "acquiredAt": "2026-10-29T05:56:09.960380+00:00",
+    "firstNestedFailurePreserved": true,
+    "noRebuildOrRepack": true
+  },
+  "supplementRelease": {
+    "at": "2026-10-29T05:56:11.605720+00:00",
+    "device": 16777234,
+    "inode": 137922970,
+    "released": true
+  },
+  "normalBytesUnchanged": true,
+  "functionalSourceUnchangedSinceFullGates": true,
+  "existingCheckpointReceipt": "historical pending state; superseded by this final engineering receipt",
+  "independentReview": "PENDING_R2_DELTA",
+  "HostScoring": "NOT_RUN"
+}
