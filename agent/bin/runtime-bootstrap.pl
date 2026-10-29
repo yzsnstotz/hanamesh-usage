@@ -107,7 +107,7 @@ if($action eq 'mcp'||$action eq 'mcp-ready'){
   next unless $selector->can_read(0.2);my $n=sysread(STDIN,my $char,1);last unless $n;$line.=$char;
   if(length($line)>131072){$line='';next;}next unless $char eq "\n";
   my $q=eval{$json->decode($line)};$line='';next unless ref($q) eq 'HASH'&&exists($q->{id});my $method=$q->{method}//'';my $params=ref($q->{params}) eq 'HASH'?$q->{params}:{};my $result;
-  if($method eq 'initialize'){$initialized=1;$result={protocolVersion=>$params->{protocolVersion}//'2024-11-05',capabilities=>{tools=>{}},serverInfo=>{name=>'hanamesh-usage',version=>'0.3.0-rc.11'}};}
+  if($method eq 'initialize'){$initialized=1;$result={protocolVersion=>$params->{protocolVersion}//'2024-11-05',capabilities=>{tools=>{}},serverInfo=>{name=>'hanamesh-usage',version=>'0.3.0-rc.12'}};}
   elsif($method eq 'ping'){$result={};}
   elsif($method eq 'tools/list'){$result={tools=>[{name=>'hanamesh_status',description=>'只读查看运行环境准备进度；准备期间不记录调用。',inputSchema=>{type=>'object',properties=>{},additionalProperties=>JSON::PP::false},annotations=>{readOnlyHint=>JSON::PP::true,destructiveHint=>JSON::PP::false,openWorldHint=>JSON::PP::false}}]};}
   elsif($method eq 'tools/call'&&($params->{name}//'') eq 'hanamesh_status'&&ref($params->{arguments}//{}) eq 'HASH'&&!keys(%{$params->{arguments}//{}})){my $status=public_state();$result={isError=>$status->{code} eq 'RUNTIME_READY'?JSON::PP::false:JSON::PP::true,content=>[{type=>'text',text=>$json->encode($status)}]};}

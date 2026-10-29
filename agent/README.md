@@ -1,4 +1,4 @@
-# HanaMesh Agent 0.2.3
+# HanaMesh Agent 0.2.4
 
 使用 Claude Code / Codex 原生插件市场安装。宿主允许执行后会以带锁的独立后台进程只下载本架构固定Node24.13.1官方tar.xz并校验SHA（macOS arm64/x64）；启动入口立即返回。运行环境就绪后才开始仅本机的最小使用记录；不需终端setup、connect或会话内授权。Codex须先由本人审核并Trust hooks，Trust前不记录且无法发hook提示；安装详情提前说明此点。其他平台具名unsupported，未验证。
 

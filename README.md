@@ -152,7 +152,7 @@ Inventory 暴露 `INVENTORY_FAILED/INVENTORY_ENTRY_UNREADABLE/INVENTORY_PACKAGE_
 框架 peer 与 React 宿主外部供给沿用，独立声明消费需正常 TypeScript/Node/React 类型工具。
 本模块无 ABI 生成器或链上接口，ABI/模板/签名广播门不在本卡范围。
 
-## Claude Code / Codex · Usage rc.11 / Agent0.2.3组合候选
+## Claude Code / Codex · Usage rc.12 / Agent0.2.4返修候选
 
 宿主允许执行后用带锁的独立后台进程准备本架构固定Node24.13.1官方tar.xz；入口立即返回，准备期不记录/不补录。MCP先返回具名RUNTIME_PREPARING及真实字节进度，就绪后自动交接Node并开始仅本机记录；不需setup/agree/connect。Codex安装不等于Trust，须本人通过原生审核入口允许hooks；Trust前不记录且无会话提示。网站一次同意并绑定后，经Core capability2直读提交审计/绑定事实才上传与补报；旧终端granted保留、不造网页审计。DSH原同意弹窗不变。
 
