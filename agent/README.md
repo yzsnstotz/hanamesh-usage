@@ -1,4 +1,4 @@
-# HanaMesh Agent 0.2.2
+# HanaMesh Agent 0.2.3
 
 使用 Claude Code / Codex 原生插件市场安装。宿主允许执行后会以带锁的独立后台进程只下载本架构固定Node24.13.1官方tar.xz并校验SHA（macOS arm64/x64）；启动入口立即返回。运行环境就绪后才开始仅本机的最小使用记录；不需终端setup、connect或会话内授权。Codex须先由本人审核并Trust hooks，Trust前不记录且无法发hook提示；安装详情提前说明此点。其他平台具名unsupported，未验证。
 
@@ -16,7 +16,7 @@
 
 已校验的 Node 发布后若准备者中断，后续入口仅在准备锁空闲时收口为 READY；活动准备者持锁时仍不记录，status如实显示未就绪。恢复不重新下载、不补录准备期调用，主动关闭保持关闭。
 
-Codex 远程插件识别（源码候选，待统一组合）：仅支持已实测的 codex-cli 0.165.0 与 schema1 安装 marker。布局依据公开源码固定 c92700d2993707ee16eb63b35a1cdd7fcc563f69 的 codex-rs/core/src/plugins/installed.rs，并以本机隔离 CLI 实装核对。marker 在 plugins/cache/openai-curated-remote/<name>/.codex-remote-plugin-install.json，只含 schema_version/remote_plugin_id；版本目录和启用状态取官方只读 plugin list --json -m openai-curated-remote，不能由 marker 或 config.toml 推导。
+Codex 远程插件识别（统一组合候选，待独审与Host集成）：仅支持已实测的 codex-cli 0.165.0 与 schema1 安装 marker。布局依据公开源码固定 c92700d2993707ee16eb63b35a1cdd7fcc563f69 的 codex-rs/core/src/plugins/installed.rs，并以本机隔离 CLI 实装核对。marker 在 plugins/cache/openai-curated-remote/<name>/.codex-remote-plugin-install.json，只含 schema_version/remote_plugin_id；版本目录和启用状态取官方只读 plugin list --json -m openai-curated-remote，不能由 marker 或 config.toml 推导。
 
 后台仅从公开目录与登记来源取得固定 Git 文件清单，逐 blob/执行位核完整 contentSha256；hook 只读取该清单中的普通静态文件。仅对 .codex-plugin/plugin.json 支持已实测的相同字段和值、双空格缩进加尾换行格式化；其它内容逐字核同。未证明的 app 物化、未知 CLI/schema、缺来源/启用观察、ID/版本/内容不匹配都具名不计分；CLI 失败不关闭其它本地插件路径。状态工具的 remoteInstallations.diagnostics 给出原因，无原始错误、凭据、后端下载 URL 或私有路径。
 
