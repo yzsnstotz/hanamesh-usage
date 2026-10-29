@@ -25,7 +25,7 @@ try {
   const nodeRecipe=JSON.parse(await readFile('agent/bin/node-runtime.json'));
   const usage=JSON.parse(await readFile('package.json')),plugin=JSON.parse(await readFile('agent/.claude-plugin/plugin.json')),codex=JSON.parse(await readFile('agent/.codex-plugin/plugin.json'));
   if(plugin.name!=='hanamesh'||codex.name!==plugin.name||codex.version!==plugin.version)throw Error('SUITE_MANIFEST_MISMATCH');
-  for(const file of await inventory('src/agent')){const source=await readFile(join('src/agent',file.path));const expected=file.path==='cli.mjs'?Buffer.from(source.toString('utf8').replace('__HANAMESH_USAGE_VERSION__',usage.version)):source;if(sha256(await readFile(join('lib/agent',file.path)))!==sha256(expected))throw Error('SUITE_BUILD_STALE');}
+  for(const file of await inventory('src/agent')){const source=await readFile(join('src/agent',file.path));const expected=file.path==='cli.mjs'?Buffer.from(source.toString('utf8').replace('__HANAMESH_AGENT_VERSION__',plugin.version)):source;if(sha256(await readFile(join('lib/agent',file.path)))!==sha256(expected))throw Error('SUITE_BUILD_STALE');}
   await mkdir(output); // Fail rather than delete or mix an existing output.
   await cp('agent',output,{recursive:true});
   await mkdir(join(output,'lib'),{recursive:true});

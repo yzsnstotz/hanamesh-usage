@@ -37,7 +37,7 @@ for (const file of readdirSync('src/host')) copyFileSync(`src/host/${file}`,`lib
 rmSync('lib/agent',{recursive:true,force:true});
 mkdirSync('lib/agent',{recursive:true});
 for (const file of readdirSync('src/agent')) {
-  if(file==='cli.mjs')writeFileSync(`lib/agent/${file}`,readFileSync(`src/agent/${file}`,'utf8').replace('__HANAMESH_USAGE_VERSION__',JSON.parse(readFileSync('package.json','utf8')).version));
+  if(file==='cli.mjs')writeFileSync(`lib/agent/${file}`,readFileSync(`src/agent/${file}`,'utf8').replace('__HANAMESH_AGENT_VERSION__',JSON.parse(readFileSync('agent/.claude-plugin/plugin.json','utf8')).version));
   else copyFileSync(`src/agent/${file}`,`lib/agent/${file}`);
   const syntax=spawnSync(process.execPath,['--check',`lib/agent/${file}`],{stdio:'inherit'});
   if(syntax.status!==0)process.exit(syntax.status??1);
