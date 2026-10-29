@@ -1,5 +1,5 @@
 /** Real native installation + nonblocking bootstrap in disposable homes; synthetic hooks, no model/account/production requests. */
-import {mkdtemp,mkdir,writeFile,readFile,readdir,access} from 'node:fs/promises';
+import {mkdtemp,mkdir,writeFile,readFile,readdir,access,rm} from 'node:fs/promises';
 import {spawnSync} from 'node:child_process';
 import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
@@ -17,6 +17,7 @@ const env={PATH:process.env.PATH,HOME:home,CODEX_HOME:join(home,'codex'),CLAUDE_
 const run=(program,args,options={})=>{
  const start=Date.now(),result=spawnSync(program,args,{env,cwd:root,encoding:'utf8',timeout:55000,...options});const index=receipt.commands.length;
  receipt.commands.push({program:program===process.execPath?'node':program,args:args.map(x=>String(x).replaceAll(root,'<isolated>')),status:result.status,elapsedMs:Date.now()-start});
+ console.log(result.stdout??'');console.error(result.stderr??'');
  const prefix=join(root,String(index));return writeFile(prefix+'.stdout',result.stdout??'').then(()=>writeFile(prefix+'.stderr',result.stderr??'')).then(()=>{assert.equal(result.status,0,`${program} ${args.join(' ')}\n${result.stdout}\n${result.stderr}`);return {stdout:result.stdout,stderr:result.stderr,elapsedMs:Date.now()-start};});
 };
 try{
@@ -52,5 +53,6 @@ try{
  completed=true;console.log(JSON.stringify(receipt,null,2));
 }finally{
  if(!completed){try{const s=JSON.parse(await readFile(stateFile));if(s.code==='RUNTIME_PREPARING'&&s.pid){process.kill(-s.pid,'SIGTERM');await delay(250);}}catch{}}
- await writeFile(join(root,'verification.json'),JSON.stringify(receipt,null,2));await writeFile(join(root,'.run-state.json'),JSON.stringify({state:completed?'done':'active',keep:true,failed:!completed,scope:receipt.scope}));console.error('VERIFICATION_EVIDENCE: '+root);
+ try{console.error('VERIFICATION_EVIDENCE: '+JSON.stringify({...receipt,completed,temporaryDirectory:root}));}
+ finally{await rm(root,{recursive:true,force:true});}
 }

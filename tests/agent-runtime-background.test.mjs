@@ -36,7 +36,18 @@ async function eventUntil(directory,read,signal){
  finally{watcher.close();signal.removeEventListener('abort',changed);}
 }
 async function fixture(t,mode='failure'){
- const root=await mkdtemp(join(tmpdir(),'hm-background-runtime 中文-'));const plugin=join(root,'plugin'),shared=join(root,'shared');await mkdir(plugin);await copyAgentBootstrap(plugin);
+ const root=await mkdtemp(join(tmpdir(),'hm-background-runtime 中文-'));const plugin=join(root,'plugin'),shared=join(root,'shared');
+ const children=[];t.after(async()=>{try{
+  for(const p of children)if(p.exitCode===null)p.kill('SIGTERM'); // fixture worker cleanup is limited to its published PID.
+  const runtime=join(shared,'runtime');try{for(const d of await readdir(runtime)){const f=join(runtime,d,'prepare-state.json');try{const state=JSON.parse(await readFile(f));if(state.code==='RUNTIME_PREPARING'&&state.pid)try{process.kill(-state.pid,'SIGTERM');}catch{}}catch{}}}catch{}
+  await new Promise(r=>setTimeout(r,30));
+  if(process.env.HM_RUNTIME_TEST_EVIDENCE){
+   const evidence=join(process.env.HM_RUNTIME_TEST_EVIDENCE,basename(root));await mkdir(evidence,{recursive:true});
+   for(const file of await readdir(root))if(/^(?:deadline-failure\.json|fixture-inode\.json|downloads|curl-exits|node-exits|terminal-timing-\d+\.json)$/u.test(file))await cp(join(root,file),join(evidence,file));
+   try{for(const d of await readdir(runtime)){const dir=join(evidence,d);await mkdir(dir);for(const file of await readdir(join(runtime,d)))if(file==='prepare-state.json'||file.endsWith('.log'))await cp(join(runtime,d,file),join(dir,file));}}catch(error){if(error.code!=='ENOENT')throw error;}
+  }
+ }finally{await rm(root,{recursive:true,force:true});}});
+ await mkdir(plugin);await copyAgentBootstrap(plugin);
  const curl=join(root,'fixture-curl');await link(curlTemplate,curl);const linked=await stat(curl),template=await stat(curlTemplate);assert.equal(linked.ino,template.ino);assert.equal(linked.dev,template.dev);await writeFile(join(root,'fixture-inode.json'),JSON.stringify({inode:linked.ino,device:linked.dev,templateInode:template.ino,warmedInBefore:true,perRootHardLink:true}));await writeFile(join(root,'fixture-mode'),mode);
  for(const file of await readdir(join(plugin,'bin'))){const p=join(plugin,'bin',file),s=await readFile(p,'utf8');await writeFile(p,file.endsWith('.pl')?s.replaceAll("'/usr/bin/curl'",JSON.stringify(curl)):s.replaceAll('/usr/bin/curl',shellquote(curl)));}
  if(mode!=='failure'){
@@ -49,13 +60,10 @@ async function fixture(t,mode='failure'){
   await mkdir(join(plugin,'lib/agent'),{recursive:true});await writeFile(join(plugin,'lib/agent/preparation.mjs'),'// Explicit no-activity runtime publication fixture.\n');await writeFile(join(plugin,'lib/agent/cli.mjs'),`import{writeFileSync}from'node:fs';import{createInterface}from'node:readline';writeFileSync(${JSON.stringify(join(root,'takeover-mode'))},process.argv[2]);for await(const line of createInterface({input:process.stdin})){const q=JSON.parse(line);if(q.id!==undefined)console.log(JSON.stringify({jsonrpc:'2.0',id:q.id,result:{content:[{type:'text',text:JSON.stringify({runtime:{code:'RUNTIME_READY'},mode:process.argv[2]})}]}}));}`);
  }
  const env={PATH:'/usr/bin:/bin',HOME:root,HANAMESH_SHARED_HOME:shared,HANAMESH_AGENT_HOME:join(root,'agent'),CLAUDE_CONFIG_DIR:join(root,'claude'),HANAMESH_AGENT_CHANNEL:'claude'};
- let preserve=false;const children=[];t.after(async()=>{if(process.env.HM_RUNTIME_TEST_EVIDENCE){await mkdir(process.env.HM_RUNTIME_TEST_EVIDENCE,{recursive:true});await cp(shared,join(process.env.HM_RUNTIME_TEST_EVIDENCE,basename(root)),{recursive:true}).catch(()=>{});const control=join(process.env.HM_RUNTIME_TEST_EVIDENCE,basename(root),'control');await mkdir(control,{recursive:true});for(const file of await readdir(root))if(/^(?:fixture-inode\.json|downloads|curl-exits|node-exits|terminal-timing-\d+\.json)$/u.test(file))await cp(join(root,file),join(control,file));}for(const p of children)if(p.exitCode===null)p.kill('SIGTERM'); // fixture worker cleanup is limited to its published PID.
-  const runtime=join(shared,'runtime');try{for(const d of await readdir(runtime)){const f=join(runtime,d,'prepare-state.json');try{const state=JSON.parse(await readFile(f));if(state.code==='RUNTIME_PREPARING'&&state.pid)try{process.kill(-state.pid,'SIGTERM');}catch{}}catch{}}}catch{}
-  await new Promise(r=>setTimeout(r,30));if(preserve){await writeFile(join(root,'.run-state.json'),JSON.stringify({state:'done-failed-fixture',keep:true}));console.error('RUNTIME_FAILED_FIXTURE_RETAINED: '+root);}else await rm(root,{recursive:true,force:true});});
  const launch=(action,args=[],input='')=>new Promise((ok,bad)=>{const start=performance.now(),p=spawn('/bin/sh',[join(plugin,'bin/hm-agent'),action,...args],{env,stdio:['pipe','pipe','pipe']});children.push(p);let stdout='',stderr='';p.stdout.on('data',c=>stdout+=c);p.stderr.on('data',c=>stderr+=c);p.on('error',bad);p.on('close',code=>ok({code,stdout,stderr,ms:performance.now()-start}));p.stdin.on('error',()=>{});p.stdin.end(input);});
  const state=async()=>JSON.parse((await launch('status')).stdout);
  const captureFailure=async({gate='MCP response',limitMs=5000}={})=>{
-  preserve=true;let preparation;
+  let preparation;
   try{preparation=JSON.parse(await readFile(join(shared,'runtime',`node-v24.13.1-darwin-${process.arch}`,'prepare-state.json')));}catch(error){preparation={readError:error.code??'UNKNOWN'};}
   const processes=spawnSync('/bin/ps',['-axo','pid=,ppid=,stat=,etime=,args='],{encoding:'utf8'}).stdout.split('\n').flatMap(line=>{const m=line.match(/^\s*(\d+)\s+(\d+)\s+(\S+)\s+(\S+)\s+(.*)$/);return m?[{pid:Number(m[1]),parent:Number(m[2]),state:m[3],elapsed:m[4],command:m[5]}]:[];});const owned=new Set([preparation.pid,...children.map(p=>p.pid)].filter(Boolean));let changed=true;while(changed){const n=owned.size;for(const p of processes)if(owned.has(p.parent))owned.add(p.pid);changed=owned.size>n;}
   const signalState=spawnSync('/bin/ps',['-o','pid=,ppid=,sigmask=,sig=,wchan=','-p',[...owned].join(',')],{encoding:'utf8'});
