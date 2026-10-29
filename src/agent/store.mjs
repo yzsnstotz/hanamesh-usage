@@ -31,6 +31,15 @@ export class AgentStore {
     if(v!==null&&(v.schemaVersion!==1||typeof v.admitted!=='boolean'||Object.keys(v).sort().join('|')!=='admitted|schemaVersion'))throw Error('AGENT_CALL_ORIGIN_INVALID');
     return v;
   }
+  /** Under the store lock, preserve any existing seal and deny unprovable legacy identities. */
+  async denyMissingOrigin(factId){
+    if(!/^[a-f0-9]{64}$/.test(factId))throw Error('AGENT_FACT_INVALID');
+    await mkdir(this.originDir,{recursive:true,mode:0o700});
+    let fd;try{fd=await open(join(this.originDir,factId+'.json'),'wx',0o600);}catch(error){if(error.code==='EEXIST')return;throw error;}
+    // Exclusive creation never replaces admitted, rejected or corrupt existing proof.
+    // A crash leaving partial JSON fails closed on the next read.
+    try{await fd.writeFile(JSON.stringify({schemaVersion:1,admitted:false}));await fd.sync();}finally{await fd.close();}
+  }
   async observe(identity,row,consent,{allowNew=true,outcome=row?.success}={}){
     if(!consent)return 'withheld';
     if(!identity||!/^[a-f0-9]{64}$/.test(identity.factId)||!['codex','claude'].includes(identity.channel)||new Date(identity.occurredAt).toISOString()!==identity.occurredAt)throw Error('AGENT_FACT_INVALID');
@@ -74,7 +83,7 @@ export class AgentStore {
   }
   async prune(now=Date.now()){
     return this.mutate(async()=>{
-      for(const row of await this.rows())if(Date.parse(row.occurredAt)<now-30*86400000)await rm(join(this.dir,`${row.factId}.json`),{force:true});
+      for(const row of await this.rows())if(Date.parse(row.occurredAt)<now-30*86400000){await this.denyMissingOrigin(row.factId);await rm(join(this.dir,`${row.factId}.json`),{force:true});}
       let names;try{names=await readdir(this.installDir);}catch(error){if(error.code!=='ENOENT')throw error;names=[];}
       for(const name of names.filter(n=>/^[a-f0-9-]{36}\.json$/.test(n))){const path=join(this.installDir,name),entry=await readJSON(path,null);if(entry?.wire&&Date.parse(entry.wire.occurredAt)<now-30*86400000)await atomicJSON(path,{eventId:entry.eventId,delivery:{state:'expired',code:'INSTALL_WINDOW_EXPIRED'}});}
     });
@@ -111,5 +120,5 @@ export class AgentStore {
     if(['success','channel','feature','occurredAt'].some(key=>row[key]!==wire[key]))throw new Error('AGENT_FACT_CHANGED');
     await atomicJSON(path,{...row,wire});return wire;
   });}
-  async withdraw(){return this.mutate(async()=>{await rm(this.dir,{recursive:true,force:true});await rm(this.installDir,{recursive:true,force:true});await rm(join(this.root,'remote-inventory-diagnostics.json'),{force:true});});}
+  async withdraw(){return this.mutate(async()=>{for(const row of await this.rows())await this.denyMissingOrigin(row.factId);await rm(this.dir,{recursive:true,force:true});await rm(this.installDir,{recursive:true,force:true});await rm(join(this.root,'remote-inventory-diagnostics.json'),{force:true});});}
 }

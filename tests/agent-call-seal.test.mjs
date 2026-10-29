@@ -47,3 +47,9 @@ test('malformed origin proof fails closed instead of reconstructing eligibility'
  await store.record(row,true);await writeFile(join(store.originDir,row.factId+'.json'),JSON.stringify({schemaVersion:2,admitted:true}));
  await assert.rejects(store.pending(catalog),/AGENT_CALL_ORIGIN_INVALID/);await assert.rejects(store.record(row,true),/AGENT_CALL_ORIGIN_INVALID/);
 });
+for(const cleanup of ['prune','withdraw'])test(`legacy payload cleanup ${cleanup} preserves a denied identity before deleting activity`,async t=>{
+ const store=await fixture(t),now=Date.now(),row=projectHook({...payload,hook_event_name:'PostToolUse',tool_response:{isError:false}},'codex',[plugin],now-31*86400000);
+ await mkdir(store.dir,{recursive:true});await writeFile(join(store.dir,row.factId+'.json'),JSON.stringify(row));
+ await store[cleanup](now);assert.deepEqual(await store.rows(),[]);
+ assert.equal(await store.record({...row,occurredAt:new Date(now).toISOString()},true),'duplicate');assert.deepEqual(await store.pending(catalog,now),[]);
+});
