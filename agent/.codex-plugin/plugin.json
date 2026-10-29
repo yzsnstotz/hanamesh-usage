@@ -1,6 +1,6 @@
 {
   "name": "hanamesh",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "HanaMesh：宿主允许执行后后台准备；准备期间不记录。就绪后仅本机记录，网站一次同意绑定才上传，可原生禁用停止。",
   "interface": {
     "displayName": "HanaMesh 使用记录",

@@ -15,7 +15,7 @@ const tails=new Map();
 const owner=row=>typeof row.pluginId==='string'&&/^[A-Za-z0-9][A-Za-z0-9_.-]*@[A-Za-z0-9][A-Za-z0-9_.-]*$/.test(row.pluginId)&&typeof row.feature==='string'&&/^(mcp|skill):[A-Za-z0-9][A-Za-z0-9_.:-]*$/.test(row.feature);
 /** A call owns one row and one signed event. All modifications serialize across hook/sender processes. */
 export class AgentStore {
-  constructor(root,{timeoutMs=10000}={}){this.root=root;this.dir=join(root,'events');this.installDir=join(root,'installs');this.timeoutMs=timeoutMs;}
+  constructor(root,{timeoutMs=10000}={}){this.root=root;this.dir=join(root,'events');this.installDir=join(root,'installs');this.originDir=join(root,'call-origins');this.timeoutMs=timeoutMs;}
   async mutate(task){
     const run=(tails.get(this.root) ?? Promise.resolve()).then(async()=>{
       await mkdir(this.root,{recursive:true,mode:0o700});
@@ -24,28 +24,48 @@ export class AgentStore {
     });
     const tail=run.then(()=>{},()=>{});tails.set(this.root,tail);void tail.then(()=>{if(tails.get(this.root)===tail)tails.delete(this.root);});return run;
   }
-  async record(row,consent){
+  async record(row,consent){return this.observe({factId:row?.factId,channel:row?.channel,occurredAt:row?.occurredAt},row,consent);}
+  async origin(factId){
+    if(!/^[a-f0-9]{64}$/.test(factId))throw Error('AGENT_FACT_INVALID');
+    const v=await readJSON(join(this.originDir,factId+'.json'),null);
+    if(v!==null&&(v.schemaVersion!==1||typeof v.admitted!=='boolean'||Object.keys(v).sort().join('|')!=='admitted|schemaVersion'))throw Error('AGENT_CALL_ORIGIN_INVALID');
+    return v;
+  }
+  async observe(identity,row,consent,{allowNew=true,outcome=row?.success}={}){
     if(!consent)return 'withheld';
-    if(!row || !/^[a-f0-9]{64}$/.test(row.factId))throw new Error('AGENT_FACT_INVALID');
-    const value={factId:row.factId,channel:row.channel,occurredAt:row.occurredAt,disposition:row.disposition,pluginId:row.pluginId,feature:row.feature,success:row.success};
+    if(!identity||!/^[a-f0-9]{64}$/.test(identity.factId)||!['codex','claude'].includes(identity.channel)||new Date(identity.occurredAt).toISOString()!==identity.occurredAt)throw Error('AGENT_FACT_INVALID');
+    let value=null;
+    if(row!==null){
+    if(!row||row.factId!==identity.factId||row.channel!==identity.channel)throw Error('AGENT_FACT_INVALID');
+    value={factId:row.factId,channel:row.channel,occurredAt:row.occurredAt,disposition:row.disposition,pluginId:row.pluginId,feature:row.feature,success:row.success};
     if(row.remote){
       const v=row.remote;
       if(value.channel!=='codex'||!value.pluginId?.endsWith('@openai-curated-remote')||typeof v.remotePluginId!=='string'||!v.remotePluginId||!remoteVersion(v.version)||!['bundleSha256','contentSha256'].every(k=>/^[a-f0-9]{64}$/.test(v[k]??''))||typeof v.verified!=='boolean'||(!v.verified&&value.success!==null))throw Error('AGENT_FACT_INVALID');
       value.remote={remotePluginId:v.remotePluginId,version:v.version,bundleSha256:v.bundleSha256,contentSha256:v.contentSha256,verified:v.verified};
     }
     if(!['codex','claude'].includes(value.channel)||!['attributed','ambiguous','unverified','outer-only'].includes(value.disposition)||new Date(value.occurredAt).toISOString()!==value.occurredAt||(value.success!==null&&typeof value.success!=='boolean')||(value.disposition==='attributed'&&(typeof value.success!=='boolean'||!owner(value)))||(['unverified','outer-only'].includes(value.disposition)&&(!owner(value)||value.success!==null))||(value.disposition==='ambiguous'&&(value.pluginId!==null||value.feature!==null||value.success!==null)))throw new Error('AGENT_FACT_INVALID');
+    }
     return this.mutate(async()=>{
-      await mkdir(this.dir,{recursive:true,mode:0o700});const path=join(this.dir,`${row.factId}.json`),existing=await readJSON(path,null);
-      if(!existing){await atomicJSON(path,value);return 'recorded';}
-      // A later installation proves current bytes only. Failed first proof stays ineligible;
-      // only a call already verified at observation may acquire its late result.
-      if(existing.channel!==value.channel||existing.pluginId!==value.pluginId||existing.feature!==value.feature||(existing.remote||value.remote)&&(!existing.remote?.verified||!sameRemote(existing.remote,value.remote))||existing.disposition==='outer-only'||existing.success!==null||typeof value.success!=='boolean')return 'duplicate';
+      await mkdir(this.dir,{recursive:true,mode:0o700});
+      const path=join(this.dir,identity.factId+'.json'),existing=await readJSON(path,null),origin=await this.origin(identity.factId);
+      if(!origin){
+        const admitted=Boolean(allowNew&&!existing&&value&&owner(value)&&!['ambiguous','outer-only'].includes(value.disposition)&&(!value.remote||value.remote.verified===true));
+        await mkdir(this.originDir,{recursive:true,mode:0o700});
+        // Seal first. A crash before the payload is written loses a candidate, never creates credit.
+        // The marker has no original ids, plugin, time, result or wire and survives payload expiry/withdrawal.
+        await atomicJSON(join(this.originDir,identity.factId+'.json'),{schemaVersion:1,admitted});
+        if(existing)return 'origin-unavailable'; // Legacy/missing proof is not reconstructed from current files.
+        if(value&&allowNew){await atomicJSON(path,value);return 'recorded';}
+        return 'unattributed';
+      }
+      if(!origin.admitted||!existing)return 'duplicate';
+      if(existing.channel!==identity.channel||value&&(existing.pluginId!==value.pluginId||existing.feature!==value.feature)||existing.disposition==='outer-only'||existing.success!==null||typeof outcome!=='boolean')return 'duplicate';
       if(existing.wire){
         // Signed bytes/delivery never change. A late result is a local observation, not another credit.
         if(typeof existing.observedSuccess==='boolean')return 'duplicate';
-        await atomicJSON(path,{...existing,observedSuccess:value.success});return 'observed';
+        await atomicJSON(path,{...existing,observedSuccess:outcome});return 'observed';
       }
-      await atomicJSON(path,{...existing,success:value.success,disposition:'attributed'});return 'promoted';
+      await atomicJSON(path,{...existing,success:outcome,disposition:'attributed'});return 'promoted';
     });
   }
   async rows(){
@@ -62,6 +82,7 @@ export class AgentStore {
   async eligible(catalog,now=Date.now()){
     const cutoff=now-Math.min(30,catalog.settings.backfillWindowDays)*86400000,result=[];
     for(const row of await this.rows()){
+      if(!(await this.origin(row.factId))?.admitted)continue;
       if(!['attributed','unverified'].includes(row.disposition)||!owner(row)||Date.parse(row.occurredAt)<cutoff||Date.parse(row.occurredAt)>now||(row.success===null&&catalog.settings.countUnconfirmedCalls!==true))continue;
       const owners=catalog.plugins.filter(item=>item.channel===row.channel&&item.pluginId===row.pluginId);
       if(owners.length===1){
