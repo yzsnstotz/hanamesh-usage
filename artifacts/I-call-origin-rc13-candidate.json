@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "kind": "usage",
+  "version": "0.3.0-rc.13",
+  "archive": "hanamesh-usage-0.3.0-rc.13.tgz",
+  "sha256": "ef0781a373f8cac4aca7ca9c55582c55332733858a77cbfd7575971544a60353",
+  "bytes": 114916,
+  "regularFiles": 86,
+  "actualUsageBuildSource": "bc659269bdd406e7b59b0a90ba56d616c348e16c",
+  "testOnlySource": "5566b0ee3305d620b1e9dd271c8d1327b5f9811d",
+  "agentPayloadSource": "12e41dc25f853d26e5062bf2e86b9645c5ca02ee",
+  "usageNormalSha256": "ef0781a373f8cac4aca7ca9c55582c55332733858a77cbfd7575971544a60353",
+  "agentPayloadSha256": "c9aded93d6a1927f95dcbc67fcafe0ad3e985bd17935c2a9f6b08426ed187405",
+  "candidateStatus": "HOLD_PENDING_NATIVE_COMBINED_AND_R2",
+  "narrowClientTail": {
+    "remoteOriginMutations": 13,
+    "allDetectedBy": "ERR_ASSERTION",
+    "normalUnpackedPass": 38,
+    "actualNpmInstalledPass": 38,
+    "allOriginalArchiveBytesAndExecuteModesUnchanged": true,
+    "packageCreatedInTailRun": false
+  },
+  "nativeGate": "BLOCKED_PENDING_ORCHESTRATOR_ROOT_CAUSE",
+  "nativeRerun": false,
+  "combinedNormalRedGreen": "NOT_RUN",
+  "P2": "OPEN",
+  "published": false
+}
