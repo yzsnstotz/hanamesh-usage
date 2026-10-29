@@ -60,7 +60,9 @@ test('real hook process records only minimal local facts before website consent 
  const initial=()=>JSON.stringify(f.state());const writeCore=()=>writeFile(core,`let text='';for await(const c of process.stdin)text+=c;const q=JSON.parse(text);if(q.input.operation!=='state')throw Error('NO_PRECONSENT_NETWORK_OPERATION');console.log(JSON.stringify({result:${initial()}}));`);await writeCore();
  const env={HOME:f.home,PATH:process.env.PATH,HANAMESH_SHARED_HOME:join(f.home,'shared'),HANAMESH_AGENT_HOME:f.home,HANAMESH_CORE_AGENT_CLI:core,HANAMESH_AGENT_CHANNEL:'claude',CLAUDE_CONFIG_DIR:host};
  const payload={hook_event_name:'PostToolUse',session_id:'private-session',tool_use_id:'one',tool_name:'mcp__plugin_target_probe__echo',tool_input:{secret:'NEVER_PERSIST_INPUT'},tool_response:{isError:false,content:[{type:'text',text:'NEVER_PERSIST_OUTPUT'}]},transcript_path:'/NEVER_OPEN_TRANSCRIPT'};
- const run=()=>spawnSync(process.execPath,[join(codeRoot,'lib/agent/hook.mjs'),'--event','PostToolUse'],{env,input:JSON.stringify(payload),encoding:'utf8'});
+ const run=(event='PostToolUse')=>spawnSync(process.execPath,[join(codeRoot,'lib/agent/hook.mjs'),'--event',event],{env,input:JSON.stringify({...payload,hook_event_name:event}),encoding:'utf8'});
+ // A real invocation starts with Pre. Orphan Posts are covered by the origin counterexamples.
+ const pre=run('PreToolUse');assert.equal(pre.status,0,pre.stderr);assert.equal(pre.stdout,'');
  const a=run();assert.equal(a.status,0,a.stderr);assert.equal(a.stdout,'');let rows=await f.r.store.rows();assert.equal(rows.length,1);assert.equal(rows[0].pluginId,'target@market');assert.doesNotMatch(JSON.stringify(rows),/NEVER_|private-session|transcript/);
  f.state().consent.changedAt=new Date(now).toISOString();await writeCore();payload.tool_use_id='two';const b=run();assert.equal(b.status,0,b.stderr);assert.equal((await f.r.store.rows()).length,1);
 });
