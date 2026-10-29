@@ -27,7 +27,7 @@ try{
    if(identity||channel==='codex'){await mkdir(r.agentHome,{recursive:true,mode:0o700});const release=await agentLock(r.agentHome,'collection',r.config.requestTimeoutMs);if(!release)throw Error('AGENT_COLLECTION_BUSY');
     try{if(await localRecordingEnabled(r)){
      if(channel==='codex')await atomicJSON(join(r.agentHome,'remote-inventory-diagnostics.json'),{diagnostics});
-     if(identity){await r.store.prune();await r.store.observe(identity,row,true,{allowNew:event==='PreToolUse',outcome:hookOutcome(payload,channel)});}
+     if(identity){await r.store.migrateOrigins();await r.store.prune();await r.store.observe(identity,row,true,{allowNew:event==='PreToolUse',outcome:hookOutcome(payload,channel)});}
     }}finally{await release();}}
   }
  }

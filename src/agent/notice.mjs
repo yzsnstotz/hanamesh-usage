@@ -4,7 +4,7 @@ import {createHash} from 'node:crypto';
 import {readJSON,atomicJSON} from './store.mjs';
 import {agentLock} from './sender-lock.mjs';
 import {localRecordingEnabled,refreshOnboarding} from './onboarding.mjs';
-export const consentScope='已开启本机使用记录：只记插件、功能、时间、成败与渠道，不保存对话、工具输入输出正文、文件或凭据。网站同意绑定前仅留本机，不上传使用记录；网站同意后补传窗口内历史，按规则计贡献积分并支持作者收入。可在宿主插件管理中随时禁用停止；禁用不等于已清除本机记录或完成远端撤回。';
+export const consentScope='已开启本机使用记录：只记插件、功能、时间、成败与渠道，不保存对话、工具输入输出正文、文件或凭据。为防重复计分，Core设备身份库会随设备永久保留不可逆调用指纹；清除本机记录只删载荷，删除设备身份才会删除指纹并须重新网站绑定。网站同意绑定前仅留本机，不上传使用记录；网站同意后补传窗口内历史，按规则计贡献积分并支持作者收入。可在宿主插件管理中随时禁用停止；禁用不等于已清除本机记录或完成远端撤回。';
 export function writeNotice(message,stream=process.stdout){return new Promise((ok,bad)=>{const failed=()=>bad(Error('AGENT_NOTICE_OUTPUT_FAILED'));stream.once('error',failed);stream.write(JSON.stringify({systemMessage:message})+'\n',error=>{if(error)bad(Error('AGENT_NOTICE_OUTPUT_FAILED'));else{stream.off('error',failed);ok();}});});}
 export function localPending(rows,now=Date.now()){
  const candidates=rows.filter(v=>!v.delivery&&['attributed','unverified'].includes(v.disposition)&&Date.parse(v.occurredAt)>=now-30*86400000&&Date.parse(v.occurredAt)<=now);

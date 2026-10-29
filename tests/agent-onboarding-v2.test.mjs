@@ -1,3 +1,4 @@
+import {fixtureAgentStore,fixtureCoreCLI} from './fixtures/agent-core.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,mkdir,writeFile,rm,readFile} from 'node:fs/promises';
@@ -10,7 +11,7 @@ const now=Date.parse('2026-10-28T10:00:00.000Z'),cid='11111111-1111-4111-8111-11
 const row={factId:'a'.repeat(64),channel:'claude',pluginId:'target@market',feature:'mcp:echo',success:true,occurredAt:new Date(now).toISOString(),disposition:'attributed'};
 const catalog={plugins:[{hanaRef:'hana-target',channel:'claude',pluginId:'target@market'},{hanaRef:'hana-target',channel:'codex',pluginId:'target@market'}],settings:{backfillWindowDays:30,countUnconfirmedCalls:false}};
 async function fixture(t){
- const home=await mkdtemp(join(tmpdir(),'hm-onboarding-v2-'));t.after(()=>rm(home,{recursive:true,force:true}));const {AgentStore}=await load('agent/store.mjs');
+ const home=await mkdtemp(join(tmpdir(),'hm-onboarding-v2-'));t.after(()=>rm(home,{recursive:true,force:true}));const {AgentStore:BaseAgentStore}=await load('agent/store.mjs');const AgentStore=fixtureAgentStore(BaseAgentStore);
  let state={agentProtocolVersion:2,deviceId:'A'.repeat(43),consent:{state:'withheld',changedAt:null,consentId:null,authorization:null}};const calls=[],messages=[];
  const r={agentHome:home,sharedHome:home,host:{channel:'claude',home:join(home,'claude')},config:{serverOrigin:'http://127.0.0.1:32101',websiteOrigin:'http://127.0.0.1:32102',requestTimeoutMs:10000},store:new AgentStore(home),async call(input){calls.push(input);if(input.operation==='state')return structuredClone(state);if(input.operation==='prepareOnboarding'){state.consent.consentId=cid;return{url:'http://127.0.0.1:32102/me/bind?flow=agent&consentId='+cid,expiresAt:'2026-10-28T20:00:00.000Z',consentId:cid,deviceId:state.deviceId};}if(input.operation==='syncOnboarding')return{consent:state.consent,onboarding:{state:'pending',binding:null}};throw Error('UNEXPECTED_OPERATION');}};
  return {home,r,calls,messages,emit:async m=>messages.push(m),setState:s=>{state=s;},state:()=>state};
@@ -57,7 +58,7 @@ test('real hook process records only minimal local facts before website consent 
  const f=await fixture(t);const {spawnSync}=await import('node:child_process');const host=join(f.home,'claude'),plugin=join(f.home,'target'),core=join(f.home,'core.mjs');
  await mkdir(join(host,'plugins'),{recursive:true});await mkdir(plugin);await writeFile(join(plugin,'.mcp.json'),JSON.stringify({mcpServers:{probe:{command:'fixture'}}}));
  await writeFile(join(host,'plugins/installed_plugins.json'),JSON.stringify({plugins:{'target@market':[{installPath:plugin}]}}));
- const initial=()=>JSON.stringify(f.state());const writeCore=()=>writeFile(core,`let text='';for await(const c of process.stdin)text+=c;const q=JSON.parse(text);if(q.input.operation!=='state')throw Error('NO_PRECONSENT_NETWORK_OPERATION');console.log(JSON.stringify({result:${initial()}}));`);await writeCore();
+ const initial=()=>JSON.stringify(f.state());const writeCore=()=>writeFile(core,fixtureCoreCLI(f.home,JSON.parse(initial()),join(f.home,'shared/identity/core-origin-fixture.json')));await writeCore();
  const env={HOME:f.home,PATH:process.env.PATH,HANAMESH_SHARED_HOME:join(f.home,'shared'),HANAMESH_AGENT_HOME:f.home,HANAMESH_CORE_AGENT_CLI:core,HANAMESH_AGENT_CHANNEL:'claude',CLAUDE_CONFIG_DIR:host};
  const payload={hook_event_name:'PostToolUse',session_id:'private-session',tool_use_id:'one',tool_name:'mcp__plugin_target_probe__echo',tool_input:{secret:'NEVER_PERSIST_INPUT'},tool_response:{isError:false,content:[{type:'text',text:'NEVER_PERSIST_OUTPUT'}]},transcript_path:'/NEVER_OPEN_TRANSCRIPT'};
  const run=(event='PostToolUse')=>spawnSync(process.execPath,[join(codeRoot,'lib/agent/hook.mjs'),'--event',event],{env,input:JSON.stringify({...payload,hook_event_name:event}),encoding:'utf8'});
@@ -68,7 +69,7 @@ test('real hook process records only minimal local facts before website consent 
 });
 async function sender(t){
  const f=await fixture(t);const {generateKeyPairSync,sign,verify}=await import('node:crypto');const {publicKey,privateKey}=generateKeyPairSync('ed25519');
- f.state().consent={state:'granted',consentId:cid,authorization:'website',changedAt:new Date(now).toISOString()};const before=f.r.call;f.r.call=async input=>{if(input.operation==='sign')return{signature:sign(null,Buffer.from(input.bytes,'base64'),privateKey).toString('base64url')};if(input.operation==='signRequest')return{'x-fixture':'signed'};if(input.operation==='register')return{};return before(input);};
+ f.state().consent={state:'granted',consentId:cid,authorization:'website',changedAt:new Date(now).toISOString()};const before=f.r.call;f.r.call=async input=>{if(input.operation==='signAgentEvent')return{signature:sign(null,Buffer.from(agentSigningJSON(input.event)),privateKey).toString('base64url')};if(input.operation==='signRequest')return{'x-fixture':'signed'};if(input.operation==='register')return{};return before(input);};
  const full={schemaVersion:1,eventProtocol:'hm-agent-v1',generatedAt:new Date(now).toISOString(),plugins:catalog.plugins.map(p=>({...p,githubRepo:'owner/target',pluginName:'target',marketplace:'market',mcpServers:['probe'],skills:[]})),settings:{...catalog.settings,uploadIntervalMs:60000,catalogRefreshMs:300000}};
  const {agentSigningJSON}=await load('core/agent-event.js');const posted=[];const request=async(origin,path,init)=>{if(path==='/v1/registry/agent-catalog')return full;assert.equal(path,'/v2/usage/events','website grants must never call old activate or legacy contributions');const [wire]=JSON.parse(init.body);assert.ok(verify(null,Buffer.from(agentSigningJSON(wire)),publicKey,Buffer.from(wire.signature,'base64url')));posted.push(wire);return{accepted:1,duplicates:0,rejected:[],durability:'committed'};};return{...f,request,posted};
 }

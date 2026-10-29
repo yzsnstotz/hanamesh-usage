@@ -1,9 +1,11 @@
+import {fixtureAgentStore} from './fixtures/agent-core.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,mkdir,writeFile,readFile,rm,readdir} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {AgentStore} from '../src/agent/store.mjs';
+import {AgentStore as BaseAgentStore} from '../src/agent/store.mjs';
+const AgentStore=fixtureAgentStore(BaseAgentStore);
 import {beginWithdrawal,finishWithdrawal,grantConsent} from '../src/agent/withdraw.mjs';
 const consentId='11111111-1111-4111-8111-111111111111';
 async function fixture(t,result){

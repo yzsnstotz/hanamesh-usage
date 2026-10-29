@@ -1,6 +1,6 @@
 import {join} from 'node:path';
 import {mkdir,rm} from 'node:fs/promises';
-import {agentEventForFact,agentInstallEventForFact,agentSigningJSON} from '../core/agent-event.js';
+import {agentEventForFact,agentInstallEventForFact} from '../core/agent-event.js';
 import {atomicJSON,readJSON} from './store.mjs';
 import {requestJSON} from './runtime.mjs';
 import {refreshAgentCatalog} from './remote-catalog.mjs';
@@ -48,28 +48,35 @@ export async function uploadOnce(r,{now=Date.now(),request=(origin,path,init)=>r
     const rejection=result.rejected[0],code=rejection?(/^[A-Z][A-Z0-9_]{0,79}$/.test(rejection.code)?rejection.code:'REJECTION_UNREADABLE'):null;
     await mark({state:rejection?'rejected':result.duplicates?'duplicate':'sent',code});await rm(marker,{force:true});
   };
+  const coreRejectedFacts=new Set(eligible.filter(row=>row.delivery?.state==='rejected'&&/^CORE_/.test(row.delivery.code??'')).map(row=>row.factId));
   for(const row of pending) {
     const entry=(await r.store.rows()).find(item=>item.factId===row.factId);
     await active();
     if(!entry)throw new Error('AGENT_FACT_CHANGED');
     let wire=entry.wire;
     if(wire && (wire.deviceId!==device.deviceId||wire.hanaRef!==row.hanaRef||!wire.nonce.startsWith(`g${consentId}.`)))throw new Error('AGENT_ATTRIBUTION_CHANGED');
+    try{
     if(!wire) {
       const event=agentEventForFact(device.deviceId,{...entry,hanaRef:row.hanaRef},consentId);
-      const {signature}=await r.call({operation:'sign',bytes:Buffer.from(agentSigningJSON(event)).toString('base64')});
+      const {signature}=await r.call({operation:'signAgentEvent',factId:row.factId,event});
       wire={...event,signature};
       wire=await r.store.freezeWire(row.factId,wire);
     }
+    else{const {signature:prior,...event}=wire;const signed=await r.call({operation:'signAgentEvent',factId:row.factId,event});if(signed.signature!==prior)throw Error('AGENT_FROZEN_SIGNATURE_CHANGED');}
+    }catch(error){if(!/^CORE_ORIGIN_(?:UNKNOWN|DENIED|CONSUMED|LEDGER_INVALID)$|^CORE_INPUT_INVALID$/.test(error.message))throw error;await r.store.mark(row.factId,{state:'rejected',code:error.message});coreRejectedFacts.add(row.factId);continue;}
     await send(wire,delivery=>r.store.mark(row.factId,delivery),row.factId);
   }
   const firstByHana=new Map();
-  for(const row of eligible.sort((a,b)=>a.occurredAt.localeCompare(b.occurredAt)||a.factId.localeCompare(b.factId)))if(!firstByHana.has(row.hanaRef))firstByHana.set(row.hanaRef,row);
+  for(const row of eligible.sort((a,b)=>a.occurredAt.localeCompare(b.occurredAt)||a.factId.localeCompare(b.factId)))if(!coreRejectedFacts.has(row.factId)&&!firstByHana.has(row.hanaRef))firstByHana.set(row.hanaRef,row);
   for(const row of firstByHana.values()){
     await active();
     const event=agentInstallEventForFact(device.deviceId,row,consentId),existing=await r.store.installState(event.eventId);
     if(existing?.delivery)continue; // No automatic replay after an unknown commit or a terminal decision.
     let wire=existing?.wire;
-    if(!wire){const {signature}=await r.call({operation:'sign',bytes:Buffer.from(agentSigningJSON(event)).toString('base64')});wire=await r.store.freezeInstall(row.factId,{...event,signature});}
+    try{
+      if(!wire){const {signature}=await r.call({operation:'signAgentEvent',factId:row.factId,event});wire=await r.store.freezeInstall(row.factId,{...event,signature});}
+      else{const {signature:prior,...frozen}=wire;const signed=await r.call({operation:'signAgentEvent',factId:row.factId,event:frozen});if(signed.signature!==prior)throw Error('AGENT_FROZEN_SIGNATURE_CHANGED');}
+    }catch(error){if(!/^CORE_ORIGIN_(?:UNKNOWN|DENIED|CONSUMED|LEDGER_INVALID)$|^CORE_INPUT_INVALID$/.test(error.message))throw error;await r.store.rejectInstall(event.eventId,error.message);continue;}
     if(wire)await send(wire,delivery=>r.store.markInstall(wire.eventId,delivery),wire.eventId);
   }
   return {state:'idle',code:null,bound,websiteOrigin:r.config.websiteOrigin,settings:catalog.settings};

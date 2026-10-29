@@ -41,7 +41,7 @@ export async function runtime(env=process.env) {
     child.stdin.on('error',()=>{});child.stdin.end(JSON.stringify({config:{...config,timeoutMs:config.requestTimeoutMs,sharedHome:paths.sharedHome},input}));
   });
   const runtimePreparation=()=>readJSON(join(paths.sharedHome,'runtime',`node-v24.13.1-darwin-${process.arch}`,'prepare-state.json'),null);
-  return {...paths,config,call,env,runtimePreparation,host:hostContext(env),store:new AgentStore(paths.agentHome,{timeoutMs:config.requestTimeoutMs}),
+  return {...paths,config,call,env,runtimePreparation,host:hostContext(env),store:new AgentStore(paths.agentHome,{timeoutMs:config.requestTimeoutMs,coreCall:call}),
     async configure(value){await mkdir(paths.agentHome,{recursive:true,mode:0o700});await atomicJSON(join(paths.agentHome,'config.json'),value);},
   };
 }

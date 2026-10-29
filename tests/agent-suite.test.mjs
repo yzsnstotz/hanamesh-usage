@@ -7,9 +7,9 @@ test('agent manifests expose one suite and forward only the four nonsecret MCP i
 });
 test('packed suite includes Core CLI import closure and byte anchored component receipt',async t=>{
  const root=await mkdtemp(join(tmpdir(),'hm-suite-package-test-'));t.after(()=>rm(root,{recursive:true,force:true}));await mkdir(join(root,'package/lib/suite'),{recursive:true});
- await writeFile(join(root,'package/package.json'),JSON.stringify({name:'@hanamesh/core',version:'0.3.25',type:'module'}));await writeFile(join(root,'package/LICENSE'),'fixture-license');
- for(const name of ['agent-cli','agent','shared-device','device','errors','validation','contracts','transport','registration','bind-link','suite/facts'])await writeFile(join(root,'package/lib',name+'.js'),'// fixture-'+name);
- await writeFile(join(root,'package/lib/agent-cli.js'),"console.log(JSON.stringify({result:{agentProtocolVersion:2}}));\n");
+ await writeFile(join(root,'package/package.json'),JSON.stringify({name:'@hanamesh/core',version:'0.3.26',type:'module'}));await writeFile(join(root,'package/LICENSE'),'fixture-license');
+ for(const name of ['agent-cli','agent','agent-origins','shared-device','device','errors','validation','contracts','transport','registration','bind-link','suite/facts'])await writeFile(join(root,'package/lib',name+'.js'),'// fixture-'+name);
+ await writeFile(join(root,'package/lib/agent-cli.js'),"console.log(JSON.stringify({result:{agentProtocolVersion:2,agentOriginProtocolVersion:1}}));\n");
  await writeFile(join(root,'package/lib/shared-device.js'),"export {bindingAvailable} from './bind-link.js';\n");
  await writeFile(join(root,'package/lib/bind-link.js'),"export const bindingAvailable = true;\n");
  const tar=join(root,'core.tgz'),out=join(root,'suite');assert.equal(spawnSync('/usr/bin/tar',['-czf',tar,'-C',root,'package']).status,0);

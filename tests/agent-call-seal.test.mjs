@@ -1,9 +1,11 @@
+import {fixtureAgentStore} from './fixtures/agent-core.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,rm,readFile,writeFile,mkdir,readdir} from 'node:fs/promises';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
-import {AgentStore} from '../src/agent/store.mjs';
+import {AgentStore as BaseAgentStore} from '../src/agent/store.mjs';
+const AgentStore=fixtureAgentStore(BaseAgentStore);
 import {hookCallIdentity,projectHook,hookOutcome} from '../src/agent/project.mjs';
 const plugin={pluginId:'probe@local',pluginName:'probe',skills:['hello'],mcpServers:[]};
 const payload={hook_event_name:'PreToolUse',tool_name:'Skill',tool_input:{skill:'probe:hello'},session_id:'PRIVATE_SESSION_ID',tool_call_id:'PRIVATE_CALL_ID'};
@@ -11,8 +13,8 @@ const catalog={plugins:[{channel:'codex',pluginId:plugin.pluginId,hanaRef:'probe
 async function fixture(t){const root=await mkdtemp(join(tmpdir(),'hm-call-seal-'));t.after(()=>rm(root,{recursive:true,force:true}));return new AgentStore(root);}
 test('unattributed first observation seals an identity without retaining raw call selectors',async t=>{
  const store=await fixture(t),id=hookCallIdentity(payload,'codex');await store.observe(id,null,true);
- assert.deepEqual(await store.rows(),[]);const files=await readdir(store.originDir);assert.deepEqual(files,[id.factId+'.json']);
- const marker=JSON.parse(await readFile(join(store.originDir,files[0])));assert.deepEqual(marker,{schemaVersion:1,admitted:false});assert.doesNotMatch(JSON.stringify(marker)+files[0],/PRIVATE_|probe|occurredAt|feature/);
+ assert.deepEqual(await store.rows(),[]);await assert.rejects(readdir(store.originDir),{code:'ENOENT'});
+ const marker=await store.origin(id.factId);assert.deepEqual(marker,{schemaVersion:1,admitted:false});assert.doesNotMatch(JSON.stringify(marker),/PRIVATE_|probe|occurredAt|feature/);
  await store.record(projectHook({...payload,hook_event_name:'PostToolUse',tool_response:{isError:false}},'codex',[plugin]),true);assert.deepEqual(await store.pending(catalog),[]);
 });
 test('expired admitted payload cannot be reconstructed even after reopening the store',async t=>{
@@ -40,11 +42,11 @@ test('orphan Post cannot mint a new origin while a genuinely new Pre/Post can',a
 test('legacy payload without an origin is unavailable, not proof from current installation',async t=>{
  const store=await fixture(t),row=projectHook({...payload,hook_event_name:'PostToolUse',tool_response:{isError:false}},'codex',[plugin]);
  await mkdir(store.dir,{recursive:true});await writeFile(join(store.dir,row.factId+'.json'),JSON.stringify(row));assert.deepEqual(await store.pending(catalog),[]);
- assert.equal(await store.record(row,true),'origin-unavailable');assert.deepEqual(await store.pending(catalog),[]);
+ assert.equal(await store.record(row,true),'duplicate');assert.deepEqual(await store.pending(catalog),[]);
 });
 test('malformed origin proof fails closed instead of reconstructing eligibility',async t=>{
  const store=await fixture(t),row=projectHook({...payload,hook_event_name:'PostToolUse',tool_response:{isError:false}},'codex',[plugin]);
- await store.record(row,true);await writeFile(join(store.originDir,row.factId+'.json'),JSON.stringify({schemaVersion:2,admitted:true}));
+ await mkdir(store.originDir,{recursive:true});await writeFile(join(store.originDir,row.factId+'.json'),JSON.stringify({schemaVersion:2,admitted:true}));
  await assert.rejects(store.pending(catalog),/AGENT_CALL_ORIGIN_INVALID/);await assert.rejects(store.record(row,true),/AGENT_CALL_ORIGIN_INVALID/);
 });
 for(const cleanup of ['prune','withdraw'])test(`legacy payload cleanup ${cleanup} preserves a denied identity before deleting activity`,async t=>{

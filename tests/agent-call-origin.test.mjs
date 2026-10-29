@@ -1,3 +1,4 @@
+import {fixtureAgentStore,fixtureCoreCLI} from './fixtures/agent-core.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,mkdir,writeFile,readFile,chmod,rm} from 'node:fs/promises';
@@ -6,7 +7,8 @@ import {tmpdir} from 'node:os';
 import {createHash} from 'node:crypto';
 import {spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
-import {AgentStore} from '../src/agent/store.mjs';
+import {AgentStore as BaseAgentStore} from '../src/agent/store.mjs';
+const AgentStore=fixtureAgentStore(BaseAgentStore);
 
 const sha=value=>createHash('sha256').update(value).digest('hex');
 const hookPath=fileURLToPath(new URL('../src/agent/hook.mjs',import.meta.url));
@@ -25,7 +27,7 @@ async function fixture(t,mode,countUnconfirmedCalls){
  const nativePath=join(home,'native-state.json');await writeFile(nativePath,JSON.stringify(native));
  await writeFile(join(bin,'codex'),`#!${process.execPath}\nimport{readFileSync}from'node:fs';const a=JSON.stringify(process.argv.slice(2));if(a==='["--version"]')console.log('codex-cli 0.165.0');else if(a==='["plugin","list","--json","-m","openai-curated-remote"]')console.log(readFileSync(${JSON.stringify(nativePath)},'utf8'));else process.exit(2);\n`);await chmod(join(bin,'codex'),0o755);
  // Explicit Core state fixture: this source-level hook test does not register/sign/upload or claim a real backend.
- const core=join(home,'core-state.mjs');await writeFile(core,"let s='';for await(const b of process.stdin)s+=b;const q=JSON.parse(s);if(q.input.operation!=='state')process.exit(2);console.log(JSON.stringify({result:{agentProtocolVersion:2,deviceId:'A'.repeat(43),consent:{state:'granted',authorization:'website',consentId:'11111111-1111-4111-8111-111111111111',changedAt:null}}}));\n");
+ const core=join(home,'core-state.mjs');await writeFile(core,fixtureCoreCLI(agent,{agentProtocolVersion:2,deviceId:'A'.repeat(43),consent:{state:'granted',authorization:'website',consentId:'11111111-1111-4111-8111-111111111111',changedAt:null}},join(shared,'identity/core-origin-fixture.json')));
  await writeFile(join(agent,'config.json'),JSON.stringify({serverOrigin:'http://127.0.0.1:1',websiteOrigin:'http://127.0.0.1:2',bootstrapIntervalMs:60000,requestTimeoutMs:10000}));
  const entry={hanaRef:'11111111-1111-4111-8111-111111111111',githubRepo:'fixture/origin',channel:'codex',pluginId:id,pluginName:'origin-probe',marketplace:'openai-curated-remote',mcpServers:[],skills:['probe'],remote};
  const catalog={schemaVersion:1,eventProtocol:'hm-agent-v1',generatedAt:new Date().toISOString(),settings:{uploadIntervalMs:60000,catalogRefreshMs:300000,backfillWindowDays:30,countUnconfirmedCalls},plugins:[entry]};

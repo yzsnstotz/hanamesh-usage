@@ -1,3 +1,4 @@
+import {fixtureAgentStore} from './fixtures/agent-core.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,rm} from 'node:fs/promises';
@@ -6,7 +7,7 @@ import {tmpdir} from 'node:os';
 import {pathToFileURL} from 'node:url';
 import {root} from './fixtures/helpers.mjs';
 const {projectHook}=await import(pathToFileURL(join(root,'lib/agent/project.mjs')).href);
-const {AgentStore}=await import(pathToFileURL(join(root,'lib/agent/store.mjs')).href);
+const {AgentStore:BaseAgentStore}=await import(pathToFileURL(join(root,'lib/agent/store.mjs')).href);const AgentStore=fixtureAgentStore(BaseAgentStore);
 const {agentEventForFact,agentSigningJSON}=await import(pathToFileURL(join(root,'lib/core/agent-event.js')).href);
 const installed=[{pluginId:'target@market',pluginName:'target',mcpServers:['probe'],skills:[]}];
 const payload={session_id:'disposable-session',tool_use_id:'call',tool_name:'mcp__probe__echo',tool_input:{secret:'DO_NOT_PERSIST'},transcript_path:'/must-not-read'};

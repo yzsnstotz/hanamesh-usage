@@ -1,3 +1,4 @@
+import {fixtureAgentStore} from './fixtures/agent-core.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,mkdir,writeFile,rm,readFile,symlink,chmod,cp} from 'node:fs/promises';
@@ -7,7 +8,8 @@ import {createHash,generateKeyPairSync,sign,verify} from 'node:crypto';
 import {installedPlugins} from '../src/agent/inventory.mjs';
 import {validateCatalog} from '../src/agent/catalog.mjs';
 import {projectHook} from '../src/agent/project.mjs';
-import {AgentStore} from '../src/agent/store.mjs';
+import {AgentStore as BaseAgentStore} from '../src/agent/store.mjs';
+const AgentStore=fixtureAgentStore(BaseAgentStore);
 
 const sha=b=>createHash('sha256').update(b).digest('hex');
 const blob=b=>createHash('sha1').update(`blob ${Buffer.byteLength(b)}\0`).update(b).digest('hex');
@@ -123,7 +125,7 @@ test('verified remote facts use the existing minimal signed wire; id/digests nev
  const {agentSigningJSON}=await import('../lib/core/agent-event.js');const {publicKey,privateKey}=generateKeyPairSync('ed25519');
  const store=new AgentStore(join(f.home,'agent')),row=projectHook(payload,'codex',rows);await store.record(row,true);const posted=[];
  const consentId='11111111-1111-4111-8111-111111111111';
- const r={agentHome:store.root,store,config:{serverOrigin:'http://127.0.0.1:1'},cachedCatalog:{value:catalog,fetchedAt:Date.now()},call:async input=>input.operation==='state'?{deviceId:'A'.repeat(43),consent:{state:'granted',authorization:'website',consentId}}:input.operation==='sign'?{signature:sign(null,Buffer.from(input.bytes,'base64'),privateKey).toString('base64url')}:{}};
+ const r={agentHome:store.root,store,config:{serverOrigin:'http://127.0.0.1:1'},cachedCatalog:{value:catalog,fetchedAt:Date.now()},call:async input=>input.operation==='state'?{deviceId:'A'.repeat(43),consent:{state:'granted',authorization:'website',consentId}}:input.operation==='signAgentEvent'?{signature:sign(null,Buffer.from(agentSigningJSON(input.event)),privateKey).toString('base64url')}:{}};
  await uploadOnce(r,{request:async(o,p,i)=>{assert.equal(p,'/v2/usage/events');posted.push(...JSON.parse(i.body));return {durability:'committed',accepted:1,duplicates:0,rejected:[]};}});
  assert.deepEqual(posted.map(p=>p.action).sort(),['install','use']);assert.ok(posted.every(p=>p.hanaRef===entry.hanaRef&&p.channel==='codex'));
  assert.deepEqual(Object.keys(posted[0]),['deviceId','hanaRef','action','occurredAt','eventId','nonce','channel','feature','success','signature']);
@@ -155,7 +157,7 @@ async function signedSender(store,value,now){
  const r={agentHome:store.root,store,config:{serverOrigin:'http://127.0.0.1:1'},cachedCatalog:{value,fetchedAt:now},call:async input=>{
   operations.push(input.operation);
   if(input.operation==='state')return {deviceId:'A'.repeat(43),consent:{state:'granted',authorization:'website',consentId}};
-  if(input.operation==='sign')return {signature:sign(null,Buffer.from(input.bytes,'base64'),privateKey).toString('base64url')};
+  if(input.operation==='signAgentEvent')return {signature:sign(null,Buffer.from(agentSigningJSON(input.event)),privateKey).toString('base64url')};
   return {};
  }};
  return {r,posted,operations,async upload(at=now){await uploadOnce(r,{now:at,request:async(o,p,i)=>{
@@ -192,7 +194,7 @@ for(const countUnconfirmedCalls of [false,true]){
   const good=await installedPlugins('codex',f.home,f.options);
   await store.record(projectHook(payload,'codex',good,now),true);await sender.upload();
   assert.deepEqual(sender.posted,[],'old failed proof yields neither a signed use nor an install');
-  assert.equal(sender.operations.some(op=>['register','sign','signRequest'].includes(op)),false);
+  assert.equal(sender.operations.some(op=>['register','sign','signAgentEvent','signRequest'].includes(op)),false);
   const fresh=projectHook({...payload,tool_use_id:'new-after-repair'},'codex',good,now);
   assert.notEqual(fresh.factId,first.factId);await store.record(fresh,true);await sender.upload();
   assert.deepEqual(sender.posted.map(w=>w.action).sort(),['install','use']);

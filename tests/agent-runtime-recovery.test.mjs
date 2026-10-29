@@ -1,3 +1,4 @@
+import {fixtureCoreCLI} from './fixtures/agent-core.mjs';
 // Recreate the valid publication boundary, not a cold download or owner profile.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -21,7 +22,7 @@ async function fixture(t){
  await writeFile(join(cache,'prepare-state.json'),JSON.stringify(initial));
  await mkdir(agent);await writeFile(join(agent,'config.json'),JSON.stringify({serverOrigin:'http://127.0.0.1:1',websiteOrigin:'http://127.0.0.1:2',requestTimeoutMs:1000,bootstrapIntervalMs:60000}));
  const state={agentProtocolVersion:2,deviceId:'A'.repeat(43),consent:{state:'withheld',changedAt:null,consentId:null,authorization:null}},core=join(root,'core-fixture.mjs');
- await writeFile(core,`for await(const c of process.stdin){};console.log(JSON.stringify({result:${JSON.stringify(state)}}));`);
+ await writeFile(core,fixtureCoreCLI(agent,state,join(shared,'identity/core-origin-fixture.json')));
  const host=join(root,'claude'),targetPlugin=join(root,'target');await mkdir(join(host,'plugins'),{recursive:true});await mkdir(targetPlugin);
  await writeFile(join(targetPlugin,'.mcp.json'),JSON.stringify({mcpServers:{probe:{command:'FIXTURE'}}}));await writeFile(join(host,'plugins/installed_plugins.json'),JSON.stringify({plugins:{'target@market':[{installPath:targetPlugin}]}}));
  const env={HOME:root,PATH:'/usr/bin:/bin',HANAMESH_SHARED_HOME:shared,HANAMESH_AGENT_HOME:agent,HANAMESH_CORE_AGENT_CLI:core,HANAMESH_AGENT_CHANNEL:'claude',CLAUDE_CONFIG_DIR:host};
