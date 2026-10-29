@@ -146,3 +146,92 @@ test('native CLI observer uses only version and read-only installed list in the 
  const state=await observeCodex(f.home,{env:{PATH:bin,HOME:f.home}});assert.equal(state.cliVersion,'0.165.0');assert.equal(state.installed[0].source.id,remoteId);
  assert.deepEqual((await readFile(join(f.home,'argv.jsonl'),'utf8')).trim().split('\n').map(JSON.parse),[['--version'],['plugin','list','--json','-m','openai-curated-remote']]);
 });
+
+async function signedSender(store,value,now){
+ const {uploadOnce}=await import('../lib/agent/upload.mjs');
+ const {agentSigningJSON}=await import('../lib/core/agent-event.js');
+ const {publicKey,privateKey}=generateKeyPairSync('ed25519'),posted=[],operations=[];
+ const consentId='11111111-1111-4111-8111-111111111111';
+ const r={agentHome:store.root,store,config:{serverOrigin:'http://127.0.0.1:1'},cachedCatalog:{value,fetchedAt:now},call:async input=>{
+  operations.push(input.operation);
+  if(input.operation==='state')return {deviceId:'A'.repeat(43),consent:{state:'granted',authorization:'website',consentId}};
+  if(input.operation==='sign')return {signature:sign(null,Buffer.from(input.bytes,'base64'),privateKey).toString('base64url')};
+  return {};
+ }};
+ return {r,posted,operations,async upload(at=now){await uploadOnce(r,{now:at,request:async(o,p,i)=>{
+  assert.equal(p,'/v2/usage/events');const batch=JSON.parse(i.body);
+  for(const wire of batch)assert.equal(verify(null,Buffer.from(agentSigningJSON(wire)),publicKey,Buffer.from(wire.signature,'base64url')),true);
+  posted.push(...batch);return {durability:'committed',accepted:batch.length,duplicates:0,rejected:[]};
+ }});}};
+}
+
+for(const countUnconfirmedCalls of [false,true]){
+ test(`completed unverified remote call never promotes on repaired-content replay (unknown=${countUnconfirmedCalls})`,async t=>{
+  const f=await fixture(t),now=Date.now(),old=now-86400000;
+  await writeFile(join(f.root,'skills/hello/SKILL.md'),'different installed bytes');
+  const diagnostics=[],bad=await installedPlugins('codex',f.home,{...f.options,diagnostics});
+  assert.equal(bad[0].remote.verified,false);assert.equal(diagnostics[0].code,'AGENT_CODEX_REMOTE_CONTENT_MISMATCH');
+  const store=new AgentStore(join(f.home,'agent')),first=projectHook(payload,'codex',bad,old);
+  assert.equal(first.success,null);assert.equal(await store.record(first,true),'recorded');
+  const before=await readFile(join(store.dir,first.factId+'.json'),'utf8');
+  await writeFile(join(f.root,'skills/hello/SKILL.md'),content['skills/hello/SKILL.md']);
+  const good=await installedPlugins('codex',f.home,f.options),replay=projectHook(payload,'codex',good,now);
+  assert.equal(replay.remote.verified,true);assert.equal(replay.success,true);assert.equal(replay.factId,first.factId);
+  assert.equal(await store.record(replay,true),'duplicate','current content cannot prove past execution');
+  assert.equal(await readFile(join(store.dir,first.factId+'.json'),'utf8'),before,'first observation remains byte-identical');
+  assert.deepEqual(await new AgentStore(store.root).pending({...catalog,settings:{...settings,countUnconfirmedCalls}},now),[],'the rejection survives reopening the store');
+ });
+ test(`repaired-content replay signs no old use/install; new call earns first install (unknown=${countUnconfirmedCalls})`,async t=>{
+  const f=await fixture(t),now=Date.now(),old=now-86400000,store=new AgentStore(join(f.home,'agent'));
+  await writeFile(join(f.root,'skills/hello/SKILL.md'),'different installed bytes');
+  const bad=await installedPlugins('codex',f.home,f.options),first=projectHook(payload,'codex',bad,old);
+  await store.record(first,true);
+  const sender=await signedSender(store,{...catalog,settings:{...settings,countUnconfirmedCalls}},now);
+  await sender.upload();assert.deepEqual(sender.posted,[]);
+  await writeFile(join(f.root,'skills/hello/SKILL.md'),content['skills/hello/SKILL.md']);
+  const good=await installedPlugins('codex',f.home,f.options);
+  await store.record(projectHook(payload,'codex',good,now),true);await sender.upload();
+  assert.deepEqual(sender.posted,[],'old failed proof yields neither a signed use nor an install');
+  assert.equal(sender.operations.some(op=>['register','sign','signRequest'].includes(op)),false);
+  const fresh=projectHook({...payload,tool_use_id:'new-after-repair'},'codex',good,now);
+  assert.notEqual(fresh.factId,first.factId);await store.record(fresh,true);await sender.upload();
+  assert.deepEqual(sender.posted.map(w=>w.action).sort(),['install','use']);
+  assert.ok(sender.posted.every(w=>w.occurredAt===new Date(now).toISOString()&&w.success===true));
+  await store.record(projectHook(payload,'codex',good,now+1),true);await sender.upload(now+1);
+  assert.equal(sender.posted.length,2,'repeated old payload cannot add credit after the new first install');
+ });
+}
+
+test('unverified remote Pre cannot become a verified result after install repair',async t=>{
+ const f=await fixture(t),now=Date.now(),store=new AgentStore(join(f.home,'agent'));
+ await writeFile(join(f.root,'skills/hello/SKILL.md'),'different installed bytes');
+ const pre=projectHook({...payload,hook_event_name:'PreToolUse'},'codex',await installedPlugins('codex',f.home,f.options),now-1000);
+ await store.record(pre,true);
+ await writeFile(join(f.root,'skills/hello/SKILL.md'),content['skills/hello/SKILL.md']);
+ assert.equal(await store.record(projectHook(payload,'codex',await installedPlugins('codex',f.home,f.options),now),true),'duplicate');
+ assert.deepEqual(await store.pending(catalog,now),[]);assert.deepEqual((await store.rows())[0].remote,pre.remote&&{...entry.remote,verified:false});
+});
+
+test('verified remote Pre still accepts a late result and preserves its original installation proof and time',async t=>{
+ const f=await fixture(t),now=Date.now(),old=now-86400000,store=new AgentStore(join(f.home,'agent'));
+ const good=await installedPlugins('codex',f.home,f.options),pre=projectHook({...payload,hook_event_name:'PreToolUse'},'codex',good,old);
+ await store.record(pre,true);assert.deepEqual(await store.pending({...catalog,settings:{...settings,countUnconfirmedCalls:false}},now),[]);
+ assert.equal(await store.record(projectHook(payload,'codex',good,now),true),'promoted');
+ const [row]=await store.rows();assert.equal(row.occurredAt,pre.occurredAt);assert.equal(row.success,true);assert.equal(row.remote.verified,true);
+ const sender=await signedSender(store,catalog,now);await sender.upload();
+ assert.deepEqual(sender.posted.map(w=>w.action).sort(),['install','use']);assert.ok(sender.posted.every(w=>w.occurredAt===pre.occurredAt));
+});
+
+test('already verified but unlisted remote facts backfill use and first install within 30 days only',async t=>{
+ const f=await fixture(t),now=Date.now(),store=new AgentStore(join(f.home,'agent')),good=await installedPlugins('codex',f.home,f.options);
+ const row=projectHook(payload,'codex',good,now-29*86400000);await store.record(row,true);
+ const sender=await signedSender(store,{...catalog,plugins:[]},now);await sender.upload();assert.deepEqual(sender.posted,[]);
+ sender.r.cachedCatalog={value:{...catalog,plugins:[{...entry,remote:{...entry.remote,version:'different-version'}}]},fetchedAt:now};
+ await sender.upload();assert.deepEqual(sender.posted,[],'a different listed identity does not inherit the fact');
+ sender.r.cachedCatalog={value:catalog,fetchedAt:now};await sender.upload();
+ assert.deepEqual(sender.posted.map(w=>w.action).sort(),['install','use']);assert.ok(sender.posted.every(w=>w.occurredAt===row.occurredAt));
+ const expiredStore=new AgentStore(join(f.home,'expired-agent'));
+ await expiredStore.record(projectHook({...payload,tool_use_id:'expired'},'codex',good,now-31*86400000),true);
+ const expired=await signedSender(expiredStore,{...catalog,settings:{...settings,backfillWindowDays:60}},now);
+ await expired.upload();assert.deepEqual(expired.posted,[]);assert.deepEqual(await expiredStore.rows(),[],'local retention still caps a wider catalog window');
+});
