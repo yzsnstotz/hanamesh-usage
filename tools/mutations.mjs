@@ -11,8 +11,8 @@ const cases=[
  {name:'UPGRADE-publish-before-migration-durable',requiresPeers:true,file:'lib/host/index.js',from:'await eventDomain.global.set(compatible);',to:'void eventDomain.global.set(compatible);',test:'tests/legacy-nonce-upgrade.test.mjs',pattern:'production apply waits'},
  {name:'CONSENT-notice-every-session',file:'lib/agent/notice.mjs',from:"if(marker?.schemaVersion===2&&(marker.day===day||marker.session===session))return false;",to:"if(false)return false;",test:'tests/agent-first-consent.test.mjs',pattern:'first notice persists'},
  {name:'CONSENT-ignore-prior-decision',file:'lib/agent/onboarding.mjs',from:"if(core.consent.changedAt!==null)return false;",to:"if(false)return false;",test:'tests/agent-first-consent.test.mjs',pattern:'prior explicit refusal'},
- {name:'G-missing-response-is-success',file:'lib/agent/project.mjs',from:'let success=null;',to:'let success=true;',test:'tests/agent-lifecycle.test.mjs',pattern:'G real host hook shape'},
- {name:'G-pre-post-duplicate-identity',file:'lib/agent/project.mjs',from:'[channel,payload.session_id,payload.tool_use_id ?? payload.tool_call_id]',to:'[channel,payload.session_id,payload.tool_use_id ?? payload.tool_call_id,payload.hook_event_name]',test:'tests/agent-lifecycle.test.mjs',pattern:'G real host hook shape'},
+ {name:'G-missing-response-is-success',file:'lib/agent/project.mjs',from:"if(payload.hook_event_name!=='PostToolUse'||!response||typeof response!=='object')return null;",to:"if(payload.hook_event_name!=='PostToolUse'||!response||typeof response!=='object')return true;",test:'tests/agent-lifecycle.test.mjs',pattern:'G real host hook shape'},
+ {name:'G-pre-post-duplicate-identity',file:'lib/agent/project.mjs',from:'[channel,payload.session_id,call]',to:'[channel,payload.session_id,call,payload.hook_event_name]',test:'tests/agent-lifecycle.test.mjs',pattern:'G real host hook shape'},
  {name:'G-ignore-unknown-policy',file:'lib/agent/store.mjs',from:'catalog.settings.countUnconfirmedCalls!==true',to:'false',test:'tests/agent-lifecycle.test.mjs',pattern:'G one attempt promotes'},
  {name:'G-late-result-rewrites-frozen-fact',file:'lib/agent/store.mjs',from:'if(existing.wire){',to:'if(false){',test:'tests/agent-lifecycle.test.mjs',pattern:'G frozen unknown event'},
  {name:'G-omit-consent-epoch',file:'lib/core/agent-event.js',from:"action: 'use', occurredAt: row.occurredAt, eventId, nonce: `g${consentId}.${eventNonceForSeat(eventId)}`",to:"action: 'use', occurredAt: row.occurredAt, eventId, nonce: eventNonceForSeat(eventId)",test:'tests/agent-lifecycle.test.mjs',pattern:'G nine-field signature'},
@@ -39,13 +39,14 @@ const cases=[
  {name:'U21-agent-daily-cap',file:'lib/agent/notice.mjs',from:'marker.day===day||marker.session===session',to:'false||marker.session===session',test:'tests/agent-onboarding-v2.test.mjs',pattern:'both channels remind'},
  {name:'U22-agent-retention-cap',file:'lib/agent/store.mjs',from:'Math.min(30,catalog.settings.backfillWindowDays)',to:'catalog.settings.backfillWindowDays',test:'tests/agent-onboarding-v2.test.mjs',pattern:'30-day retention'},
  {name:'RC9-handoff-never-starts-tick',file:'lib/agent/cli.mjs',from:"if(command==='mcp-ready')active=tick();",to:"if(false)active=tick();",test:'tests/agent-onboarding-v2.test.mjs',pattern:'mcp-ready starts'},
- {name:'RC9-late-post-backfills-gap',file:'lib/agent/hook.mjs',from:'const beganAfterPreparation=!preparation||',to:'const beganAfterPreparation=true||',test:'tests/agent-onboarding-v2.test.mjs',pattern:'late Post from the preparation'},
+ {name:'RC9-late-post-backfills-gap',file:'lib/agent/hook.mjs',from:"allowNew:event==='PreToolUse'",to:'allowNew:true',test:'tests/agent-onboarding-v2.test.mjs',pattern:'late Post from the preparation'},
  {name:'RC9-retry-within-same-session',file:'agent/bin/runtime-bootstrap.pl',from:"$is_session&&$new_session&&!($first_session&&($s->{initialEntry}//'non-session') eq 'non-session')",to:'$is_session',test:'tests/agent-runtime-background.test.mjs',pattern:'failure stays named'},
  {name:'RC9-fragment-loss-during-takeover',file:'agent/bin/runtime-bootstrap.pl',from:"if($line eq ''&&($s->{code}//'') eq 'RUNTIME_READY'&&-e $node)",to:"if(($s->{code}//'') eq 'RUNTIME_READY'&&-e $node)",also:[{from:"my $s=$line eq ''?readstate():undef;",to:'my $s=readstate();'}],test:'tests/agent-runtime-background.test.mjs',pattern:'fragmented'},
  {name:'R3-abandoned-publication-never-recovers',file:'agent/bin/runtime-bootstrap.pl',from:"if($old&&$old->{code} ne 'RUNTIME_READY'){",to:"if($old&&$old->{code} ne 'RUNTIME_READY'&&$old->{code} ne 'RUNTIME_PREPARING'){",test:'tests/agent-runtime-recovery.test.mjs',pattern:'published valid Node with an abandoned'},
  {name:'R3-active-preparation-lock-overwritten',file:'agent/bin/runtime-bootstrap.pl',from:'if(flock($fd,LOCK_EX|LOCK_NB)){',to:'if(1){',test:'tests/agent-runtime-recovery.test.mjs',pattern:'active preparation lock'},
  {name:'R3-status-recording-enabled-while-preparing',file:'lib/agent/status.mjs',from:'localCollection:{enabled:localEnabled&&runtimeReady,',to:'localCollection:{enabled:localEnabled,',test:'tests/agent-onboarding-v2.test.mjs',pattern:'readonly status keeps preparation honest'},
 ];
+const results=[];
 for(const item of cases){
  const dir=mkdtempSync(join(tmpdir(),'usage-mutant-'));
  try{
@@ -64,6 +65,8 @@ for(const item of cases){
   const mutant=spawnSync(process.execPath,command,{encoding:'utf8',env:{...process.env,USAGE_TEST_ROOT:dir}});
   const output=(mutant.stdout??'')+(mutant.stderr??'');writeFileSync(`${evidence}/${item.name}-mutant.tap`,output.replaceAll(dir,'<isolated-mutant>').replace(/[ \t]+$/gm,''));
   assert.notEqual(mutant.status,0,'mutant must fail');assert.match(output,/ERR_ASSERTION/);assert.doesNotMatch(output,/ERR_MODULE_NOT_FOUND|SyntaxError|INJECTION_TIMEOUT|EXIT_BEFORE_INJECTION/);
-  console.log(JSON.stringify({mutation:item.name,baselineExit:baseline.status,mutantExit:mutant.status,killedBy:'ERR_ASSERTION',evidence:'FIXTURE',site:item.file}));
- }finally{rmSync(dir,{recursive:true,force:true});}
+  results.push({mutation:item.name,status:'PASS',baselineExit:baseline.status,mutantExit:mutant.status,killedBy:'ERR_ASSERTION',evidence:'FIXTURE',site:item.file});console.log(JSON.stringify(results.at(-1)));
+ }catch(error){const failure={mutation:item.name,status:'FAIL',error:String(error)};results.push(failure);console.error(JSON.stringify(failure));}finally{rmSync(dir,{recursive:true,force:true});}
 }
+
+writeFileSync(join(evidence,'results.json'),JSON.stringify(results,null,2)+'\n');if(results.some(row=>row.status!=='PASS'))process.exitCode=1;
