@@ -1,13 +1,13 @@
+import {agentHome} from './fixtures/agent.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,mkdir,writeFile,readFile,rm,readdir} from 'node:fs/promises';
+import {mkdir,writeFile,readFile,readdir} from 'node:fs/promises';
 import {join,resolve} from 'node:path';
-import {tmpdir} from 'node:os';
 import {spawnSync} from 'node:child_process';
 import {root as implementationRoot} from './fixtures/helpers.mjs';
 
 async function fixture(t,consent={state:'withheld',changedAt:null,consentId:null}) {
- const root=await mkdtemp(join(tmpdir(),'hm-first-consent-中文 '));t.after(()=>rm(root,{recursive:true,force:true}));
+ const root=await agentHome(t,'hm-first-consent-中文 ');
  const core=join(root,'core.mjs');
  const cid='11111111-1111-4111-8111-111111111111';
  await writeFile(core,`let text='';for await(const c of process.stdin)text+=c;const q=JSON.parse(text);console.log(JSON.stringify({result:q.input.operation==='state'?{agentProtocolVersion:2,deviceId:null,consent:${JSON.stringify(consent)}}:q.input.operation==='prepareOnboarding'?{url:'https://market.hanamesh.com/me/bind?flow=agent',expiresAt:'2026-10-28T20:00:00.000Z',consentId:'${cid}',deviceId:'A'.repeat(43)}:{consent:{state:q.input.state}}}));`);

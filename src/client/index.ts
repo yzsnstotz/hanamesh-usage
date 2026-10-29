@@ -23,140 +23,12 @@ declare global { interface Window { __DSH_TRANSPORT__?:Carrier } }
 
 export const inject=['slots','remote'];
 
-const verificationPath='api/hanamesh/usage/verification';
-const verificationCalls=['record','health','observeCollection'] as const;
-type VerificationCall=typeof verificationCalls[number];
-interface VerificationCapability {enabled:true;calls:VerificationCall[];deviceId:string|null}
-interface VerificationReply {call:VerificationCall;input:unknown;result:unknown;health:unknown}
-class VerificationError extends Error {
-  constructor(message:string,readonly code?:string){super(message);}
-}
 function object(value:unknown):value is Record<string,unknown> {
   return value!==null&&typeof value==='object'&&!Array.isArray(value);
 }
-function verificationFetch(path:string,init:RequestInit):Promise<Response> {
+function usageFetch(path:string,init:RequestInit):Promise<Response> {
   const carrier=window.__DSH_TRANSPORT__;
   return carrier?.fetch?carrier.fetch(path,init):globalThis.fetch(path,init);
-}
-async function verificationJson(response:Response):Promise<unknown> {
-  if(response.headers.get('content-type')?.split(';')[0].trim().toLowerCase()!=='application/json')
-    throw new VerificationError('USAGE_VERIFICATION_MEDIA_TYPE');
-  try {return await response.json();}
-  catch {throw new VerificationError('USAGE_VERIFICATION_INVALID_RESPONSE');}
-}
-
-/** Test-profile bridge; forwards the edited input without generating source facts. */
-export async function fetchUsageVerification(call:VerificationCall,input:unknown,signal:AbortSignal):Promise<VerificationReply> {
-  try {
-    if(!verificationCalls.includes(call)||(call!=='record'&&input!==null))
-      throw new VerificationError('USAGE_VERIFICATION_INVALID_INPUT');
-    const response=await verificationFetch(`${verificationPath}/call`,{
-      method:'POST',credentials:'same-origin',cache:'no-store',signal,
-      headers:{'content-type':'application/json'},body:JSON.stringify({call,input}),
-    });
-    if(!response.ok){
-      // Only named public service codes are diagnostics; never surface raw text.
-      if(response.headers.get('content-type')?.split(';')[0].trim().toLowerCase()==='application/json'){
-        const failure=await verificationJson(response);
-        if(object(failure)&&object(failure.error)&&['USAGE_UNAVAILABLE','USAGE_VERIFICATION_INVALID'].includes(failure.error.code as string))
-          throw new VerificationError('USAGE_VERIFICATION_SERVICE_ERROR',failure.error.code as string);
-      }
-      throw new VerificationError('USAGE_VERIFICATION_UNAVAILABLE');
-    }
-    const reply=await verificationJson(response);
-    if(!object(reply)||reply.call!==call||!['input','result','health'].every(key=>Object.hasOwn(reply,key)))
-      throw new VerificationError('USAGE_VERIFICATION_INVALID_RESPONSE');
-    return reply as unknown as VerificationReply;
-  } catch(error){
-    if(error instanceof VerificationError)throw error;
-    throw new VerificationError('USAGE_VERIFICATION_UNAVAILABLE');
-  }
-}
-
-function editedInput(call:VerificationCall,draft:string):unknown {
-  let value:unknown;
-  try {value=JSON.parse(draft);}
-  catch {throw new VerificationError('USAGE_VERIFICATION_INVALID_JSON');}
-  if(call==='record'?!object(value):value!==null)throw new VerificationError('USAGE_VERIFICATION_INVALID_INPUT');
-  return value;
-}
-
-/** Native controls are outside the script-free view and hidden until enabled. */
-export function UsageVerificationPanel() {
-  const [capability,setCapability]=useState<VerificationCapability|null>(null);
-  const [call,setCall]=useState<VerificationCall>('record');
-  const [draft,setDraft]=useState('{}');
-  const [busy,setBusy]=useState(false);
-  const [result,setResult]=useState<VerificationReply|null>(null);
-  const [error,setError]=useState<string|null>(null);
-  const mounted=useRef(false);
-  const request=useRef<AbortController|null>(null);
-  useEffect(()=>{
-    mounted.current=true;
-    const controller=new AbortController();
-    void (async()=>{
-      try {
-        const response=await verificationFetch(verificationPath,{method:'GET',credentials:'same-origin',cache:'no-store',signal:controller.signal});
-        if(!response.ok)return;
-        const value=await verificationJson(response);
-        const calls=object(value)?value.calls:undefined;
-        if(!object(value)||value.enabled!==true||!Array.isArray(value.calls)
-          ||value.calls.length!==verificationCalls.length||!verificationCalls.every(method=>Array.isArray(calls)&&calls.includes(method))
-          ||!(value.deviceId===null||typeof value.deviceId==='string'))return;
-        if(!controller.signal.aborted)setCapability(value as unknown as VerificationCapability);
-      } catch {
-        if(!controller.signal.aborted)setError('USAGE_VERIFICATION_UNAVAILABLE');
-      }
-    })();
-    return ()=>{mounted.current=false;controller.abort();request.current?.abort();};
-  },[]);
-  if(capability===null)return null;
-
-  function showError(reason:unknown){
-    setError(reason instanceof VerificationError?reason.code??reason.message:'USAGE_VERIFICATION_UNAVAILABLE');
-  }
-  function execute(){
-    if(request.current!==null||!mounted.current)return;
-    let input:unknown;
-    try {input=editedInput(call,draft);}
-    catch(reason){setResult(null);showError(reason);return;}
-    const controller=new AbortController();
-    request.current=controller;setBusy(true);setResult(null);setError(null);
-    void fetchUsageVerification(call,input,controller.signal).then(reply=>{
-      if(mounted.current&&!controller.signal.aborted)setResult(reply);
-    },reason=>{
-      if(mounted.current&&!controller.signal.aborted)showError(reason);
-    }).finally(()=>{
-      if(request.current===controller)request.current=null;
-      if(mounted.current&&!controller.signal.aborted)setBusy(false);
-    });
-  }
-  function replay(){
-    if(request.current!==null)return;
-    try {
-      const input=editedInput('record',draft) as Record<string,unknown>;
-      const keys=['hanaRef','action','idempotencyKey','sourcePlugin'];
-      if(!keys.every(key=>Object.hasOwn(input,key)))throw new VerificationError('USAGE_VERIFICATION_INVALID_INPUT');
-      setDraft(JSON.stringify(Object.fromEntries(keys.map(key=>[key,input[key]])),null,2));
-      setResult(null);setError(null);
-    } catch(reason){showError(reason);}
-  }
-  return h('section',{'aria-label':'Usage 测试版三调用'},
-    h('h3',null,'Usage 测试版三调用'),
-    h('p',null,'当前设备：',capability.deviceId===null?'null':capability.deviceId),
-    h('label',null,'调用 ',h('select',{value:call,disabled:busy,onChange:(event:import('react').ChangeEvent<HTMLSelectElement>)=>{
-      const next=event.currentTarget.value as VerificationCall;
-      if(request.current!==null||!verificationCalls.includes(next))return;
-      setCall(next);setDraft(next==='record'?'{}':'null');setError(null);setResult(null);
-    }},...verificationCalls.map(method=>h('option',{key:method,value:method},method)))),
-    h('label',null,'输入 JSON ',h('textarea',{value:draft,disabled:busy,rows:12,style:{display:'block',width:'100%'},onChange:(event:import('react').ChangeEvent<HTMLTextAreaElement>)=>{
-      if(request.current===null){setDraft(event.currentTarget.value);setError(null);}
-    }})),
-    call==='record'?h('button',{type:'button',disabled:busy,onClick:replay},'四字段重放'):null,
-    h('button',{type:'button',disabled:busy,onClick:execute},busy?'执行中…':'执行'),
-    error===null?null:h('p',{role:'alert'},error),
-    result===null?null:h('pre',{'aria-label':'实际调用结果'},JSON.stringify(result,null,2)),
-  );
 }
 
 interface WithdrawalSnapshot {
@@ -210,7 +82,7 @@ export async function fetchUsageResend(input:{eventIds:string[]},signal:AbortSig
   try {
     if(!object(input)||Object.keys(input).join('|')!=='eventIds'||!Array.isArray(input.eventIds)||input.eventIds.length===0
       ||!input.eventIds.every(id=>typeof id==='string'&&eventIdPattern.test(id))||new Set(input.eventIds).size!==input.eventIds.length)throw new ResendError('RESEND_INPUT_INVALID');
-    const response=await verificationFetch('api/hanamesh/usage/events/resend',{
+    const response=await usageFetch('api/hanamesh/usage/events/resend',{
       method:'POST',credentials:'same-origin',cache:'no-store',signal,
       headers:{'content-type':'application/json'},body:JSON.stringify({eventIds:input.eventIds}),
     });
@@ -238,7 +110,7 @@ export async function fetchUsageResend(input:{eventIds:string[]},signal:AbortSig
 /** Read only the normal panel projection; never request raw events or signatures. */
 async function fetchResendPanel(signal:AbortSignal):Promise<ResendPanelSnapshot> {
   try {
-    const response=await verificationFetch('api/hanamesh/usage/panel',{method:'GET',credentials:'same-origin',cache:'no-store',signal});
+    const response=await usageFetch('api/hanamesh/usage/panel',{method:'GET',credentials:'same-origin',cache:'no-store',signal});
     if(!response.ok)throw new ResendError('USAGE_PANEL_UNAVAILABLE');
     const value=await resendJson(response);
     if(!object(value)||!object(value.subject)||(value.subject.deviceId!==null&&typeof value.subject.deviceId!=='string')
@@ -382,7 +254,7 @@ function withdrawalText(w:WithdrawalSnapshot):string {
   return `已撤回同意，本机记录已删除；正在请求服务端删除原始记录（已尝试 ${w.attempts} 次）${w.lastError?`：${usageReason(w.lastError)}`:''}。`;
 }
 async function fetchUsageRecords(signal:AbortSignal):Promise<UsageRecordsSnapshot> {
-  const response=await verificationFetch('api/hanamesh/usage/panel',{method:'GET',credentials:'same-origin',cache:'no-store',signal});
+  const response=await usageFetch('api/hanamesh/usage/panel',{method:'GET',credentials:'same-origin',cache:'no-store',signal});
   if(!response.ok)throw new Error('USAGE_PANEL_UNAVAILABLE');
   const value=await resendJson(response).catch(()=>{throw new Error('USAGE_PANEL_UNAVAILABLE');});
   const actions=['install','open','use','uninstall'];
@@ -403,7 +275,7 @@ async function fetchUsageRecords(signal:AbortSignal):Promise<UsageRecordsSnapsho
 }
 interface RemoteView {state:'available'|'unknown'|'offline';total:number|null;code:string|null;notes:Record<string,string>}
 async function fetchRemoteRecords(signal:AbortSignal):Promise<RemoteView> {
-  const response=await verificationFetch('api/hanamesh/usage/panel/remote',{method:'GET',credentials:'same-origin',cache:'no-store',signal});
+  const response=await usageFetch('api/hanamesh/usage/panel/remote',{method:'GET',credentials:'same-origin',cache:'no-store',signal});
   if(!response.ok)throw new Error('REMOTE_UNAVAILABLE');
   const value=await resendJson(response).catch(()=>{throw new Error('REMOTE_UNAVAILABLE');});
   if(!object(value)||!['available','unknown','offline'].includes(value.state as string))throw new Error('REMOTE_UNAVAILABLE');
@@ -464,7 +336,7 @@ export function UsageRecords({revision=0}:{revision?:number}) {
   );
 }
 
-/** Settings section: the records first; resend and test-build verification stay under 诊断. */
+/** Settings section: the records first; resend stays under 诊断. */
 export function UsagePanel() {
   const [revision,setRevision]=useState(0);
   return h('section',{'aria-label':'HanaMesh 使用记录'},
@@ -472,8 +344,7 @@ export function UsagePanel() {
     h('button',{type:'button',onClick:()=>setRevision(value=>value+1)},'刷新'),
     h(UsageRecords,{revision}),
     h('details',null,h('summary',null,'诊断'),
-      h(UsageResendPanel,{revision}),
-      h(UsageVerificationPanel)),
+      h(UsageResendPanel,{revision})),
   );
 }
 

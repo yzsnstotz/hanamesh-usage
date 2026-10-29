@@ -214,7 +214,7 @@ export function mountUsage(ctx, domain, eventDomain, config, coreLink, commandSo
       return {state:/** @type {'processed'|'failed'} */(failed||scanFailed||localFailure?'failed':'processed'),code:/** @type {'COLLECTION_FAILED'|null} */(failed||scanFailed||localFailure?'COLLECTION_FAILED':null),through,events,health};
     },
     remote: () => reporter.readRemote(),
-    panel: () => projectUsagePanel(api.health(),eventStore.getSnapshot().events,coreLink.get(),config.panelTestSupply,{eventRetentionDays,queryLimit,maxQueryLimit:MAX_QUERY_LIMIT}),
+    panel: () => projectUsagePanel(api.health(),eventStore.getSnapshot().events,coreLink.get(),{eventRetentionDays,queryLimit,maxQueryLimit:MAX_QUERY_LIMIT}),
     health: () => {
       if(closing)throw new UsageError('USAGE_UNAVAILABLE');
       const current=coreState(),outbox=reporter.health(),{available,source,lastScanAt,lastError,failureKind,unreadable,detail}=inventory.health();
@@ -244,7 +244,7 @@ export function mountUsage(ctx, domain, eventDomain, config, coreLink, commandSo
   };
   ctx.provide('hanameshUsage', api);
   // CLI-only hosts still record locally. This child mounts only when Connection exists.
-  ctx.inject(['connection'], child => { mountTransport(child, api,{verification:config.verification??false}); });
+  ctx.inject(['connection'], child => { mountTransport(child, api); });
   const ready = Promise.all([
     api.reconcile().catch(error => { note(error); recoveryComplete = false; }),
     inventory.start().catch(() => { note(new UsageError('INVENTORY_FAILED')); }),

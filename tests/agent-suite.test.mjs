@@ -1,4 +1,5 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {readFile,mkdtemp,rm,mkdir,writeFile} from 'node:fs/promises';import {join} from 'node:path';import {tmpdir} from 'node:os';import {spawnSync} from 'node:child_process';import {createHash} from 'node:crypto';
+import {agentHome} from './fixtures/agent.mjs';
+import test from 'node:test';import assert from 'node:assert/strict';import {readFile,mkdir,writeFile} from 'node:fs/promises';import {join} from 'node:path';import {spawnSync} from 'node:child_process';import {createHash} from 'node:crypto';
 const sha=b=>createHash('sha256').update(b).digest('hex');
 test('agent manifests expose one suite and forward only the four nonsecret MCP isolation variables',async()=>{
  const a=JSON.parse(await readFile('agent/.claude-plugin/plugin.json')),b=JSON.parse(await readFile('agent/.codex-plugin/plugin.json')),m=JSON.parse(await readFile('agent/.mcp.json'));
@@ -6,7 +7,7 @@ test('agent manifests expose one suite and forward only the four nonsecret MCP i
  assert.deepEqual(m.mcpServers.hanamesh.env_vars,['HANAMESH_SHARED_HOME','HANAMESH_AGENT_HOME','HANAMESH_AGENT_CHANNEL','CODEX_HOME']);
 });
 test('packed suite includes Core CLI import closure and byte anchored component receipt',async t=>{
- const root=await mkdtemp(join(tmpdir(),'hm-suite-package-test-'));t.after(()=>rm(root,{recursive:true,force:true}));await mkdir(join(root,'package/lib/suite'),{recursive:true});
+ const root=await agentHome(t,'hm-suite-package-test-');await mkdir(join(root,'package/lib/suite'),{recursive:true});
  await writeFile(join(root,'package/package.json'),JSON.stringify({name:'@hanamesh/core',version:'0.3.25',type:'module'}));await writeFile(join(root,'package/LICENSE'),'fixture-license');
  for(const name of ['agent-cli','agent','shared-device','device','errors','validation','contracts','transport','registration','bind-link','suite/facts'])await writeFile(join(root,'package/lib',name+'.js'),'// fixture-'+name);
  await writeFile(join(root,'package/lib/agent-cli.js'),"console.log(JSON.stringify({result:{agentProtocolVersion:2}}));\n");

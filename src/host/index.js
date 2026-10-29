@@ -38,17 +38,11 @@ export async function apply(ctx, config = {}) {
     inventoryIntervalMs: config.inventoryIntervalMs ?? 300000,
     eventRetentionDays: config.eventRetentionDays ?? DEFAULT_EVENT_RETENTION_DAYS,
     queryLimit: config.queryLimit ?? DEFAULT_QUERY_LIMIT,
-    panelTestSupply: config.panelTestSupply === undefined ? {identity:false,receiver:false} : config.panelTestSupply,
-    verification:config.verification??false,
   };
   /** @param {unknown} value @param {number} min @param {number} max */
   const integer = (value, min, max) => typeof value === 'number' && Number.isSafeInteger(value) && value >= min && value <= max;
-  const supply=resolved.panelTestSupply;
   try { validateRetentionDays(resolved.eventRetentionDays);validateQueryLimit(resolved.queryLimit); } catch { throw new UsageError('INVALID_CONFIG'); }
-  if (Object.keys(config).some(k => !['maxRecords','maxPending','allowExport','maxEvents','uploadIntervalMs','uploadBatchSize','inventoryIntervalMs','eventRetentionDays','queryLimit','panelTestSupply','verification'].includes(k))
-    || typeof resolved.verification!=='boolean' || (resolved.verification&&!['test','development'].includes(process.env.NODE_ENV??''))
-    || supply===null || typeof supply!=='object' || Array.isArray(supply)
-    || Object.keys(supply).sort().join('|')!=='identity|receiver' || typeof supply.identity!=='boolean' || typeof supply.receiver!=='boolean'
+  if (Object.keys(config).some(k => !['maxRecords','maxPending','allowExport','maxEvents','uploadIntervalMs','uploadBatchSize','inventoryIntervalMs','eventRetentionDays','queryLimit'].includes(k))
     || typeof resolved.allowExport !== 'boolean'
     || !integer(resolved.maxRecords, 1, 100000)
     || !integer(resolved.maxPending, 1, 10000)

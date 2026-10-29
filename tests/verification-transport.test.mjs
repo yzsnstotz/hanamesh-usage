@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mountTransport} from '../lib/host/transport.js';
+import {mountVerificationTransport} from './fixtures/usage-verification-transport.mjs';
 const base='/api/hanamesh/usage/verification';
 const fact={hanaRef:'fixture.ordinary',action:'use',sourcePlugin:'@hanamesh/dsh-app-host',idempotencyKey:'use:source-operation-1',occurredAt:'2026-10-15T00:00:00.007Z',sourceHanaRef:'fixture.origin',targetRef:'registered-app-1',receipt:{providerId:'fixture',model:null,count:1}};
 function host({verification=false,throwCode=null}={}){
@@ -10,7 +11,8 @@ function host({verification=false,throwCode=null}={}){
   const observed={state:'processed',code:null,through:7,events:[{eventId:'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',delivery:'unconfirmed',code:'USAGE_STORAGE_UNAVAILABLE'}],health};
   const api={record:async input=>{calls.push({call:'record',input});if(throwCode)throw Object.assign(new Error('RAW_PRIVATE_ERROR_MUST_NOT_LEAK'),{code:throwCode});return recordResult;},health:()=>{calls.push({call:'health'});return health;},observeCollection:async()=>{calls.push({call:'observeCollection'});return observed;}};
   const ctx={connection:{fetch:{register(route){routes.set(route.path,route);return()=>routes.delete(route.path);}}},effect:fn=>disposers.push(fn())};
-  mountTransport(ctx,api,{verification});
+  mountTransport(ctx,api);
+  if(verification)mountVerificationTransport(ctx,api);
   return {routes,calls,api,health,recordResult,observed,close:()=>disposers.forEach(fn=>fn()),async request(path,{method='GET',body}={}){const route=routes.get(new URL(path,'http://127.0.0.1').pathname);if(!route)return new Response('missing',{status:404});return route.fetch(new Request(new URL(path,'http://127.0.0.1'),{method,headers:{'content-type':'application/json'},...(body===undefined?{}:{body:typeof body==='string'?body:JSON.stringify(body)})}));}};
 }
 function enabled(h){assert(h.routes.has(base),'test-only capability route is missing');assert(h.routes.has(`${base}/call`),'editable three-call bridge is missing');}
@@ -35,7 +37,8 @@ test('USAGE02-V6 unexpected service Error is bounded and does not serialize stac
 test('USAGE02-V7 method mismatch cannot trigger a record or expose the editable bridge',async()=>{
   const h=host({verification:true});try{enabled(h);assert.equal((await h.request(`${base}/call`)).status,405);assert.equal((await h.request(base,{method:'POST',body:{}})).status,405);assert.equal(h.calls.length,0);}finally{h.close();}
 });
-test('USAGE02-V8 normal development configuration may explicitly enable verification; production cannot',async()=>{
+test('USAGE02-V8 verification is absent from production configuration in every environment',async()=>{
   const {apply}=await import('../lib/host/index.js');const old=process.env.NODE_ENV;
-  try{process.env.NODE_ENV='production';await assert.rejects(apply({}, {verification:true}),{code:'INVALID_CONFIG'});process.env.NODE_ENV='development';const effects=[];await assert.doesNotReject(apply({effect:fn=>{effects.push(fn);}}, {verification:true}),'normal development test build must support explicit verification configuration');assert.equal(effects.length,1);}finally{if(old===undefined)delete process.env.NODE_ENV;else process.env.NODE_ENV=old;}
+  try {for(const env of ['production','development','test']){process.env.NODE_ENV=env;await assert.rejects(apply({}, {verification:true}),{code:'INVALID_CONFIG'});}}
+  finally {if(old===undefined)delete process.env.NODE_ENV;else process.env.NODE_ENV=old;}
 });

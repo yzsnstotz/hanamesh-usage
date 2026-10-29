@@ -14,12 +14,7 @@ export interface Config {
   eventRetentionDays?: number;
   /** Default for declaration/event queries (1–1000), default 100; caller limit overrides. */
   queryLimit?: number;
-  /** Display provenance only; does not supply identities or produce facts. */
-  panelTestSupply?: PanelTestSupply;
-  /** Explicit test/development build entry; always disabled in production. */
-  verification?: boolean;
 }
-export interface PanelTestSupply { identity:boolean; receiver:boolean }
 export interface PanelEvent {
   eventId:string; deviceId:string; hanaRef:string; action:UsageEvent['action']; occurredAt:string;
   source:UsageEvent['source']; sourcePlugin:string|null; evidenceRef:string|null;
@@ -29,7 +24,7 @@ export interface UsagePolicy {eventRetentionDays:number;queryLimit:number;maxQue
 export interface PanelSnapshot {
   policy:UsagePolicy;
   subject:{deviceId:string|null;principalId:string|null;reason:string|null};
-  testSupply:PanelTestSupply;consent:HealthSnapshot['consent'];core:HealthSnapshot['core'];
+  consent:HealthSnapshot['consent'];core:HealthSnapshot['core'];
   total:number;events:PanelEvent[];outbox:HealthSnapshot['outbox'];failures:Record<string,number>;
   withdrawal:HealthSnapshot['withdrawal'];
   inventory:HealthSnapshot['inventory'];filtered:HealthSnapshot['filtered'];

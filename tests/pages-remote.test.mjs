@@ -7,7 +7,9 @@ runInThisContext('(function(window){'+readFileSync(require.resolve('@deepseek-ai
 const {apply:installClientRemote}=gatewayRegistration.factory(require);
 import {UsagePagesRemote} from '../lib/host/pages-remote.js';
 import {fixtureHost} from './fixtures/host.mjs';
-import {pagesContribution} from '../lib/client/index.js';
+let usageRegistration;
+runInThisContext('(function(window){'+readFileSync(new URL('../lib/client.js',import.meta.url),'utf8')+'\n})')({__ModuleLoader__:{load:value=>usageRegistration=value}});
+const {pagesContribution}=usageRegistration.factory(require);
 test('published Typert Gateway dispatches Usage pages to invocation Peer and rejects replay/peer disposal',async()=>{
  const source={entryId:'include:page',moduleName:'ordinary/client'},entry={id:source.entryId,options:{name:source.moduleName},parent:{tree:{ctx:{baseUrl:'file:///isolated/cordis.yml'}}}};
  const row={entryId:source.entryId,moduleName:source.moduleName,enabled:true,fiberPhase:'active'};

@@ -52,7 +52,7 @@ const core={protocolVersion:'1',getDeviceId:()=>deviceId,getPublicKey:()=>public
   getServerOrigin:()=>origin,getSession:()=>({protocolVersion:'1',deviceId,registration:'registered',principalId:null,bound:null,serverReachable:true,checkedAt:new Date().toISOString(),reason:'COMPONENT_FIXTURE'}),
   async signRequest({method,path,body}){const timestamp=String(Math.floor(Date.now()/1000)),nonce=randomBytes(16).toString('base64url');const data=`${method}\n${path}\n${timestamp}\n${nonce}\n${createHash('sha256').update(body??Buffer.alloc(0)).digest('hex')}`;return {'x-hm-device-id':deviceId,'x-hm-timestamp':timestamp,'x-hm-nonce':nonce,'x-hm-signature':sign(null,Buffer.from(data),privateKey).toString('base64url')};},
 };
-const patch=join(run,'command.patch.json');await writeFile(patch,JSON.stringify([{id:'update-notifier',config:{initialDelay:3600000,interval:3600000}},...(process.env.USAGE_GATE_CANDIDATE?[{id:'hanamesh-usage',config:{uploadIntervalMs:5000,panelTestSupply:{identity:true,receiver:true}}}]:[])]));
+const patch=join(run,'command.patch.json');await writeFile(patch,JSON.stringify([{id:'update-notifier',config:{initialDelay:3600000,interval:3600000}},...(process.env.USAGE_GATE_CANDIDATE?[{id:'hanamesh-usage',config:{uploadIntervalMs:5000}}]:[])]));
 let app,fork;
 const result={scope:'REAL_USAGE_COMPONENT_HOST',fixtures:['Core consent/device signer','HTTP server with Ed25519 request/event verification and in-memory readback'],formalGUI:'NOT_RUN',productionServer:'NOT_RUN',modelRequests:0};
 try{
@@ -65,7 +65,7 @@ try{
     const pkg=ctx.get('pluginPackages').packageOf('@hanamesh/usage',loaded.parent.tree.ctx.baseUrl);
     assert.equal(pkg.version,JSON.parse(await readFile(new URL('../package.json',import.meta.url),'utf8')).version);
     result.candidate={version:pkg.version,sha256:createHash('sha256').update(await readFile(process.env.USAGE_GATE_CANDIDATE)).digest('hex'),installation:'PUBLIC_CLI_PLUGIN_ADD_BUNDLE'};
-  }else{fork=ctx.plugin(usage,{uploadIntervalMs:5000,panelTestSupply:{identity:true,receiver:true}});await fork;}
+  }else{fork=ctx.plugin(usage,{uploadIntervalMs:5000});await fork;}
   const api=ctx.get('hanameshUsage');assert(api);await api.drain();
   const graphRow=ctx.clientModules.graph().entries.find(row=>row.id==='@hanamesh/usage');assert(graphRow);assert(graphRow.external.includes('react'));
   result.panelClient={scope:'REAL_HOST_PUBLIC_CLIENT_GRAPH_NOT_RENDERER',id:graphRow.id,inject:graphRow.inject,external:graphRow.external};
@@ -95,7 +95,7 @@ try{
   const facts=[];ctx.on('session/event',(original,event)=>{if(original.id!==session.sessionId||!['command/run','command/done'].includes(event.type))return;facts.push({sessionId:original.id,type:event.type,seq:event.seq,time:event.time,data:{commandId:event.data.commandId,...(event.type==='command/run'?{name:event.data.name}:{kind:event.data.kind})}});});
   async function execute(){const value=await ctx.typertGateway.invoke({namespace:'commands',method:'execute',args:{agentId:session.sessionId,line:'/check-updates',submittedAttachments:[]}});assert.equal(value.result.kind,'success');await api.drain();return value;}
   await execute();assert.equal(api.events().total,0);result.beforeConsent=api.events().total;
-  assert.equal(api.panel().total,0);assert.deepEqual(api.panel().testSupply,{identity:true,receiver:true});
+  assert.equal(api.panel().total,0);assert.equal(Object.hasOwn(api.panel(),'testSupply'),false);
   consent='granted';for(const fn of listeners)fn(consent,new Date().toISOString());await api.drain();
   const beforeFailure=api.events({limit:200});rejectSigning=true;
   await execute();assert.deepEqual(api.events({limit:200}),beforeFailure);rejectSigning=false;

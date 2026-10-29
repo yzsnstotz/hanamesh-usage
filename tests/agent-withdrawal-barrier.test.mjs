@@ -1,13 +1,13 @@
+import {agentHome} from './fixtures/agent.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,mkdir,writeFile,readFile,rm,readdir} from 'node:fs/promises';
-import {tmpdir} from 'node:os';
+import {mkdir,writeFile,readFile,readdir} from 'node:fs/promises';
 import {join} from 'node:path';
 import {AgentStore} from '../src/agent/store.mjs';
 import {beginWithdrawal,finishWithdrawal} from '../src/agent/withdraw.mjs';
 const consentId='11111111-1111-4111-8111-111111111111';
 async function fixture(t,result){
- const root=await mkdtemp(join(tmpdir(),'hm-g-barrier-'));t.after(()=>rm(root,{recursive:true,force:true}));await mkdir(join(root,'inflight'));await writeFile(join(root,'inflight','a'.repeat(64)+'.json'),'{}');
+ const root=await agentHome(t,'hm-g-barrier-');await mkdir(join(root,'inflight'));await writeFile(join(root,'inflight','a'.repeat(64)+'.json'),'{}');
  let consent='granted';const r={agentHome:root,store:new AgentStore(root),call:async x=>{if(x.operation==='withdraw')return result;if(x.operation==='consent')consent=x.state;return {deviceId:'fixture-device',consent:{state:consent,consentId}};}};return r;
 }
 test('G committed matching withdrawal barrier clears independent inflight without allowing a new terminal grant',async t=>{

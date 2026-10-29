@@ -93,8 +93,7 @@ const {createLaunchEnvironmentSnapshot} = await import(pathToFileURL(join(deskto
 const patch = join(run, 'state/dev-entry.patch.json');
 await writeFile(patch, JSON.stringify([
   {id: 'update-notifier', config: {initialDelay: 3600000, interval: 3600000}},
-  // identity: fixture Core keys; receiver: the card's own real ServerUsage, so not a fixture receiver.
-  {id: 'hanamesh-usage', config: {uploadIntervalMs: 5000, panelTestSupply: {identity: true, receiver: false}}},
+  {id: 'hanamesh-usage', config: {uploadIntervalMs: 5000}},
 ]));
 const app = await runProfile({profile: 'web', patchFiles: [patch], args: ['--no-open', '--port', '0'], environment: createLaunchEnvironmentSnapshot([{source: 'process', values: process.env}])});
 const ctx = app.ctx;

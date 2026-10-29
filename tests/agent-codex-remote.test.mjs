@@ -1,7 +1,7 @@
+import {agentHome} from './fixtures/agent.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,mkdir,writeFile,rm,readdir,chmod,readFile} from 'node:fs/promises';
-import {tmpdir} from 'node:os';
+import {mkdir,writeFile,readdir,chmod,readFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
@@ -10,7 +10,7 @@ const {remotePlugins,observeCodex}=await load('codex-remote.mjs');const {project
 const id='plugin_connector_1p_95d3fixture',name='gmail';
 const installed={remote_plugin_id:id,name,installed:true,enabled:true};
 const payload=(call='one')=>({hook_event_name:'PostToolUse',session_id:'fixture-session',tool_call_id:call,tool_name:'mcp__gmail__search',tool_response:{content:[]}});
-async function fixture(t){const home=await mkdtemp(join(tmpdir(),'hm-remote-id-'));t.after(()=>rm(home,{recursive:true,force:true}));return home;}
+const fixture=t=>agentHome(t,'hm-remote-id-');
 const catalog={plugins:[{channel:'codex',pluginId:'renamed@openai-curated-remote',remotePluginId:id,hanaRef:'gmail-hana'}],settings:{backfillWindowDays:30,countUnconfirmedCalls:false}};
 test('remote ID and native name survive any CLI/plugin version, without a cache or connector exclusion',async t=>{
  const home=await fixture(t);for(const version of ['0.1','9.9.9-new','not-a-semver']){const {plugins}=await remotePlugins(home,{observe:async()=>({cliVersion:'future-cli',installed:[{...installed,version}]})});assert.equal(plugins.length,1);assert.deepEqual(plugins[0].remote,{remotePluginId:id,name});const row=projectHook(payload(version),'codex',plugins);assert.equal(row.success,true);assert.equal(row.remote.remotePluginId,id);}

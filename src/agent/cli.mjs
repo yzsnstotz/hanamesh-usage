@@ -52,7 +52,7 @@ if(command==='mcp'||command==='mcp-ready') {
     if(request.id===undefined)continue;
     try {
       let result;
-      if(request.method==='initialize') {result={protocolVersion:request.params?.protocolVersion ?? '2024-11-05',capabilities:{tools:{}},serverInfo:{name:'hanamesh-usage',version:'0.3.0-rc.14'}};if(!active)active=tick();}
+      if(request.method==='initialize') {result={protocolVersion:request.params?.protocolVersion ?? '2024-11-05',capabilities:{tools:{}},serverInfo:{name:'hanamesh-usage',version:'__HANAMESH_USAGE_VERSION__'}};if(!active)active=tick();}
       else if(request.method==='ping')result={};
       else if(request.method==='tools/list')result={tools:[{name:'hanamesh_status',description:'只读检查 HanaMesh 同意、配置、计量前置条件、记录和发送原因；不修改宿主信任。',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true,destructiveHint:false,openWorldHint:false}}]};
       else if(request.method==='tools/call' && request.params?.name==='hanamesh_status' && Object.keys(request.params?.arguments ?? {}).length===0)result={content:[{type:'text',text:JSON.stringify(await status(r))}]};

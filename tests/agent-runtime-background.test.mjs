@@ -1,3 +1,4 @@
+import {copyAgentBootstrap} from './fixtures/agent.mjs';
 import test,{before,after} from 'node:test';
 import {watch} from 'node:fs';
 import assert from 'node:assert/strict';
@@ -35,7 +36,7 @@ async function eventUntil(directory,read,signal){
  finally{watcher.close();signal.removeEventListener('abort',changed);}
 }
 async function fixture(t,mode='failure'){
- const root=await mkdtemp(join(tmpdir(),'hm-background-runtime 中文-'));const plugin=join(root,'plugin'),shared=join(root,'shared');await mkdir(plugin);await cp(join(process.env.USAGE_TEST_ROOT??process.cwd(),'agent/bin'),join(plugin,'bin'),{recursive:true});
+ const root=await mkdtemp(join(tmpdir(),'hm-background-runtime 中文-'));const plugin=join(root,'plugin'),shared=join(root,'shared');await mkdir(plugin);await copyAgentBootstrap(plugin);
  const curl=join(root,'fixture-curl');await link(curlTemplate,curl);const linked=await stat(curl),template=await stat(curlTemplate);assert.equal(linked.ino,template.ino);assert.equal(linked.dev,template.dev);await writeFile(join(root,'fixture-inode.json'),JSON.stringify({inode:linked.ino,device:linked.dev,templateInode:template.ino,warmedInBefore:true,perRootHardLink:true}));await writeFile(join(root,'fixture-mode'),mode);
  for(const file of await readdir(join(plugin,'bin'))){const p=join(plugin,'bin',file),s=await readFile(p,'utf8');await writeFile(p,file.endsWith('.pl')?s.replaceAll("'/usr/bin/curl'",JSON.stringify(curl)):s.replaceAll('/usr/bin/curl',shellquote(curl)));}
  if(mode!=='failure'){

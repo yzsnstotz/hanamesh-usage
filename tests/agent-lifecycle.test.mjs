@@ -1,8 +1,8 @@
+import {agentHome} from './fixtures/agent.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,rm} from 'node:fs/promises';
+import {rm} from 'node:fs/promises';
 import {join} from 'node:path';
-import {tmpdir} from 'node:os';
 import {pathToFileURL} from 'node:url';
 import {root} from './fixtures/helpers.mjs';
 const {projectHook}=await import(pathToFileURL(join(root,'lib/agent/project.mjs')).href);
@@ -13,7 +13,7 @@ const now=Date.parse('2026-10-15T10:00:00.000Z');
 const catalog={plugins:[{channel:'codex',pluginId:'target@market',hanaRef:'hana-target'}],settings:{backfillWindowDays:30,countUnconfirmedCalls:false}};
 const pre=()=>projectHook({...payload,hook_event_name:'PreToolUse'},'codex',installed,now);
 const post=()=>projectHook({...payload,hook_event_name:'PostToolUse',tool_response:{content:[],isError:false}},'codex',installed,now+100);
-async function fixture(t){const root=await mkdtemp(join(tmpdir(),'hm-g-agent-'));t.after(()=>rm(root,{recursive:true,force:true}));return new AgentStore(root);}
+async function fixture(t){const root=await agentHome(t,'hm-g-agent-');return new AgentStore(root);}
 test('G real host hook shape: Pre unknown and Post same call identity; missing result never means success',()=>{
  const a=pre(),b=post();assert.ok(a);assert.equal(a.success,null);assert.equal(a.disposition,'unverified');assert.equal(b.success,true);assert.equal(a.factId,b.factId);
  for(const response of [undefined,null,{},'not a result',{isError:'true',content:[]},{isError:null,content:[]},{exit_code:'0'}])assert.equal(projectHook({...payload,hook_event_name:'PostToolUse',tool_response:response},'codex',installed,now).success,null);

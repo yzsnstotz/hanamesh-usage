@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
+import ts from 'typescript';
 
 // These are client-boundary fixtures, not REAL_HOST/REAL_UI evidence.
 const bundle = new URL('../lib/client.js', import.meta.url);
@@ -58,7 +59,13 @@ function materialize(fetch, globalFetch) {
     globalThis: globals, AbortController, Response, Headers, URL, setTimeout, clearTimeout,
   });
   assert.equal(registration?.id, '@hanamesh/usage');
-  const api = registration.factory(name => { assert.equal(name, 'react'); return react; });
+  const production = registration.factory(name => { assert.equal(name, 'react'); return react; });
+  assert.equal(production.UsageVerificationPanel,undefined);
+  assert.equal(production.fetchUsageVerification,undefined);
+  const fixture={exports:{}};
+  const code=ts.transpileModule(readFileSync(new URL('./fixtures/usage-verification-client.ts',import.meta.url),'utf8'),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS}}).outputText;
+  runInNewContext(code,{exports:fixture.exports,module:fixture,require:name=>{assert.equal(name,'react');return react;},window:{__DSH_TRANSPORT__:carrier},globalThis:globals,AbortController,Response,Headers,URL});
+  const api={...production,...fixture.exports};
   function expand(node, path) {
     if (node === null || node === undefined || typeof node === 'boolean') return null;
     if (Array.isArray(node)) return node.map((child, i) => expand(child, `${path}.${i}`));
@@ -77,7 +84,7 @@ function materialize(fetch, globalFetch) {
     api, carrier, globals, tree: null,
     render(component = root) {
       root = component;
-      assert.equal(typeof component, 'function', 'UsageVerificationPanel must be exported by normal public client bundle');
+      assert.equal(typeof component, 'function', 'test fixture component must be callable');
       harness.tree = expand(react.createElement(component, null), 'root');
       for (const effect of effects.splice(0)) effect();
       return harness.tree;
@@ -124,7 +131,7 @@ function click(h, pattern) {
 const row = (eventId, hanaRef, action, occurredAt, state, code = null) => ({ eventId, deviceId: health.deviceId, hanaRef, action, occurredAt, source: 'seat', sourcePlugin: hanaRef, evidenceRef: 'fixture', signature: { state: 'success', code: null }, upload: { state, code, attempts: 1, sentAt: null } });
 const panelFixture = {
   policy: { eventRetentionDays: 90, queryLimit: 100, maxQueryLimit: 1000 }, subject: { deviceId: health.deviceId, principalId: null, reason: null },
-  testSupply: { identity: false, receiver: false }, consent: 'granted', core: 'present', total: 3, withdrawal: null,
+  consent: 'granted', core: 'present', total: 3, withdrawal: null,
   outbox: { state: 'idle', pending: 1, sent: 1, duplicate: 0, rejected: 1, lastUploadAt: null, nextAttemptAt: null, lastError: 'UPLOAD_HTTP_502' }, failures: {},
   inventory: { available: false, source: 'plugin-manager', lastScanAt: null, lastError: 'INVENTORY_SOURCE_UNREADABLE', failureKind: 'TypeError', unreadable: 1, detail: null }, filtered: { commands: 2, pages: 1 },
   events: [
@@ -175,7 +182,7 @@ function enabledClient(reply = (call, input) => ({ call, input, result: { dispos
   return { h: materialize(fetch), calls };
 }
 function requireBridge(h) {
-  assert.equal(typeof h.api.fetchUsageVerification, 'function', 'test-build verification call bridge is absent from normal public client export');
+  assert.equal(typeof h.api.fetchUsageVerification, 'function', 'test fixture verification call bridge is missing');
   return h.api.fetchUsageVerification;
 }
 function bounded(error) {
@@ -187,7 +194,7 @@ function bounded(error) {
 test('VCLIENT01 normal public client exports test-build editor and call bridge', () => {
   const h = materialize();
   assert.equal(typeof h.api.UsagePanel, 'function');
-  assert.equal(typeof h.api.UsageVerificationPanel, 'function', 'native test-build Usage verification editor is missing');
+  assert.equal(typeof h.api.UsageVerificationPanel, 'function', 'test fixture verification editor is missing');
   requireBridge(h);
 });
 
@@ -329,7 +336,7 @@ test('VCLIENT17 documented service error code survives the bridge while raw text
   });
 });
 
-test('VCLIENT12 Usage Settings shows the records natively (no iframe), with reasons, and keeps verification under 诊断', async () => {
+test('VCLIENT12 Usage Settings shows the records natively (no iframe), with reasons, and keeps resend under 诊断', async () => {
   const { h, calls } = enabledClient(); requireBridge(h);
   h.render(h.api.UsagePanel); await h.settle();
   assert.equal(nodes(h.tree).filter(node => node.type === 'iframe').length, 0);
@@ -342,7 +349,7 @@ test('VCLIENT12 Usage Settings shows the records natively (no iframe), with reas
   assert.match(all, /服务端已收到 · 官方插件 · 不计积分/, 'host note read automatically once consent is on');
   assert.match(all, /服务端回了 HTTP 502/);assert.match(all, /插件清单：读取 DSH 插件管理服务出错（TypeError）/);
   assert.match(all, /有 1 个已装插件这次读不到版本信息/);assert.match(all, /已忽略 2 次命令、1 次页面打开/);
-  one(h, 'textarea'); one(h, 'select'); one(h, 'details');
+  assert(!nodes(h.tree).some(node=>node.type==='textarea'||node.type==='select')); one(h, 'details');
   assert.equal(calls.filter(call => call.init?.method === 'POST').length, 0, 'reading the panel never writes');
   click(h, /查看服务端记录数/); await h.settle();
   assert.match(text(h.tree), /服务端有本设备的原始记录 4 条/);

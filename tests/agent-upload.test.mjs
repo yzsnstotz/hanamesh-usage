@@ -1,7 +1,7 @@
+import {agentHome} from './fixtures/agent.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,rm} from 'node:fs/promises';
-import {tmpdir} from 'node:os';
+import {rm} from 'node:fs/promises';
 import {join} from 'node:path';
 import {createHash,generateKeyPairSync,sign,verify} from 'node:crypto';
 import {AgentStore} from '../src/agent/store.mjs';
@@ -11,7 +11,7 @@ import {agentSigningJSON} from '../lib/core/agent-event.js';
 
 // Contract doubles only: no production backend or account. Real Ed25519 signatures over actual upload bytes.
 async function fixture(t,channel='codex'){
- const root=await mkdtemp(join(tmpdir(),'hm-agent-upload-'));t.after(()=>rm(root,{recursive:true,force:true}));
+ const root=await agentHome(t,'hm-agent-upload-');
  const {publicKey,privateKey}=generateKeyPairSync('ed25519');
  const deviceId=createHash('sha256').update(publicKey.export({format:'der',type:'spki'}).subarray(-32)).digest('base64url');
  const consentId='11111111-1111-4111-8111-111111111111';let consent='granted';const calls=[],posted=[];

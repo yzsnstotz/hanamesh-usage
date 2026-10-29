@@ -1,7 +1,7 @@
+import {agentHome} from './fixtures/agent.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,rm,readFile,readdir,writeFile} from 'node:fs/promises';
-import {tmpdir} from 'node:os';
+import {rm,readFile,readdir,writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {existsSync} from 'node:fs';
 import {spawn} from 'node:child_process';
@@ -33,7 +33,7 @@ test('parallel host environments choose the installed host, and sender ownership
  const env={CODEX_HOME:'/isolated/cx',CLAUDE_CONFIG_DIR:'/isolated/cc'};
  assert.equal(hostContext(env,'/isolated/cc/plugins/cache/market/usage/1').channel,'claude');
  assert.equal(hostContext(env,'/isolated/cx/plugins/cache/market/usage/1').channel,'codex');
- const root=await mkdtemp(join(tmpdir(),'hm-agent-lock-'));t.after(()=>rm(root,{recursive:true,force:true}));
+ const root=await agentHome(t,'hm-agent-lock-');
  const {senderLock}=await import('../src/agent/sender-lock.mjs');
  const release=await senderLock(root);assert.equal(typeof release,'function');assert.equal(await senderLock(root),null);await release();
  const recovered=await senderLock(root);assert.equal(typeof recovered,'function');await recovered();
@@ -44,7 +44,7 @@ test('parallel host environments choose the installed host, and sender ownership
  const afterDeath=await senderLock(root);assert.equal(typeof afterDeath,'function');await afterDeath();
 });
 test('withdrawing clears local first and waits for the last sender before deleting remote',async t=>{
- const root=await mkdtemp(join(tmpdir(),'hm-agent-withdraw-'));t.after(()=>rm(root,{recursive:true,force:true}));
+ const root=await agentHome(t,'hm-agent-withdraw-');
  const {AgentStore}=await import('../src/agent/store.mjs');const {senderLock}=await import('../src/agent/sender-lock.mjs');
  const {beginWithdrawal,finishWithdrawal}=await import('../src/agent/withdraw.mjs');
  const release=await senderLock(root);const calls=[];const store=new AgentStore(root);
@@ -53,7 +53,7 @@ test('withdrawing clears local first and waits for the last sender before deleti
  await release();assert.equal((await finishWithdrawal(r)).state,'sent');assert.deepEqual(calls,['consent','withdraw']);
 });
 test('DELETE acknowledgement cannot clear unknown-upload evidence or reopen consent',async t=>{
- const root=await mkdtemp(join(tmpdir(),'hm-agent-withdraw-unknown-'));t.after(()=>rm(root,{recursive:true,force:true}));
+ const root=await agentHome(t,'hm-agent-withdraw-unknown-');
  const {mkdir}=await import('node:fs/promises');await mkdir(join(root,'inflight'));
  await writeFile(join(root,'inflight',`${'b'.repeat(64)}.json`),JSON.stringify({eventId:'fixture'}));
  const {AgentStore}=await import('../src/agent/store.mjs');const {beginWithdrawal}=await import('../src/agent/withdraw.mjs');
@@ -63,7 +63,7 @@ test('DELETE acknowledgement cannot clear unknown-upload evidence or reopen cons
  assert.equal((await readdir(join(root,'inflight'))).length,1);
 });
 test('outbox does not record before consent, unknown names stay local, later listing backfills inside configurable window',async t=>{
- const {AgentStore}=await import('../src/agent/store.mjs'); const root=await mkdtemp(join(tmpdir(),'hm-agent-store-'));t.after(()=>rm(root,{recursive:true,force:true}));
+ const {AgentStore}=await import('../src/agent/store.mjs'); const root=await agentHome(t,'hm-agent-store-');
  const store=new AgentStore(root); const row={factId:'a'.repeat(64),pluginId:'target@market',feature:'mcp:echo',success:true,channel:'codex',occurredAt:'2026-10-15T10:00:00.000Z',disposition:'attributed'};
  assert.equal(await store.record(row,false),'withheld'); assert.deepEqual(await readdir(root),[]);
  await store.record(row,true);await store.record(row,true);

@@ -1,7 +1,7 @@
+import {agentHome} from './fixtures/agent.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,mkdir,writeFile,rm,readFile} from 'node:fs/promises';
-import {tmpdir} from 'node:os';
+import {mkdir,writeFile,readFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {root as codeRoot} from './fixtures/helpers.mjs';
@@ -10,7 +10,7 @@ const now=Date.parse('2026-10-28T10:00:00.000Z'),cid='11111111-1111-4111-8111-11
 const row={factId:'a'.repeat(64),channel:'claude',pluginId:'target@market',feature:'mcp:echo',success:true,occurredAt:new Date(now).toISOString(),disposition:'attributed'};
 const catalog={plugins:[{hanaRef:'hana-target',channel:'claude',pluginId:'target@market'},{hanaRef:'hana-target',channel:'codex',pluginId:'target@market'}],settings:{backfillWindowDays:30,countUnconfirmedCalls:false}};
 async function fixture(t){
- const home=await mkdtemp(join(tmpdir(),'hm-onboarding-v2-'));t.after(()=>rm(home,{recursive:true,force:true}));const {AgentStore}=await load('agent/store.mjs'); let state={agentProtocolVersion:2,deviceId:'A'.repeat(43),consent:{state:'withheld',changedAt:null,consentId:null,authorization:null}};const calls=[],messages=[];
+ const home=await agentHome(t,'hm-onboarding-v2-');const {AgentStore}=await load('agent/store.mjs'); let state={agentProtocolVersion:2,deviceId:'A'.repeat(43),consent:{state:'withheld',changedAt:null,consentId:null,authorization:null}};const calls=[],messages=[];
  const r={agentHome:home,sharedHome:home,host:{channel:'claude',home:join(home,'claude')},config:{serverOrigin:'http://127.0.0.1:32101',websiteOrigin:'http://127.0.0.1:32102',requestTimeoutMs:10000},store:new AgentStore(home),async call(input){calls.push(input);if(input.operation==='state')return structuredClone(state);if(input.operation==='prepareOnboarding'){state.consent.consentId=cid;return{url:'http://127.0.0.1:32102/me/bind?flow=agent&consentId='+cid,expiresAt:'2026-10-28T20:00:00.000Z',consentId:cid,deviceId:state.deviceId};}if(input.operation==='syncOnboarding')return{consent:state.consent,onboarding:{state:'pending',binding:null}};throw Error('UNEXPECTED_OPERATION');}};
  return {home,r,calls,messages,emit:async m=>messages.push(m),setState:s=>{state=s;},state:()=>state};
 }

@@ -25,6 +25,7 @@ if (!offline) {
 }
 const compile = spawnSync('tsc',['-p','tsconfig.core.json'],{stdio:'inherit'});
 if (compile.status !== 0) process.exit(compile.status ?? 1);
+rmSync('lib/client',{recursive:true,force:true});
 const client=spawnSync('tsc',['-p','tsconfig.client.json'],{stdio:'inherit'});
 if(client.status!==0)process.exit(client.status??1);
 // One source file, transpiled by the already pinned TypeScript compiler into
@@ -36,7 +37,8 @@ for (const file of readdirSync('src/host')) copyFileSync(`src/host/${file}`,`lib
 rmSync('lib/agent',{recursive:true,force:true});
 mkdirSync('lib/agent',{recursive:true});
 for (const file of readdirSync('src/agent')) {
-  copyFileSync(`src/agent/${file}`,`lib/agent/${file}`);
+  if(file==='cli.mjs')writeFileSync(`lib/agent/${file}`,readFileSync(`src/agent/${file}`,'utf8').replace('__HANAMESH_USAGE_VERSION__',JSON.parse(readFileSync('package.json','utf8')).version));
+  else copyFileSync(`src/agent/${file}`,`lib/agent/${file}`);
   const syntax=spawnSync(process.execPath,['--check',`lib/agent/${file}`],{stdio:'inherit'});
   if(syntax.status!==0)process.exit(syntax.status??1);
 }

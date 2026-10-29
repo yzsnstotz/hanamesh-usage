@@ -1,3 +1,4 @@
+import {copyAgentBootstrap} from './fixtures/agent.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,mkdir,cp,copyFile,writeFile,readFile,readdir,rm} from 'node:fs/promises';
@@ -10,7 +11,7 @@ import {once} from 'node:events';
 const sha=b=>createHash('sha256').update(b).digest('hex');
 async function fixture(t,channel){
  const root=await mkdtemp(join(tmpdir(),'hm-preparing-record-')),plugin=join(root,'plugin'),shared=join(root,'shared'),agent=join(shared,'agent/usage'),host=join(root,channel),cache=join(shared,'runtime',`node-v24.13.1-darwin-${process.arch}`);
- await mkdir(join(plugin,'lib'),{recursive:true});await cp(join(source,'agent/bin'),join(plugin,'bin'),{recursive:true});await cp(join(source,agentSource),join(plugin,'lib/agent'),{recursive:true});await writeFile(join(plugin,'package.json'),'{"type":"module"}');await mkdir(join(cache,'bin'),{recursive:true});await mkdir(agent,{recursive:true});await mkdir(join(host,'plugins'),{recursive:true});
+ await mkdir(join(plugin,'lib'),{recursive:true});await copyAgentBootstrap(plugin);await cp(join(source,agentSource),join(plugin,'lib/agent'),{recursive:true});await writeFile(join(plugin,'package.json'),'{"type":"module"}');await mkdir(join(cache,'bin'),{recursive:true});await mkdir(agent,{recursive:true});await mkdir(join(host,'plugins'),{recursive:true});
  const target=join(root,'target');await mkdir(target);await writeFile(join(target,'.mcp.json'),JSON.stringify({mcpServers:{probe:{command:'FIXTURE'}}}));
  if(channel==='claude')await writeFile(join(host,'plugins/installed_plugins.json'),JSON.stringify({plugins:{'target@market':[{installPath:target}]}}));
  else{const cacheRoot=join(host,'plugins/cache/market/target/1.0');await mkdir(cacheRoot,{recursive:true});await copyFile(join(target,'.mcp.json'),join(cacheRoot,'.mcp.json'));await writeFile(join(host,'config.toml'),'[plugins."target@market"]\nenabled=true\n');}

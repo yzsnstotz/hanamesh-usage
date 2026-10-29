@@ -86,29 +86,13 @@ npm run test:detached
 hanamesh-server rc.34 + 全新 PG，`setup.mjs` 用公开 CLI 把普通样本和本包装进全新 `DSH_HOME`，
 `dev-entry.mjs` 在真实 DSH 宿主里提供醒目标注的测试 Core 并在 `http://127.0.0.1:48671/` 给出页面。
 
-## rc.15 · Usage 开发小面板
+## Usage 本机记录与诊断
 
-正常安装本 bundle 后，自己的 `./client` 通过公开 `settings.section` 注册
-「Usage 开发小面板」。入口：HanaMesh.app → Settings → Usage 开发小面板。
-刷新只 GET 本包认证路由 `/api/hanamesh/usage/panel/view`；HTML 在无脚本、
-无表单的 sandbox iframe 中显示。读取失败显示有界错误，不创建事件。
-公开 `/api/hanamesh/usage/panel` 返回相同最小投影。
+正常安装后，公开 `./client` 在 Settings 注册「HanaMesh 使用记录」。记录直接显示在原生面板，刷新只读；诊断区保留重发。认证路由 `/api/hanamesh/usage/panel` 提供同一设备的最小投影，`/panel/view` 提供无脚本、无表单的只读 HTML。主体缺失或不匹配显示未知，设备缺失不显示其他设备的缓存。
 
-面板仅显示 Core 当前设备的事件，主体缺失或不匹配显示未知；设备缺失不显示
-其他设备的缓存。事件保留插件、动作、ISO 时间和原 owning 来源/事实引用。
-签名由当前设备公钥进行 Ed25519 校验，成功、无效、未知分别展示；上报沿用
-真实 EventStore 状态，与签名独立。面板不输出 nonce 或原始签名。
+签名由当前设备公钥做 Ed25519 校验；密码学校验与接收端确认分别显示，不输出 nonce 或原始签名。测试用的输入编辑器和三调用桥只在 `tests/fixtures/usage-verification-*`，不在生产入口或配置中。
 
-默认不注入测试身份或接收端。显式 `panelTestSupply: {identity:true,receiver:true}`
-只声明界面的测试供给标识，不修改任何身份、同意、签名、采集或上传行为。
-两个标识只能是布尔值，字段缺失/未知字段均报 INVALID_CONFIG。
-未标为测试的供给仍显示「真实性未知」，不冒充已验证的生产门。
-
-构建复用已锁定 TypeScript 生成公开 lazy-CJS 客户端格式；React 从平台静态
-module table 获取同一实例，`react@18.3.1` / `@types/react@18.3.1` 仅开发期
-类型与组件测试使用，无新增生产 dependency、私有 peer/vendor 或新 bundler。
-原 rc.13 的 page→open、成功 command→use、同意与原子幂等逻辑保持。
-正式 Desktop 新安装、可见首步截图与 owner ACCEPTED 分别等待产品门证据。
+构建复用锁定 TypeScript 生成公开 lazy-CJS 格式，React 从平台获取；不新增生产依赖或 bundler。
 
 ## rc.17 · 发布源事件边界
 
@@ -179,3 +163,5 @@ The producer's normal target build/full/mutations/check, required offline detach
 Claude `Skill` PostToolUse results with an explicit boolean `success` now retain that success or failure as the minimal usage result. Unknown outcomes remain unverified; `countUnconfirmedCalls` is unchanged. Existing error/exit-status handling and other tools/channels retain their prior behavior. Agent marketplaces consume the generated 0.1.4 payload; updating the npm package alone does not replace an already-installed agent plugin.
 
 R3发布中断修复：完整固定摘要/二进制版本通过且非阻塞取得准备锁，才修复发布后遗留PREPARING并记录finishedAt；锁仍由准备者持有时不改状态，Node status如实显示运行环境准备状态，插件调用仍在本机暂存或记录。旧rc.9/Agent0.2.1原件保持冻结；此修复不赋予上传同意、不重开主动关闭、准备期间调用就绪后处理。
+
+构建目录由 build / prepack 生成，不提交 Git；正常包仍包含公开运行时和声明。验收日志、tgz 和 proof 只放 HanaMesh docs 的 `证据/` 或 R2 relay。

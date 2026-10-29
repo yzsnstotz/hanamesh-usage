@@ -6,11 +6,10 @@ import { escapeHtml, signingJSON, validTargetRef, DEFAULT_EVENT_RETENTION_DAYS, 
  * @param {import('./contracts.js').HealthSnapshot} health
  * @param {import('../core/index.js').UsageEvent[]} events
  * @param {import('./core-link.js').CoreService|null} core
- * @param {import('./contracts.js').PanelTestSupply} testSupply
  * @param {import('./contracts.js').UsagePolicy} [policy]
  * @returns {import('./contracts.js').PanelSnapshot}
  */
-export function projectUsagePanel(health, events, core, testSupply, policy={eventRetentionDays:DEFAULT_EVENT_RETENTION_DAYS,queryLimit:DEFAULT_QUERY_LIMIT,maxQueryLimit:MAX_QUERY_LIMIT}) {
+export function projectUsagePanel(health, events, core, policy={eventRetentionDays:DEFAULT_EVENT_RETENTION_DAYS,queryLimit:DEFAULT_QUERY_LIMIT,maxQueryLimit:MAX_QUERY_LIMIT}) {
   let principalId=null, key=null;
   if(core!==null){
     try {const session=core.getSession();if(session.deviceId===health.deviceId&&validTargetRef(session.principalId))principalId=session.principalId;} catch {}
@@ -26,7 +25,7 @@ export function projectUsagePanel(health, events, core, testSupply, policy={even
   return {
     policy:{...policy},
     subject:{deviceId:health.deviceId,principalId,reason:health.deviceId===null?'DEVICE_UNAVAILABLE':principalId===null?'PRINCIPAL_UNAVAILABLE':null},
-    testSupply:{...testSupply},consent:health.consent,core:health.core,total:scoped.length,withdrawal:health.withdrawal??null,
+    consent:health.consent,core:health.core,total:scoped.length,withdrawal:health.withdrawal??null,
     outbox:{...health.outbox,pending:scoped.filter(e=>e.upload.state==='pending').length,sent:scoped.filter(e=>e.upload.state==='sent').length,duplicate:scoped.filter(e=>e.upload.state==='duplicate').length,rejected:scoped.filter(e=>e.upload.state==='rejected').length},failures:{...health.failures},inventory:{...health.inventory},filtered:{...health.filtered},
     events:scoped.map(event=>{
       /** @type {import('./contracts.js').PanelEvent['signature']} */
@@ -48,7 +47,7 @@ export function renderUsagePanel(panel) {
   const e=escapeHtml;
   const signatureLabels={success:'成功 · Ed25519 校验通过',failure:'失败 · 签名无效',unknown:'未知 · 未验证'};
   const deliveryLabels={sent:'成功 · 接收端已确认',duplicate:'成功 · 接收端确认重复',rejected:'失败 · 接收端拒绝',pending:'未知 · 等待接收端确认'};
-  const badges=[panel.testSupply.identity?'测试身份 / 合成签名供给':'身份真实性：未知（未提供本次产品门证据）',panel.testSupply.receiver?'测试接收端 / 非生产上报':'接收端真实性：未知（未提供本次产品门证据）'];
+  const badges=['身份真实性：未知（未提供本次产品门证据）','接收端真实性：未知（未提供本次产品门证据）'];
   const rows=panel.events.map(event=>`<tr><td>${e(event.eventId)}</td><td>${e(event.hanaRef)}</td><td>${e(event.action)}</td><td>${e(event.occurredAt)}</td><td>${e(event.source)}<br>${e(event.sourcePlugin??'未知')}<br>${e(event.evidenceRef??'未知')}</td><td>${e(signatureLabels[event.signature.state])}<br>${e(event.signature.code??'')}</td><td>${e(event.upload.code==='LEGACY_NONCE_UNSUPPORTED'?'保留本机 · 旧版记录不再上传':deliveryLabels[event.upload.state])}<br>${e(event.upload.code??'')}<br>尝试 ${e(event.upload.attempts)} · ${e(event.upload.sentAt??'尚无确认时间')}</td></tr>`).join('');
   const outboxReason=panel.outbox.lastError==='USAGE_SETTINGS_HTTP_404'?'后端版本过旧，缺上报设置接口；升级后端后自动重试':panel.outbox.lastError??'无';
   const retry=panel.outbox.state==='backoff'&&panel.outbox.nextAttemptAt?`；下次自动重试 <time datetime="${e(panel.outbox.nextAttemptAt)}">${e(panel.outbox.nextAttemptAt)}</time>`:'';

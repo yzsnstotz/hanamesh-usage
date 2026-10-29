@@ -85,7 +85,8 @@
     "samples": "node tools/samples.mjs",
     "test:detached": "node tools/detached.mjs",
     "test:contract": "pnpm run build && node --test --test-reporter=tap tests/stage0-contract.test.mjs tests/stage4-contract.test.mjs tests/contract-wire.test.mjs tests/shared-fact.test.mjs",
-    "package:agent": "node tools/package-agent.mjs"
+    "package:agent": "node tools/package-agent.mjs",
+    "prepack": "node tools/build.mjs"
   },
   "devDependencies": {
     "@deepseek-ai/cordis": "4.0.5-alpha.1",
