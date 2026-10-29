@@ -23,6 +23,7 @@ if (!offline) {
     } catch { console.error(`PINNED_PEER_MISSING_OR_MISMATCHED: ${name}@${version}`); process.exit(2); }
   }
 }
+rmSync('lib',{recursive:true,force:true});
 const compile = spawnSync('tsc',['-p','tsconfig.core.json'],{stdio:'inherit'});
 if (compile.status !== 0) process.exit(compile.status ?? 1);
 rmSync('lib/client',{recursive:true,force:true});

@@ -1,6 +1,8 @@
 /** Real native installation + nonblocking bootstrap in disposable homes; synthetic hooks, no model/account/production requests. */
 import {mkdtemp,mkdir,writeFile,readFile,readdir,access,rm} from 'node:fs/promises';
 import {spawnSync} from 'node:child_process';
+import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
 import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
 import assert from 'node:assert/strict';
@@ -14,7 +16,11 @@ const receipt={scope:'ISOLATED_NATIVE_INSTALL_AND_BOOTSTRAP_SYNTHETIC_HOOKS_NOT_
 let completed=false;
 await writeFile(join(root,'.run-state.json'),JSON.stringify({state:'active',keep:true,purpose:receipt.scope}));
 const env={PATH:process.env.PATH,HOME:home,CODEX_HOME:join(home,'codex'),CLAUDE_CONFIG_DIR:join(home,'claude'),HANAMESH_SHARED_HOME:shared,HANAMESH_AGENT_HOME:agent,TMPDIR:root,CI:'1',TERM:'dumb',GIT_CONFIG_GLOBAL:'/dev/null',GIT_CONFIG_NOSYSTEM:'1'};
+// Native test tooling uses the owner-approved byte-identical CLI without the cask's quarantine.
+const nativeCodex='/Users/leoventory/.codex/packages/app-server-daemon/releases/0.165.0-aarch64-apple-darwin/bin/codex',nativeCodexSha='a45099154d7fb4a5ed8a56f40966a95deb938e508bab23e6985035c709e9a85a';
+const guardNativeCodex=()=>{assert.equal(createHash('sha256').update(readFileSync(nativeCodex)).digest('hex'),nativeCodexSha,'pinned native CLI SHA256');const quarantine=spawnSync('/usr/bin/xattr',['-p','com.apple.quarantine',nativeCodex],{encoding:'utf8',env:{...env,LANG:'C',LC_ALL:'C'}});if(quarantine.status===0){const flags=quarantine.stdout.trim().split(';')[0];if(!/^[0-9a-f]+$/i.test(flags)||(parseInt(flags,16)&0x40)===0)throw Error('ENV_BLOCKED_GATEKEEPER_QUARANTINE');}else{assert.equal(quarantine.status,1,quarantine.stderr);assert.match(quarantine.stderr,/No such xattr/);}receipt.nativeCodex={path:nativeCodex,sha256:nativeCodexSha,quarantine:quarantine.status===0?quarantine.stdout.trim():null,checkedBeforeEveryInvocation:true};return nativeCodex;};
 const run=(program,args,options={})=>{
+ if(program==='codex')program=guardNativeCodex();
  const start=Date.now(),result=spawnSync(program,args,{env,cwd:root,encoding:'utf8',timeout:55000,...options});const index=receipt.commands.length;
  receipt.commands.push({program:program===process.execPath?'node':program,args:args.map(x=>String(x).replaceAll(root,'<isolated>')),status:result.status,elapsedMs:Date.now()-start});
  console.log(result.stdout??'');console.error(result.stderr??'');
