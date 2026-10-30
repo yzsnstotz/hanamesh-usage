@@ -1,4 +1,4 @@
-# HanaMesh Agent 0.2.6
+# HanaMesh Agent 0.2.7
 
 通过Claude Code或Codex原生插件市场安装。Codex须本人先Trust hooks。安装后默认在本机记录插件调用；固定Node运行时后台准备期间，只暂存最小插件调用标识、原时间和成败，就绪后处理，不丢弃这段调用。不会保存对话、原始命令、工具输入输出正文或凭据。
 

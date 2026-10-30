@@ -35,3 +35,13 @@ test('native observation issues only plugin list; no CLI version command or outp
 });
 
 test('catalog refresh reads only public mapping metadata and never downloads proof or bundles',async t=>{const home=await fixture(t);const {refreshAgentCatalog}=await load('remote-catalog.mjs');const calls=[];const value={schemaVersion:1,eventProtocol:'hm-agent-v1',generatedAt:new Date().toISOString(),plugins:[{channel:'codex',hanaRef:'gmail-hana',remotePluginId:id,name:'Gmail connector'}],settings:{...catalog.settings,uploadIntervalMs:60000,catalogRefreshMs:300000}};await refreshAgentCatalog({agentHome:home,config:{serverOrigin:'http://127.0.0.1:1'}},{request:async(o,p)=>{calls.push(p);return value;}});assert.deepEqual(calls,['/v1/registry/agent-catalog']);assert.equal((await readdir(home)).includes('remote-proofs.json'),false);});
+
+// Server catalog DTO uses the current top-level ID; local row.remote remains minimal metadata.
+test('old nested remote catalog DTO does not validate, match backfill, or appear listed',async t=>{
+ const home=await fixture(t),{plugins}=await remotePlugins(home,{observe:async()=>({installed:[installed]})}),store=new AgentStore(join(home,'agent'));await store.record(projectHook(payload(),'codex',plugins),true);
+ const current={schemaVersion:1,eventProtocol:'hm-agent-v1',generatedAt:new Date().toISOString(),plugins:[{channel:'codex',hanaRef:'gmail-hana',remotePluginId:id,name}],settings:{...catalog.settings,uploadIntervalMs:60000,catalogRefreshMs:300000}};
+ const old={...current,plugins:[{channel:'codex',hanaRef:'gmail-hana',remote:{remotePluginId:id,version:'old',bundleSha256:'a'.repeat(64),contentSha256:'b'.repeat(64)}}]};
+ const {validateCatalog}=await load('catalog.mjs');assert.equal(validateCatalog(current),current);assert.throws(()=>validateCatalog(old),/AGENT_CATALOG_INVALID/);
+ assert.deepEqual(await store.eligible(old),[]);assert.deepEqual((await store.rows())[0].remote,{remotePluginId:id,name});
+ await writeFile(join(store.root,'catalog.json'),JSON.stringify(old));const {status}=await load('status.mjs');const view=await status({agentHome:store.root,store,config:{serverOrigin:null},env:{},call:async()=>({agentProtocolVersion:2,deviceId:null,consent:{state:'withheld',changedAt:null,authorization:null}})});assert.equal(view.records[0].listed,false);
+});

@@ -66,7 +66,7 @@ export class AgentStore {
     const cutoff=now-Math.min(30,catalog.settings.backfillWindowDays)*86400000,result=[];
     for(const row of await this.rows()){
       if(!['attributed','unverified'].includes(row.disposition)||!owner(row)||Date.parse(row.occurredAt)<cutoff||Date.parse(row.occurredAt)>now||(row.success===null&&catalog.settings.countUnconfirmedCalls!==true))continue;
-      const matches=catalog.plugins.filter(item=>item.channel===row.channel&&(row.remote?item.remotePluginId===row.remote.remotePluginId||item.remote?.remotePluginId===row.remote.remotePluginId:item.pluginId===row.pluginId));
+      const matches=catalog.plugins.filter(item=>item.channel===row.channel&&(row.remote?item.remotePluginId===row.remote.remotePluginId:item.pluginId===row.pluginId));
       const owners=[...new Map(matches.map(item=>[item.hanaRef,item])).values()];
       if(owners.length===1)result.push({...row,hanaRef:owners[0].hanaRef});
     }return result;

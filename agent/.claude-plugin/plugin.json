@@ -1,5 +1,5 @@
 {
   "name": "hanamesh",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "HanaMesh：安装后默认本机记录插件调用；运行时准备期间暂存，网站同意并绑定后上传，可原生禁用停止。"
 }

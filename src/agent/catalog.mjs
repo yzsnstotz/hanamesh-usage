@@ -5,7 +5,7 @@ export function validateCatalog(value) {
   if(!s||typeof s.countUnconfirmedCalls!=='boolean'||!['uploadIntervalMs','catalogRefreshMs'].every(key=>Number.isSafeInteger(s[key])&&s[key]>0&&s[key]<=2147483647)||!Number.isSafeInteger(s.backfillWindowDays)||s.backfillWindowDays<0)throw new Error('AGENT_SETTINGS_INVALID');
   for(const p of value.plugins) {
     if(!['claude','codex'].includes(p.channel)||typeof p.hanaRef!=='string')throw Error('AGENT_CATALOG_INVALID');
-    const remoteId=p.remotePluginId??p.remote?.remotePluginId;
+    const remoteId=p.remotePluginId;
     if(remoteId!==undefined){if(typeof remoteId!=='string'||!remoteId)throw Error('AGENT_CATALOG_INVALID');continue;}
     if(!token(p.pluginName)||!token(p.marketplace)||p.pluginId!==`${p.pluginName}@${p.marketplace}`||!/^\w[\w.-]*\/\w[\w.-]*$/.test(p.githubRepo)||!Array.isArray(p.mcpServers)||!p.mcpServers.every(token)||!Array.isArray(p.skills)||!p.skills.every(token))throw Error('AGENT_CATALOG_INVALID');
   }

@@ -11,7 +11,7 @@ export async function status(r) {
   const sender=await readJSON(join(r.agentHome,'sender.json'),null);
   const withdrawal=await readJSON(join(r.agentHome,'withdrawal.json'),null);
   const onboarding=await readJSON(join(r.agentHome,'onboarding.json'),null),localEnabled=await localRecordingEnabled(r,core),pending=localPending(rows);
-  const classified=rows.map(row=>({...row,listed:catalog?.plugins.some(p=>p.channel===row.channel&&(row.remote?(p.remotePluginId??p.remote?.remotePluginId)===row.remote.remotePluginId:p.pluginId===row.pluginId)) ?? null}));
+  const classified=rows.map(row=>({...row,listed:catalog?.plugins.some(p=>p.channel===row.channel&&(row.remote?(p.remotePluginId)===row.remote.remotePluginId:p.pluginId===row.pluginId)) ?? null}));
   const issue=r.senderError??sender?.code??null;
   const preparation=await r.runtimePreparation?.()??null;
   const remoteInventory=await readJSON(join(r.agentHome,'remote-inventory-diagnostics.json'),{diagnostics:[]});
