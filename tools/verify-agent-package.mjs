@@ -19,6 +19,10 @@ const env={PATH:process.env.PATH,HOME:home,CODEX_HOME:join(home,'codex'),CLAUDE_
 // Native test tooling uses the owner-approved byte-identical CLI without the cask's quarantine.
 const nativeCodex='/Users/leoventory/.codex/packages/app-server-daemon/releases/0.165.0-aarch64-apple-darwin/bin/codex',nativeCodexSha='a45099154d7fb4a5ed8a56f40966a95deb938e508bab23e6985035c709e9a85a';
 const guardNativeCodex=()=>{assert.equal(createHash('sha256').update(readFileSync(nativeCodex)).digest('hex'),nativeCodexSha,'pinned native CLI SHA256');const quarantine=spawnSync('/usr/bin/xattr',['-p','com.apple.quarantine',nativeCodex],{encoding:'utf8',env:{...env,LANG:'C',LC_ALL:'C'}});if(quarantine.status===0){const flags=quarantine.stdout.trim().split(';')[0];if(!/^[0-9a-f]+$/i.test(flags)||(parseInt(flags,16)&0x40)===0)throw Error('ENV_BLOCKED_GATEKEEPER_QUARANTINE');}else{assert.equal(quarantine.status,1,quarantine.stderr);assert.match(quarantine.stderr,/No such xattr/);}receipt.nativeCodex={path:nativeCodex,sha256:nativeCodexSha,quarantine:quarantine.status===0?quarantine.stdout.trim():null,checkedBeforeEveryInvocation:true};return nativeCodex;};
+// The native hooks also discover Codex through PATH. Keep those subprocesses on this same guarded CLI.
+const nativeAudit=join(root,'native-codex-invocations.jsonl');
+const nativeWrapperSource=audit=>`#!${process.execPath}\nimport {spawnSync} from 'node:child_process';import {readFileSync,appendFileSync} from 'node:fs';import {createHash} from 'node:crypto';import assert from 'node:assert/strict';const env=process.env,receipt={},nativeCodex=${JSON.stringify(nativeCodex)},nativeCodexSha=${JSON.stringify(nativeCodexSha)};const guardNativeCodex=${guardNativeCodex.toString()};let cli;try{cli=guardNativeCodex();appendFileSync(${JSON.stringify(audit)},JSON.stringify({status:'PASS',...receipt.nativeCodex})+'\\n');}catch(error){appendFileSync(${JSON.stringify(audit)},JSON.stringify({status:'BLOCKED',error:String(error)})+'\\n');throw error;}const result=spawnSync(cli,process.argv.slice(2),{stdio:'inherit',env});process.exit(result.status??1);\n`;
+const readNativeAudit=async()=>{try{return(await readFile(nativeAudit,'utf8')).trim().split('\n').filter(Boolean).map(row=>JSON.parse(row));}catch(error){if(error.code==='ENOENT')return [];throw error;}};
 const run=(program,args,options={})=>{
  if(program==='codex')program=guardNativeCodex();
  const start=Date.now(),result=spawnSync(program,args,{env,cwd:root,encoding:'utf8',timeout:55000,...options});const index=receipt.commands.length;
@@ -27,6 +31,7 @@ const run=(program,args,options={})=>{
  const prefix=join(root,String(index));return writeFile(prefix+'.stdout',result.stdout??'').then(()=>writeFile(prefix+'.stderr',result.stderr??'')).then(()=>{assert.equal(result.status,0,`${program} ${args.join(' ')}\n${result.stdout}\n${result.stderr}`);return {stdout:result.stdout,stderr:result.stderr,elapsedMs:Date.now()-start};});
 };
 try{
+ const nativeBin=join(root,'native-bin');await mkdir(nativeBin);await writeFile(join(nativeBin,'codex'),nativeWrapperSource(nativeAudit),{mode:0o755});env.PATH=nativeBin+':'+env.PATH;
  for(const p of [env.CODEX_HOME,env.CLAUDE_CONFIG_DIR,agent,join(root,'market/plugins')])await mkdir(p,{recursive:true});
  // Explicit offline endpoint pair before any potential host startup. Never default to production in tests.
  await writeFile(join(agent,'config.json'),JSON.stringify({serverOrigin:'http://127.0.0.1:1',websiteOrigin:'http://127.0.0.1:2',bootstrapIntervalMs:60000,requestTimeoutMs:10000}));
@@ -56,9 +61,10 @@ try{
  for(const channel of ['claude','codex']){const tool_name=channel==='claude'?'mcp__plugin_target_probe__echo':'mcp__probe__echo';await hook(channel,'PostToolUse',JSON.stringify({...base,tool_use_id:'began-before-ready',tool_name,hook_event_name:'PostToolUse'}));for(const hook_event_name of ['PreToolUse','PostToolUse'])await hook(channel,hook_event_name,JSON.stringify({...base,tool_name,hook_event_name}));}
  const status=JSON.parse((await run('/bin/sh',[join(roots[0],'bin/hm-agent'),'status'])).stdout);assert.equal(status.counts.local,2);assert.equal(status.consent.state,'withheld');assert.deepEqual(new Set(status.records.map(r=>r.channel)),new Set(['claude','codex']));assert.doesNotMatch(JSON.stringify(status.records),/SYNTHETIC_PRIVATE|fixture-hook-session|private\/|transcript/);receipt.syntheticHooks={bothChannelsRecordedAfterReady:true,latePreparationPostNotBackfilled:true,minimalProjection:true,uploadConsent:'withheld',actualModelUse:false};
  await run('/bin/sh',[join(roots[0],'bin/hm-agent'),'withdraw']);const after=JSON.parse((await run('/bin/sh',[join(roots[0],'bin/hm-agent'),'status'])).stdout);assert.equal(after.counts.local,0);assert.equal(after.consent.state,'withheld');assert.equal(after.withdrawal.state,'pending');receipt.withdrawal={localCleared:true,remoteBarrier:'PENDING_OFFLINE_NOT_PASS'};
+ receipt.indirectNativeCodex=await readNativeAudit();assert.ok(receipt.indirectNativeCodex.length>0,'native child CLI must use the guarded PATH entry');assert.ok(receipt.indirectNativeCodex.every(row=>row.status==='PASS'),'native child CLI guard blocked execution');
  completed=true;console.log(JSON.stringify(receipt,null,2));
 }finally{
  if(!completed){try{const s=JSON.parse(await readFile(stateFile));if(s.code==='RUNTIME_PREPARING'&&s.pid){process.kill(-s.pid,'SIGTERM');await delay(250);}}catch{}}
- try{console.error('VERIFICATION_EVIDENCE: '+JSON.stringify({...receipt,completed,temporaryDirectory:root}));}
+ try{receipt.indirectNativeCodex=await readNativeAudit();console.error('VERIFICATION_EVIDENCE: '+JSON.stringify({...receipt,completed,temporaryDirectory:root}));}
  finally{await rm(root,{recursive:true,force:true});}
 }
