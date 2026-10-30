@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync, mkdirSync, readFileSync, readdirSync, existsSync, rmSync, statSync} from 'node:fs';
+import {mkdtempSync, mkdirSync, readFileSync, readdirSync, existsSync, rmSync, statSync, cpSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {spawnSync} from 'node:child_process';
@@ -20,25 +20,20 @@ function run(t,cache) {
 }
 /** Total bytes under a directory. */
 function size(path){const info=statSync(path);return info.isDirectory()?readdirSync(path).reduce((sum,name)=>sum+size(join(path,name)),0):info.size;}
-/** The offline build needs every locked tarball in its npm cache. Prepare a private cache from package-lock.json
- * instead of depending on whatever the machine's cache holds; without network the test skips and says why. */
+/** Reuse the current caller's frozen npm-install cache as immutable test input, then clone it privately.
+ * The detached command itself remains offline and must prove the complete peer closure; no network skip. */
 function preparedCache(t){
   const cache=mkdtempSync(join(tmpdir(),'usage-detached-seed-'));
   t.after(()=>rmSync(cache,{recursive:true,force:true}));
-  const lock=JSON.parse(readFileSync(join(root,'package-lock.json'),'utf8'));
-  const tarballs=[...new Set(Object.entries(lock.packages??{}).filter(([path,entry])=>path!==''&&typeof entry.resolved==='string').map(([,entry])=>entry.resolved))];
-  assert(tarballs.length>0,'package-lock.json lists the locked tarballs');
-  const result=spawnSync('npm',['cache','add',...tarballs],{cwd:root,encoding:'utf8',maxBuffer:8*1024*1024,
-    env:{...process.env,npm_config_cache:cache,npm_config_offline:'false',npm_config_prefer_offline:'false',npm_config_update_notifier:'false'}});
-  if(result.status!==0){
-    const network=/\b(ENOTFOUND|EAI_AGAIN|ECONNREFUSED|ECONNRESET|ETIMEDOUT|ENETUNREACH)\b/.exec(result.stderr??'');
-    if(network){t.skip(`network is needed to prepare the npm cache (${network[1]})`);return null;}
-    assert.fail(`preparing the npm cache failed:\n${result.stderr}`);
-  }
+  const input=process.env.npm_config_cache;
+  assert.equal(typeof input,'string','run npm ci before the detached closure test');
+  const seed=join(input,'_cacache');
+  assert(existsSync(seed),'frozen npm ci must provide the locked artifact cache');
+  cpSync(seed,join(cache,'_cacache'),{recursive:true});
   return cache;
 }
 test('detached keeps the full frozen peer closure despite inherited legacy and omit settings',t=>{
-  const cache=preparedCache(t);if(cache===null)return;
+  const cache=preparedCache(t);
   const {result,evidence}=run(t,cache);
   assert.equal(result.status,0,result.stdout+'\n'+result.stderr);
   assert.match(result.stdout,/DETACHED_CORE_BUILD_COMPLETE.*NOT full target host build/);
