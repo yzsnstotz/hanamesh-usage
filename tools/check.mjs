@@ -18,7 +18,7 @@ console.log(JSON.stringify({closureManager:pnpmLayout?'pnpm':'npm',...physical})
 assert.equal(pkg.name,'@hanamesh/usage');assert.equal(pkg.version,'0.3.0-rc.15');assert.equal(pkg.private,undefined);assert.equal(pkg.license,'MIT');
 assert.deepEqual(pkg.dependencies??{},{});assert.equal(Object.keys(pkg.peerDependencies).filter(name=>name.startsWith('@hanamesh/')||name.startsWith('hanamesh-')).length,0);
 assert.equal(pkg.dsh?.bundle?.patch,'./profile/cordis.patch.yml');assert.equal(pkg.dsh?.client?.platform,'web');assert.equal(pkg.exports['./client'].default,'./lib/client.js');assert(pkg.files.includes('profile'));assert(existsSync(pkg.dsh.bundle.patch));
-// No HanaMesh sibling or contract package is installed; contracts are documented, tests run against in-repo doubles or the real backend.
+// Production closure contains no HanaMesh sibling; tests consume an explicit normal Core public fixture input separately.
 for(const section of ['dependencies','devDependencies','peerDependencies','optionalDependencies'])
  assert.deepEqual(Object.keys(pkg[section]??{}).filter(name=>name.startsWith('@hanamesh/')||name.startsWith('hanamesh-')),[],`sibling module in ${section}`);
 assert.equal(existsSync('docs/contracts/hanamesh-core'),false);
