@@ -39,7 +39,7 @@ test('panel reports invalid signatures and missing identity as failure and unkno
   try {assert.equal(typeof absent.api.panel,'function');const p=absent.api.panel();assert.equal(p.subject.deviceId,null);assert.equal(p.total,0);assert.deepEqual(p.events,[]);assert.equal(p.subject.reason,'DEVICE_UNAVAILABLE');}finally{await absent.close();}
 });
 test('panel with unavailable signer key never labels a stored signature verified',async()=>{
-  const h=await fixtureHost({eventSnapshot:{schemaVersion:1,events:[event()],withdrawal:null,inventory:{last:null}}});
+  const h=await fixtureHost({publicKey:null,eventSnapshot:{schemaVersion:1,events:[event()],withdrawal:null,inventory:{last:null}}});
   try {assert.equal(typeof h.api.panel,'function');assert.equal(h.api.panel().events[0].signature.state,'unknown');}finally{await h.close();}
 });
 test('read-only authenticated panel routes expose independent statuses and reject write/filter misuse',async()=>{

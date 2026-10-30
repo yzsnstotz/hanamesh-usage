@@ -23,11 +23,12 @@ function buffer(core){
 // Client side only. Server acceptance/dedupe/conflict/nonce-reuse belong to the real-backend integration test.
 async function setup(){
   const {service}=createCoreProviderFixture({initialConsent:'granted',serverOrigin:'https://usage.example'});
-  const a=service,b=Object.freeze({...service});
+  // Explicit registered observation for upload; identity, consent and signing remain the real public provider.
+  const a=Object.freeze({...service,getSession:()=>Object.freeze({...service.getSession(),registration:'registered'})}),b=Object.freeze({...a});
   assert.notEqual(a,b);assert.equal(a.getDeviceId(),b.getDeviceId());assert.equal(a.getPublicKey(),b.getPublicKey());
   return {a,b};
 }
-const verifyEventSignature=(event,publicKey)=>{const {signature,...fields}=wireEvent(event);return verifyCoreSignature(publicKey,new TextEncoder().encode(signingJSON(fields)),Buffer.from(signature,'base64url'));};
+const verifyEventSignature=(event,publicKey)=>{const {signature,...fields}=event;return verifyCoreSignature(publicKey,new TextEncoder().encode(signingJSON(fields)),Buffer.from(signature,'base64url'));};
 const verifyRequest=(publicKey,call)=>verifyCoreSignature(publicKey,coreCanonicalRequest({method:'POST',path:new URL(call.url).pathname,body:new TextEncoder().encode(call.body)},call.headers['x-hm-timestamp'],call.headers['x-hm-nonce']),Buffer.from(call.headers['x-hm-signature'],'base64url'));
 test('Q18 two independent buffers sign the same source fact identically; each request carries its own fresh auth',async()=>{
   const {a,b}=await setup(),left=buffer(a),right=buffer(b),calls=[];
