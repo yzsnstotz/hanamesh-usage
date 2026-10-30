@@ -2,6 +2,6 @@
 
 本仓测试消费 `@hanamesh/core/contract/fixtures`、`@hanamesh/core/suite`，本轮固定 Core0.3.28 正常包。先在本仓 frozen 安装上完成生产 build/check；在独立 provider consumer 中显式声明已核 SHA 的正常 Core tgz 及其固定公开 peer，严格安装并冻结读回，将已安装的公开 Core 包连接到测试 node_modules 解析路径后跑全套/契约/变异。打包前再次 frozen 安装恢复本仓闭包；不放宽闭包断言。
 
-Core 正常包不放入本仓，不复制私有规则，不链接源码。独立 offline build/check 不执行跨包 fixture 测试。正常 Usage 消费者另按全部公开 peer 严格安装核对。身份、同意通知、原始字节签名及 HTTP 请求签名均由公开 Core fixture 提供；Usage 只观察调用并保留独立字节验签，不另写 Core 服务。
+Core 正常包不放入本仓，不复制私有规则，不链接源码。独立 offline build/check 不执行跨包 fixture 测试。正常 Usage 消费者另按全部公开 peer 严格安装核对。`host`、`signed-delivery`、`local-lifecycle` 及持久化失败测试的身份、同意通知、原始字节签名及 HTTP 请求签名均由公开 Core fixture 提供；Usage 只观察签名调用并保留独立字节验签。投递场景仅把提供方公开 session 的 `registration` 设为 `registered`，不复制身份或签名实现。
 
 修改仅测试/开发核对与 README 说明；生产代码/Agent 字节须与原 rc.15 相同。README 进入正常包，因此整包 SHA 会变化；本轮不重新物化 Agent。
