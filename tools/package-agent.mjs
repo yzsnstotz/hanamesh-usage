@@ -17,7 +17,7 @@ try {
   const result=spawnSync('tar',['-xzf',resolve(coreTarball),'-C',temp],{encoding:'utf8',env:{...process.env,LC_ALL:'C'}});
   if(result.status!==0)throw new Error('CORE_ARTIFACT_UNREADABLE');
   const core=JSON.parse(await readFile(join(temp,'package/package.json'),'utf8'));
-  if(core.name!=='@hanamesh/core'||core.version!=='0.3.27')throw new Error('CORE_ARTIFACT_INVALID');
+  if(core.name!=='@hanamesh/core'||core.version!=='0.3.28')throw new Error('CORE_ARTIFACT_INVALID');
   const probeHome=join(temp,'core-probe');await mkdir(probeHome);
   const probe=spawnSync(process.execPath,[join(temp,'package/lib/agent-cli.js')],{encoding:'utf8',input:JSON.stringify({config:{sharedHome:probeHome,serverOrigin:null,websiteOrigin:null},input:{operation:'state'}}),env:{PATH:process.env.PATH,HOME:temp}});
   let capability;try{const result=JSON.parse(probe.stdout).result;capability=result?.agentProtocolVersion;}catch{throw Error('CORE_AGENT_CAPABILITY_REQUIRED');}
