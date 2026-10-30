@@ -1,0 +1,8 @@
+{
+  "buildHead": "a70e65885190fcc927cf1e94d9188fd26baed50f",
+  "version": "0.3.0-rc.14",
+  "normalSha256": "11cd745b2a6ed9398cc8fcf9a603079210807dff39d4fd0a036e4ca414da6ab1",
+  "bytes": 107297,
+  "evidence": "https://github.com/yzsnstotz/hanamesh-docs/blob/main/\u8bc1\u636e/I-CleanupFinish-20261030/repair-04/normal.json",
+  "normalArtifact": "\u8bc1\u636e/I-CleanupFinish-20261030/repair-04/packages/hanamesh-usage-0.3.0-rc.14.tgz"
+}
