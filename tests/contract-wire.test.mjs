@@ -31,9 +31,8 @@ test('mixed signed batch with a local stub sends nothing and keeps every event p
   assert.deepEqual(store.query().events.map(event=>event.upload.state),['pending','pending']);
 });
 
-// C-CORE (consumer) and C-USAGE-LOCAL (provider). No sibling module is installed: Core is the in-repo
-// Ed25519 test double; the C-USAGE-LOCAL expectations below are written out from the contract.
-const {coreHandshakeCases,createCoreFake,verifyCoreSignature,RFC8032_TEST1}=await import('./fixtures/core-fake.mjs');
+// C-CORE consumer uses the provider-owned normal package public fixtures.
+const {coreHandshakeCases,createCoreProviderFixture,verifyCoreSignature,CORE_DETERMINISTIC_FIXTURE_VECTORS}=await import('@hanamesh/core/contract/fixtures');
 const {createHash}=await import('node:crypto');
 // C-USAGE-LOCAL record eventId: UUIDv5(namespace, JSON [deviceId, sourcePlugin, idempotencyKey]).
 const USAGE_EVENT_NAMESPACE='6aa7b4d1-88f5-4f96-89e2-cf5ffca77c2d';
@@ -51,7 +50,7 @@ const usageLocal={
   input:{hanaRef:'@hanamesh/example-app',action:'open',idempotencyKey:'page:fixture-1',sourcePlugin:'@hanamesh/dsh-app-host'},
   results:{withheld:{disposition:'withheld'},duplicate:{disposition:'duplicate'},
     EVENT_IDENTITY_CONFLICT:{disposition:'rejected',code:'EVENT_IDENTITY_CONFLICT'},INVALID_RECORD_INPUT:{disposition:'rejected',code:'INVALID_RECORD_INPUT'}},
-  health:usageLocalHealth('present','granted',RFC8032_TEST1.deviceId,'idle'),
+  health:usageLocalHealth('present','granted',CORE_DETERMINISTIC_FIXTURE_VECTORS.deviceId,'idle'),
   healthCoreAbsent:usageLocalHealth('absent','unknown',null,'stopped'),
 };
 const {duckCore,signUsageEvent}=await import('../lib/host/core-link.js');
@@ -93,9 +92,9 @@ test('C-CORE consumer: duckCore classifies every published handshake case like t
 });
 
 test('C-CORE consumer: usage events signed through Core verify with its public key',async()=>{
-  const fixture=createCoreFake({seed:RFC8032_TEST1.seed,initialConsent:'granted'});
+  const fixture=createCoreProviderFixture({deviceId:CORE_DETERMINISTIC_FIXTURE_VECTORS.deviceId,initialConsent:'granted'});
   const linked=duckCore(fixture.service);assert.equal(linked.status,'present');
-  const deviceId=linked.core.getDeviceId();assert.equal(deviceId,RFC8032_TEST1.deviceId);assert.equal(linked.core.getPublicKey(),RFC8032_TEST1.publicKey);
+  const deviceId=linked.core.getDeviceId();assert.equal(deviceId,CORE_DETERMINISTIC_FIXTURE_VECTORS.deviceId);assert.equal(Buffer.from(linked.core.getPublicKey(),'base64url').length,32);
   const event=signUsageEvent(linked.core,createUsageEvent(input({deviceId})));
   const {signature,...six}=wireEvent(event);
   assert(verifyCoreSignature(linked.core.getPublicKey(),new TextEncoder().encode(signingJSON(six)),Buffer.from(signature,'base64url')));

@@ -4,7 +4,7 @@
 // Without the variable these tests are skipped and say so; they never fall back to a fake server.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createCoreFake} from './fixtures/core-fake.mjs';
+import {createCoreProviderFixture} from '@hanamesh/core/contract/fixtures';
 const core=await import('../lib/core/index.js');
 const {createRecordSeat}=await import('../lib/host/record.js');
 const {signUsageEvent}=await import('../lib/host/core-link.js');
@@ -23,7 +23,7 @@ async function post(path,body){
 }
 /** C-IDENTITY device registration: challenge {purpose:register}, then sign utf8(nonce + publicKey). */
 async function registeredDevice(){
-  const fake=createCoreFake({initialConsent:'granted',serverOrigin:ORIGIN});
+  const fake=createCoreProviderFixture({initialConsent:'granted',serverOrigin:ORIGIN});
   const challenge=await post('/v1/identity/devices/challenge',{purpose:'register'});
   assert.equal(challenge.status,200,JSON.stringify(challenge.body));
   const publicKey=fake.service.getPublicKey();

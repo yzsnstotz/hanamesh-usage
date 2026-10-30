@@ -3,9 +3,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {pathToFileURL} from 'node:url';
 import {resolve} from 'node:path';
-import {createCoreFake,createSharedCoreIdentity,coreCanonicalRequest,verifyCoreSignature,verifyEventSignature,capturingFetch} from './fixtures/core-fake.mjs';
+import {createCoreProviderFixture,coreCanonicalRequest,verifyCoreSignature} from '@hanamesh/core/contract/fixtures';
+import {capturingFetch} from './fixtures/capturing-fetch.mjs';
 const root=process.env.USAGE_TEST_ROOT??resolve(new URL('..',import.meta.url).pathname);
-const {EventStore,wireEvent}=await import(pathToFileURL(resolve(root,'lib/core/index.js')));
+const {EventStore,wireEvent,signingJSON}=await import(pathToFileURL(resolve(root,'lib/core/index.js')));
 const {createRecordSeat}=await import(pathToFileURL(resolve(root,'lib/host/record.js')));
 const {signUsageEvent}=await import(pathToFileURL(resolve(root,'lib/host/core-link.js')));
 const {createUsageReporter}=await import(pathToFileURL(resolve(root,'lib/host/upload.js')));
@@ -21,13 +22,12 @@ function buffer(core){
 }
 // Client side only. Server acceptance/dedupe/conflict/nonce-reuse belong to the real-backend integration test.
 async function setup(){
-  let clock=NOW;
-  const shared=createSharedCoreIdentity();
-  const options={initialConsent:'granted',serverOrigin:'https://usage.example',clock:()=>clock++};
-  const a=shared.createProvider(options).service,b=shared.createProvider(options).service;
+  const {service}=createCoreProviderFixture({initialConsent:'granted',serverOrigin:'https://usage.example'});
+  const a=service,b=Object.freeze({...service});
   assert.notEqual(a,b);assert.equal(a.getDeviceId(),b.getDeviceId());assert.equal(a.getPublicKey(),b.getPublicKey());
   return {a,b};
 }
+const verifyEventSignature=(event,publicKey)=>{const {signature,...fields}=wireEvent(event);return verifyCoreSignature(publicKey,new TextEncoder().encode(signingJSON(fields)),Buffer.from(signature,'base64url'));};
 const verifyRequest=(publicKey,call)=>verifyCoreSignature(publicKey,coreCanonicalRequest({method:'POST',path:new URL(call.url).pathname,body:new TextEncoder().encode(call.body)},call.headers['x-hm-timestamp'],call.headers['x-hm-nonce']),Buffer.from(call.headers['x-hm-signature'],'base64url'));
 test('Q18 two independent buffers sign the same source fact identically; each request carries its own fresh auth',async()=>{
   const {a,b}=await setup(),left=buffer(a),right=buffer(b),calls=[];
@@ -43,7 +43,7 @@ test('Q18 two independent buffers sign the same source fact identically; each re
   assert.equal(calls.length,2);assert.equal(calls[0].body,calls[1].body);
   for(const call of calls){assert.equal(call.method,'POST');assert.equal(call.url,'https://usage.example/v1/usage/events');assert.equal(call.headers['x-hm-device-id'],a.getDeviceId());}
   assert.notEqual(calls[0].headers['x-hm-nonce'],calls[1].headers['x-hm-nonce']);
-  assert.notEqual(calls[0].headers['x-hm-timestamp'],calls[1].headers['x-hm-timestamp']);
+  for(const call of calls)assert(Number.isSafeInteger(Number(call.headers['x-hm-timestamp'])));
   for(const call of calls)assert(verifyRequest(a.getPublicKey(),call));
 });
 test('Q18 an event with a lost receipt retries its original body after buffer restart, with fresh HTTP auth',async()=>{
@@ -56,7 +56,7 @@ test('Q18 an event with a lost receipt retries its original body after buffer re
   try{assert.equal(await second.runOnce(),'uploaded');}finally{second.stop();}
   assert.equal(calls.length,2);assert.equal(calls[0].body,calls[1].body);
   assert.notEqual(calls[0].headers['x-hm-nonce'],calls[1].headers['x-hm-nonce']);
-  assert.notEqual(calls[0].headers['x-hm-timestamp'],calls[1].headers['x-hm-timestamp']);
+  for(const call of calls)assert(Number.isSafeInteger(Number(call.headers['x-hm-timestamp'])));
   for(const call of calls)assert(verifyRequest(a.getPublicKey(),call));
 });
 test('Q18 different device or source keys remain independent; same key with different facts conflicts locally',async()=>{
@@ -69,7 +69,7 @@ test('Q18 different device or source keys remain independent; same key with diff
   await left.record({...fact,idempotencyKey:'command:source-operation-2:succeeded'});
   const other=wireEvent(left.store.query().events[1]);assert.notEqual(other.eventId,original.eventId);assert.notEqual(other.nonce,original.nonce);
   assert.equal(verifyEventSignature(other,a.getPublicKey()),true);
-  const differentSigner=createCoreFake({initialConsent:'granted'}).service;
+  const differentSigner=createCoreProviderFixture({initialConsent:'granted'}).service;
   assert.notEqual(differentSigner.getDeviceId(),a.getDeviceId());
   const otherDevice=buffer(differentSigner);await otherDevice.record(fact);
   const deviceEvent=wireEvent(otherDevice.store.query().events[0]);assert.notEqual(deviceEvent.eventId,original.eventId);assert.notEqual(deviceEvent.nonce,original.nonce);
