@@ -42,7 +42,7 @@ export async function uploadOnce(r,{now=Date.now(),request=(origin,path,init)=>r
     if(wire && (wire.deviceId!==device.deviceId||wire.hanaRef!==row.hanaRef||!wire.nonce.startsWith(`g${consentId}.`)))throw new Error('AGENT_ATTRIBUTION_CHANGED');
     if(!wire) {
       const event=agentEventForFact(device.deviceId,{...entry,hanaRef:row.hanaRef},consentId);
-      const {signature}=await r.call({operation:'sign',message:agentSigningJSON(event)});
+      const {signature}=await r.call({operation:'sign',bytes:Buffer.from(agentSigningJSON(event),'utf8').toString('base64')});
       wire={...event,signature};
       wire=await r.store.freezeWire(row.factId,wire);
     }
@@ -55,7 +55,7 @@ export async function uploadOnce(r,{now=Date.now(),request=(origin,path,init)=>r
     const event=agentInstallEventForFact(device.deviceId,row,consentId),existing=await r.store.installState(event.eventId);
     if(existing?.delivery)continue; // No automatic replay after an unknown commit or a terminal decision.
     let wire=existing?.wire;
-    if(!wire){const {signature}=await r.call({operation:'sign',message:agentSigningJSON(event)});wire=await r.store.freezeInstall(row.factId,{...event,signature});}
+    if(!wire){const {signature}=await r.call({operation:'sign',bytes:Buffer.from(agentSigningJSON(event),'utf8').toString('base64')});wire=await r.store.freezeInstall(row.factId,{...event,signature});}
     if(wire)await send(wire,delivery=>r.store.markInstall(wire.eventId,delivery),wire.eventId);
   }
   return {state:'idle',code:null,bound:true,websiteOrigin:r.config.websiteOrigin,settings:catalog.settings};
