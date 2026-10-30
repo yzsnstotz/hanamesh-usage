@@ -46,7 +46,7 @@ try{
  await run('claude',['--version']);await run('codex',['--version']);
  await run('claude',['plugin','marketplace','add',market]);await run('claude',['plugin','install','hanamesh@hanamesh-g-fixture']);await run('claude',['plugin','install','target@hanamesh-g-fixture']);
  await run('codex',['plugin','marketplace','add',market]);await run('codex',['plugin','add','hanamesh@hanamesh-g-fixture']);await run('codex',['plugin','add','target@hanamesh-g-fixture']);
- const hosts=[await installedPlugins('claude',env.CLAUDE_CONFIG_DIR),await installedPlugins('codex',env.CODEX_HOME)];const roots=hosts.map(rows=>{const own=rows.filter(r=>r.pluginName==='hanamesh');assert.equal(own.length,1);return own[0].root;});
+ const hosts=[await installedPlugins('claude',env.CLAUDE_CONFIG_DIR),await installedPlugins('codex',env.CODEX_HOME,{remote:{env}})];const roots=hosts.map(rows=>{const own=rows.filter(r=>r.pluginName==='hanamesh');assert.equal(own.length,1);return own[0].root;});
  await assert.rejects(access(stateFile),'native installation must leave the runtime cache empty for the cold test');
  const coldHook=await run('/bin/sh',[join(roots[0],'bin/hm-agent'),'hook','--event','SessionStart'],{env:{...env,HANAMESH_AGENT_CHANNEL:'claude'},input:JSON.stringify({hook_event_name:'SessionStart',session_id:'fixture-cold-start',source:'startup'})});assert.ok(coldHook.elapsedMs<1000,'cold SessionStart must return within1s, not wait for download');assert.match(JSON.parse(coldHook.stdout).systemMessage,/正在准备运行环境/);receipt.coldSessionStartMs=coldHook.elapsedMs;
  const progressSamples=[];
