@@ -1,6 +1,7 @@
+import {createCoreProviderFixture} from '@hanamesh/core/contract/fixtures';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {localLifecycle,originalFact,deferred,fixtureSigningIdentity} from './fixtures/local-lifecycle.mjs';
+import {localLifecycle,originalFact,deferred} from './fixtures/local-lifecycle.mjs';
 import {fixtureHost} from './fixtures/host.mjs';
 
 // Proposed C-USAGE-LOCAL addition, not an already-published cross-module API.
@@ -25,7 +26,7 @@ test('USAGE02-R4 health preserves the full existing no-argument public shape acr
   for(const coreStatus of ['absent','incompatible','present']){const h=await fixtureHost({bound:false,coreStatus});try{const health=h.api.health();assert.deepEqual(Object.keys(health),['pending','recoveryComplete','failures','consent','core','deviceId','outbox','withdrawal','inventory','filtered']);assert.equal(health.core,coreStatus);assert.equal(health.consent,coreStatus==='present'?'withheld':'unknown');assert.deepEqual(Object.keys(health.outbox),['state','pending','sent','duplicate','rejected','lastUploadAt','nextAttemptAt','lastError','uploadIntervalMs','settings']);assert.equal(health.withdrawal,null);}finally{await h.close();}}
 });
 test('USAGE02-R5 two independent clients propagate one source fact unchanged under one shared signing handle',async t=>{
-  const identity=fixtureSigningIdentity(),a=await localLifecycle(t,{identity}),b=await localLifecycle(t,{identity,prepareClock:false});
+  const provider=createCoreProviderFixture({initialConsent:'granted',serverOrigin:'https://fixture.invalid'}),a=await localLifecycle(t,{provider}),b=await localLifecycle(t,{provider,prepareClock:false});
   try{const fact=originalFact(),first=await a.api.record(fact),second=await b.api.record(structuredClone(fact));assert.equal(first.disposition,'recorded');assert.deepEqual(second,first);assert.equal(a.deviceId,b.deviceId);assert.deepEqual(a.snapshot().events,b.snapshot().events);assert.notEqual(a.snapshot().events,b.snapshot().events);assert.deepEqual(a.signedInputs,b.signedInputs);assert.equal(a.snapshot().events[0].occurredAt,fact.occurredAt);}finally{await a.close();await b.close();}
 });
 test('USAGE02-R6 explicit withheld consent records nothing and the pending observer contract cannot authorize collection',async t=>{
@@ -80,7 +81,7 @@ for(const [kind,code,onRequest] of [['auth','UPLOAD_UNAUTHORIZED',async()=>new R
 });
 test('USAGE02-W1 withdrawal waits for its local work and exposes confirmed deletion; later records and scheduled sends stay withheld',async t=>{
   const h=await localLifecycle(t);
-  try{observationPort(h.api);await h.api.record(originalFact());const changedAt=new Date().toISOString();h.setConsent('withheld',changedAt);const observed=await h.api.observeCollection();assert.equal(observed.state,'processed');assert.equal(observed.health.consent,'withheld');assert.equal(observed.health.withdrawal.requestedAt,changedAt);assert.equal(observed.health.withdrawal.state,'sent');assert.equal(observed.health.withdrawal.deletedEvents,1);assert.equal(h.snapshot().events.length,0);assert.deepEqual(await h.api.record(originalFact({idempotencyKey:'command:after-withdraw:succeeded'})),{disposition:'withheld'});t.mock.timers.tick(60000);assert.deepEqual(h.requests.map(item=>item.method),['DELETE']);}finally{await h.close();}
+  try{observationPort(h.api);await h.api.record(originalFact());const {changedAt}=await h.setConsent('withheld');const observed=await h.api.observeCollection();assert.equal(observed.state,'processed');assert.equal(observed.health.consent,'withheld');assert.equal(observed.health.withdrawal.requestedAt,changedAt);assert.equal(observed.health.withdrawal.state,'sent');assert.equal(observed.health.withdrawal.deletedEvents,1);assert.equal(h.snapshot().events.length,0);assert.deepEqual(await h.api.record(originalFact({idempotencyKey:'command:after-withdraw:succeeded'})),{disposition:'withheld'});t.mock.timers.tick(60000);assert.deepEqual(h.requests.map(item=>item.method),['DELETE']);}finally{await h.close();}
 });
 test('USAGE02-W2 offline withdrawal is not confirmed remote deletion and does not invent a deleted count',async t=>{
   const h=await localLifecycle(t,{origin:null});

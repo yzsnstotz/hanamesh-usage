@@ -1,6 +1,7 @@
 import {sharedSettingsResponse} from './shared-settings.mjs';
 import assert from 'node:assert/strict';
-import {createPrivateKey, createPublicKey, createHash, randomBytes, sign, verify} from 'node:crypto';
+import {createPublicKey, createHash, verify} from 'node:crypto';
+import {createCoreProviderFixture} from '@hanamesh/core/contract/fixtures';
 import {mkdtempSync, mkdirSync, rmSync} from 'node:fs';
 import {join, resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
@@ -14,20 +15,16 @@ export const NOW = Date.parse('2026-10-15T00:00:02.000Z');
 export const json = (body, status=200) => new Response(JSON.stringify(body), {status});
 
 // SOURCE/FIXTURE only: scripted public receipts, no server dedup/database/Identity implementation.
-// Publicly reproducible synthetic seed (32 bytes of 42), never a real credential.
-// Keys remain in memory; fetch never reaches a network. A fixed vector avoids
-// random leading '-'/'_' hitting unrelated legacy local metadata admission.
-export function deliveryFixture(t, respond) {
+export function deliveryFixture(t, respond, {origin='https://usage.example'}={}) {
   const parent = process.env.USAGE_CARD_TEST_TMP ?? resolve(root, '../tmp');
   mkdirSync(parent, {recursive:true});
   const dir = mkdtempSync(join(parent, 'signed-delivery-'));
   const dshHome = join(dir, 'dsh-home');
   mkdirSync(join(dshHome, 'profiles', 'j2s3'), {recursive:true});
-  const privateKey=createPrivateKey({key:Buffer.concat([Buffer.from('302e020100300506032b657004220420','hex'),Buffer.alloc(32,42)]),format:'der',type:'pkcs8'});
-  const publicKey=createPublicKey(privateKey);
-  const raw = publicKey.export({format:'der', type:'spki'}).subarray(-32);
-  const deviceId = createHash('sha256').update(raw).digest('base64url');
-  let consent = 'granted';
+  const provider=createCoreProviderFixture({initialConsent:'granted',serverOrigin:origin});
+  const raw=Buffer.from(provider.service.getPublicKey(),'base64url');
+  const publicKey=createPublicKey({key:Buffer.concat([Buffer.from('302a300506032b6570032100','hex'),raw]),format:'der',type:'spki'});
+  const deviceId=provider.service.getDeviceId();
   const global = {
     snapshot:{schemaVersion:1, events:[], withdrawal:null, inventory:{last:null}}, writes:0,
     get(){return structuredClone(this.snapshot);},
@@ -35,17 +32,9 @@ export function deliveryFixture(t, respond) {
   };
   const store = new core.EventStore(global, 5000, ()=>NOW);
   const requests = [], eventSignatures=[];
-  const service = {
-    protocolVersion:'1', getDeviceId:()=>deviceId, getPublicKey:()=>raw.toString('base64url'),
-    getConsent:()=>consent, getServerOrigin:()=> 'https://usage.example',
-    getSession:()=>({protocolVersion:'1',deviceId,registration:'registered',principalId:null,bound:null,serverReachable:null,checkedAt:null,reason:null}),
-    onConsentChange:()=>()=>{}, sign:bytes=>{eventSignatures.push(Buffer.from(bytes));return sign(null,bytes,privateKey);},
-    async signRequest({method,path,body}){
-      const timestamp=String(NOW), nonce=randomBytes(16).toString('base64url');
-      const preimage=`${method.toUpperCase()}|${path.split(/[?#]/)[0]}|${timestamp}|${nonce}|${createHash('sha256').update(body??new Uint8Array()).digest('hex')}`;
-      return {'x-hm-device-id':deviceId,'x-hm-timestamp':timestamp,'x-hm-nonce':nonce,'x-hm-signature':sign(null,Buffer.from(preimage),privateKey).toString('base64url')};
-    },
-  };
+  // Observe raw event-signing calls; identity, consent and all signatures remain Core-owned.
+  // The scripted remote scenario starts after device registration; Core's public session shape is retained.
+  const service = {...provider.service,getSession:()=>({...provider.service.getSession(),registration:'registered'}),sign(bytes){eventSignatures.push(Buffer.from(bytes));return provider.service.sign(bytes);}};
   const fetchImpl = async (url, options) => {const policy=sharedSettingsResponse(url,options);if(policy)return policy;
     const request={url:new URL(url), options}; requests.push(request);
     // Independent verifier uses the actual transmitted bytes, not the candidate canonical helper.
@@ -66,17 +55,15 @@ export function deliveryFixture(t, respond) {
   const record=createRecordSeat({store,getConsent:service.getConsent,getDeviceId:service.getDeviceId,now:()=>NOW,signEvent:event=>signUsageEvent(service,event)});
   t.after(()=>{reporter.stop(); rmSync(dir,{recursive:true,force:true});});
   const input = key => ({hanaRef:'fixture.app',sourcePlugin:'fixture.app',action:'use',occurredAt:'2026-10-15T00:00:00.007Z',idempotencyKey:key,targetRef:'original-session',receipt:{providerId:'fixture',model:null,count:1}});
-  return {dir,dshHome,store,global,service,requests,reporter,makeReporter,fetchImpl,eventSignatures,record,input,setConsent:value=>{consent=value;}};
+  return {dir,dshHome,store,global,service,requests,reporter,makeReporter,fetchImpl,eventSignatures,record,input,setConsent:value=>provider.setConsent(value)};
 }
 
 // Real module mount with documented host ports only. It shares the independent
 // byte verifier above; neither the user entry nor its results are fabricated.
 export async function mountedDeliveryFixture(t,{onRequest,onWrite,origin='https://usage.example'}={}){
   t.mock.timers.enable({apis:['setTimeout']});
-  const f=deliveryFixture(t,(request,n)=>onRequest?.(request,n)??json({accepted:JSON.parse(request.options.body).length,duplicates:0,rejected:[],durability:'committed'}));
-  const listeners=new Set(),requests=[];
-  f.service.onConsentChange=fn=>{listeners.add(fn);return()=>listeners.delete(fn);};
-  f.service.getServerOrigin=()=>origin;
+  const f=deliveryFixture(t,(request,n)=>onRequest?.(request,n)??json({accepted:JSON.parse(request.options.body).length,duplicates:0,rejected:[],durability:'committed'}),{origin});
+  const requests=[];
   if(onWrite){const set=f.global.set.bind(f.global);f.global.set=async next=>{await onWrite(next);await set(next);};}
   t.mock.method(globalThis,'fetch',async(url,options)=>{const policy=sharedSettingsResponse(url,options);if(policy)return policy;requests.push({method:options.method,url:String(url),headers:options.headers,body:options.body});return f.fetchImpl(url,options);});
   const ctx={loader:{entries:()=>[].values()},get:name=>name==='pluginManager'?{listBundles:async()=>[]}:undefined,on:()=>()=>{},inject:()=>({dispose:async()=>{}}),provide(){},sessions:{list:()=>[],get:()=>undefined},sessionPersistence:{list:async()=>[]}};
@@ -85,5 +72,5 @@ export async function mountedDeliveryFixture(t,{onRequest,onWrite,origin='https:
   const mounted=mountUsage(ctx,{global:{get:()=>records,set:async value=>{records=structuredClone(value);}},close:async()=>{}},{global:f.global,close:async()=>{}},{maxRecords:5000,maxEvents:5000,maxPending:128,allowExport:false,uploadIntervalMs:60000,uploadBatchSize:200,inventoryIntervalMs:300000,eventRetentionDays:90,queryLimit:100}, {status:()=> 'present',get:()=>f.service,onChange:()=>()=>{},close(){}});
   await mounted.ready;
   t.after(()=>mounted.close());
-  return {...mounted,requests,eventSignatures:f.eventSignatures,makeReporter:f.makeReporter,requestCount:()=>f.requests.length,tickSend:()=>t.mock.timers.tick(5000),snapshot:()=>f.global.get(),setConsent(state,changedAt=new Date().toISOString()){f.setConsent(state);for(const fn of listeners)fn(state,changedAt);}};
+  return {...mounted,requests,eventSignatures:f.eventSignatures,makeReporter:f.makeReporter,requestCount:()=>f.requests.length,tickSend:()=>t.mock.timers.tick(5000),snapshot:()=>f.global.get(),setConsent:state=>f.setConsent(state)};
 }

@@ -155,7 +155,7 @@ test('S06-P11 mounted consent callback stops new collection and keeps original c
   const h=await fixtureHost({consent:'granted'});
   try{
     await h.api.record({hanaRef:'fixture.app',sourcePlugin:'fixture.app',action:'use',idempotencyKey:'before',occurredAt:new Date().toISOString()});
-    const changedAt=new Date().toISOString(); h.setConsent('withheld',changedAt); await h.api.drain();
+    const {changedAt}=await h.setConsent('withheld'); await h.api.drain();
     assert.equal(h.api.events().total,0); assert.equal(h.api.health().withdrawal.requestedAt,changedAt);
     assert.equal(h.api.health().withdrawal.deletedEvents,null); assert.equal(h.api.health().withdrawal.state,'offline');
     assert.deepEqual(await h.api.record({hanaRef:'fixture.app',sourcePlugin:'fixture.app',action:'use',idempotencyKey:'after',occurredAt:changedAt}),{disposition:'withheld'});

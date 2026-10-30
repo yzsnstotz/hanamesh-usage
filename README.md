@@ -131,7 +131,7 @@ Inventory 暴露 `INVENTORY_FAILED/INVENTORY_ENTRY_UNREADABLE/INVENTORY_PACKAGE_
 `live-check.py` 还需本卡 `state/OBSERVER_INPUTS.json` 指定 deviceId、两个 observerPort 和本卡 PG container，
 不再默认指向原卡端口/设备/容器。历史 `final-setup` 供给仍冻结在原取证版本，不能把它当 rc.23 产品验收。
 
-不安装任何 HanaMesh 合约包（含开发依赖）。C-CORE 用仓内 Ed25519 测试替身 `tests/fixtures/core-fake.mjs`；C-USAGE 服务端行为只对真实本地后端验证。
+不安装任何 HanaMesh 合约包（含开发依赖）。C-CORE 使用正常 Core 包的公开 fixture（流程见 [TEST_CORE_INPUT](docs/TEST_CORE_INPUT.md)）；C-USAGE 服务端行为只对真实本地后端验证。
 `npm run test:contract` 自带目标构建。
 框架 peer 与 React 宿主外部供给沿用，独立声明消费需正常 TypeScript/Node/React 类型工具。
 本模块无 ABI 生成器或链上接口，ABI/模板/签名广播门不在本卡范围。

@@ -1,3 +1,4 @@
+import {createCoreProviderFixture} from '@hanamesh/core/contract/fixtures';
 import {sharedSettingsResponse} from './fixtures/shared-settings.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -10,7 +11,7 @@ import {EventStore,wireEvent} from '../lib/core/index.js';
 import {createRecordSeat} from '../lib/host/record.js';
 import {signUsageEvent} from '../lib/host/core-link.js';
 import {createUsageReporter} from '../lib/host/upload.js';
-import {fixtureSigningIdentity,originalFact,localLifecycle,deferred} from './fixtures/local-lifecycle.mjs';
+import {originalFact,localLifecycle,deferred} from './fixtures/local-lifecycle.mjs';
 
 // Q-384 review-stage SOURCE/FIXTURE: actual producer/store/sender; scripted
 // receipts are not a real server, and the file port is not native DSH storage.
@@ -26,14 +27,15 @@ function childEnvironment(overrides){
 }
 async function setup(t,{fault='once',response=unknown,file=null,hold=null}={}){
   t.mock.timers.enable({apis:['setTimeout']});
-  const identity=fixtureSigningIdentity(),requests=[],writes=[];
-  let snapshot={schemaVersion:1,events:[],withdrawal:null,inventory:{last:null}},afterResponse=false,refusals=0,auth=0;
+  const provider=createCoreProviderFixture({initialConsent:'granted',serverOrigin:'https://fixture.invalid'}),requests=[],writes=[];
+  const core={...provider.service,getSession:()=>({...provider.service.getSession(),registration:'registered'})};
+  let snapshot={schemaVersion:1,events:[],withdrawal:null,inventory:{last:null}},afterResponse=false,refusals=0;
   const global={get:()=>snapshot,set:async next=>{
     writes.push(structuredClone(next));
     if(afterResponse&&(fault==='persistent'||(fault==='once'&&refusals===0))){refusals++;throw new Error('fixture local marker write refused');}
     snapshot=structuredClone(next);if(file)writeFileSync(file,JSON.stringify(snapshot));
   }};
-  const store=new EventStore(global),core={getConsent:()=> 'granted',getDeviceId:()=>identity.deviceId,getPublicKey:()=>identity.publicKey,sign:identity.sign,getServerOrigin:()=> 'https://fixture.invalid',signRequest:async()=>({'x-hm-device-id':identity.deviceId,'x-hm-timestamp':String(Date.now()),'x-hm-nonce':`fixture-auth-${++auth}`,'x-hm-signature':'fixture-request-signature'})};
+  const store=new EventStore(global);
   const record=createRecordSeat({store,getConsent:core.getConsent,getDeviceId:core.getDeviceId,signEvent:event=>signUsageEvent(core,event)});
   assert.equal((await record(originalFact())).disposition,'recorded');
   const before=plain(snapshot),reporter=createUsageReporter({store,link:{get:()=>core},uploadIntervalMs:60000,uploadBatchSize:200,fetchImpl:async(_url,options)=>{const policy=sharedSettingsResponse(_url,options);if(policy)return policy;
@@ -79,7 +81,8 @@ if(!process.env.USAGE_Q384_OBSERVE_CHILD){
     t.mock.timers.enable({apis:['setTimeout']});
     let snapshot={schemaVersion:1,events:[],withdrawal:null,inventory:{last:null}},reject=false,requests=0,auth=0;
     const store=new EventStore({get:()=>snapshot,set:async next=>{if(reject)throw new Error('fixture admission write refused');snapshot=structuredClone(next);}});
-    const identity=fixtureSigningIdentity(),core={getConsent:()=> 'granted',getDeviceId:()=>identity.deviceId,getPublicKey:()=>identity.publicKey,sign:identity.sign,getServerOrigin:()=> 'https://fixture.invalid',signRequest:async()=>{auth++;return {};}};
+    const provider=createCoreProviderFixture({initialConsent:'granted',serverOrigin:'https://fixture.invalid'});
+    const core={...provider.service,getSession:()=>({...provider.service.getSession(),registration:'registered'}),signRequest:input=>{auth++;return provider.service.signRequest(input);}};
     const record=createRecordSeat({store,getConsent:core.getConsent,getDeviceId:core.getDeviceId,signEvent:event=>signUsageEvent(core,event)});
     await record(originalFact());const before=plain(snapshot);reject=true;
     const reporter=createUsageReporter({store,link:{get:()=>core},uploadIntervalMs:60000,uploadBatchSize:200,fetchImpl:async(url,options)=>{const policy=sharedSettingsResponse(url,options);if(policy)return policy;requests++;return unknown();}});t.after(()=>reporter.stop());reporter.start();
@@ -94,8 +97,9 @@ if(!process.env.USAGE_Q384_OBSERVE_CHILD){
     assert.deepEqual(plain(JSON.parse(readFileSync(file,'utf8'))),f.before);
     const moduleURL=pathToFileURL(join(dir,'readback.test.mjs'));
     const coreURL=new URL('../lib/core/index.js',import.meta.url).href,uploadURL=new URL('../lib/host/upload.js',import.meta.url).href;
-    writeFileSync(moduleURL,`import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';import {EventStore} from ${JSON.stringify(coreURL)};import {createUsageReporter} from ${JSON.stringify(uploadURL)};
-test('independent process consumes only persisted attempt state',async t=>{t.mock.timers.enable({apis:['setTimeout']});const snapshot=JSON.parse(readFileSync(${JSON.stringify(file)},'utf8'));let requests=0;const store=new EventStore({get:()=>snapshot,set:async()=>{throw new Error('readback is read-only')}});const reporter=createUsageReporter({store,link:{get:()=>({getConsent:()=> 'granted',getServerOrigin:()=> 'https://fixture.invalid',signRequest:async()=>({})})},uploadIntervalMs:60000,uploadBatchSize:200,fetchImpl:async()=>{requests++;return new Response('{}',{status:503})}});try{reporter.start();await reporter.runOnce().catch(()=>{});assert.equal(requests,0,'restart cannot infer never-sent from a failed final marker write');t.mock.timers.tick(3600000);await reporter.drain();assert.equal(requests,0);assert.equal(reporter.health().state,'unconfirmed');assert.equal(reporter.delivery(store.getSnapshot().events[0]).delivery,'unconfirmed');}finally{reporter.stop();}});`);
+    const providerURL=import.meta.resolve('@hanamesh/core/contract/fixtures');
+    writeFileSync(moduleURL,`import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';import {EventStore} from ${JSON.stringify(coreURL)};import {createUsageReporter} from ${JSON.stringify(uploadURL)};import {createCoreProviderFixture} from ${JSON.stringify(providerURL)};
+test('independent process consumes only persisted attempt state',async t=>{t.mock.timers.enable({apis:['setTimeout']});const snapshot=JSON.parse(readFileSync(${JSON.stringify(file)},'utf8'));let requests=0;const store=new EventStore({get:()=>snapshot,set:async()=>{throw new Error('readback is read-only')}});const provider=createCoreProviderFixture({initialConsent:'granted',serverOrigin:'https://fixture.invalid'});const reporter=createUsageReporter({store,link:{get:()=>({...provider.service,getSession:()=>({...provider.service.getSession(),registration:'registered'})})},uploadIntervalMs:60000,uploadBatchSize:200,fetchImpl:async()=>{requests++;return new Response('{}',{status:503})}});try{reporter.start();await reporter.runOnce().catch(()=>{});assert.equal(requests,0,'restart cannot infer never-sent from a failed final marker write');t.mock.timers.tick(3600000);await reporter.drain();assert.equal(requests,0);assert.equal(reporter.health().state,'unconfirmed');assert.equal(reporter.delivery(store.getSnapshot().events[0]).delivery,'unconfirmed');}finally{reporter.stop();}});`);
     const child=spawnSync(process.execPath,['--test','--test-reporter=tap',fileURLToPath(moduleURL)],{encoding:'utf8',env:childEnvironment({DSH_HOME:join(dir,'dsh'),TMPDIR:join(dir,'tmp')})});
     assert.doesNotMatch(child.stdout+child.stderr,/ERR_MODULE_NOT_FOUND|SyntaxError|ENOTCACHED/);
     assert.equal(child.status,0,child.stdout+child.stderr);assert.match(child.stdout,/# pass 1\b/);unchanged(f);
@@ -107,7 +111,8 @@ test('independent process consumes only persisted attempt state',async t=>{t.moc
     // A separate reconstructed store receives only the committed snapshot; no
     // original reporter Set, response, signer handle or pending Promise crosses.
     const snapshot=f.snapshot(),reconstructed=new EventStore({get:()=>snapshot,set:async()=>{throw new Error('readback only');}});let requests=0;
-    const second=createUsageReporter({store:reconstructed,link:{get:()=>({getConsent:()=> 'granted',getServerOrigin:()=> 'https://fixture.invalid',signRequest:async()=>({})})},uploadIntervalMs:60000,uploadBatchSize:200,fetchImpl:async(url,options)=>{const policy=sharedSettingsResponse(url,options);if(policy)return policy;requests++;return unknown();}});
+    const provider=createCoreProviderFixture({initialConsent:'granted',serverOrigin:'https://fixture.invalid'});
+    const second=createUsageReporter({store:reconstructed,link:{get:()=>({...provider.service,getSession:()=>({...provider.service.getSession(),registration:'registered'})})},uploadIntervalMs:60000,uploadBatchSize:200,fetchImpl:async(url,options)=>{const policy=sharedSettingsResponse(url,options);if(policy)return policy;requests++;return unknown();}});
     try{second.start();await settle(second.runOnce());assert.equal(requests,0,'a persisted unresolved attempt must survive the lost response window');t.mock.timers.tick(5000);await second.drain();assert.equal(requests,0);assert.equal(second.delivery(reconstructed.getSnapshot().events[0]).delivery,'unconfirmed');}finally{second.stop();hold.release.resolve();await sending;}
   });
 
