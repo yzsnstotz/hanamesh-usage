@@ -4,7 +4,7 @@
 // Without the variable these tests are skipped and say so; they never fall back to a fake server.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createCoreProviderFixture} from './fixtures/core-provider.mjs';
+import {createCoreProviderFixture} from '@hanamesh/core/contract/fixtures';
 const core=await import('../lib/core/index.js');
 const {createRecordSeat}=await import('../lib/host/record.js');
 const {signUsageEvent}=await import('../lib/host/core-link.js');

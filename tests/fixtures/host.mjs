@@ -1,4 +1,4 @@
-import {createCoreProviderFixture} from './core-provider.mjs';
+import {createCoreProviderFixture} from '@hanamesh/core/contract/fixtures';
 import { MemoryGlobal, session, root } from './helpers.mjs';
 import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';

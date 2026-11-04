@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createCoreProviderFixture,verifyCoreSignature} from './fixtures/core-provider.mjs';
+import {createCoreProviderFixture,verifyCoreSignature} from '@hanamesh/core/contract/fixtures';
 import * as core from '../lib/core/index.js';
 
 let host=null;try{host=await import('../lib/host/core-link.js');}catch{}

@@ -15,14 +15,16 @@ const closureTree=JSON.parse(closure.stdout);
 for(const entry of Array.isArray(closureTree)?closureTree:[closureTree])assert.deepEqual(entry.problems??[],[]);
 const physical=assertPhysicalClosure(process.cwd(),pkg,lock);
 console.log(JSON.stringify({closureManager:pnpmLayout?'pnpm':'npm',...physical}));
-assert.equal(pkg.name,'@hanamesh/usage');assert.equal(pkg.version,'0.3.0-rc.16');assert.equal(pkg.private,undefined);assert.equal(pkg.license,'MIT');
+assert.equal(pkg.name,'@hanamesh/usage');assert.equal(pkg.version,'0.3.0-rc.17');assert.equal(pkg.private,undefined);assert.equal(pkg.license,'MIT');
 assert.deepEqual(pkg.dependencies??{},{});assert.equal(Object.keys(pkg.peerDependencies).filter(name=>name.startsWith('@hanamesh/')||name.startsWith('hanamesh-')).length,0);
 assert.equal(pkg.dsh?.bundle?.patch,'./profile/cordis.patch.yml');assert.equal(pkg.dsh?.client?.platform,'web');assert.equal(pkg.exports['./client'].default,'./lib/client.js');assert(pkg.files.includes('profile'));assert(existsSync(pkg.dsh.bundle.patch));
-// Production closure contains no HanaMesh sibling; tests consume an explicit normal Core public fixture input separately.
+// Runtime has no HanaMesh SDK dependency; tests consume the exact published Core public fixtures.
+assert.equal(pkg.devDependencies['@hanamesh/core'],'0.3.31');
 for(const section of ['dependencies','devDependencies','peerDependencies','optionalDependencies'])
- assert.deepEqual(Object.keys(pkg[section]??{}).filter(name=>name.startsWith('@hanamesh/')||name.startsWith('hanamesh-')),[],`sibling module in ${section}`);
+ assert.deepEqual(Object.keys(pkg[section]??{}).filter(name=>name.startsWith('@hanamesh/')||name.startsWith('hanamesh-')),section==='devDependencies'?['@hanamesh/core']:[],`unexpected sibling module in ${section}`);
 assert.equal(existsSync('docs/contracts/hanamesh-core'),false);
-assert.equal(Object.keys(lock.packages).some(key=>/node_modules\/(?:@hanamesh\/|hanamesh-)/.test(key)),false,'sibling module in package-lock.json');
+assert.deepEqual([...new Set(Object.keys(lock.packages).filter(key=>/node_modules\/(?:@hanamesh\/|hanamesh-)/.test(key)).map(key=>key.split('node_modules/').at(-1)))],['@hanamesh/core']);
+assert.equal(lock.packages['node_modules/@hanamesh/core'].version,'0.3.31');
 // Parse the actual YAML consumed by DSH; textual name matching cannot validate scoped names.
 const assertPatch=(text,manifest)=>{const patch=load(text);assert.equal(patch[0].insert.length,1);assert.equal(patch[0].insert[0].id,'hanamesh-usage');assert.equal(patch[0].insert[0].name,manifest.name);};
 assertPatch(read(pkg.dsh.bundle.patch),pkg);

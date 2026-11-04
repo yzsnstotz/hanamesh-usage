@@ -1,4 +1,4 @@
-import {createCoreProviderFixture} from './fixtures/core-provider.mjs';
+import {createCoreProviderFixture} from '@hanamesh/core/contract/fixtures';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {localLifecycle,originalFact,deferred} from './fixtures/local-lifecycle.mjs';

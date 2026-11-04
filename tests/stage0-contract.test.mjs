@@ -9,7 +9,7 @@ const read = path => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8'
 test('U04 package is the standalone hanamesh-usage DSH bundle', () => {
   const pkg = JSON.parse(read('package.json'));
   assert.equal(pkg.name, '@hanamesh/usage');
-  assert.equal(pkg.version, '0.3.0-rc.16');
+  assert.equal(pkg.version, '0.3.0-rc.17');
   for (const [name, version] of Object.entries(pkg.peerDependencies)) {
     if (name.startsWith('@deepseek-ai/dsh-')) {
       for(const host of ['0.2.0-rc.2','0.2.0','0.2.1-alpha.2','0.2.1','0.2.9'])assert.equal(satisfies(host,version),true,`${name} admits ${host}`);
@@ -34,14 +34,15 @@ test('U04 package is the standalone hanamesh-usage DSH bundle', () => {
   );
 });
 
-test('J1S2 no HanaMesh sibling or contract package is installed in any dependency section', () => {
+test('runtime has no HanaMesh sibling dependency; tests use exact public Core fixtures', () => {
   const pkg = JSON.parse(read('package.json'));
   for (const section of ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']) {
     assert.deepEqual(
       Object.keys(pkg[section] ?? {}).filter(name => name.startsWith('@hanamesh/') || name.startsWith('hanamesh-')),
-      [], section,
+      section === 'devDependencies' ? ['@hanamesh/core'] : [], section,
     );
   }
+  assert.equal(pkg.devDependencies['@hanamesh/core'],'0.3.31');
   assert.equal(pkg.scripts['test:contract'], 'pnpm run build && node --test --test-reporter=tap tests/stage0-contract.test.mjs tests/stage4-contract.test.mjs tests/contract-wire.test.mjs tests/shared-fact.test.mjs');
 });
 

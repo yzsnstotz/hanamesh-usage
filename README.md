@@ -166,4 +166,4 @@ R3发布中断修复：完整固定摘要/二进制版本通过且非阻塞取�
 
 构建目录由 build / prepack 生成，不提交 Git；正常包仍包含公开运行时和声明。验收日志、tgz 和 proof 只放 HanaMesh docs 的 `证据/` 或 R2 relay。
 
-本仓测试的 Core 供给在 `tests/fixtures/core-provider.mjs`，依据 C-CORE v1 的公开服务与签名字节定义，以 node:crypto 提供显式内存 FIXTURE；不安装 Core SDK，也不把此夹具说成真实宿主验收。`test:detached` 需要先通过声明的 package-lock 运行 npm ci 来填充内容缓存，随后在全新目录离线验证锁定闭包。
+本仓测试精确声明开发依赖 `@hanamesh/core@0.3.31`，直接使用其公开 `@hanamesh/core/contract/fixtures` 导出的测试供给及验签函数，不内编 Core 签名格式；Core 的开发期 SDK 按其公开 peer 需求补齐 alpha.2 组件，并精确声明与本仓 Cordis 4.0.5-alpha.1 兼容的 alpha.1 插件，避免自动选入要求稳定版 Cordis 的较新 peer；生产路径仍通过宿主公开能力消费，不把测试供给说成真实宿主验收。`test:detached` 需要先通过声明的 package-lock 运行 npm ci 来填充内容缓存，随后在全新目录离线验证锁定闭包。

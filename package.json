@@ -1,6 +1,6 @@
 {
   "name": "@hanamesh/usage",
-  "version": "0.3.0-rc.16",
+  "version": "0.3.0-rc.17",
   "description": "Consent-gated, device-signed HanaMesh usage events for DSH",
   "type": "module",
   "main": "lib/host/index.js",
@@ -108,6 +108,16 @@
     "js-yaml": "4.1.1",
     "react": "18.3.1",
     "typescript": "5.9.3",
-    "zod": "4.6.5"
+    "zod": "4.6.5",
+    "@hanamesh/core": "0.3.31",
+    "@deepseek-ai/dsh-client-store": "0.2.1-alpha.2",
+    "@deepseek-ai/dsh-client-ui-primitives": "0.2.1-alpha.2",
+    "@deepseek-ai/dsh-client-ui-settings": "0.2.1-alpha.2",
+    "@deepseek-ai/dsh-client-ui-sidebar": "0.2.1-alpha.2",
+    "@deepseek-ai/dsh-util-code-language": "0.2.1-alpha.2",
+    "@deepseek-ai/dsh-app-boot": "0.2.1-alpha.2",
+    "@deepseek-ai/cordis-plugin-group": "1.0.5-alpha.1",
+    "@deepseek-ai/cordis-plugin-include": "1.0.10-alpha.1",
+    "@deepseek-ai/cordis-plugin-loader": "1.0.6-alpha.1"
   }
 }
