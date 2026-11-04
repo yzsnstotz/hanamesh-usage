@@ -23,7 +23,7 @@ assert.equal(pkg.devDependencies['@hanamesh/core'],'0.3.31');
 for(const section of ['dependencies','devDependencies','peerDependencies','optionalDependencies'])
  assert.deepEqual(Object.keys(pkg[section]??{}).filter(name=>name.startsWith('@hanamesh/')||name.startsWith('hanamesh-')),section==='devDependencies'?['@hanamesh/core']:[],`unexpected sibling module in ${section}`);
 assert.equal(existsSync('docs/contracts/hanamesh-core'),false);
-assert.deepEqual([...new Set(Object.keys(lock.packages).filter(key=>/node_modules\/(?:@hanamesh\/|hanamesh-)/.test(key)).map(key=>key.split('node_modules/').at(-1)))],['@hanamesh/core']);
+assert.deepEqual([...new Set(Object.keys(lock.packages).map(key=>key.split('node_modules/').at(-1)).filter(name=>name.startsWith('@hanamesh/')||name.startsWith('hanamesh-')))],['@hanamesh/core']);
 assert.equal(lock.packages['node_modules/@hanamesh/core'].version,'0.3.31');
 // Parse the actual YAML consumed by DSH; textual name matching cannot validate scoped names.
 const assertPatch=(text,manifest)=>{const patch=load(text);assert.equal(patch[0].insert.length,1);assert.equal(patch[0].insert[0].id,'hanamesh-usage');assert.equal(patch[0].insert[0].name,manifest.name);};
