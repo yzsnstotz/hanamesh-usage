@@ -1,7 +1,7 @@
 import {sharedSettingsResponse} from './shared-settings.mjs';
 import assert from 'node:assert/strict';
 import {createPublicKey, createHash, verify} from 'node:crypto';
-import {createCoreProviderFixture} from '@hanamesh/core/contract/fixtures';
+import {createCoreProviderFixture} from './core-provider.mjs';
 import {mkdtempSync, mkdirSync, rmSync} from 'node:fs';
 import {join, resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';

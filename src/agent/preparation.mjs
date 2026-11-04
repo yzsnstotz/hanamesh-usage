@@ -22,9 +22,10 @@ export async function drainPreparation(r,{now=Date.now()}={}){
   if(!await localRecordingEnabled(r))return;
   const items=await Promise.all(names.filter(n=>/^[a-f0-9]{64}-(PreToolUse|PostToolUse|PostToolUseFailure)\.json$/.test(n)).map(async name=>({name,item:await readJSON(join(dir,name),null)})));
   items.sort((a,b)=>a.item.occurredAt.localeCompare(b.item.occurredAt)||(a.item.event==='PreToolUse'?-1:1));
+  const catalog=await readJSON(join(r.agentHome,'catalog.json'),null);
   const inventories=new Map();
   for(const {name,item}of items){
-   if(Date.parse(item.occurredAt)<now-30*86400000){await rm(join(dir,name));continue;}
+   if(catalog&&Date.parse(item.occurredAt)<now-catalog.settings.backfillWindowDays*86400000){await rm(join(dir,name));continue;}
    if(!inventories.has(item.channel)){const {hostContext}=await import('./runtime.mjs');const host=hostContext({...r.env,HANAMESH_AGENT_CHANNEL:item.channel});inventories.set(item.channel,await installedPlugins(item.channel,host.home,{remote:{env:r.env}}));}
    const row=projectPreparation(item,inventories.get(item.channel));if(!row)continue;
    await r.store.record(row,true);await rm(join(dir,name));

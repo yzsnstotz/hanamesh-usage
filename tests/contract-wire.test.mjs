@@ -31,8 +31,8 @@ test('mixed signed batch with a local stub sends nothing and keeps every event p
   assert.deepEqual(store.query().events.map(event=>event.upload.state),['pending','pending']);
 });
 
-// C-CORE consumer uses the provider-owned normal package public fixtures.
-const {coreHandshakeCases,createCoreProviderFixture,verifyCoreSignature,CORE_DETERMINISTIC_FIXTURE_VECTORS}=await import('@hanamesh/core/contract/fixtures');
+// C-CORE consumer uses explicitly consumer-owned documented-call fixtures.
+const {coreHandshakeCases,createCoreProviderFixture,verifyCoreSignature,CORE_DETERMINISTIC_FIXTURE_VECTORS}=await import('./fixtures/core-provider.mjs');
 const {createHash}=await import('node:crypto');
 // C-USAGE-LOCAL record eventId: UUIDv5(namespace, JSON [deviceId, sourcePlugin, idempotencyKey]).
 const USAGE_EVENT_NAMESPACE='6aa7b4d1-88f5-4f96-89e2-cf5ffca77c2d';

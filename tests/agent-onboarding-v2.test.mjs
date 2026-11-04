@@ -1,7 +1,7 @@
 import {agentHome} from './fixtures/agent.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdir,writeFile,readFile} from 'node:fs/promises';
+import {mkdir,writeFile,readFile,rm} from 'node:fs/promises';
 import {join} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {root as codeRoot} from './fixtures/helpers.mjs';
@@ -12,6 +12,7 @@ const catalog={plugins:[{hanaRef:'hana-target',channel:'claude',pluginId:'target
 async function fixture(t){
  const home=await agentHome(t,'hm-onboarding-v2-');const {AgentStore}=await load('agent/store.mjs'); let state={agentProtocolVersion:2,deviceId:'A'.repeat(43),consent:{state:'withheld',changedAt:null,consentId:null,authorization:null}};const calls=[],messages=[];
  const r={agentHome:home,sharedHome:home,host:{channel:'claude',home:join(home,'claude')},config:{serverOrigin:'http://127.0.0.1:32101',websiteOrigin:'http://127.0.0.1:32102',requestTimeoutMs:10000},store:new AgentStore(home),async call(input){calls.push(input);if(input.operation==='state')return structuredClone(state);if(input.operation==='prepareOnboarding'){state.consent.consentId=cid;return{url:'http://127.0.0.1:32102/me/bind?flow=agent&consentId='+cid,expiresAt:'2026-10-28T20:00:00.000Z',consentId:cid,deviceId:state.deviceId};}if(input.operation==='syncOnboarding')return{consent:state.consent,onboarding:{state:'pending',binding:null}};throw Error('UNEXPECTED_OPERATION');}};
+ await writeFile(join(home,'catalog.json'),JSON.stringify(catalog));
  return {home,r,calls,messages,emit:async m=>messages.push(m),setState:s=>{state=s;},state:()=>state};
 }
 const start=(id='session-a',source='startup')=>({hook_event_name:'SessionStart',session_id:id,source});
@@ -39,9 +40,11 @@ test('bound/granted or explicitly closed users stop reminders and no model can g
  const f=await fixture(t);const {firstConsentNotice}=await load('agent/notice.mjs');f.state().consent={state:'granted',changedAt:new Date(now).toISOString(),consentId:cid,authorization:'website'};assert.equal(await firstConsentNotice(f.r,f.emit,{payload:start(),now}),false);
  f.state().consent={state:'withheld',changedAt:new Date(now).toISOString(),consentId:cid,authorization:null};assert.equal(await firstConsentNotice(f.r,f.emit,{payload:start('closed'),now}),false);assert.equal(f.calls.filter(x=>x.operation!=='state').length,0);
 });
-test('30-day retention purges expired facts and cannot be expanded by a 60-day catalog',async t=>{
- const f=await fixture(t);await f.r.store.record({...row,occurredAt:new Date(now-31*86400000).toISOString()},true);assert.equal((await f.r.store.pending({...catalog,settings:{...catalog.settings,backfillWindowDays:60}},now)).length,0);
- await f.r.store.prune(now);assert.deepEqual(await f.r.store.rows(),[]);
+test('configured retention preserves eligible facts beyond 30 days and purges only at the server window',async t=>{
+ const f=await fixture(t);await f.r.store.record({...row,occurredAt:new Date(now-31*86400000).toISOString()},true);assert.equal((await f.r.store.pending({...catalog,settings:{...catalog.settings,backfillWindowDays:60}},now)).length,1);
+ await f.r.store.prune({backfillWindowDays:60},now);assert.equal((await f.r.store.rows()).length,1);
+ await f.r.store.prune(undefined,now+100*86400000);assert.equal((await f.r.store.rows()).length,1,'unknown policy cannot destroy records');
+ await f.r.store.prune({backfillWindowDays:7},now);assert.deepEqual(await f.r.store.rows(),[]);
 });
 test('install identity is stable per device/Hana across channels, real failures remain failures',async()=>{
  const {agentInstallEventForFact,agentSigningJSON}=await load('core/agent-event.js');assert.equal(typeof agentInstallEventForFact,'function');
@@ -84,7 +87,7 @@ test('unknown install commit freezes bytes and never automatically replays or in
  const f=await sender(t);await f.r.store.record({...row,success:false},true);const {uploadOnce}=await load('agent/upload.mjs');let original;
  await assert.rejects(uploadOnce(f.r,{now:now+1000,request:async(o,p,i)=>{if(p==='/v2/usage/events'&&JSON.parse(i.body)[0].action==='install'){original=JSON.parse(i.body)[0];throw Error('UNKNOWN_INSTALL_COMMIT');}return f.request(o,p,i);}}),/UNKNOWN_INSTALL_COMMIT/);
  const stored=await f.r.store.installState(original.eventId);assert.equal(stored.delivery.state,'unconfirmed');assert.deepEqual(stored.wire,original);assert.equal(stored.wire.success,false);
- await uploadOnce(f.r,{now:now+2000,request:f.request});assert.equal(f.posted.length,1);await f.r.store.prune(now+31*86400000);const expired=await f.r.store.installState(original.eventId);assert.equal(expired.wire,undefined);assert.equal(expired.delivery.state,'expired');
+ await uploadOnce(f.r,{now:now+2000,request:f.request});assert.equal(f.posted.length,1);await f.r.store.prune(catalog.settings,now+31*86400000);const expired=await f.r.store.installState(original.eventId);assert.equal(expired.wire,undefined);assert.equal(expired.delivery.state,'expired');
 });
 test('only the exact SQLite experimental notice is filtered; genuine warnings and failures stay visible',async t=>{
  const f=await fixture(t);const {spawnSync}=await import('node:child_process');const url=pathToFileURL(join(codeRoot,'lib/agent/sender-lock.mjs')).href;
@@ -97,7 +100,7 @@ test('a historical completed withdrawal marker does not revoke an website re-gra
  await writeFile(join(f.home,'withdrawal.json'),JSON.stringify({state:'pending',consentId:cid}));assert.equal(await localRecordingEnabled(f.r),false);
 });
 test('readonly status exposes preparation failure and unknown listing without claiming upload readiness',async t=>{
- const f=await fixture(t);await f.r.store.record({...row,occurredAt:new Date().toISOString()},true);f.r.senderError='CORE_UPSTREAM_UNAVAILABLE';const {status}=await load('agent/status.mjs');
+ const f=await fixture(t);await rm(join(f.home,'catalog.json'));await f.r.store.record({...row,occurredAt:new Date().toISOString()},true);f.r.senderError='CORE_UPSTREAM_UNAVAILABLE';const {status}=await load('agent/status.mjs');
  const value=await status(f.r);assert.equal(value.code,'CORE_UPSTREAM_UNAVAILABLE');assert.match(value.nextStep,/CORE_UPSTREAM_UNAVAILABLE/);assert.match(value.nextStep,/本机/);assert.equal(value.records[0].listed,null);assert.equal(value.counts.unlisted,0);assert.equal(value.counts.listingUnknown,1);
  assert.deepEqual(f.calls.map(c=>c.operation),['state']);
 });
@@ -112,4 +115,14 @@ test('mcp-ready starts the original background state check without waiting for a
  await writeFile(core,`import{writeFileSync}from'node:fs';let s='';for await(const c of process.stdin)s+=c;writeFileSync(${JSON.stringify(marker)},JSON.parse(s).input.operation);console.log(JSON.stringify({result:${JSON.stringify({...f.state(),consent:{state:'withheld',changedAt:new Date().toISOString(),consentId:null}})}}));`);
  const p=spawn(process.execPath,[join(codeRoot,'lib/agent/cli.mjs'),'mcp-ready'],{env:{HOME:f.home,PATH:process.env.PATH,HANAMESH_SHARED_HOME:f.home,HANAMESH_AGENT_HOME:f.home,HANAMESH_CORE_AGENT_CLI:core},stdio:['pipe','pipe','pipe']});p.stdout.resume();p.stderr.resume();t.after(()=>{if(p.exitCode===null)p.kill('SIGTERM');});
  const end=Date.now()+1000;let tick;while(Date.now()<end){try{tick=await readFile(marker,'utf8');break;}catch{await new Promise(r=>setTimeout(r,10));}}assert.equal(tick,'state','takeover must start the original tick without another initialize');p.stdin.end();await new Promise(resolve=>p.on('close',resolve));
+});
+
+
+test('notice uses a wider server window and keeps facts when policy is unknown',async t=>{
+ const f=await fixture(t);const {firstConsentNotice,localPending}=await load('agent/notice.mjs');
+ await f.r.store.record({...row,occurredAt:new Date(now-40*86400000).toISOString()},true);
+ await writeFile(join(f.home,'catalog.json'),JSON.stringify({...catalog,settings:{...catalog.settings,backfillWindowDays:60}}));
+ await firstConsentNotice(f.r,f.emit,{payload:start(),now});assert.match(f.messages[0],/60天补报期限还剩20天/);assert.match(f.messages[0],/待上传候选1条/);
+ await rm(join(f.home,'catalog.json'));await firstConsentNotice(f.r,f.emit,{payload:start('unknown'),now:now+86400000});
+ assert.match(f.messages[1],/当前保留本机记录/);assert.equal((await f.r.store.rows()).length,1);assert.deepEqual(localPending(await f.r.store.rows(),undefined,now),{count:1,days:null,expiresAt:null});
 });

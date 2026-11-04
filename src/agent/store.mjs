@@ -55,15 +55,16 @@ export class AgentStore {
     let names;try{names=await readdir(this.dir);}catch(error){if(error.code==='ENOENT')return [];throw error;}
     return Promise.all(names.filter(name=>/^[a-f0-9]{64}\.json$/.test(name)).sort().map(name=>readJSON(join(this.dir,name),null)));
   }
-  async prune(now=Date.now()){
+  async prune(settings,now=Date.now()){
+    if(!settings)return;
     return this.mutate(async()=>{
-      for(const row of await this.rows())if(Date.parse(row.occurredAt)<now-30*86400000){await rm(join(this.dir,`${row.factId}.json`),{force:true});}
+      for(const row of await this.rows())if(Date.parse(row.occurredAt)<now-settings.backfillWindowDays*86400000){await rm(join(this.dir,`${row.factId}.json`),{force:true});}
       let names;try{names=await readdir(this.installDir);}catch(error){if(error.code!=='ENOENT')throw error;names=[];}
-      for(const name of names.filter(n=>/^[a-f0-9-]{36}\.json$/.test(n))){const path=join(this.installDir,name),entry=await readJSON(path,null);if(entry?.wire&&Date.parse(entry.wire.occurredAt)<now-30*86400000)await atomicJSON(path,{eventId:entry.eventId,delivery:{state:'expired',code:'INSTALL_WINDOW_EXPIRED'}});}
+      for(const name of names.filter(n=>/^[a-f0-9-]{36}\.json$/.test(n))){const path=join(this.installDir,name),entry=await readJSON(path,null);if(entry?.wire&&Date.parse(entry.wire.occurredAt)<now-settings.backfillWindowDays*86400000)await atomicJSON(path,{eventId:entry.eventId,delivery:{state:'expired',code:'INSTALL_WINDOW_EXPIRED'}});}
     });
   }
   async eligible(catalog,now=Date.now()){
-    const cutoff=now-Math.min(30,catalog.settings.backfillWindowDays)*86400000,result=[];
+    const cutoff=now-catalog.settings.backfillWindowDays*86400000,result=[];
     for(const row of await this.rows()){
       if(!['attributed','unverified'].includes(row.disposition)||!owner(row)||Date.parse(row.occurredAt)<cutoff||Date.parse(row.occurredAt)>now||(row.success===null&&catalog.settings.countUnconfirmedCalls!==true))continue;
       const matches=catalog.plugins.filter(item=>item.channel===row.channel&&(row.remote?item.remotePluginId===row.remote.remotePluginId:item.pluginId===row.pluginId));

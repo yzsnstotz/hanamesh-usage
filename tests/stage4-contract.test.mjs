@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
-import {createCoreProviderFixture,coreCanonicalRequest,verifyCoreSignature} from '@hanamesh/core/contract/fixtures';
+import {createCoreProviderFixture,coreCanonicalRequest,verifyCoreSignature} from './fixtures/core-provider.mjs';
 
 test('Core public provider identity and request signature are consumable without a local stand-in',async()=>{
  const {service}=createCoreProviderFixture({initialConsent:'granted'});

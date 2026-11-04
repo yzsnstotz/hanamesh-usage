@@ -45,7 +45,7 @@ export function createRecordSeat({store,getConsent,getDeviceId,now=Date.now,sign
       if(input.occurredAt===undefined)throw new UsageError('FACT_TIME_UNAVAILABLE');
       if(typeof input.occurredAt!=='string')throw new UsageError('INVALID_RECORD_INPUT');
       const current=now();const occurredAt=input.occurredAt;const time=Date.parse(occurredAt);
-      if(!Number.isFinite(time)||new Date(time).toISOString()!==occurredAt||time<current-90*24*60*60*1000||time>current+5*60*1000) throw new UsageError('INVALID_RECORD_INPUT');
+      if(!Number.isFinite(time)||new Date(time).toISOString()!==occurredAt||time>current+5*60*1000) throw new UsageError('INVALID_RECORD_INPUT');
       const event=signEvent(createUsageEvent({eventId,deviceId,hanaRef,action,occurredAt,nonce:eventNonceForSeat(eventId),signature:null,source:'seat',sourcePlugin,evidenceRef:idempotencyKey,sourceHanaRef,targetRef,receipt:receipt===null?null:{providerId:receipt.providerId,model:receipt.model,count:receipt.count}}));
       const disposition=await store.put(event);
       return { disposition:disposition==='inserted'?'recorded':'duplicate',eventId };

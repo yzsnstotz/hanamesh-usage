@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {pathToFileURL} from 'node:url';
 import {resolve} from 'node:path';
-import {createCoreProviderFixture,coreCanonicalRequest,verifyCoreSignature} from '@hanamesh/core/contract/fixtures';
+import {createCoreProviderFixture,coreCanonicalRequest,verifyCoreSignature} from './fixtures/core-provider.mjs';
 import {capturingFetch} from './fixtures/capturing-fetch.mjs';
 const root=process.env.USAGE_TEST_ROOT??resolve(new URL('..',import.meta.url).pathname);
 const {EventStore,wireEvent,signingJSON}=await import(pathToFileURL(resolve(root,'lib/core/index.js')));

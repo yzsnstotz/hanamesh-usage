@@ -33,10 +33,11 @@ if(command==='mcp'||command==='mcp-ready') {
         await mkdir(r.agentHome,{recursive:true,mode:0o700});
         release=await senderLock(r.agentHome);
         if(release){
-          await drainPreparation(r);await r.store.prune();await refreshOnboarding(r);
+          await refreshOnboarding(r);
           const current=await r.call({operation:'state'});
           // A granted sender refreshes once inside uploadOnce. Local-only collection reads public metadata here.
-          if(current.consent.state!=='granted'||current.consent.authorization!=='website')try{await refreshAgentCatalog(r);}catch{await atomicJSON(join(r.agentHome,'remote-inventory-diagnostics.json'),{diagnostics:[{pluginId:null,code:'AGENT_CODEX_REMOTE_CATALOG_UNAVAILABLE'}]});}
+          if(current.consent.state!=='granted'||current.consent.authorization!=='website')try{const catalog=await refreshAgentCatalog(r);await r.store.prune(catalog.settings);}catch{await atomicJSON(join(r.agentHome,'remote-inventory-diagnostics.json'),{diagnostics:[{pluginId:null,code:'AGENT_CODEX_REMOTE_CATALOG_UNAVAILABLE'}]});}
+          await drainPreparation(r);
           const result=await uploadOnce(r);r.senderError=null;await atomicJSON(join(r.agentHome,'sender.json'),{...result,checkedAt:new Date().toISOString()});
         }
       }

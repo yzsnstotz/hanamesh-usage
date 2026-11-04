@@ -34,12 +34,12 @@ test('U09 record seat returns withheld, recorded, duplicate and rejected disposi
   assert.deepEqual(await record(missing), {disposition:'rejected',code:'INVALID_RECORD_INPUT'});
 });
 
-test('U09 record seat rejects timestamps outside the 90-day and five-minute window', async () => {
+test('U09 record seat preserves old facts for server policy and rejects future timestamps', async () => {
   const store = new core.EventStore(new EventGlobal());
   const record = host.createRecordSeat({store,getConsent:()=> 'granted',getDeviceId:()=> 'device_A',now:()=>Date.parse('2026-09-19T00:00:00.000Z'),signEvent:event=>({...event,signature:'c2lnbmF0dXJl'})});
   const input={occurredAt:'2026-09-19T00:00:00.000Z',hanaRef:'pkg',action:'use',idempotencyKey:'use-1',sourcePlugin:'app-host'};
-  assert.equal((await record({...input,occurredAt:'2026-06-01T00:00:00.000Z'})).code,'INVALID_RECORD_INPUT');
-  assert.equal((await record({...input,occurredAt:'2026-09-19T00:06:00.000Z'})).code,'INVALID_RECORD_INPUT');
+  assert.equal((await record({...input,occurredAt:'2026-06-01T00:00:00.000Z'})).disposition,'recorded');
+  assert.equal((await record({...input,idempotencyKey:'future',occurredAt:'2026-09-19T00:06:00.000Z'})).code,'INVALID_RECORD_INPUT');
 });
 
 test('T6 record seat accepts sourceHanaRef, targetRef and a use receipt; rejects receipts on open and bad shapes', async () => {

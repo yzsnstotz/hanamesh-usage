@@ -1,6 +1,6 @@
 import {sharedSettingsResponse} from './shared-settings.mjs';
 // Test-only host/storage/transport. No product client, service, key file or network.
-import {createCoreProviderFixture} from '@hanamesh/core/contract/fixtures';
+import {createCoreProviderFixture} from './core-provider.mjs';
 import {mountUsage} from '../../lib/host/mount.js';
 export function deferred(){let resolve;const promise=new Promise(done=>{resolve=done;});return {promise,resolve};}
 export const originalFact=(overrides={})=>({hanaRef:'fixture.app',action:'use',sourcePlugin:'fixture.app',idempotencyKey:'command:original-source-operation:succeeded',occurredAt:new Date(Date.now()-1000).toISOString(),...overrides});

@@ -1,4 +1,4 @@
-import {createCoreProviderFixture} from '@hanamesh/core/contract/fixtures';
+import {createCoreProviderFixture} from './fixtures/core-provider.mjs';
 import {sharedSettingsResponse} from './fixtures/shared-settings.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -97,7 +97,7 @@ if(!process.env.USAGE_Q384_OBSERVE_CHILD){
     assert.deepEqual(plain(JSON.parse(readFileSync(file,'utf8'))),f.before);
     const moduleURL=pathToFileURL(join(dir,'readback.test.mjs'));
     const coreURL=new URL('../lib/core/index.js',import.meta.url).href,uploadURL=new URL('../lib/host/upload.js',import.meta.url).href;
-    const providerURL=import.meta.resolve('@hanamesh/core/contract/fixtures');
+    const providerURL=import.meta.resolve('./fixtures/core-provider.mjs');
     writeFileSync(moduleURL,`import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';import {EventStore} from ${JSON.stringify(coreURL)};import {createUsageReporter} from ${JSON.stringify(uploadURL)};import {createCoreProviderFixture} from ${JSON.stringify(providerURL)};
 test('independent process consumes only persisted attempt state',async t=>{t.mock.timers.enable({apis:['setTimeout']});const snapshot=JSON.parse(readFileSync(${JSON.stringify(file)},'utf8'));let requests=0;const store=new EventStore({get:()=>snapshot,set:async()=>{throw new Error('readback is read-only')}});const provider=createCoreProviderFixture({initialConsent:'granted',serverOrigin:'https://fixture.invalid'});const reporter=createUsageReporter({store,link:{get:()=>({...provider.service,getSession:()=>({...provider.service.getSession(),registration:'registered'})})},uploadIntervalMs:60000,uploadBatchSize:200,fetchImpl:async()=>{requests++;return new Response('{}',{status:503})}});try{reporter.start();await reporter.runOnce().catch(()=>{});assert.equal(requests,0,'restart cannot infer never-sent from a failed final marker write');t.mock.timers.tick(3600000);await reporter.drain();assert.equal(requests,0);assert.equal(reporter.health().state,'unconfirmed');assert.equal(reporter.delivery(store.getSnapshot().events[0]).delivery,'unconfirmed');}finally{reporter.stop();}});`);
     const child=spawnSync(process.execPath,['--test','--test-reporter=tap',fileURLToPath(moduleURL)],{encoding:'utf8',env:childEnvironment({DSH_HOME:join(dir,'dsh'),TMPDIR:join(dir,'tmp')})});

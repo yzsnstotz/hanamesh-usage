@@ -14,7 +14,7 @@ export async function uploadOnce(r,{now=Date.now(),request=(origin,path,init)=>r
   const catalog=await refreshAgentCatalog(r,{now,request});
   await mkdir(r.agentHome,{recursive:true,mode:0o700});
   await atomicJSON(join(r.agentHome,'catalog.json'),catalog);
-  await r.store.prune(now);
+  await r.store.prune(catalog.settings,now);
   const pending=await r.store.pending(catalog,now),eligible=await r.store.eligible(catalog,now);
   if(eligible.length===0)return {state:'idle',code:null,settings:catalog.settings};
   await r.call({operation:'register'});
