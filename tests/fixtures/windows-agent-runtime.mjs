@@ -25,8 +25,8 @@ export async function until(dir,read,timeoutMs=30000){
  const stop=AbortSignal.timeout(timeoutMs);let wake,version=0;const changed=()=>{version++;wake?.();},w=watch(dir,changed);stop.addEventListener('abort',changed);
  try{for(;;){stop.throwIfAborted();const n=version,value=await read();if(value)return value;await new Promise(r=>{wake=r;if(n!==version||stop.aborted)r()});wake=null;}}finally{w.close();stop.removeEventListener('abort',changed)}
 }
-export async function windowsFixture(t,{mode='failure',ready=false,channel='claude'}={}){
- const root=await mkdtemp(join(tmpdir(),'hm-native-中文-')),plugin=join(root,'plugin with spaces'),shared=join(root,'shared'),agent=join(root,'agent'),host=join(root,channel),cache=join(shared,'runtime/node-v24.13.1-'+platform),children=[];
+export async function windowsFixture(t,{mode='failure',ready=false,channel='claude',defaultProfile=false}={}){
+ const root=await mkdtemp(join(tmpdir(),'hm-native-中文-')),plugin=defaultProfile?join(root,'.codex/plugins/cache/market/hanamesh/0.2.9'):join(root,'plugin with spaces'),shared=join(root,'shared'),agent=join(root,'agent'),host=join(root,defaultProfile?'.codex':channel),cache=join(shared,'runtime/node-v24.13.1-'+platform),children=[];
  await cp(join(source,'agent'),plugin,{recursive:true});await mkdir(join(plugin,'lib'),{recursive:true});
  for(const name of ['agent','core'])await cp(join(source,'lib',name),join(plugin,'lib',name),{recursive:true});
  await writeFile(join(plugin,'package.json'),'{"type":"module"}');await mkdir(cache,{recursive:true});await mkdir(agent);await writeFile(join(agent,'config.json'),JSON.stringify({serverOrigin:'http://127.0.0.1:1',websiteOrigin:'http://127.0.0.1:2',requestTimeoutMs:1000,bootstrapIntervalMs:60000}));await mkdir(join(host,'plugins'),{recursive:true});
@@ -35,6 +35,7 @@ export async function windowsFixture(t,{mode='failure',ready=false,channel='clau
  else{const dir=join(host,'plugins/cache/market/target/1.0');await mkdir(dir,{recursive:true});await copyFile(join(target,'.mcp.json'),join(dir,'.mcp.json'));await writeFile(join(host,'config.toml'),'[plugins."target@market"]\nenabled=true\n');}
  const core=join(root,'core-fixture.mjs');await writeFile(core,`for await(const c of process.stdin){};console.log(JSON.stringify({result:{agentProtocolVersion:2,deviceId:null,consent:{state:'withheld',changedAt:null,consentId:null,authorization:null}}}));`);
  const env={...process.env,HOME:root,USERPROFILE:root,TEMP:root,TMP:root,HANAMESH_SHARED_HOME:shared,HANAMESH_AGENT_HOME:agent,HANAMESH_CORE_AGENT_CLI:core,HANAMESH_AGENT_CHANNEL:channel,CLAUDE_CONFIG_DIR:host,CODEX_HOME:host,CLAUDE_PLUGIN_ROOT:plugin,PLUGIN_ROOT:plugin};
+ if(defaultProfile){delete env.HANAMESH_AGENT_CHANNEL;delete env.CODEX_HOME;}
  const recipePath=join(plugin,'bin/node-runtime.json'),recipe=JSON.parse(await readFile(recipePath));
  const zip=await template();await copyFile(zip.archive,join(root,'fixture.zip'));recipe.platforms[platform]={archiveFormat:'zip',sha256:mode==='badsha'?'0'.repeat(64):zip.sha256,bytes:zip.bytes};await writeFile(recipePath,JSON.stringify(recipe));
  await writeFile(join(root,'fixture-mode'),mode);

@@ -114,7 +114,9 @@ try {
   function Read-State {
     Reject-Reparse $statePath
     if (!(Test-Path -LiteralPath $statePath)) { return $null }
-    $s = [IO.File]::ReadAllText($statePath) | ConvertFrom-Json
+    $stream=[IO.File]::Open($statePath,[IO.FileMode]::Open,[IO.FileAccess]::Read,([IO.FileShare]::ReadWrite -bor [IO.FileShare]::Delete))
+    $reader=New-Object IO.StreamReader($stream,$utf8)
+    try { $s=$reader.ReadToEnd() | ConvertFrom-Json } finally { $reader.Dispose() }
     if ($s.code -notmatch '^RUNTIME_[A-Z_]+$') { Fail 'HANAMESH_RUNTIME_STATE_INVALID' }
     $row=@{};foreach($property in $s.PSObject.Properties){$row[$property.Name]=$property.Value};return $row
   }
@@ -272,9 +274,10 @@ try {
         $stdinFile=Join-Path $cache 'prepare.stdin';[IO.File]::WriteAllText($stdinFile,'',$utf8)
         Add-Type -Path (Join-Path $PSScriptRoot 'windows-detached.cs')
         $workerId=[HanaMeshDetached]::Start((Join-Path $PSHOME 'powershell.exe'),('-NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "'+$PSCommandPath+'" prepare-worker '+$initial.token),$cache,$stdinFile,(Join-Path $cache 'prepare.log'),(Join-Path $cache 'prepare-error.log'))
-        $worker=[Diagnostics.Process]::GetProcessById($workerId)
+        $workerTicks=$null
+        try{$worker=[Diagnostics.Process]::GetProcessById($workerId);$workerTicks=$worker.StartTime.ToUniversalTime().Ticks.ToString();$worker.Dispose()}catch{}
         $lease=Lease
-        if($lease){try{$s=Read-State;if($s.token -eq $initial.token -and $s.code -eq 'RUNTIME_PREPARING'){$s.pid=$worker.Id;$s.processStartedTicks=$worker.StartTime.ToUniversalTime().Ticks.ToString();Atomic-JSON $statePath $s}}finally{$lease.Dispose()}}
+        if($lease){try{$s=Read-State;if($s.token -eq $initial.token -and $s.code -eq 'RUNTIME_PREPARING'){$s.pid=$workerId;$s.processStartedTicks=$workerTicks;Atomic-JSON $statePath $s}}finally{$lease.Dispose()}}
       } catch { $lease=Lease;if($lease){try{$s=Read-State;if($s.token -eq $initial.token){$s.code='RUNTIME_PREPARER_START_FAILED';$s.phase='failed';$s.finishedAt=[DateTime]::UtcNow.ToString("yyyy-MM-dd'T'HH:mm:ss.fff'Z'");Atomic-JSON $statePath $s}}finally{$lease.Dispose()}} }
     }
   }
