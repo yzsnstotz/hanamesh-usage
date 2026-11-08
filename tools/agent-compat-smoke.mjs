@@ -17,7 +17,7 @@ try {
   await mkdir(env.CLAUDE_CONFIG_DIR,{recursive:true});await mkdir(env.CODEX_HOME,{recursive:true});
   const run=(command,args,input,extra={},shell=false)=>{
     const r=spawnSync(command,args,{env:{...env,...extra},cwd:root,input,encoding:'utf8',timeout:120000,shell});
-    assert.equal(r.status,0,`${command}: ${r.stderr} ${r.error?.message??''}`);return r.stdout;
+    assert.equal(r.status,0,`${command}: ${r.stderr} ${r.error?.message??''}`);if(r.stderr)process.stderr.write(r.stderr);return r.stdout;
   };
   const launch=(action,...args)=>process.platform==='win32'
     ?run('powershell.exe',['-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',join(plugin,'bin/hm-agent.ps1'),action,...args])
@@ -27,6 +27,7 @@ try {
   const tripwire=join(root,'no-network.mjs');
   await writeFile(tripwire,`import http from 'node:http';import https from 'node:https';import net from 'node:net';import tls from 'node:tls';import dgram from 'node:dgram';import fs from 'node:fs';const deny=()=>{fs.writeFileSync(${JSON.stringify(join(root,'network-attempt'))},'attempt');throw Error('PX2_NETWORK_FORBIDDEN')};globalThis.fetch=deny;http.request=http.get=https.request=https.get=net.connect=net.createConnection=tls.connect=dgram.createSocket=deny;`);
   env.NODE_OPTIONS=`--import=${pathToFileURL(tripwire).href}`;
+  assert.match(launch('node','--input-type=module','-e',"console.log('PX2_PRELOAD_READY')"),/PX2_PRELOAD_READY/,'verified runtime must preserve preload stdout');
   let count=0;
   for(const channel of ['claude','codex']) {
     const hooks=JSON.parse(await readFile(join(plugin,'hooks',channel==='claude'?'hooks.json':'codex.json'))).hooks;
