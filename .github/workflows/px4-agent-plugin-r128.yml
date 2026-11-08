@@ -99,7 +99,7 @@ jobs:
           if($PSVersionTable.PSVersion.Major -ne 5){throw 'SYSTEM_PS51_REQUIRED'}
           New-Item -ItemType Directory -Path "$env:RUNNER_TEMP/px4-helper"|Out-Null
           $binary="$env:RUNNER_TEMP/px4-helper/windows-detached.dll"
-          & "$env:WINDIR/Microsoft.NET/Framework64/v4.0.30319/csc.exe" /nologo /target:library /platform:anycpu /optimize+ "/out:$binary" agent/bin/windows-detached.cs
+          & "$env:WINDIR/Microsoft.NET/Framework64/v4.0.30319/csc.exe" /nologo /target:library /platform:anycpu /optimize+ "/out:$binary" (Join-Path $PWD 'agent\bin\windows-detached.cs')
           if($LASTEXITCODE -ne 0){throw 'COMPILE_FAILED'}
           @{builtFromRevision='${{ github.sha }}';schemaVersion=1;architecture='AnyCPU';targetFramework='.NET Framework 4';sourceSha256=(Get-FileHash agent/bin/windows-detached.cs).Hash.ToLowerInvariant();sha256=(Get-FileHash $binary).Hash.ToLowerInvariant()}|ConvertTo-Json|Set-Content -Encoding UTF8 "$env:RUNNER_TEMP/px4-helper/windows-detached.json"
           [Reflection.Assembly]::Load([IO.File]::ReadAllBytes($binary))|Out-Null
