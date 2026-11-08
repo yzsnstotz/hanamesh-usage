@@ -15,7 +15,7 @@ for(const toolName of ['Bash','exec_command'])test(`native ${toolName} Codex ski
  const f=await windowsFixture(t,{channel:'codex'}),release=await f.lock();
  const skill=join(f.host,'plugins/cache/market/target/1.0/skills/demo');await mkdir(skill,{recursive:true});await writeFile(join(skill,'SKILL.md'),'FIXTURE ONLY');
  await writeFile(join(f.cache,'prepare-state.json'),JSON.stringify({code:'RUNTIME_PREPARING',phase:'download'}));
- const cmd=`cat "${join(skill,'SKILL.md').toUpperCase()}"`,extra={tool_name:toolName,tool_input:toolName==='Bash'?{command:cmd}:{cmd},tool_response:{exit_code:0}};
- await f.hook('PreToolUse',extra);await f.hook('PostToolUse',extra);const pending=await f.pending();assert.equal(pending.length,2);assert.doesNotMatch(JSON.stringify(pending),/PRIVATE_|SKILL|hm-native|tool_input/);
+ const cmd=`cat "${join(skill,'SKILL.md').toUpperCase()}"`,extra={session_id:"PRIVATE_SESSION_'<>中文\u2028\n",tool_use_id:'call-"\\\t',tool_name:toolName,tool_input:toolName==='Bash'?{command:cmd}:{cmd},tool_response:{exit_code:0}};
+ await f.hook('PreToolUse',extra);await f.hook('PostToolUse',extra);const pending=await f.pending();assert.equal(pending.length,2);assert.equal(pending[0].factId,sha(JSON.stringify(['codex',extra.session_id,extra.tool_use_id])));assert.doesNotMatch(JSON.stringify(pending),/PRIVATE_|SKILL|hm-native|tool_input/);
  const first=pending.find(p=>p.event==='PreToolUse').occurredAt;await release();await f.publish();await f.hook('PreToolUse',{tool_name:'Read'});await f.hook('PreToolUse',{tool_name:'Read'});const files=await readdir(join(f.agent,'events'));assert.equal(files.length,1);const row=JSON.parse(await readFile(join(f.agent,'events',files[0])));assert.equal(row.occurredAt,first);assert.equal(row.feature,'skill:demo');assert.doesNotMatch(JSON.stringify(row),/PRIVATE_|SKILL|hm-native|tool_input/);assert.equal(row.success,true);assert.equal((await f.pending()).length,0);
 });

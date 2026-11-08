@@ -16,7 +16,7 @@ async function template(){
  if(!templatePromise)templatePromise=(async()=>{
   const root=await mkdtemp(join(tmpdir(),'hm-native-template-')),name='node-v24.13.1-'+platform,tree=join(root,'tree',name),archive=join(root,'node.zip');
   await mkdir(tree,{recursive:true});await copyFile(process.execPath,join(tree,'node.exe'));await writeFile(join(tree,'LICENSE'),'NATIVE TEST FIXTURE ONLY');
-  const r=spawnSync('powershell.exe',[...psArgs,'-Command',`Add-Type -AssemblyName System.IO.Compression;Add-Type -AssemblyName System.IO.Compression.FileSystem;$z=[IO.Compression.ZipFile]::Open(${q(archive)},[IO.Compression.ZipArchiveMode]::Create);try{foreach($f in @('node.exe','LICENSE')){[IO.Compression.ZipFileExtensions]::CreateEntryFromFile($z,(${q(tree)}+'/'+$f),('${name}/'+$f),[IO.Compression.CompressionLevel]::NoCompression)|Out-Null}}finally{$z.Dispose()}`],{encoding:'utf8'});if(r.status!==0)throw Error(r.stderr);
+  const r=spawnSync('powershell.exe',[...psArgs,'-Command',`[Reflection.Assembly]::Load('System.IO.Compression, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089')|Out-Null;[Reflection.Assembly]::Load('System.IO.Compression.FileSystem, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089')|Out-Null;$z=[IO.Compression.ZipFile]::Open(${q(archive)},[IO.Compression.ZipArchiveMode]::Create);try{foreach($f in @('node.exe','LICENSE')){[IO.Compression.ZipFileExtensions]::CreateEntryFromFile($z,(${q(tree)}+'/'+$f),('${name}/'+$f),[IO.Compression.CompressionLevel]::NoCompression)|Out-Null}}finally{$z.Dispose()}`],{encoding:'utf8'});if(r.status!==0)throw Error(r.stderr);
   const bytes=await readFile(archive);return{root,archive,sha256:sha(bytes),bytes:bytes.length};
  })();return templatePromise;
 }

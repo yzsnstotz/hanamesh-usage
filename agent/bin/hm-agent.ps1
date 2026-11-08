@@ -1,18 +1,19 @@
-﻿# Windows-native launcher. No PATH Node discovery and no implicit consent/download.
+﻿# Windows launcher. Fixed native Node, system PowerShell 5.1, no implicit consent.
 param([string]$Action)
 # Simple binding preserves Node flags verbatim (advanced common parameters consume -e).
 $AgentArgs = @($args)
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
-$utf8 = New-Object System.Text.UTF8Encoding($false)
+$utf8 = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = $utf8
 function Fail([string]$Code) { throw $Code }
 try {
+  . ([IO.Path]::Combine($PSScriptRoot,'windows-primitives.ps1'))
   # A detached PowerShell 5.1 process has valid redirected handles but no console code page.
   try { [Console]::InputEncoding=$utf8;[Console]::OutputEncoding=$utf8 } catch [IO.IOException] {
-    [Console]::SetIn((New-Object IO.StreamReader([Console]::OpenStandardInput(),$utf8)))
-    $writer=New-Object IO.StreamWriter([Console]::OpenStandardOutput(),$utf8);$writer.AutoFlush=$true;[Console]::SetOut($writer)
-    $errorWriter=New-Object IO.StreamWriter([Console]::OpenStandardError(),$utf8);$errorWriter.AutoFlush=$true;[Console]::SetError($errorWriter)
+    [Console]::SetIn(([IO.StreamReader]::new([Console]::OpenStandardInput(),$utf8)))
+    $writer=[IO.StreamWriter]::new([Console]::OpenStandardOutput(),$utf8);$writer.AutoFlush=$true;[Console]::SetOut($writer)
+    $errorWriter=[IO.StreamWriter]::new([Console]::OpenStandardError(),$utf8);$errorWriter.AutoFlush=$true;[Console]::SetError($errorWriter)
   }
   if (!$Action) { Fail 'HANAMESH_AGENT_ACTION_REQUIRED' }
   if($PSVersionTable.PSVersion -lt [version]'5.1'){Fail 'HANAMESH_POWERSHELL51_REQUIRED'}
@@ -41,7 +42,7 @@ try {
     }
   }
   function Check-Version([string]$Executable) {
-    $start = New-Object System.Diagnostics.ProcessStartInfo
+    $start = [System.Diagnostics.ProcessStartInfo]::new()
     $start.FileName = $Executable
     $start.Arguments = '--version'
     $start.UseShellExecute = $false
@@ -84,12 +85,12 @@ try {
       [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
       # No redirects or non-HTTPS destinations. The archive digest is pinned below.
       Invoke-WebRequest -UseBasicParsing -MaximumRedirection 0 -TimeoutSec 120 -Uri "https://nodejs.org/dist/v24.13.1/$name.zip" -OutFile "$scratch/node.zip"
-      $s.phase='verifying';$s.downloadedBytes=(Get-Item -LiteralPath "$scratch/node.zip").Length;Atomic-JSON $statePath $s
+      $s.phase='verifying';$s.downloadedBytes=([IO.FileInfo]::new("$scratch/node.zip")).Length;Atomic-JSON $statePath $s
       if ((Get-FileHash -Algorithm SHA256 -LiteralPath "$scratch/node.zip").Hash.ToLowerInvariant() -cne $digest) { Fail 'HANAMESH_NODE_ARCHIVE_CHECKSUM_MISMATCH' }
       [Console]::Error.WriteLine('HanaMesh [Node 2/3] SHA256 verified; extract this architecture only')
       $s.phase='extracting';Atomic-JSON $statePath $s
-      Add-Type -AssemblyName System.IO.Compression
-      Add-Type -AssemblyName System.IO.Compression.FileSystem
+      [Reflection.Assembly]::Load('System.IO.Compression, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089') | Out-Null
+      [Reflection.Assembly]::Load('System.IO.Compression.FileSystem, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089') | Out-Null
       $zip = [IO.Compression.ZipFile]::OpenRead("$scratch/node.zip")
       try {
         foreach ($file in @('node.exe','LICENSE')) {
@@ -105,12 +106,12 @@ try {
       foreach ($file in @('node.sha256','archive.sha256','LICENSE','node.exe')) { Publish "$scratch/$file" "$cache/$file" }
       Check-Runtime
       [Console]::Error.WriteLine('HanaMesh [Node 3/3] Fixed runtime ready')
-    } finally { if (Test-Path -LiteralPath $scratch) { Remove-Item -LiteralPath $scratch -Recurse -Force } }
+    } finally { if (Test-Path -LiteralPath $scratch) { [IO.Directory]::Delete($scratch,$true) } }
   }
   $statePath = Join-Path $cache 'prepare-state.json'
   $agentHome = $env:HANAMESH_AGENT_HOME
   if (!$agentHome) { $agentHome = Join-Path $shared 'agent/usage' }
-  $utf8 = New-Object Text.UTF8Encoding($false)
+  $utf8 = [Text.UTF8Encoding]::new($false)
   function Read-State {
     Reject-Reparse $statePath
     $stream=$null
@@ -121,10 +122,10 @@ try {
       catch [IO.IOException]{if($readAttempt -eq 19){Fail 'RUNTIME_STATE_UNAVAILABLE'}}
       if(!$stream){Start-Sleep -Milliseconds 5}
     }
-    $reader=New-Object IO.StreamReader($stream,$utf8)
+    $reader=[IO.StreamReader]::new($stream,$utf8)
     try { $s=$reader.ReadToEnd() | ConvertFrom-Json } finally { $reader.Dispose() }
     if ($s.code -notmatch '^RUNTIME_[A-Z_]+$') { Fail 'HANAMESH_RUNTIME_STATE_INVALID' }
-    $row=@{};foreach($property in $s.PSObject.Properties){$row[$property.Name]=$property.Value};return $row
+    return $s
   }
   function Atomic-JSON([string]$Path,$Value) {
     Reject-Reparse $Path
@@ -175,6 +176,46 @@ try {
     $script:nodeExit = $LASTEXITCODE
     $script:ErrorActionPreference = 'Stop'
   }
+  function Run-MCP([bool]$Published) {
+    $initialized=$Action -eq 'mcp-ready';$child=$null;$childLine=$null;$stderrTask=$null
+    # Console.In is a SyncTextReader on a redirected PowerShell host: its async call blocks.
+    # An independent StreamReader lets readiness and child replies progress while stdin is idle.
+    $inputReader=[IO.StreamReader]::new([Console]::OpenStandardInput(),$utf8)
+    $inputTask=$inputReader.ReadLineAsync()
+    try {
+      for(;;){
+        if(!$child -and ($Published -or (Read-State).code -eq 'RUNTIME_READY') -and (Test-Path -LiteralPath $node)){
+          Check-Runtime
+          $start=[Diagnostics.ProcessStartInfo]::new();$start.FileName=$node;$start.Arguments='"'+(Join-Path $plugin 'lib/agent/cli.mjs')+'" '+$(if($initialized){'mcp-ready'}else{'mcp'})
+          $start.UseShellExecute=$false;$start.CreateNoWindow=$true;$start.RedirectStandardInput=$true;$start.RedirectStandardOutput=$true;$start.RedirectStandardError=$true
+          $child=[Diagnostics.Process]::Start($start);$childLine=$child.StandardOutput.ReadLineAsync();$stderrTask=$child.StandardError.ReadToEndAsync()
+        }
+        if($childLine -and $childLine.IsCompleted){$line=$childLine.Result;if($null -ne $line){[Console]::Out.WriteLine($line);$childLine=$child.StandardOutput.ReadLineAsync()}else{$childLine=$null}}
+        if($inputTask.IsCompleted){
+          $line=$inputTask.Result;if($null -eq $line){break}
+          if($child){$child.StandardInput.WriteLine($line);$child.StandardInput.Flush()}
+          else{
+            try{$q=$line|ConvertFrom-Json}catch{$q=$null}
+            if($q -and $null -ne $q.id){
+              $result=$null
+              switch($q.method){
+                'initialize'{$initialized=$true;$result=@{protocolVersion=if($q.params.protocolVersion){$q.params.protocolVersion}else{'2024-11-05'};capabilities=@{tools=@{}};serverInfo=@{name='hanamesh-usage';version=$manifestVersion}}}
+                'ping'{$result=@{}}
+                'tools/list'{$result=@{tools=@(@{name='hanamesh_status';description='Read runtime preparation status';inputSchema=@{type='object';properties=@{};additionalProperties=$false};annotations=@{readOnlyHint=$true;destructiveHint=$false;openWorldHint=$false}})}}
+                'tools/call'{if($q.params.name -eq 'hanamesh_status' -and ($null -eq $q.params.arguments -or $q.params.arguments.Count -eq 0)){$status=Public-State;$result=@{isError=$true;content=@(@{type='text';text=($status|ConvertTo-Json -Depth 10 -Compress)})}}}
+              }
+              if($null -ne $result){@{jsonrpc='2.0';id=$q.id;result=$result}|ConvertTo-Json -Depth 20 -Compress}else{@{jsonrpc='2.0';id=$q.id;error=@{code=-32601;message='Method not found'}}|ConvertTo-Json -Compress}
+            }
+          }
+          $inputTask=$inputReader.ReadLineAsync()
+        }
+        if($child -and $child.HasExited -and !$childLine){break}
+        Start-Sleep -Milliseconds 20
+      }
+    }finally{
+      if($child){$child.StandardInput.Close();while($childLine){$line=$childLine.GetAwaiter().GetResult();if($null -eq $line){break};[Console]::Out.WriteLine($line);$childLine=$child.StandardOutput.ReadLineAsync()};$child.WaitForExit();if($stderrTask){[Console]::Error.Write($stderrTask.Result)};$child.Dispose()}
+    }
+  }
   if ($Action -eq 'prepare-worker') {
     $token = $AgentArgs[0]
     $lease = $null
@@ -210,6 +251,7 @@ try {
       if ($lease) { try { $s=Read-State; if ($s.code -ne 'RUNTIME_READY') { $s.previousError=$s.code;$s.code='RUNTIME_READY';$s.phase='ready';$s.finishedAt=[DateTime]::UtcNow.ToString("yyyy-MM-dd'T'HH:mm:ss.fff'Z'");Atomic-JSON $statePath $s } } finally { $lease.Dispose() } }
     }
     if ($Action -eq 'install-runtime') { @{runtime=@{code='RUNTIME_READY'}} | ConvertTo-Json -Compress; exit 0 }
+    if($Action -in @('mcp','mcp-ready')){Run-MCP $true;exit 0}
     $entryArgs = switch ($Action) {
       'node' { $AgentArgs }
       'hook' { @((Join-Path $plugin 'lib/agent/hook.mjs')) + $AgentArgs }
@@ -232,18 +274,18 @@ try {
       $selector=@{};$valid=$name -cmatch '^mcp__[A-Za-z0-9_]+$'
       if ($name -eq 'Skill' -and $payload.tool_input.skill -cmatch '^[A-Za-z0-9_.:@-]+$') {$valid=$true;$selector.skill=$payload.tool_input.skill}
       if ($channel -eq 'codex' -and $name -match '^(Bash|(?:functions\.)?exec_command)$') {
-        $cmd=if ($payload.tool_input.cmd) {$payload.tool_input.cmd} else {$payload.tool_input.command}
+        $cmd=if ($null -ne $payload.tool_input.command) {$payload.tool_input.command} else {$payload.tool_input.cmd}
         if ($cmd -match '^\s*cat (?:"([^"\n]+[\\/]SKILL\.md)"|''([^''\n]+[\\/]SKILL\.md)''|([^\s]+[\\/]SKILL\.md))\s*$') { $valid=$true;$path=if($Matches[1]){$Matches[1]}elseif($Matches[2]){$Matches[2]}else{$Matches[3]};$selector.skillPathHash=Hash-Text ($path.Replace('\','/').ToLowerInvariant()) }
       }
       if ($valid) {
-        $fact=Hash-Text (ConvertTo-Json -InputObject @($channel,$payload.session_id,$call) -Compress)
+        $fact=Hash-Text (ConvertTo-HanaMeshCallIdentity @($channel,$payload.session_id,$call))
         $success=$null;$response=$payload.tool_response
         if ($event -eq 'PostToolUseFailure') {$success=$false}
         elseif ($event -eq 'PostToolUse' -and $response) {
           if ($null -ne $response.error) {$success=$false}
           elseif ($response.isError -is [bool]) {$success=!$response.isError}
           elseif ($response.is_error -is [bool]) {$success=!$response.is_error}
-          elseif ($response.PSObject.Properties.Name -contains 'exit_code' -and $response.exit_code -is [ValueType]) {$success=$response.exit_code -eq 0}
+          elseif ($response.ContainsKey('exit_code') -and $response.exit_code -is [ValueType]) {$success=$response.exit_code -eq 0}
           elseif ($name -eq 'Skill' -and $response.success -is [bool]) {$success=$response.success}
           elseif ($name -match '^mcp__' -and $response.content -is [array]) {$success=$true}
           elseif ($name -match '^mcp__' -and $response -is [array] -and $response.Count) {$success=$true}
@@ -294,47 +336,7 @@ try {
     if($isSession -and ($newSession -or !$payload.session_id)){@{systemMessage=(Public-State).runtime.message}|ConvertTo-Json -Compress}
     exit 0
   }
-  if($Action -in @('mcp','mcp-ready')){
-    $initialized=$Action -eq 'mcp-ready';$child=$null;$childLine=$null;$stderrTask=$null
-    # Console.In is a SyncTextReader on a redirected PowerShell host: its async call blocks.
-    # An independent StreamReader lets readiness and child replies progress while stdin is idle.
-    $inputReader=New-Object IO.StreamReader([Console]::OpenStandardInput(),$utf8)
-    $inputTask=$inputReader.ReadLineAsync()
-    try {
-      for(;;){
-        if(!$child -and (Read-State).code -eq 'RUNTIME_READY' -and (Test-Path -LiteralPath $node)){
-          Check-Runtime
-          $start=New-Object Diagnostics.ProcessStartInfo;$start.FileName=$node;$start.Arguments='"'+(Join-Path $plugin 'lib/agent/cli.mjs')+'" '+$(if($initialized){'mcp-ready'}else{'mcp'})
-          $start.UseShellExecute=$false;$start.CreateNoWindow=$true;$start.RedirectStandardInput=$true;$start.RedirectStandardOutput=$true;$start.RedirectStandardError=$true
-          $child=[Diagnostics.Process]::Start($start);$childLine=$child.StandardOutput.ReadLineAsync();$stderrTask=$child.StandardError.ReadToEndAsync()
-        }
-        if($childLine -and $childLine.IsCompleted){$line=$childLine.Result;if($null -ne $line){[Console]::Out.WriteLine($line);$childLine=$child.StandardOutput.ReadLineAsync()}else{$childLine=$null}}
-        if($inputTask.IsCompleted){
-          $line=$inputTask.Result;if($null -eq $line){break}
-          if($child){$child.StandardInput.WriteLine($line);$child.StandardInput.Flush()}
-          else{
-            try{$q=$line|ConvertFrom-Json}catch{$q=$null}
-            if($q -and $null -ne $q.id){
-              $result=$null
-              switch($q.method){
-                'initialize'{$initialized=$true;$result=@{protocolVersion=if($q.params.protocolVersion){$q.params.protocolVersion}else{'2024-11-05'};capabilities=@{tools=@{}};serverInfo=@{name='hanamesh-usage';version=$manifestVersion}}}
-                'ping'{$result=@{}}
-                'tools/list'{$result=@{tools=@(@{name='hanamesh_status';description='Read runtime preparation status';inputSchema=@{type='object';properties=@{};additionalProperties=$false};annotations=@{readOnlyHint=$true;destructiveHint=$false;openWorldHint=$false}})}}
-                'tools/call'{if($q.params.name -eq 'hanamesh_status' -and ($null -eq $q.params.arguments -or @($q.params.arguments.PSObject.Properties).Count -eq 0)){$status=Public-State;$result=@{isError=$true;content=@(@{type='text';text=($status|ConvertTo-Json -Depth 10 -Compress)})}}}
-              }
-              if($null -ne $result){@{jsonrpc='2.0';id=$q.id;result=$result}|ConvertTo-Json -Depth 20 -Compress}else{@{jsonrpc='2.0';id=$q.id;error=@{code=-32601;message='Method not found'}}|ConvertTo-Json -Compress}
-            }
-          }
-          $inputTask=$inputReader.ReadLineAsync()
-        }
-        if($child -and $child.HasExited -and !$childLine){break}
-        Start-Sleep -Milliseconds 20
-      }
-    }finally{
-      if($child){$child.StandardInput.Close();while($childLine){$line=$childLine.GetAwaiter().GetResult();if($null -eq $line){break};[Console]::Out.WriteLine($line);$childLine=$child.StandardOutput.ReadLineAsync()};$child.WaitForExit();if($stderrTask){[Console]::Error.Write($stderrTask.Result)};$child.Dispose()}
-    }
-    exit 0
-  }
+  if($Action -in @('mcp','mcp-ready')){Run-MCP $false;exit 0}
   Public-State | ConvertTo-Json -Depth 10 -Compress
   if($Action -eq 'status' -or $Action -eq 'install-runtime'){exit 0}else{exit 1}
 

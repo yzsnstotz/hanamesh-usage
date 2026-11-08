@@ -35,3 +35,7 @@ Windows 后台派生辅助程序集为 Actions 以 `bin/windows-detached.cs` 编
 Windows 入口统一使用系统自带 Windows PowerShell5.1（powershell.exe），后台复用已选择的同一个可执行文件；不要求安装 PowerShell7，不要求 Shell 与 Node 同 ISA。固定 AnyCPU .NET Framework4 辅助 DLL 使用系统 Kernel32 IsWow64Process2 读取 native machine，选择并验证固定原生 Node；不信任 Git Bash 改写的 PROCESSOR_ARCHITECTURE。返修门在 windows-latest/windows-11-arm × CLI minimum/latest 全程移除 PATH 中含 pwsh.exe 的目录，明确检查 5.1，覆盖冷/暖、准备/恢复、MCP 交接与碎片输入、官方 Bash 冷载荷。Windows10 历史 OS 不因 Windows11 hosted 门自动成为已验收范围。
 
 R128 返修验证：准备队列接受 Codex canonical `Bash` + `tool_input.command`；真实冷 Pre/Post 必须恰好补录一条、保原时间、不落原路径。候选隐私门通过两档官方 CLI 安装实际 target，保持四条可归属本机记录断言；专用回环端点区分目录/绑定准备和 usage POST，实际声明的 MCP initialize 后观察 sender.json 的 CONSENT_WITHHELD tick，关闭并重启后保持零记录/零发送。正控制在候选副本的 uploadOnce 内绕过同意发 POST，必须由同一请求计数断言击杀。生产 Core 环境白名单不变。
+
+系统 5.1 的 ARM64 冷入口用 .NET Framework 自带 JavaScriptSerializer、文件/哈希/HTTP API，避免每个 hook 自动导入 Utility/Management 模块的 20–30 秒开销；同一套启动器和固定 DLL，无额外软件安装，无运行时编译。诊断证据：[Actions 42484960089](https://github.com/yzsnstotz/hanamesh-usage/actions/runs/42484960089)。不扩大冷入口10秒及测试8分钟原门。
+
+Windows PowerShell5.1 的暖 MCP 也走现有独立 StreamReader + ProcessStartInfo 流代理，与冷准备接管共用一份实现；不经 `& node` 的 stdin 缓冲，initialize 不需等 EOF。暖 hook 的一次性输入仍由原入口处理。
