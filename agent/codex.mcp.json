@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "hanamesh": {
+      "command": "bash",
+      "args": [
+        "./bin/hm-agent",
+        "mcp"
+      ],
+      "cwd": ".",
+      "env_vars": [
+        "HANAMESH_SHARED_HOME",
+        "HANAMESH_AGENT_HOME",
+        "HANAMESH_AGENT_CHANNEL",
+        "CODEX_HOME"
+      ]
+    }
+  }
+}

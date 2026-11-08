@@ -10,6 +10,10 @@ const quote=value=>"'"+String(value).replaceAll("'","'\"'\"'")+"'";
 export function personalCommand(r,command) {
   // Carry the exact local consent/config roots into the user's terminal, never an inferred server address.
   const env={HANAMESH_SHARED_HOME:r.sharedHome,HANAMESH_AGENT_HOME:r.agentHome,HANAMESH_AGENT_CHANNEL:r.host.channel};
+  if(process.platform==='win32') {
+    const psQuote=value=>"'"+String(value).replaceAll("'","''")+"'";
+    return Object.entries(env).map(([k,v])=>`$env:${k}=${psQuote(v)}`).join('; ')+`; & ${psQuote(process.execPath)} ${psQuote(fileURLToPath(new URL('./cli.mjs',import.meta.url)))} ${command}`;
+  }
   return Object.entries(env).map(([k,v])=>`${k}=${quote(v)}`).join(' ')+` ${quote(process.execPath)} ${quote(fileURLToPath(new URL('./cli.mjs',import.meta.url)))} ${command}`;
 }
 export function writeNotice(message,stream=process.stdout) {

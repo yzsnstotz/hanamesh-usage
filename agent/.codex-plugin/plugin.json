@@ -1,6 +1,6 @@
 {
   "name": "hanamesh",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Consent-gated HanaMesh usage",
   "interface": {
     "displayName": "HanaMesh 使用记录",
@@ -9,10 +9,8 @@
     "category": "Productivity",
     "defaultPrompt": "检查 HanaMesh 计量是否开启"
   },
-  "extensions": {
-    "com.openai": {
-      "hooks": "./hooks/hooks.json",
-      "onboardingSkill": "./skills/hm-setup/SKILL.md"
-    }
-  }
+  "hooks": "./hooks/codex.json",
+  "skills": "./skills/",
+  "onboardingSkill": "./skills/hm-setup/SKILL.md",
+  "mcpServers": "./codex.mcp.json"
 }

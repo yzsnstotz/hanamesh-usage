@@ -1,0 +1,36 @@
+name: PX2 agent plugin compatibility
+on:
+  push:
+    paths: ['agent/**', 'src/agent/**', 'lib/agent/**', 'tools/*agent*', '.github/workflows/px2-agent-plugin-compat.yml']
+  pull_request:
+    paths: ['agent/**', 'src/agent/**', 'lib/agent/**', 'tools/*agent*', '.github/workflows/px2-agent-plugin-compat.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  plugin:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-15-intel, macos-latest, ubuntu-24.04-arm, windows-11-arm]
+        cli: [minimum, latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.13.1
+      - name: Prepare isolated credential-free paths
+        shell: bash
+        run: node tools/agent-compat-cli.mjs prepare
+      - name: Install official CLIs and validate/install plugin (no login)
+        shell: bash
+        run: node tools/agent-compat-cli.mjs '${{ matrix.cli }}'
+      - name: Execute official hook payload fixtures, assert no collection or upload
+        shell: bash
+        run: node tools/agent-compat-smoke.mjs "$RUNNER_TEMP/px2/plugin with spaces"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: px2-${{ matrix.os }}-${{ matrix.cli }}
+          path: ${{ runner.temp }}/px2/results.json
