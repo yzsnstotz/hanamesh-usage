@@ -43,7 +43,6 @@ jobs:
           $errors=$null
           [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $PWD 'agent/bin/hm-agent.ps1'),[ref]$null,[ref]$errors)|Out-Null
           if($errors.Count){$errors|ForEach-Object{Write-Error $_.Message};exit 1}
-          Add-Type -Path (Join-Path $PWD 'agent/bin/windows-detached.cs')
           $compilerHome=Join-Path $env:RUNNER_TEMP ('px2-compiler-中文-'+[Guid]::NewGuid().ToString('N'))
           [IO.Directory]::CreateDirectory($compilerHome)|Out-Null
           $env:TEMP=$compilerHome;$env:TMP=$compilerHome
