@@ -72,7 +72,7 @@ jobs:
       - name: Official CLI minimum or latest installation gates
         run: node tools/agent-compat-cli.mjs '${{ matrix.cli }}'
       - name: Current Agent consent-withheld and closed hook payloads
-        run: node tools/agent-compat-smoke.mjs "$RUNNER_TEMP/px2/plugin with spaces"
+        run: node tools/verify-agent-package.mjs "$RUNNER_TEMP/px2/plugin with spaces"
       - name: Preserve receipts
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

@@ -216,7 +216,7 @@ try {
   $payload=$null
   if ($Action -eq 'hook') { try { $payload=[Console]::In.ReadToEnd() | ConvertFrom-Json } catch { $payload=$null } }
   $channel=$env:HANAMESH_AGENT_CHANNEL
-  if (!$channel) { $channel=if ($env:CODEX_HOME -and $plugin.StartsWith($env:CODEX_HOME,[StringComparison]::OrdinalIgnoreCase)) {'codex'} else {'claude'} }
+  if (!$channel) { $channel=if (($plugin.Replace('\','/') -match '/\.codex/plugins/cache/') -or ($env:CODEX_HOME -and ($plugin+ [IO.Path]::DirectorySeparatorChar).StartsWith(($env:CODEX_HOME.TrimEnd('\','/')+[IO.Path]::DirectorySeparatorChar),[StringComparison]::OrdinalIgnoreCase))) {'codex'} else {'claude'} }
   if ($Action -eq 'hook' -and $event -in @('PreToolUse','PostToolUse','PostToolUseFailure') -and $payload -and !(Test-Path -LiteralPath (Join-Path $agentHome 'withdrawal.json'))) {
     $call=if ($payload.tool_use_id) {$payload.tool_use_id} else {$payload.tool_call_id}
     $name=$payload.tool_name
@@ -270,7 +270,9 @@ try {
     if($start){
       try {
         $stdinFile=Join-Path $cache 'prepare.stdin';[IO.File]::WriteAllText($stdinFile,'',$utf8)
-        $worker=Start-Process -FilePath (Join-Path $PSHOME 'powershell.exe') -ArgumentList @('-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',('"'+$PSCommandPath+'"'),'prepare-worker',$initial.token) -WorkingDirectory $cache -RedirectStandardInput $stdinFile -RedirectStandardOutput (Join-Path $cache 'prepare.log') -RedirectStandardError (Join-Path $cache 'prepare-error.log') -WindowStyle Hidden -PassThru
+        Add-Type -Path (Join-Path $PSScriptRoot 'windows-detached.cs')
+        $workerId=[HanaMeshDetached]::Start((Join-Path $PSHOME 'powershell.exe'),('-NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "'+$PSCommandPath+'" prepare-worker '+$initial.token),$cache,$stdinFile,(Join-Path $cache 'prepare.log'),(Join-Path $cache 'prepare-error.log'))
+        $worker=[Diagnostics.Process]::GetProcessById($workerId)
         $lease=Lease
         if($lease){try{$s=Read-State;if($s.token -eq $initial.token -and $s.code -eq 'RUNTIME_PREPARING'){$s.pid=$worker.Id;$s.processStartedTicks=$worker.StartTime.ToUniversalTime().Ticks.ToString();Atomic-JSON $statePath $s}}finally{$lease.Dispose()}}
       } catch { $lease=Lease;if($lease){try{$s=Read-State;if($s.token -eq $initial.token){$s.code='RUNTIME_PREPARER_START_FAILED';$s.phase='failed';$s.finishedAt=[DateTime]::UtcNow.ToString("yyyy-MM-dd'T'HH:mm:ss.fff'Z'");Atomic-JSON $statePath $s}}finally{$lease.Dispose()}} }

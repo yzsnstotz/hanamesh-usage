@@ -51,7 +51,7 @@ sub retain_preparing_hook {
  my $raw;{local $/;$raw=<STDIN>;}my $p=eval{$json->decode($raw//'' )};return unless ref($p) eq 'HASH';
  my $event=$p->{hook_event_name}//'';my $call=$p->{tool_use_id}//$p->{tool_call_id};my $session=$p->{session_id};my $name=$p->{tool_name}//'';
  return unless $event=~/^(PreToolUse|PostToolUse|PostToolUseFailure)$/&&defined($call)&&!ref($call)&&length($call)&&defined($session)&&!ref($session)&&length($session);
- my $channel=$ENV{HANAMESH_AGENT_CHANNEL}//(($ENV{CODEX_HOME}&&index($plugin,$ENV{CODEX_HOME})==0)?'codex':'claude');
+ my $channel=$ENV{HANAMESH_AGENT_CHANNEL}//(($plugin=~m{/\.codex/plugins/cache/}||($ENV{CODEX_HOME}&&index($plugin,$ENV{CODEX_HOME}.'/')==0))?'codex':'claude');
  my $input=ref($p->{tool_input}) eq 'HASH'?$p->{tool_input}:{};my %selector;
  if($name=~/^mcp__[A-Za-z0-9_]+$/){}
  elsif($name eq 'Skill'&&defined($input->{skill})&&!ref($input->{skill})&&$input->{skill}=~/^[A-Za-z0-9_.:@-]+$/){$selector{skill}=$input->{skill};}
@@ -75,7 +75,7 @@ my $session;
 if($is_session){
  # Only SessionStart control metadata, never a tool hook payload. Retain only a digest.
  my $selector=IO::Select->new(\*STDIN);my $raw='';my $limit=time()+0.10;
- while(length($raw)<65536&&time()<$limit&&$selector->can_read(0.01)){my $n=sysread(STDIN,my $chunk,4096);last unless $n;$raw.=$chunk;my $v=eval{$json->decode($raw)};if(ref($v) eq 'HASH'){if(defined($v->{session_id})&&!ref($v->{session_id})&&length($v->{session_id})>0&&length($v->{session_id})<=1024){my $channel=$ENV{HANAMESH_AGENT_CHANNEL}//(($ENV{CODEX_HOME}&&index($plugin,$ENV{CODEX_HOME})==0)?'codex':'claude');$session=sha256_hex(encode('UTF-8',$channel.'|'.$v->{session_id}));}last;}}
+ while(length($raw)<65536&&time()<$limit&&$selector->can_read(0.01)){my $n=sysread(STDIN,my $chunk,4096);last unless $n;$raw.=$chunk;my $v=eval{$json->decode($raw)};if(ref($v) eq 'HASH'){if(defined($v->{session_id})&&!ref($v->{session_id})&&length($v->{session_id})>0&&length($v->{session_id})<=1024){my $channel=$ENV{HANAMESH_AGENT_CHANNEL}//(($plugin=~m{/\.codex/plugins/cache/}||($ENV{CODEX_HOME}&&index($plugin,$ENV{CODEX_HOME}.'/')==0))?'codex':'claude');$session=sha256_hex(encode('UTF-8',$channel.'|'.$v->{session_id}));}last;}}
 }
 safe_paths();make_path("$cache/bin","$cache/sessions",{mode=>0700});safe_paths();
 my $new_session=0;my $first_session=0;
