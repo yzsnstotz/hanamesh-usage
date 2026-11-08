@@ -40,6 +40,7 @@ jobs:
         with:
           node-version: '24.13.1'
           token: ''
+          mirror: 'https://nodejs.org/dist'
       - name: Assert actual native OS and architecture
         run: node -e "if(process.platform!=='${{ matrix.os }}'||process.arch!=='${{ matrix.arch }}')process.exit(1)"
       - name: Native Windows syntax
@@ -49,6 +50,7 @@ jobs:
           $errors=$null
           [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $PWD 'agent/bin/hm-agent.ps1'),[ref]$null,[ref]$errors)|Out-Null
           if($errors.Count){$errors|ForEach-Object{Write-Error $_.Message};exit 1}
+          Add-Type -Path (Join-Path $PWD 'agent/bin/windows-detached.cs')
       - name: Prepare isolated paths
         run: node tools/agent-compat-cli.mjs prepare
       - name: Prepare strict pinned build tools and dependencies
