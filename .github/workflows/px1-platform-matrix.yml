@@ -1,0 +1,87 @@
+name: PX1 plugin platform matrix
+on:
+  push:
+    branches: [ci/px1-platform-matrix-1109]
+  workflow_dispatch:
+permissions: {}
+concurrency:
+  group: px1-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  public-runner-probe:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Prove this account can execute a standard public runner
+        run: node -e "console.log(JSON.stringify({platform:process.platform,arch:process.arch,publicRunnerExecuted:true}))"
+  platform:
+    needs: public-runner-probe
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-latest
+            os: linux
+            arch: x64
+          - runner: windows-latest
+            os: win32
+            arch: x64
+          - runner: macos-26-intel
+            os: darwin
+            arch: x64
+          - runner: macos-latest
+            os: darwin
+            arch: arm64
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 35
+    env:
+      PX1_ROLE: usage
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Fetch the exact public source without credentials
+        env:
+          PX1_REPOSITORY: ${{ github.repository }}
+          PX1_REVISION: ${{ github.sha }}
+        run: |
+          git -c credential.helper= init -q
+          git -c credential.helper= fetch --depth=1 "https://github.com/$PX1_REPOSITORY.git" "$PX1_REVISION"
+          git checkout --detach FETCH_HEAD
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version-file: .node-version
+          token: ''
+      - name: Install the pinned package manager
+        run: npm install --global pnpm@10.33.0
+      - name: Assert actual runner OS and CPU
+        run: node -e "if(process.platform!=='${{ matrix.os }}'||process.arch!=='${{ matrix.arch }}')process.exit(1);console.log(process.platform,process.arch,process.version)"
+      - name: Frozen strict dependencies
+        id: install
+        run: node scripts/px1/run.mjs install
+      - name: Build the module
+        if: success()
+        run: node scripts/px1/run.mjs build
+      - name: Run repository unit tests
+        if: always() && steps.install.outcome == 'success'
+        run: node scripts/px1/run.mjs unit
+      - name: Run AH1 CLI discovery and platform path cases
+        if: always() && steps.install.outcome == 'success' && env.PX1_ROLE == 'apphost'
+        run: node scripts/px1/run.mjs cli
+      - name: Produce the normal local package
+        if: always() && steps.install.outcome == 'success'
+        run: node scripts/px1/run.mjs pack
+      - name: Official npm DSH and four isolated native profiles
+        if: always() && steps.install.outcome == 'success'
+        run: node scripts/px1/run.mjs native
+      - name: Preserve receipts and package artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: px1-${{ env.PX1_ROLE }}-${{ matrix.runner }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/px1-${{ env.PX1_ROLE }}/evidence
+            ${{ runner.temp }}/px1-${{ env.PX1_ROLE }}/artifacts
+          retention-days: 7
+          if-no-files-found: warn

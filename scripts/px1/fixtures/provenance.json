@@ -1,0 +1,26 @@
+{
+  "source": "PK2-gate-handoff.md, 2026-11-08 AH1 .24 final artifacts",
+  "commits": {
+    "core": "e70b233f42c487a8684fc14f4c9769630bb9f2c4",
+    "usage": "0ddb376bf8dab43348520079872a173e0e988f15",
+    "apphost": "dbb685d33e2c5717de24843b7de8ead4e5b4bae6"
+  },
+  "archives": [
+    {
+      "file": "hanamesh-core-0.3.33.tgz",
+      "sha256": "e0e3f68eac7b1d09472b5f3bf00200ecb2436e398f41b379b13995cfdc746026"
+    },
+    {
+      "file": "hanamesh-usage-0.3.0-rc.18.tgz",
+      "sha256": "866cb3261b6c21f13e1492b29c6926c45459591ed90ea7c866ef3145602a74b1"
+    },
+    {
+      "file": "hanamesh-dsh-app-host-0.6.24.tgz",
+      "sha256": "fce7b8066fce1945295d8977b4ca2a48807060bbcf7b141e7c747ab33e1a64f6"
+    },
+    {
+      "file": "hanamesh-hanamesh-0.1.4.tgz",
+      "sha256": "27bc017030fdffff45ca3e4e89b8b500d12e38a2e611e60fc0513e9af13ca086"
+    }
+  ]
+}
