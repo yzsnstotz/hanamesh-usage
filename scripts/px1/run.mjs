@@ -38,6 +38,7 @@ const receipt={phase,role,platform:process.platform,arch:process.arch,node:proce
 try{
  if(phase==='install'){
   if(process.version!=='v24.13.1')throw Error('NODE_VERSION_MISMATCH');
+  await nm(['ci','--ignore-scripts','--strict-peer-deps','--include=dev','--include=peer','--include=optional']);
   await pm(['install','--frozen-lockfile','--strict-peer-dependencies']);
  }else if(phase==='build')await pm(['run','build']);
  else if(phase==='unit')await pm(['test']);

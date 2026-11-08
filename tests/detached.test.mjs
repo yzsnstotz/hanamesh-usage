@@ -4,6 +4,7 @@ import {mkdtempSync, mkdirSync, readFileSync, readdirSync, existsSync, rmSync, s
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {spawnSync} from 'node:child_process';
+import {nodeToolSync} from '../tools/node-tool.mjs';
 import {fileURLToPath} from 'node:url';
 
 const root=fileURLToPath(new URL('../',import.meta.url));
@@ -12,7 +13,7 @@ function run(t,cache) {
   const directory=mkdtempSync(join(tmpdir(),'usage-detached-test-'));
   t.after(()=>rmSync(directory,{recursive:true,force:true}));
   const home=join(directory,'caller-home');mkdirSync(home);
-  const result=spawnSync('npm',['run','test:detached'],{cwd:root,encoding:'utf8',maxBuffer:8*1024*1024,
+  const result=nodeToolSync('npm',['run','test:detached'],{cwd:root,encoding:'utf8',maxBuffer:8*1024*1024,
     env:{...process.env,HOME:home,TMPDIR:directory,DSH_HOME:join(directory,'caller-dsh-home'),
       npm_config_cache:cache,npm_config_legacy_peer_deps:'true',npm_config_omit:'dev',NODE_ENV:'production'}});
   const evidence=readdirSync(directory).find(name=>name.startsWith('usage-detached-'));

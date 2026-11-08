@@ -55,6 +55,9 @@ jobs:
           token: ''
       - name: Install the pinned package manager
         run: npm install --global pnpm@10.33.0
+      - name: Expose Git for Windows Perl for bootstrap syntax validation
+        if: runner.os == 'Windows'
+        run: echo "$(cygpath -w /usr/bin)" >> "$GITHUB_PATH"
       - name: Assert actual runner OS and CPU
         run: node -e "if(process.platform!=='${{ matrix.os }}'||process.arch!=='${{ matrix.arch }}')process.exit(1);console.log(process.platform,process.arch,process.version)"
       - name: Frozen strict dependencies
