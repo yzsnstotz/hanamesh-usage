@@ -1,4 +1,5 @@
 import {agentHome} from './fixtures/agent.mjs';
+import {fileURLToPath,pathToFileURL} from 'node:url';
 import test from 'node:test';import assert from 'node:assert/strict';import {readFile,mkdir,writeFile} from 'node:fs/promises';import {join} from 'node:path';import {spawnSync} from 'node:child_process';import {createHash} from 'node:crypto';
 const sha=b=>createHash('sha256').update(b).digest('hex');
 test('agent manifests expose one suite and forward only the four nonsecret MCP isolation variables',async()=>{
@@ -13,9 +14,9 @@ test('packed suite includes Core CLI import closure and byte anchored component 
  await writeFile(join(root,'package/lib/agent-cli.js'),"console.log(JSON.stringify({result:{agentProtocolVersion:2}}));\n");
  await writeFile(join(root,'package/lib/shared-device.js'),"export {bindingAvailable} from './bind-link.js';\n");
  await writeFile(join(root,'package/lib/bind-link.js'),"export const bindingAvailable = true;\n");
- const tar=join(root,'core.tgz'),out=join(root,'suite');assert.equal(spawnSync('/usr/bin/tar',['-czf',tar,'-C',root,'package']).status,0);
+ const tar=join(root,'core.tgz'),out=join(root,'suite');assert.equal(spawnSync(process.platform==='win32'?join(process.env.SystemRoot,'System32/tar.exe'):'/usr/bin/tar',['-czf',tar,'-C',root,'package']).status,0);
  const result=spawnSync(process.execPath,['tools/package-agent.mjs',tar,out],{encoding:'utf8'});assert.equal(result.status,0,result.stderr);
- const loaded=spawnSync(process.execPath,['--input-type=module','-e',`const core=await import(${JSON.stringify(join(out,'runtime/core/lib/shared-device.js'))}); if(core.bindingAvailable!==true)process.exit(1);`],{encoding:'utf8'});
+ const loaded=spawnSync(process.execPath,['--input-type=module','-e',`const core=await import(${JSON.stringify(pathToFileURL(join(out,'runtime/core/lib/shared-device.js')).href)}); if(core.bindingAvailable!==true)process.exit(1);`],{encoding:'utf8'});
  assert.equal(loaded.status,0,loaded.stderr);
  const receipt=JSON.parse(await readFile(join(out,'suite-receipt.json')));assert.equal(receipt.identityKind,'composite-artifact');assert.equal(receipt.plugin.name,'hanamesh');assert.equal(receipt.components.core.tarballSha256,sha(await readFile(tar)));assert.match(receipt.components.usage.sourceRevision,/^[a-f0-9]{40}$/);assert.equal(receipt.payloadSha256,sha(JSON.stringify(receipt.files)));
  for(const file of receipt.files)assert.equal(sha(await readFile(join(out,file.path))),file.sha256);
