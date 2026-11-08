@@ -1,9 +1,9 @@
 name: PX2 agent plugin compatibility
 on:
   push:
-    paths: ['agent/**', 'src/agent/**', 'lib/agent/**', 'tools/*agent*', '.github/workflows/px2-agent-plugin-compat.yml']
+    paths: ['.gitattributes', 'tests/agent-node-runtime.test.mjs', 'agent/**', 'src/agent/**', 'lib/agent/**', 'tools/*agent*', '.github/workflows/px2-agent-plugin-compat.yml']
   pull_request:
-    paths: ['agent/**', 'src/agent/**', 'lib/agent/**', 'tools/*agent*', '.github/workflows/px2-agent-plugin-compat.yml']
+    paths: ['.gitattributes', 'tests/agent-node-runtime.test.mjs', 'agent/**', 'src/agent/**', 'lib/agent/**', 'tools/*agent*', '.github/workflows/px2-agent-plugin-compat.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -29,6 +29,9 @@ jobs:
       - name: Execute official hook payload fixtures, assert no collection or upload
         shell: bash
         run: node tools/agent-compat-smoke.mjs "$RUNNER_TEMP/px2/plugin with spaces"
+      - name: Reject missing and corrupt runtime caches on this native platform
+        shell: bash
+        run: node --test --test-reporter=tap tests/agent-node-runtime.test.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
