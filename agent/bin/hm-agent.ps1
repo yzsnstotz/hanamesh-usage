@@ -181,7 +181,12 @@ try {
         Node-Invoke @((Join-Path $plugin 'lib/agent/preparation.mjs'))
       } catch {
         $code=$_.Exception.Message
-        $s.code=if ($code -match '^RUNTIME_[A-Z_]+$') {$code} elseif ($code -match '^HANAMESH_NODE_') {'RUNTIME_CACHE_INVALID'} else {'RUNTIME_PREPARATION_FAILED'}
+        $s.code=switch($code){
+          'HANAMESH_NODE_ARCHIVE_CHECKSUM_MISMATCH' {'RUNTIME_ARCHIVE_CHECKSUM_MISMATCH'}
+          'HANAMESH_NODE_EXTRACT_FAILED' {'RUNTIME_EXTRACT_FAILED'}
+          'HANAMESH_NODE_RUNTIME_VERSION_MISMATCH' {'RUNTIME_VERSION_MISMATCH'}
+          default {if($code -match '^RUNTIME_[A-Z_]+$'){$code}elseif($code -match '^HANAMESH_NODE_'){'RUNTIME_CACHE_INVALID'}else{'RUNTIME_PREPARATION_FAILED'}}
+        }
         $s.phase='failed';$s.finishedAt=[DateTime]::UtcNow.ToString('o');Atomic-JSON $statePath $s
       }
     } finally { $lease.Dispose() }

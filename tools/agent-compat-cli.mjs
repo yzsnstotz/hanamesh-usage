@@ -8,7 +8,7 @@ import assert from 'node:assert/strict';
 const stage=process.argv[2],root=join(process.env.RUNNER_TEMP??process.env.PX2_RUN_ROOT??tmpdir(),'px2');
 await mkdir(root,{recursive:true});
 const result={platform:process.platform,arch:process.arch,tier:stage,checks:[]};
-const env={PATH:dirname(process.execPath)+delimiter+process.env.PATH,SystemRoot:process.env.SystemRoot,WINDIR:process.env.WINDIR,COMSPEC:process.env.COMSPEC,PATHEXT:process.env.PATHEXT,PROCESSOR_ARCHITECTURE:process.env.PROCESSOR_ARCHITECTURE,PROCESSOR_ARCHITEW6432:process.env.PROCESSOR_ARCHITEW6432,
+const env={PATH:dirname(process.execPath)+delimiter+process.env.PATH,SystemRoot:process.env.SystemRoot,WINDIR:process.env.WINDIR,COMSPEC:process.env.COMSPEC,PATHEXT:process.env.PATHEXT,OS:process.env.OS,PROCESSOR_ARCHITECTURE:process.env.PROCESSOR_ARCHITECTURE,PROCESSOR_ARCHITEW6432:process.env.PROCESSOR_ARCHITEW6432,
   HOME:join(root,'home'),USERPROFILE:join(root,'home'),TEMP:root,TMP:root,TMPDIR:root,APPDATA:join(root,'appdata'),LOCALAPPDATA:join(root,'local'),
   CLAUDE_CONFIG_DIR:join(root,'claude'),CODEX_HOME:join(root,'codex'),DISABLE_AUTOUPDATER:'1',DISABLE_TELEMETRY:'1',CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC:'1',
   GIT_TERMINAL_PROMPT:'0',GIT_CONFIG_NOSYSTEM:'1',GIT_CONFIG_GLOBAL:process.platform==='win32'?'NUL':'/dev/null',

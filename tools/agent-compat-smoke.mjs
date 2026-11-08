@@ -10,7 +10,7 @@ const root=await mkdtemp(join(tmpdir(),'hm-px2-smoke-'));
 let failure;
 try {
   // Intentionally do not inherit API keys, login state, credential helpers or user configs.
-  const env={PATH:process.env.PATH,SystemRoot:process.env.SystemRoot,WINDIR:process.env.WINDIR,COMSPEC:process.env.COMSPEC,PATHEXT:process.env.PATHEXT,PROCESSOR_ARCHITECTURE:process.env.PROCESSOR_ARCHITECTURE,PROCESSOR_ARCHITEW6432:process.env.PROCESSOR_ARCHITEW6432,
+  const env={PATH:process.env.PATH,SystemRoot:process.env.SystemRoot,WINDIR:process.env.WINDIR,COMSPEC:process.env.COMSPEC,PATHEXT:process.env.PATHEXT,OS:process.env.OS,PROCESSOR_ARCHITECTURE:process.env.PROCESSOR_ARCHITECTURE,PROCESSOR_ARCHITEW6432:process.env.PROCESSOR_ARCHITEW6432,
     TEMP:root,TMP:root,TMPDIR:root,HOME:root,USERPROFILE:root,APPDATA:join(root,'appdata'),LOCALAPPDATA:join(root,'local'),
     HANAMESH_SHARED_HOME:join(root,'shared'),HANAMESH_AGENT_HOME:join(root,'agent'),
     CLAUDE_CONFIG_DIR:join(root,'claude'),CODEX_HOME:join(root,'codex'),CLAUDE_PLUGIN_ROOT:plugin,PLUGIN_ROOT:plugin,LANG:'C',LC_ALL:'C'};

@@ -33,7 +33,7 @@ test('native detached successful prepare survives the caller and published runti
  const f=await windowsFixture(t,{mode:'ready'});await f.hook('SessionStart',ss('ready'));await f.settle(await f.started(1),'RUNTIME_READY');const r=await f.launch('status');assert.equal(r.code,0,r.stderr);assert.equal(JSON.parse(r.stdout).runtime.code,'RUNTIME_READY');assert.equal((await f.rows('downloads')).length,1);
 });
 test('native checksum mismatch remains named without executable publication or PATH fallback',async t=>{
- const f=await windowsFixture(t,{mode:'badsha'});await f.hook('SessionStart',ss('badsha'));await f.settle(await f.started(1),'RUNTIME_CACHE_INVALID');await assert.rejects(readFile(join(f.cache,'node.exe')));assert.equal((await f.rows('downloads')).length,1);
+ const f=await windowsFixture(t,{mode:'badsha'});await f.hook('SessionStart',ss('badsha'));await f.settle(await f.started(1),'RUNTIME_ARCHIVE_CHECKSUM_MISMATCH');await assert.rejects(readFile(join(f.cache,'node.exe')));assert.equal((await f.rows('downloads')).length,1);
 });
 test('native initialized MCP takes over without another initialize and keeps queued request IDs',async t=>{
  const f=await windowsFixture(t,{mode:'ready'}),c=await mcp(f);c.send(1,'initialize');await c.wait(1);await f.settle(await f.started(1),'RUNTIME_READY');for(const id of [2,3])c.send(id,'tools/call',{name:'hanamesh_status',arguments:{}});await c.wait(3);assert.deepEqual(c.replies.map(v=>v.id),[1,2,3]);assert.equal(JSON.parse(c.replies[2].result.content[0].text).runtime.code,'RUNTIME_READY');c.p.stdin.end();
