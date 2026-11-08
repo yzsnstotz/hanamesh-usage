@@ -6,9 +6,9 @@ PK1 兼容候选：开发输入更新为 DSH 0.2.2-rc.1 / Cordis 4.1.0 / Schemas
 
 # hanamesh-usage · 0.2.0-rc.31
 
-rc.31 接受官方 DSH rc.2 与当前 alpha 的公开宿主 peer：DSH `>=0.2.0-rc.2 <0.3.0-0 || >=0.2.1-0 <0.3.0-0`，Cordis `>=4.0.4 <4.1.0-0 || >=4.0.5-alpha.1 <4.1.0-0`，zod `^4.5.4`。开发闭包仍精确锁定 DSH `0.2.1-alpha.2` / Cordis `4.0.5-alpha.1` / zod `4.6.5`，无 override。安装与页面归属兼容 rc.2 的公开 `installed/removable` 和 alpha 的显式 `availability`；显式 `missing` 不降级猜为已安装。范围准入不代表范围内每个版本已在真实 Desktop 验过，证据与尚未运行的门见 [rc.2 兼容报告](docs/compatibility/dsh-rc2-rc31.md)。
+历史 rc.31 接受官方 DSH rc.2 与当前 alpha 的公开宿主 peer：DSH `>=0.2.0-rc.2 <0.3.0-0 || >=0.2.1-0 <0.3.0-0`，Cordis `>=4.0.4 <4.1.0-0 || >=4.0.5-alpha.1 <4.1.0-0`，zod `^4.5.4`。开发闭包仍精确锁定 DSH `0.2.1-alpha.2` / Cordis `4.0.5-alpha.1` / zod `4.6.5`，无 override。安装与页面归属兼容 rc.2 的公开 `installed/removable` 和 alpha 的显式 `availability`；显式 `missing` 不降级猜为已安装。范围准入不代表范围内每个版本已在真实 Desktop 验过，证据与尚未运行的门见 [rc.2 兼容报告](docs/compatibility/dsh-rc2-rc31.md)。
 
-`Declaration.provenance.dshVersion` 保持既有含义：本包构建所依据的 DSH 版本（当前 `0.2.1-alpha.2`），不是运行中宿主版本的探测值。旧记录不重写。设置页不将该字段显示为当前宿主版本；完整查询/导出读到它时应按构建来源解释。本次不增加运行时版本探测或更改存储格式。
+`Declaration.provenance.dshVersion` 保持既有含义：本包构建所依据的 DSH 版本（当前 `0.2.2-rc.1`），不是运行中宿主版本的探测值。旧记录不重写。设置页不将该字段显示为当前宿主版本；完整查询/导出读到它时应按构建来源解释。本次不增加运行时版本探测或更改存储格式。
 
 历史 rc.26 曾将宿主 peer 精确锁到项目批准的官方 `d743267388641bc76f17c45ce8b4c231aed1d32c`。rc.31 将可安装宿主范围与可复现开发闭包分开；不安装 api-contracts 或 HanaMesh 邻仓包。
 
@@ -170,4 +170,4 @@ R3发布中断修复：完整固定摘要/二进制版本通过且非阻塞取�
 
 构建目录由 build / prepack 生成，不提交 Git；正常包仍包含公开运行时和声明。验收日志、tgz 和 proof 只放 HanaMesh docs 的 `证据/` 或 R2 relay。
 
-本仓测试精确声明开发依赖 `@hanamesh/core@0.3.31`，直接使用其公开 `@hanamesh/core/contract/fixtures` 导出的测试供给及验签函数，不内编 Core 签名格式；Core 的开发期 SDK 按其公开 peer 需求补齐 alpha.2 组件，并精确声明与本仓 Cordis 4.0.5-alpha.1 兼容的 alpha.1 插件，避免自动选入要求稳定版 Cordis 的较新 peer；生产路径仍通过宿主公开能力消费，不把测试供给说成真实宿主验收。`test:detached` 需要先通过声明的 package-lock 运行 npm ci 来填充内容缓存，随后在全新目录离线验证锁定闭包。
+本仓测试精确消费 `vendor/hanamesh-core-0.3.33.tgz` 的公开 `@hanamesh/core/contract/fixtures` 测试供给及验签函数，不内编 Core 签名格式。候选归档来源与摘要见 `vendor/core-fixture.json`，npm/pnpm 锁记录完整性；闭包门验证归档字节及实际 peers。开发输入为 DSH 0.2.2-rc.1、Cordis 4.1.0、插件 1.1.0 与官方 storage-domain 同版 Zod 4.4.3。生产路径仍通过宿主公开能力消费，不把测试供给说成真实宿主验收。`test:detached` 需要先通过声明的 package-lock 运行 npm ci 来填充内容缓存，随后在全新目录离线验证锁定闭包。
