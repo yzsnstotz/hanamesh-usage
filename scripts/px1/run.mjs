@@ -2,7 +2,7 @@
 import {spawn} from 'node:child_process';
 import {mkdir,readFile,writeFile,copyFile,readdir,stat,realpath} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
-import {join,resolve,dirname} from 'node:path';
+import {join,resolve,dirname,delimiter} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {createInterface} from 'node:readline';
 const repo=resolve(import.meta.dirname,'../..'),root=resolve(process.env.RUNNER_TEMP??join(repo,'.px1'),'px1-'+process.env.PX1_ROLE),evidence=join(root,'evidence');
@@ -12,8 +12,15 @@ for(const key of ['PATH','Path','SystemRoot','SYSTEMROOT','WINDIR','COMSPEC','PA
 for(const [key,leaf]of Object.entries({HOME:'home',USERPROFILE:'home',CFFIXED_USER_HOME:'home',DSH_HOME:'dsh',XDG_CONFIG_HOME:'config',XDG_DATA_HOME:'data',XDG_CACHE_HOME:'cache',XDG_STATE_HOME:'state',TMPDIR:'tmp',TMP:'tmp',TEMP:'tmp',npm_config_cache:'npm',CLAUDE_CONFIG_DIR:'claude',CODEX_HOME:'codex'})){env[key]=join(root,leaf);await mkdir(env[key],{recursive:true});}
 Object.assign(env,{CI:'true',npm_config_update_notifier:'false',npm_config_manage_package_manager_versions:'false',pnpm_config_manage_package_manager_versions:'false',COREPACK_ENABLE_AUTO_PIN:'0',GIT_CONFIG_NOSYSTEM:'1',GIT_TERMINAL_PROMPT:'0',GIT_CONFIG_COUNT:'1',GIT_CONFIG_KEY_0:'credential.helper',GIT_CONFIG_VALUE_0:''});
 const bin=dirname(process.execPath);
-const npm=process.platform==='win32'?join(bin,'node_modules/npm/bin/npm-cli.js'):await realpath(join(bin,'npm'));
-const pnpm=process.platform==='win32'?join(bin,'node_modules/pnpm/bin/pnpm.cjs'):await realpath(join(bin,'pnpm'));
+async function tool(name,entry){
+ for(const dir of [bin,...(process.env.PATH??process.env.Path??'').split(delimiter)]){
+  if(!dir)continue;
+  const candidates=process.platform==='win32'?[join(dir,'node_modules',name,entry)]:[join(dir,name)];
+  for(const file of candidates)try{const resolved=await realpath(file);await stat(resolved);return resolved;}catch{}
+ }
+ throw Error('PINNED_TOOL_ENTRYPOINT_MISSING '+name);
+}
+const npm=await tool('npm','bin/npm-cli.js'),pnpm=await tool('pnpm','bin/pnpm.cjs');
 const redact=line=>String(line).replace(/([?&]token=)[^\s&]+/g,'$1[REDACTED]');
 async function command(file,args,cwd=repo,overrides={}){
  console.log(JSON.stringify({command:[file,...args],cwd}));
