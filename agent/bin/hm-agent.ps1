@@ -11,7 +11,15 @@ $OutputEncoding = $utf8
 function Fail([string]$Code) { throw $Code }
 try {
   if (!$Action) { Fail 'HANAMESH_AGENT_ACTION_REQUIRED' }
-  $arch = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString().ToLowerInvariant()
+  # Windows 5.1/.NET Framework under x64 Git Bash emulation can report X64 on ARM64.
+  # WOW64 exports the native processor architecture separately from the process ISA.
+  $nativeArch = $env:PROCESSOR_ARCHITEW6432
+  if (!$nativeArch) { $nativeArch = $env:PROCESSOR_ARCHITECTURE }
+  $arch = switch ($nativeArch) {
+    'ARM64' { 'arm64' }
+    'AMD64' { 'x64' }
+    default { [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString().ToLowerInvariant() }
+  }
   switch ($arch) {
     'x64' { $digest = 'fba577c4bb87df04d54dd87bbdaa5a2272f1f99a2acbf9152e1a91b8b5f0b279' }
     'arm64' { $digest = '0cd29eeb64f3c649db2c4c868779ca277f5a4c49e26c69e5928d01fe0ae06da8' }
