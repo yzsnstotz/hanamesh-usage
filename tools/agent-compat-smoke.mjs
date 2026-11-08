@@ -13,8 +13,8 @@ try {
     HANAMESH_SHARED_HOME:join(root,'shared'),HANAMESH_AGENT_HOME:join(root,'agent'),
     CLAUDE_CONFIG_DIR:join(root,'claude'),CODEX_HOME:join(root,'codex'),CLAUDE_PLUGIN_ROOT:plugin,PLUGIN_ROOT:plugin,LANG:'C',LC_ALL:'C'};
   await mkdir(env.CLAUDE_CONFIG_DIR,{recursive:true});await mkdir(env.CODEX_HOME,{recursive:true});
-  const run=(command,args,input,extra={})=>{
-    const r=spawnSync(command,args,{env:{...env,...extra},cwd:root,input,encoding:'utf8',timeout:120000});
+  const run=(command,args,input,extra={},shell=false)=>{
+    const r=spawnSync(command,args,{env:{...env,...extra},cwd:root,input,encoding:'utf8',timeout:120000,shell});
     assert.equal(r.status,0,`${command}: ${r.stderr} ${r.error?.message??''}`);return r.stdout;
   };
   const launch=(action,...args)=>process.platform==='win32'
@@ -38,7 +38,7 @@ try {
       const extra={HANAMESH_AGENT_CHANNEL:channel};
       if(process.platform==='win32'&&channel==='codex') {
         // Codex commandWindows is a shell command; execute its exact bytes via cmd.exe.
-        output=run('cmd.exe',['/d','/s','/c',hook.commandWindows],JSON.stringify(payload),extra);
+        output=run(hook.commandWindows,[],JSON.stringify(payload),extra,true);
       } else {
         // Claude shell:bash is documented on Windows (Git for Windows), sh on Unix.
         output=run(process.platform==='win32'?'bash':'/bin/sh',['-c',hook.command],JSON.stringify(payload),extra);

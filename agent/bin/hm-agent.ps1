@@ -27,6 +27,22 @@ try {
       if ((Test-Path -LiteralPath $p) -and ((Get-Item -Force -LiteralPath $p).Attributes -band [IO.FileAttributes]::ReparsePoint)) { Fail 'HANAMESH_NODE_RUNTIME_SYMLINK_REJECTED' }
     }
   }
+  function Check-Version([string]$Executable) {
+    $start = New-Object System.Diagnostics.ProcessStartInfo
+    $start.FileName = $Executable
+    $start.Arguments = '--version'
+    $start.UseShellExecute = $false
+    $start.CreateNoWindow = $true
+    $start.RedirectStandardOutput = $true
+    $start.RedirectStandardError = $true
+    $child = [System.Diagnostics.Process]::Start($start)
+    try {
+      $version = $child.StandardOutput.ReadToEnd().Trim()
+      $child.StandardError.ReadToEnd() | Out-Null
+      $child.WaitForExit()
+      if ($version -cne 'v24.13.1' -or $child.ExitCode -ne 0) { Fail 'HANAMESH_NODE_RUNTIME_VERSION_MISMATCH' }
+    } finally { $child.Dispose() }
+  }
   function Check-Runtime {
     Reject-Reparse $node
     if (!(Test-Path -LiteralPath $node -PathType Leaf)) { Fail 'HANAMESH_NODE_RUNTIME_REQUIRED' }
@@ -35,9 +51,7 @@ try {
     if ([IO.File]::ReadAllText("$cache/archive.sha256").TrimEnd() -cne $digest) { Fail 'HANAMESH_NODE_RUNTIME_CHECKSUM_MISMATCH' }
     $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $node).Hash.ToLowerInvariant()
     if ([IO.File]::ReadAllText("$cache/node.sha256").TrimEnd() -cne "$hash  node.exe") { Fail 'HANAMESH_NODE_RUNTIME_CHECKSUM_MISMATCH' }
-    $version = & $node --version
-    $versionExit = $LASTEXITCODE
-    if ($version -cne 'v24.13.1' -or $versionExit -ne 0) { Fail 'HANAMESH_NODE_RUNTIME_VERSION_MISMATCH' }
+    Check-Version $node
   }
   function Publish([string]$Source, [string]$Destination) {
     try { [IO.File]::Copy($Source,$Destination,$false) }
@@ -68,9 +82,7 @@ try {
           [IO.Compression.ZipFileExtensions]::ExtractToFile($entry,"$scratch/$file",$false)
         }
       } finally { $zip.Dispose() }
-      $version = & "$scratch/node.exe" --version
-      $versionExit = $LASTEXITCODE
-      if ($version -cne 'v24.13.1' -or $versionExit -ne 0) { Fail 'HANAMESH_NODE_RUNTIME_VERSION_MISMATCH' }
+      Check-Version "$scratch/node.exe"
       $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath "$scratch/node.exe").Hash.ToLowerInvariant()
       [IO.File]::WriteAllText("$scratch/node.sha256", "$hash  node.exe`n")
       [IO.File]::WriteAllText("$scratch/archive.sha256", "$digest`n")
