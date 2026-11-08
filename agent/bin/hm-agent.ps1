@@ -237,7 +237,7 @@ try {
         if ($cmd -match '^\s*cat (?:"([^"\n]+[\\/]SKILL\.md)"|''([^''\n]+[\\/]SKILL\.md)''|([^\s]+[\\/]SKILL\.md))\s*$') { $valid=$true;$path=if($Matches[1]){$Matches[1]}elseif($Matches[2]){$Matches[2]}else{$Matches[3]};$selector.skillPathHash=Hash-Text ($path.Replace('\','/').ToLowerInvariant()) }
       }
       if ($valid) {
-        $fact=Hash-Text (ConvertTo-Json -InputObject @($channel,$payload.session_id,$call) -Compress)
+        $fact=Hash-Text (ConvertTo-HanaMeshCallIdentity @($channel,$payload.session_id,$call))
         $success=$null;$response=$payload.tool_response
         if ($event -eq 'PostToolUseFailure') {$success=$false}
         elseif ($event -eq 'PostToolUse' -and $response) {
