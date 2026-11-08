@@ -1,10 +1,9 @@
 {
-  "consolidationStatus": "BLOCKED_APPHOST_MUTATION_BASELINE_NOT_RELEASE_READY",
   "source": "PK3 consolidated normal archives; development candidate, not npm publication. All three platform workflows consume this same companion snapshot.",
   "commits": {
     "core": "969a89a1f7e383fca7d6aefa7f27507d3a1605d5",
     "usage": "073d6c584d3cd441f2bf96a7d7feb92e04278b94",
-    "apphost": "4671fbf5ab12edc469bfe6313d82b3cf9a719c48"
+    "apphost": "d5b659a91cf053dc875efcb84ee53fdbe2133818"
   },
   "archives": [
     {
@@ -56,5 +55,15 @@
   "gate": {
     "version": "0.1.12",
     "sourceCommit": "95e54102f9380ea2e8e4d8a2e36eacd387c3f7e7"
+  },
+  "apphostVerification": {
+    "sourceCommit": "d5b659a91cf053dc875efcb84ee53fdbe2133818",
+    "originalArchiveSourceCommit": "4671fbf5ab12edc469bfe6313d82b3cf9a719c48",
+    "archiveSha256": "57c0fcfff6baf6bfe569a2d8589b212d2a963e2c541587116f8cd53ab89c24bd",
+    "productPayloadChanged": false,
+    "mutationsPassed": 130,
+    "mutationsTotal": 130,
+    "evidence": "questions/AH2-delivery.md",
+    "scope": "AH2 local full check and package verification; GT19 and new consolidated platform matrices remain separate"
   }
 }

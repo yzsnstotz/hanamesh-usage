@@ -30,3 +30,5 @@ must remain explicitly reported even if its refusal is expected.
 ## PK3 consolidation
 
 The four fixture archives are a single consolidated candidate snapshot. `fixtures/provenance.json` records each normal pack source commit, exact SHA256, reviewed gate source and previous provenance. The role archive is still replaced by that runner’s normal pack; failed packs remain failures. Core includes the PX3 Windows ACL implementation, Usage includes R128b Agent 0.2.9, and AppHost includes PX3 with the reviewed gate 0.1.12. No published version bytes are claimed to have changed.
+
+AH2 follow-up: AppHost source candidate `d5b659a91cf053dc875efcb84ee53fdbe2133818` closes the AH-HO01 investigation and passes all 130 mutation checks. Its normal archive remains SHA256 `57c0fcfff6baf6bfe569a2d8589b212d2a963e2c541587116f8cd53ab89c24bd`, byte-identical to the consolidated snapshot. Provenance selects that reviewed source; GT19 two-machine gates and the new platform matrices remain separate.
