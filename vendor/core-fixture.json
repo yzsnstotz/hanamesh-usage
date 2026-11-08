@@ -2,7 +2,11 @@
   "name": "@hanamesh/core",
   "version": "0.3.33",
   "repository": "https://github.com/yzsnstotz/hanamesh-core",
-  "commit": "1b20896b01764efc5e1941ae44f6aec28442147c",
-  "sha256": "e0e3f68eac7b1d09472b5f3bf00200ecb2436e398f41b379b13995cfdc746026",
-  "scope": "DEVELOPMENT_ONLY_NORMAL_PACKED_CANDIDATE_NOT_NPM_RELEASE"
+  "commit": "969a89a1f7e383fca7d6aefa7f27507d3a1605d5",
+  "sha256": "088cf6a7b7575fa1d22116d6af8a6b0312fbbb825c50d9bf38f0447ef36c7c78",
+  "scope": "DEVELOPMENT_ONLY_NORMAL_PACKED_CANDIDATE_NOT_NPM_RELEASE",
+  "previousCandidate": {
+    "commit": "1b20896b01764efc5e1941ae44f6aec28442147c",
+    "sha256": "e0e3f68eac7b1d09472b5f3bf00200ecb2436e398f41b379b13995cfdc746026"
+  }
 }

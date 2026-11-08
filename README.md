@@ -1,4 +1,4 @@
-PK1 开发供给：`vendor/hanamesh-core-0.3.33.tgz` 是 Core 分支提交 `1b20896b01764efc5e1941ae44f6aec28442147c` 的正常归档，仅供开发与公开合约测试；SHA256 和来源见 `vendor/core-fixture.json`，安装仍严格检查真实 peers。这不是已发布的 npm Core，也不进入运行时依赖。
+PK3 开发供给：`vendor/hanamesh-core-0.3.33.tgz` 是 Core 分支提交 `969a89a1f7e383fca7d6aefa7f27507d3a1605d5` 的正常归档，仅供开发与公开合约测试；SHA256 和来源见 `vendor/core-fixture.json`，安装仍严格检查真实 peers。这不是已发布的 npm Core，也不进入运行时依赖。
 
 PK1 兼容候选：开发输入更新为 DSH 0.2.2-rc.1 / Cordis 4.1.0 / Schemastery 3.19.0（适用者）。公开 peer 保留兼容范围，并显式包含 0.2.2 预发布；不锁定用户宿主版本。本分支尚未发布，安装和原生加载结果以 PK1 交件为准。
 

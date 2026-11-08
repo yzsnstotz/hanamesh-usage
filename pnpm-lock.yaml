@@ -337,7 +337,7 @@ packages:
     engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
 
   '@hanamesh/core@file:vendor/hanamesh-core-0.3.33.tgz':
-    resolution: {integrity: sha512-r/VR4f0lUXbrM2QFAAecNBu49VfFt2WErpszh5fI3yGPZGAtLvHJWEphP2/RBifLwaRsm0g/HXggsZtzy8+vwA==, tarball: file:vendor/hanamesh-core-0.3.33.tgz}
+    resolution: {integrity: sha512-4i0PaKdt+Py2KkrOPONE14eMD+xbCeYTfZsMxVXy7YQUskHgvztmisAilshCYrG3cBzd4x+RoyzbMARl1Rwouw==, tarball: file:vendor/hanamesh-core-0.3.33.tgz}
     version: 0.3.33
     engines: {node: '>=24.13.1 <25'}
     hasBin: true
