@@ -37,9 +37,9 @@ export async function windowsFixture(t,{mode='failure',ready=false,channel='clau
  const env={...process.env,HOME:root,USERPROFILE:root,TEMP:root,TMP:root,HANAMESH_SHARED_HOME:shared,HANAMESH_AGENT_HOME:agent,HANAMESH_CORE_AGENT_CLI:core,HANAMESH_AGENT_CHANNEL:channel,CLAUDE_CONFIG_DIR:host,CODEX_HOME:host,CLAUDE_PLUGIN_ROOT:plugin,PLUGIN_ROOT:plugin};
  if(defaultProfile){delete env.HANAMESH_AGENT_CHANNEL;delete env.CODEX_HOME;}
  if(!compilerChecked){
-  const command=`$ErrorActionPreference='Stop';. ${q(join(plugin,'bin/windows-detached.ps1'))};Initialize-HanaMeshDetached ${q(cache)}`;
+  const command=`$ErrorActionPreference='Stop';. ${q(join(plugin,'bin/windows-detached.ps1'))};Initialize-HanaMeshDetached`;
   const check=spawnSync('powershell.exe',[...psArgs,'-Command',command],{env,encoding:'utf8',timeout:20000});
-  if(check.status!==0)throw Error('NATIVE_HELPER_COMPILATION: '+check.stderr);compilerChecked=true;
+  if(check.status!==0)throw Error('NATIVE_HELPER_LOAD: '+check.stderr);compilerChecked=true;
  }
  const recipePath=join(plugin,'bin/node-runtime.json'),recipe=JSON.parse(await readFile(recipePath));
  const zip=await template();await copyFile(zip.archive,join(root,'fixture.zip'));recipe.platforms[platform]={archiveFormat:'zip',sha256:mode==='badsha'?'0'.repeat(64):zip.sha256,bytes:zip.bytes};await writeFile(recipePath,JSON.stringify(recipe));

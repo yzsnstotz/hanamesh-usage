@@ -2,3 +2,4 @@
 agent/** text eol=lf
 src/agent/** text eol=lf
 lib/agent/** text eol=lf
+agent/bin/windows-detached.dll binary

@@ -276,9 +276,9 @@ try {
     if($start){
       try {
         $stdinFile=Join-Path $cache 'prepare.stdin';[IO.File]::WriteAllText($stdinFile,'',$utf8)
-        $launchPhase='compile-helper'
+        $launchPhase='load-verified-helper'
         . (Join-Path $PSScriptRoot 'windows-detached.ps1')
-        Initialize-HanaMeshDetached $cache
+        Initialize-HanaMeshDetached
         $launchPhase='create-process'
         $workerId=[HanaMeshDetached]::Start((Join-Path $PSHOME 'powershell.exe'),('-NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "'+$PSCommandPath+'" prepare-worker '+$initial.token),$cache,$stdinFile,(Join-Path $cache 'prepare.log'),(Join-Path $cache 'prepare-error.log'))
         $workerTicks=$null
