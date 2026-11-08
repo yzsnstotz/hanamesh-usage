@@ -171,3 +171,8 @@ R3发布中断修复：完整固定摘要/二进制版本通过且非阻塞取�
 构建目录由 build / prepack 生成，不提交 Git；正常包仍包含公开运行时和声明。验收日志、tgz 和 proof 只放 HanaMesh docs 的 `证据/` 或 R2 relay。
 
 本仓测试精确消费 `vendor/hanamesh-core-0.3.33.tgz` 的公开 `@hanamesh/core/contract/fixtures` 测试供给及验签函数，不内编 Core 签名格式。候选归档来源与摘要见 `vendor/core-fixture.json`，npm/pnpm 锁记录完整性；闭包门验证归档字节及实际 peers。开发输入为 DSH 0.2.2-rc.1、Cordis 4.1.0、插件 1.1.0 与官方 storage-domain 同版 Zod 4.4.3。生产路径仍通过宿主公开能力消费，不把测试供给说成真实宿主验收。`test:detached` 需要先通过声明的 package-lock 运行 npm ci 来填充内容缓存，随后在全新目录离线验证锁定闭包。
+
+
+## 0.3.0-rc.18 · DSH 0.2.2-rc.1 兼容候选
+
+修复版使用 rc.18，公开 rc.17 不可覆盖。公开 DSH/Cordis peer 范围、精确开发输入与当前宿主门沿用 PK1 的兼容修复；独立 agent 插件渠道仍为 0.2.8。此提交不发布 npm、不打 tag。
