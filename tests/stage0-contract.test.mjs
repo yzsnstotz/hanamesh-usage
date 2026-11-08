@@ -12,18 +12,18 @@ test('U04 package is the standalone hanamesh-usage DSH bundle', () => {
   assert.equal(pkg.version, '0.3.0-rc.17');
   for (const [name, version] of Object.entries(pkg.peerDependencies)) {
     if (name.startsWith('@deepseek-ai/dsh-')) {
-      for(const host of ['0.2.0-rc.2','0.2.0','0.2.1-alpha.2','0.2.1','0.2.9'])assert.equal(satisfies(host,version),true,`${name} admits ${host}`);
+      for(const host of ['0.2.0-rc.2','0.2.0','0.2.1-alpha.2','0.2.1','0.2.2-rc.1','0.2.9'])assert.equal(satisfies(host,version),true,`${name} admits ${host}`);
       for(const host of ['0.1.5-rc.2','0.2.0-rc.1','0.3.0-alpha.1','0.3.0','1.0.0'])assert.equal(satisfies(host,version),false,`${name} rejects ${host}`);
     }
   }
-  for(const host of ['4.0.4','4.0.5-alpha.1','4.0.5','4.0.9'])assert.equal(satisfies(host,pkg.peerDependencies['@deepseek-ai/cordis']),true,`Cordis admits ${host}`);
-  for(const host of ['4.0.3','4.0.5-alpha.0','4.1.0-alpha.1','4.1.0','5.0.0'])assert.equal(satisfies(host,pkg.peerDependencies['@deepseek-ai/cordis']),false,`Cordis rejects ${host}`);
-  for(const host of ['4.5.4','4.6.5'])assert.equal(satisfies(host,pkg.peerDependencies.zod),true,`zod admits ${host}`);
-  for(const host of ['4.5.3','5.0.0'])assert.equal(satisfies(host,pkg.peerDependencies.zod),false,`zod rejects ${host}`);
+  for(const host of ['4.0.4','4.0.5-alpha.1','4.0.5','4.0.9','4.1.0'])assert.equal(satisfies(host,pkg.peerDependencies['@deepseek-ai/cordis']),true,`Cordis admits ${host}`);
+  for(const host of ['4.0.3','4.0.5-alpha.0','4.1.0-alpha.1','4.2.0-alpha.1','4.2.0','5.0.0'])assert.equal(satisfies(host,pkg.peerDependencies['@deepseek-ai/cordis']),false,`Cordis rejects ${host}`);
+  for(const host of ['4.4.3','4.5.4','4.6.5'])assert.equal(satisfies(host,pkg.peerDependencies.zod),true,`zod admits ${host}`);
+  for(const host of ['4.4.2','5.0.0'])assert.equal(satisfies(host,pkg.peerDependencies.zod),false,`zod rejects ${host}`);
   assert.equal(pkg.overrides,undefined,'host peers must not be overridden back to build versions');
-  assert.equal(pkg.devDependencies['@deepseek-ai/dsh-storage-domain'], '0.2.1-alpha.2');
-  assert.equal(pkg.devDependencies['@deepseek-ai/cordis'], '4.0.5-alpha.1');
-  assert.match(read('src/host/pins.js'), /DSH_VERSION = '0\.2\.1-alpha\.2'/);
+  assert.equal(pkg.devDependencies['@deepseek-ai/dsh-storage-domain'], '0.2.2-rc.1');
+  assert.equal(pkg.devDependencies['@deepseek-ai/cordis'], '4.1.0');
+  assert.match(read('src/host/pins.js'), /DSH_VERSION = '0\.2\.2-rc\.1'/);
   assert.deepEqual(pkg.dsh.bundle, {patch:'./profile/cordis.patch.yml'});
   assert.equal(pkg.files.includes('profile'), true);
   assert.equal(pkg.dsh.client.platform, 'web');assert.equal(pkg.exports['./client'].default,'./lib/client.js');
@@ -34,7 +34,7 @@ test('U04 package is the standalone hanamesh-usage DSH bundle', () => {
   );
 });
 
-test('runtime has no HanaMesh sibling dependency; tests use exact public Core fixtures', () => {
+test('runtime has no HanaMesh sibling dependency; tests use exact packed Core fixtures', () => {
   const pkg = JSON.parse(read('package.json'));
   for (const section of ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']) {
     assert.deepEqual(
@@ -42,7 +42,7 @@ test('runtime has no HanaMesh sibling dependency; tests use exact public Core fi
       section === 'devDependencies' ? ['@hanamesh/core'] : [], section,
     );
   }
-  assert.equal(pkg.devDependencies['@hanamesh/core'],'0.3.31');
+  assert.equal(pkg.devDependencies['@hanamesh/core'],'file:vendor/hanamesh-core-0.3.33.tgz');
   assert.equal(pkg.scripts['test:contract'], 'pnpm run build && node --test --test-reporter=tap tests/stage0-contract.test.mjs tests/stage4-contract.test.mjs tests/contract-wire.test.mjs tests/shared-fact.test.mjs');
 });
 

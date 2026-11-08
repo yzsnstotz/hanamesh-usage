@@ -12,6 +12,6 @@
  * own historical data: older records keep the version they were observed under.
  */
 export const REGISTRY_VERSION = '0.1.0-rc.3';
-export const DSH_VERSION = '0.2.1-alpha.2';
+export const DSH_VERSION = '0.2.2-rc.1';
 /** The provenance versions handed to core's projection. */
 export const HOST_VERSIONS = Object.freeze({ registryVersion: REGISTRY_VERSION, dshVersion: DSH_VERSION });

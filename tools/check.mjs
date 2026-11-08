@@ -18,13 +18,13 @@ console.log(JSON.stringify({closureManager:pnpmLayout?'pnpm':'npm',...physical})
 assert.equal(pkg.name,'@hanamesh/usage');assert.equal(pkg.version,'0.3.0-rc.17');assert.equal(pkg.private,undefined);assert.equal(pkg.license,'MIT');
 assert.deepEqual(pkg.dependencies??{},{});assert.equal(Object.keys(pkg.peerDependencies).filter(name=>name.startsWith('@hanamesh/')||name.startsWith('hanamesh-')).length,0);
 assert.equal(pkg.dsh?.bundle?.patch,'./profile/cordis.patch.yml');assert.equal(pkg.dsh?.client?.platform,'web');assert.equal(pkg.exports['./client'].default,'./lib/client.js');assert(pkg.files.includes('profile'));assert(existsSync(pkg.dsh.bundle.patch));
-// Runtime has no HanaMesh SDK dependency; tests consume the exact published Core public fixtures.
-assert.equal(pkg.devDependencies['@hanamesh/core'],'0.3.31');
+// Runtime has no HanaMesh SDK dependency; tests consume the exact packed Core public fixtures.
+assert.equal(pkg.devDependencies['@hanamesh/core'],'file:vendor/hanamesh-core-0.3.33.tgz');
 for(const section of ['dependencies','devDependencies','peerDependencies','optionalDependencies'])
  assert.deepEqual(Object.keys(pkg[section]??{}).filter(name=>name.startsWith('@hanamesh/')||name.startsWith('hanamesh-')),section==='devDependencies'?['@hanamesh/core']:[],`unexpected sibling module in ${section}`);
 assert.equal(existsSync('docs/contracts/hanamesh-core'),false);
 assert.deepEqual([...new Set(Object.keys(lock.packages).map(key=>key.split('node_modules/').at(-1)).filter(name=>name.startsWith('@hanamesh/')||name.startsWith('hanamesh-')))],['@hanamesh/core']);
-assert.equal(lock.packages['node_modules/@hanamesh/core'].version,'0.3.31');
+assert.equal(lock.packages['node_modules/@hanamesh/core'].version,'0.3.33');
 // Parse the actual YAML consumed by DSH; textual name matching cannot validate scoped names.
 const assertPatch=(text,manifest)=>{const patch=load(text);assert.equal(patch[0].insert.length,1);assert.equal(patch[0].insert[0].id,'hanamesh-usage');assert.equal(patch[0].insert[0].name,manifest.name);};
 assertPatch(read(pkg.dsh.bundle.patch),pkg);
