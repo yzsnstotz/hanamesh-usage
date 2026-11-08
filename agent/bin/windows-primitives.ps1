@@ -1,0 +1,49 @@
+# System 5.1 primitives without module autoload. On ARM64, importing the stock
+# Utility/Management modules costs 20-30 seconds per hook. Keep the same JSON,
+# exact-path IO, SHA256 and bounded HTTPS operations on built-in .NET Framework.
+$PSModuleAutoLoadingPreference = 'None'
+if (!$script:HanaMeshJSON) {
+  [Reflection.Assembly]::Load('System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35') | Out-Null
+  $script:HanaMeshJSON=[System.Web.Script.Serialization.JavaScriptSerializer]::new()
+  $script:HanaMeshJSON.MaxJsonLength=[int]::MaxValue
+}
+function Join-Path([string]$Path,[string]$ChildPath) { return [IO.Path]::Combine($Path,$ChildPath) }
+function Split-Path([string]$Path,[switch]$Parent) { return [IO.Path]::GetDirectoryName($Path) }
+function Test-Path([string]$LiteralPath,[string]$PathType) {
+  if($PathType -eq 'Leaf'){return [IO.File]::Exists($LiteralPath)}
+  return [IO.File]::Exists($LiteralPath) -or [IO.Directory]::Exists($LiteralPath)
+}
+function Start-Sleep([int]$Milliseconds) { [Threading.Thread]::Sleep($Milliseconds) }
+function Get-Content([string]$LiteralPath,[switch]$Raw) { return [IO.File]::ReadAllText($LiteralPath) }
+function Get-FileHash([string]$LiteralPath,[string]$Algorithm='SHA256') {
+  if($Algorithm -ne 'SHA256'){throw 'HANAMESH_HASH_ALGORITHM_INVALID'}
+  $stream=[IO.File]::OpenRead($LiteralPath);$hasher=[Security.Cryptography.SHA256]::Create()
+  try{return @{Hash=([BitConverter]::ToString($hasher.ComputeHash($stream))).Replace('-','')}}finally{$stream.Dispose();$hasher.Dispose()}
+}
+function Convert-HanaMeshJSONValue($Value) {
+  if($Value -is [Collections.IDictionary]) {
+    $row=@{};foreach($key in $Value.Keys){$row[$key]=Convert-HanaMeshJSONValue $Value[$key]};return $row
+  }
+  if($Value -is [array]) {
+    $rows=@();foreach($item in $Value){$rows+= ,(Convert-HanaMeshJSONValue $item)};return ,$rows
+  }
+  return $Value
+}
+function ConvertFrom-Json {
+  param([Parameter(ValueFromPipeline=$true)][string]$InputObject)
+  process { return ,(Convert-HanaMeshJSONValue ($script:HanaMeshJSON.DeserializeObject($InputObject))) }
+}
+function ConvertTo-Json {
+  param([Parameter(ValueFromPipeline=$true)]$InputObject,[switch]$Compress,[int]$Depth=100)
+  process { return $script:HanaMeshJSON.Serialize($InputObject) }
+}
+function Invoke-WebRequest([string]$Uri,[string]$OutFile,[int]$TimeoutSec,[int]$MaximumRedirection,[switch]$UseBasicParsing) {
+  $request=[Net.HttpWebRequest]::CreateHttp($Uri)
+  $request.AllowAutoRedirect=$false;$request.Timeout=$TimeoutSec*1000;$request.ReadWriteTimeout=$TimeoutSec*1000
+  $response=$request.GetResponse()
+  try {
+    if($response.StatusCode -ne [Net.HttpStatusCode]::OK){throw 'RUNTIME_DOWNLOAD_FAILED'}
+    $inputStream=$response.GetResponseStream();$outputStream=[IO.File]::Create($OutFile)
+    try{$inputStream.CopyTo($outputStream)}finally{$inputStream.Dispose();$outputStream.Dispose()}
+  }finally{$response.Dispose()}
+}

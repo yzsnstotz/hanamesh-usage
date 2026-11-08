@@ -1,4 +1,5 @@
 # Load the exact Actions-built AnyCPU helper; never compile inside a user's profile.
+. ([IO.Path]::Combine($PSScriptRoot,'windows-primitives.ps1'))
 function Initialize-HanaMeshDetached {
   if ('HanaMeshDetached' -as [type]) { return }
   $record=Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'windows-detached.json')|ConvertFrom-Json
