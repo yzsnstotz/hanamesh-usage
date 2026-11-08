@@ -6,6 +6,7 @@ import {join,resolve} from 'node:path';
 import {spawnSync} from 'node:child_process';
 const plugin=resolve(process.argv[2]);
 const root=await mkdtemp(join(tmpdir(),'hm-px2-smoke-'));
+let failure;
 try {
   // Intentionally do not inherit API keys, login state, credential helpers or user configs.
   const env={PATH:process.env.PATH,SystemRoot:process.env.SystemRoot,WINDIR:process.env.WINDIR,COMSPEC:process.env.COMSPEC,
@@ -53,4 +54,4 @@ try {
   for(const file of await files(root))if(!file.endsWith('no-network.mjs'))assert.ok(!(await readFile(file)).includes(Buffer.from('PX2_PRIVATE_SENTINEL')),`raw field persisted: ${file}`);
   assert.ok(!(await files(root)).includes(join(root,'network-attempt')),'hook attempted a network call');
   console.log(JSON.stringify({platform:process.platform,arch:process.arch,hooks:count,consent:'withheld',local:0,networkAttempts:0}));
-} finally { await rm(root,{recursive:true,force:true}); }
+} catch(error) { failure=error; throw error; } finally { try {await rm(root,{recursive:true,force:true,maxRetries:5,retryDelay:200});} catch(error) {if(!failure)throw error;} }
