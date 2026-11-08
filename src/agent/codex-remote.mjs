@@ -1,3 +1,4 @@
+import {codexCommand} from './codex-command.mjs';
 import {readdir} from 'node:fs/promises';
 import {join,resolve} from 'node:path';
 import {execFile} from 'node:child_process';
@@ -5,7 +6,8 @@ import {promisify} from 'node:util';
 import {readJSON} from './store.mjs';
 const run=promisify(execFile),token=v=>typeof v==='string'&&/^[A-Za-z0-9][A-Za-z0-9_.-]*$/.test(v);
 export async function observeCodex(home,{env=process.env,timeoutMs=10000}={}){
- const result=await run('codex',['plugin','list','--json','-m','openai-curated-remote'],{env:{PATH:env.PATH,HOME:env.HOME,CODEX_HOME:home},timeout:timeoutMs,maxBuffer:16*1024*1024});return JSON.parse(result.stdout);
+ const command=await codexCommand(env);
+ const result=await run(command.file,[...command.args,'plugin','list','--json','-m','openai-curated-remote'],{env:{PATH:env.PATH,HOME:env.HOME,CODEX_HOME:home,USERPROFILE:env.USERPROFILE??env.HOME,SystemRoot:env.SystemRoot,TEMP:env.TEMP,TMP:env.TMP,PATHEXT:env.PATHEXT},timeout:timeoutMs,maxBuffer:16*1024*1024});return JSON.parse(result.stdout);
 }
 /** Native remote IDs identify plugins across every version, including app connectors. No content proof. */
 export async function remotePlugins(home,{observe,env,timeoutMs}={}){

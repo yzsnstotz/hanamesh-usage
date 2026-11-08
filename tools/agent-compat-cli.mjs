@@ -5,6 +5,7 @@ import {tmpdir} from 'node:os';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import assert from 'node:assert/strict';
+import {codexCommand} from '../src/agent/codex-command.mjs';
 const stage=process.argv[2],root=join(process.env.RUNNER_TEMP??process.env.PX2_RUN_ROOT??tmpdir(),'px2');
 await mkdir(root,{recursive:true});
 const result={platform:process.platform,arch:process.arch,tier:stage,checks:[]};
@@ -40,6 +41,9 @@ try {
    return /\.[cm]?js$/.test(entry)?run(name+' '+args.join(' '),process.execPath,[entry,...args]):run(name+' '+args.join(' '),entry,args);
   };
   result.claude=(await cli('@anthropic-ai/claude-code',['--version'])).trim();result.codex=(await cli('@openai/codex',['--version'])).trim();
+  const selected=await codexCommand({...env,PATH:join(prefix,'node_modules/.bin')+delimiter+env.PATH});
+  const oldPath=env.PATH;env.PATH=join(prefix,'node_modules/.bin')+delimiter+env.PATH;
+  assert.equal(run('runtime official Codex entry',selected.file,[...selected.args,'--version']).trim(),result.codex);env.PATH=oldPath;
   // Obtain one pinned public Core artifact; verify before unpacking it, never read a sibling repo.
   const core=join(root,'core-0.3.28.tgz');
   const response=await fetch('https://registry.npmjs.org/@hanamesh/core/-/core-0.3.28.tgz',{redirect:'error'});assert.ok(response.ok);
