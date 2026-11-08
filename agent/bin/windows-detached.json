@@ -1,7 +1,8 @@
 {
-  "builtFromRevision": "29f8f89c515f165d6ae2c095e7c11e26b88fe371",
-  "schemaVersion": 1,
+  "sha256": "80405db4e5bd21ead968727d11737cddf70ad32c7633f32070881fcaaab1a394",
   "architecture": "AnyCPU",
-  "sourceSha256": "462902b1e8743837f09f712f71c89fb57d299e215b873639c82c569bdca32e08",
-  "sha256": "cd841557db783cd0fe1a3397e5c631c7cbac84929958e6bc645a678868b8a541"
+  "builtFromRevision": "85d34a25debc6d8bdbb7a9e6a11aa04ebff69f2b",
+  "sourceSha256": "3f3b4484742403a8e27b624e04d7f494cb63ac288c5187e1c4259dda85a2508d",
+  "schemaVersion": 1,
+  "targetFramework": ".NET Framework 4"
 }
