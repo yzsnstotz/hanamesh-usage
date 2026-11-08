@@ -37,12 +37,10 @@ export async function windowsFixture(t,{mode='failure',ready=false,channel='clau
  const env={...process.env,HOME:root,USERPROFILE:root,TEMP:root,TMP:root,HANAMESH_SHARED_HOME:shared,HANAMESH_AGENT_HOME:agent,HANAMESH_CORE_AGENT_CLI:core,HANAMESH_AGENT_CHANNEL:channel,CLAUDE_CONFIG_DIR:host,CODEX_HOME:host,CLAUDE_PLUGIN_ROOT:plugin,PLUGIN_ROOT:plugin};
  if(defaultProfile){delete env.HANAMESH_AGENT_CHANNEL;delete env.CODEX_HOME;}
  if(!compilerChecked){
-  const command=`$ErrorActionPreference='Stop';try{Add-Type -Path ${q(join(plugin,'bin/windows-detached.cs'))}}catch{[Console]::Error.WriteLine($_.Exception.ToString());exit 1}`;
-  const variants=[['exact',env],['original-temp',{...env,TEMP:process.env.TEMP,TMP:process.env.TMP}],['original-profile',{...env,HOME:process.env.HOME,USERPROFILE:process.env.USERPROFILE}],['original-environment',process.env]];
-  const diagnostics=[];for(const[label,profile]of variants){const check=spawnSync('powershell.exe',[...psArgs,'-Command',command],{env:profile,encoding:'utf8',timeout:20000});diagnostics.push({label,status:check.status,stderr:check.stderr});if(label==='exact'&&check.status===0){compilerChecked=true;break;}}
-  if(!compilerChecked)throw Error('NATIVE_HELPER_COMPILATION: '+JSON.stringify(diagnostics));
+  const command=`$ErrorActionPreference='Stop';. ${q(join(plugin,'bin/windows-detached.ps1'))};Initialize-HanaMeshDetached ${q(cache)}`;
+  const check=spawnSync('powershell.exe',[...psArgs,'-Command',command],{env,encoding:'utf8',timeout:20000});
+  if(check.status!==0)throw Error('NATIVE_HELPER_COMPILATION: '+check.stderr);compilerChecked=true;
  }
-
  const recipePath=join(plugin,'bin/node-runtime.json'),recipe=JSON.parse(await readFile(recipePath));
  const zip=await template();await copyFile(zip.archive,join(root,'fixture.zip'));recipe.platforms[platform]={archiveFormat:'zip',sha256:mode==='badsha'?'0'.repeat(64):zip.sha256,bytes:zip.bytes};await writeFile(recipePath,JSON.stringify(recipe));
  await writeFile(join(root,'fixture-mode'),mode);
