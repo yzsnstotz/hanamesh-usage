@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shell: [System32, Sysnative]
+        shell: [File, Command]
     defaults:
       run:
         shell: bash
@@ -41,7 +41,7 @@ jobs:
           s=s.replace('  Initialize-HanaMeshDetached','  Initialize-HanaMeshDetached\n'+mark('HELPER')+`\n$flags=[Reflection.BindingFlags]'NonPublic,Static';$handle=[HanaMeshDetached].GetMethod('GetCurrentProcess',$flags).Invoke($null,@());$types=@($handle,[uint16]0,[uint16]0);$ok=[HanaMeshDetached].GetMethod('IsWow64Process2',$flags).Invoke($null,$types);[Console]::Error.WriteLine('PX4_PROCESS_MACHINE='+$types[1].ToString('x')+' NATIVE='+$types[2].ToString('x'))`);
           s=s.replace('    Check-Version $node','    '+mark('HASH_DONE')+'\n    Check-Version $node\n    '+mark('VERSION_DONE'));
           await writeFile('agent/bin/hm-agent.ps1',s);
-          s=await readFile('agent/bin/hm-agent','utf8');s=s.replace('/System32/WindowsPowerShell','/${{ matrix.shell }}/WindowsPowerShell');s=s.replace('umask 077',`umask 077\nprintf 'PX4_TIME_SH_ENTER=%s\\n' "$EPOCHREALTIME" >&2`);await writeFile('agent/bin/hm-agent',s);
+          s=await readFile('agent/bin/hm-agent','utf8');if('${{ matrix.shell }}'==='Command')s=s.replace(' -File "$windows_plugin/bin/hm-agent.ps1" "$@"', ` -Command "& '$windows_plugin/bin/hm-agent.ps1' $*"`);s=s.replace('umask 077',`umask 077\nprintf 'PX4_TIME_SH_ENTER=%s\\n' "$EPOCHREALTIME" >&2`);await writeFile('agent/bin/hm-agent',s);
           s=await readFile('tests/agent-node-runtime.test.mjs','utf8');s=s.replace("  if(process.platform==='win32')assert.ok", "  console.log('PX4_ACTUAL_MANIFEST_MS='+String(performance.now()-started)+' '+channel+' '+event+' '+r.stderr);\n  if(process.platform==='win32')assert.ok");await writeFile('tests/agent-node-runtime.test.mjs',s);
           JS
       - name: Exact Claude hook command under the unchanged 10-second assertion
