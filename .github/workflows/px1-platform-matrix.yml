@@ -51,7 +51,7 @@ jobs:
           git checkout --detach FETCH_HEAD
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          node-version-file: .node-version
+          node-version: '24.13.1' # engines/build target; this repo has no .node-version
           token: ''
       - name: Install the pinned package manager
         run: npm install --global pnpm@10.33.0
