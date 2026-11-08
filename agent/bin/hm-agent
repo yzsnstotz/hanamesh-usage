@@ -5,9 +5,14 @@ umask 077
 plugin=$(CDPATH= cd -- "$(dirname "$0")/.." && pwd -P)
 case "${OS:-}:${OSTYPE:-}:${MSYSTEM:-}" in
  Windows_NT:*|*:msys*:*|*:cygwin*:*|*:*:MINGW*|*:*:MSYS*)
-   system_root=$(cygpath -u "${SYSTEMROOT:-${SystemRoot:-${WINDIR:-C:\Windows}}}")
-   powershell="$system_root/System32/WindowsPowerShell/v1.0/powershell.exe"
+   # Native drive/UNC paths need no extra emulated cygpath processes on ARM64.
+   powershell="${SYSTEMROOT:-${SystemRoot:-${WINDIR:-C:/Windows}}}/System32/WindowsPowerShell/v1.0/powershell.exe"
    [ -x "$powershell" ] || { printf '%s\n' HANAMESH_POWERSHELL51_REQUIRED >&2; exit 1; }
-   exec "$powershell" -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "$(cygpath -w "$plugin/bin/hm-agent.ps1")" "$@" ;;
+   case "$plugin" in
+     /[A-Za-z]/*) drive=${plugin#/}; drive=${drive%%/*}; windows_plugin="$drive:/${plugin#/*/}" ;;
+     //*) windows_plugin="$plugin" ;;
+     *) windows_plugin=$(cygpath -w "$plugin") ;;
+   esac
+   MSYS2_ARG_CONV_EXCL='*' exec "$powershell" -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "$windows_plugin/bin/hm-agent.ps1" "$@" ;;
  *) exec /usr/bin/env LC_ALL=C /usr/bin/perl "$plugin/bin/runtime-bootstrap.pl" "$@" ;;
 esac
