@@ -3,16 +3,16 @@ import {spawn} from 'node:child_process';
 import {realpathSync} from 'node:fs';
 import {homedir} from 'node:os';
 import {fileURLToPath} from 'node:url';
-import {join,resolve} from 'node:path';
+import {join,resolve,sep} from 'node:path';
 import {mkdir} from 'node:fs/promises';
 import {readJSON,atomicJSON,AgentStore} from './store.mjs';
 
 export function hostContext(env=process.env,pluginRoot=fileURLToPath(new URL('../../',import.meta.url))) {
   const canonical=path=>{try{return realpathSync(path);}catch{return resolve(path);}};
   const root=canonical(pluginRoot);
-  const inside=home=>home&&root.startsWith(canonical(home)+'/');
+  const inside=home=>home&&root.startsWith(canonical(home)+sep);
   let channel=env.HANAMESH_AGENT_CHANNEL;
-  if(!channel)channel=inside(env.CLAUDE_CONFIG_DIR)||root.includes('/.claude/plugins/cache/')?'claude':inside(env.CODEX_HOME)||root.includes('/.codex/plugins/cache/')||env.CODEX_HOME?'codex':'claude';
+  if(!channel)channel=inside(env.CLAUDE_CONFIG_DIR)||root.split(sep).join('/').includes('/.claude/plugins/cache/')?'claude':inside(env.CODEX_HOME)||root.split(sep).join('/').includes('/.codex/plugins/cache/')||env.CODEX_HOME?'codex':'claude';
   return {channel,home:channel==='codex'?(env.CODEX_HOME ?? join(homedir(),'.codex')):(env.CLAUDE_CONFIG_DIR ?? join(homedir(),'.claude'))};
 }
 
@@ -34,13 +34,13 @@ export async function runtime(env=process.env) {
   if(!Number.isSafeInteger(config.bootstrapIntervalMs)||config.bootstrapIntervalMs<1||config.bootstrapIntervalMs>2147483647||!Number.isSafeInteger(config.requestTimeoutMs)||config.requestTimeoutMs<10||config.requestTimeoutMs>60000)throw new Error('AGENT_SETTINGS_INVALID');
   for(const key of ['serverOrigin','websiteOrigin'])if(config[key]!==null){const url=new URL(config[key]);if((url.protocol!=='https:' && !(url.protocol==='http:'&&['127.0.0.1','localhost','[::1]'].includes(url.hostname)))||url.origin!==config[key])throw new Error('AGENT_ORIGIN_INVALID');}
   const call= input=>new Promise((resolveResult,reject)=>{
-    const child=spawn(process.execPath,[paths.coreCLI],{stdio:['pipe','pipe','pipe'],env:{PATH:env.PATH,HOME:env.HOME ?? homedir(),TMPDIR:env.TMPDIR}});
+    const child=spawn(process.execPath,[paths.coreCLI],{stdio:['pipe','pipe','pipe'],env:{PATH:env.PATH,HOME:env.HOME ?? homedir(),TMPDIR:env.TMPDIR,SystemRoot:env.SystemRoot,USERPROFILE:env.USERPROFILE,TEMP:env.TEMP,TMP:env.TMP}});
     let stdout='';child.stdout.setEncoding('utf8').on('data',chunk=>{stdout+=chunk;});
     child.stderr.on('data',chunk=>process.stderr.write(chunk));child.on('error',()=>reject(new Error('CORE_AGENT_UNAVAILABLE')));
     child.on('close',()=>{try{const value=JSON.parse(stdout);if(value.error)reject(new Error(value.error.code));else resolveResult(value.result);}catch{reject(new Error('CORE_AGENT_RESPONSE_INVALID'));}});
     child.stdin.on('error',()=>{});child.stdin.end(JSON.stringify({config:{...config,timeoutMs:config.requestTimeoutMs,sharedHome:paths.sharedHome},input}));
   });
-  const runtimePreparation=()=>readJSON(join(paths.sharedHome,'runtime',`node-v24.13.1-darwin-${process.arch}`,'prepare-state.json'),null);
+  const runtimePreparation=()=>readJSON(join(paths.sharedHome,'runtime',`node-v24.13.1-${process.platform==='win32'?'win':process.platform}-${process.arch}`,'prepare-state.json'),null);
   return {...paths,config,call,env,runtimePreparation,host:hostContext(env),store:new AgentStore(paths.agentHome,{timeoutMs:config.requestTimeoutMs}),
     async configure(value){await mkdir(paths.agentHome,{recursive:true,mode:0o700});await atomicJSON(join(paths.agentHome,'config.json'),value);},
   };

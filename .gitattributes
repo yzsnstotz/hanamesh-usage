@@ -1,0 +1,4 @@
+# Agent packages must have the same source/build bytes on Windows and POSIX.
+agent/** text eol=lf
+src/agent/** text eol=lf
+lib/agent/** text eol=lf

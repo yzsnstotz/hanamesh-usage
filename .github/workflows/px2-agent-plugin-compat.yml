@@ -1,0 +1,77 @@
+name: PX2 current Agent plugin compatibility
+on:
+  push:
+    branches: [fix/px2-agent-plugin-compat-1109-r2]
+  workflow_dispatch:
+permissions: {}
+jobs:
+  plugin:
+    timeout-minutes: 25 # 待追认：原生 job 封顶，保留全部失败。
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {runner: ubuntu-latest, os: linux, arch: x64, cli: minimum}
+          - {runner: ubuntu-latest, os: linux, arch: x64, cli: latest}
+          - {runner: ubuntu-24.04-arm, os: linux, arch: arm64, cli: minimum}
+          - {runner: ubuntu-24.04-arm, os: linux, arch: arm64, cli: latest}
+          - {runner: windows-latest, os: win32, arch: x64, cli: minimum}
+          - {runner: windows-latest, os: win32, arch: x64, cli: latest}
+          - {runner: windows-11-arm, os: win32, arch: arm64, cli: minimum}
+          - {runner: windows-11-arm, os: win32, arch: arm64, cli: latest}
+          - {runner: macos-26-intel, os: darwin, arch: x64, cli: minimum}
+          - {runner: macos-26-intel, os: darwin, arch: x64, cli: latest}
+          - {runner: macos-latest, os: darwin, arch: arm64, cli: minimum}
+          - {runner: macos-latest, os: darwin, arch: arm64, cli: latest}
+    runs-on: ${{ matrix.runner }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Fetch exact public source without credentials
+        env:
+          PX2_REPOSITORY: ${{ github.repository }}
+          PX2_REVISION: ${{ github.sha }}
+        run: |
+          git -c credential.helper= init -q
+          git -c credential.helper= fetch --depth=1 "https://github.com/$PX2_REPOSITORY.git" "$PX2_REVISION"
+          git checkout --detach FETCH_HEAD
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.13.1'
+          token: ''
+      - name: Assert actual native OS and architecture
+        run: node -e "if(process.platform!=='${{ matrix.os }}'||process.arch!=='${{ matrix.arch }}')process.exit(1)"
+      - name: Native Windows syntax
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $PWD 'agent/bin/hm-agent.ps1'),[ref]$null,[ref]$errors)|Out-Null
+          if($errors.Count){$errors|ForEach-Object{Write-Error $_.Message};exit 1}
+      - name: Prepare isolated paths
+        run: node tools/agent-compat-cli.mjs prepare
+      - name: Prepare strict pinned build tools and dependencies
+        env:
+          NPM_CONFIG_USERCONFIG: ${{ runner.temp }}/px2/npmrc
+          NPM_CONFIG_GLOBALCONFIG: ${{ runner.temp }}/px2/global-npmrc
+        run: |
+          npm install --global pnpm@10.33.0
+          npm ci --cache .npm-cache
+          pnpm install --frozen-lockfile
+          if [[ "$RUNNER_OS" == Windows ]]; then echo "$(cygpath -w /usr/bin)" >> "$GITHUB_PATH"; fi
+      - name: Normal strict target build
+        run: node tools/build.mjs
+      - name: Current Agent fixed-runtime and manifest unit gates
+        run: node --test --test-reporter=tap tests/agent-node-runtime.test.mjs tests/node-tool.test.mjs
+      - name: Official CLI minimum or latest installation gates
+        run: node tools/agent-compat-cli.mjs '${{ matrix.cli }}'
+      - name: Current Agent consent-withheld and closed hook payloads
+        run: node tools/agent-compat-smoke.mjs "$RUNNER_TEMP/px2/plugin with spaces"
+      - name: Preserve receipts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: px2-${{ matrix.runner }}-${{ matrix.cli }}
+          path: ${{ runner.temp }}/px2/results.json
+          retention-days: 7

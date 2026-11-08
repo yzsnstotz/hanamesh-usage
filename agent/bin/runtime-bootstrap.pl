@@ -7,13 +7,13 @@ my $action=shift(@ARGV)//''; my $plugin=abs_path(dirname(__FILE__).'/..');
 my $shared=$ENV{HANAMESH_SHARED_HOME}//(($ENV{HOME}//'').'/.hanamesh-shared');
 sub fail { die "$_[0]\n"; }
 fail('HANAMESH_NODE_RUNTIME_HOME_INVALID') unless $shared=~m{^/};
-my $os=`/usr/bin/uname -s`; chomp $os; my $machine=`/usr/bin/uname -m`; chomp $machine;
-fail('HANAMESH_NODE_PLATFORM_UNSUPPORTED') unless $os eq 'Darwin' && ($machine eq 'arm64'||$machine eq 'x86_64');
-my $arch=$machine eq 'arm64'?'arm64':'x64';
+my ($os,undef,undef,undef,$machine)=POSIX::uname();
+fail('HANAMESH_NODE_PLATFORM_UNSUPPORTED') unless ($os eq 'Darwin'||$os eq 'Linux')&&($machine eq 'arm64'||$machine eq 'aarch64'||$machine eq 'x86_64');
+my $arch=$machine eq 'x86_64'?'x64':'arm64';my $platform=lc($os)."-$arch";
 open my $recipe_f,'<:raw',"$plugin/bin/node-runtime.json" or fail('RUNTIME_RECIPE_UNAVAILABLE');my $recipe;{local $/;$recipe=$json->decode(<$recipe_f>);}close $recipe_f;
-fail('RUNTIME_RECIPE_INVALID') unless $recipe->{version} eq '24.13.1'&&$recipe->{archiveFormat} eq 'tar.xz'&&$recipe->{downloadOrigin} eq 'https://nodejs.org';
-my $target=$recipe->{architectures}{$arch};fail('RUNTIME_RECIPE_INVALID') unless ref($target) eq 'HASH'&&$target->{sha256}=~/^[a-f0-9]{64}$/&&$target->{legacyGzipSha256}=~/^[a-f0-9]{64}$/&&$target->{bytes}=~/^[1-9][0-9]*$/;
-my $spec={sha=>$target->{sha256},gz=>$target->{legacyGzipSha256},bytes=>0+$target->{bytes}}; my $base="$shared/runtime"; my $cache="$base/node-v24.13.1-darwin-$arch";my $node="$cache/bin/node";my $statefile="$cache/prepare-state.json";my $lockfile="$cache/prepare.lock";
+fail('RUNTIME_RECIPE_INVALID') unless $recipe->{version} eq '24.13.1'&&$recipe->{downloadOrigin} eq 'https://nodejs.org';
+my $target=$recipe->{platforms}{$platform};fail('RUNTIME_RECIPE_INVALID') unless ref($target) eq 'HASH'&&$target->{sha256}=~/^[a-f0-9]{64}$/&&$target->{bytes}=~/^[1-9][0-9]*$/&&$target->{archiveFormat} eq 'tar.xz';
+my $spec={sha=>$target->{sha256},bytes=>0+$target->{bytes}};my $base="$shared/runtime";my $cache="$base/node-v24.13.1-$platform";my $node="$cache/bin/node";my $statefile="$cache/prepare-state.json";my $lockfile="$cache/prepare.lock";
 sub stamp {my $t=time();return strftime('%Y-%m-%dT%H:%M:%S',gmtime(int($t))).sprintf('.%03dZ',int(1000*($t-int($t))));}
 sub textfile {my($path)=@_;open my $f,'<:raw',$path or fail('RUNTIME_STATE_UNAVAILABLE');local $/;my $v=<$f>;close $f;return $v;}
 sub filehash {my($path)=@_;open my $f,'<:raw',$path or fail('RUNTIME_STATE_UNAVAILABLE');my $h=Digest::SHA->new(256);$h->addfile($f);close $f;return $h->hexdigest;}
@@ -24,7 +24,7 @@ sub ready {
  safe_paths();return 0 unless -e $node;
  fail('HANAMESH_NODE_RUNTIME_REQUIRED') unless -f $node&&-x $node;
  my $archive=textfile("$cache/archive.sha256");$archive=~s/\s+$//;
- fail('HANAMESH_NODE_RUNTIME_CHECKSUM_MISMATCH') unless $archive eq $spec->{sha}||$archive eq $spec->{gz};
+ fail('HANAMESH_NODE_RUNTIME_CHECKSUM_MISMATCH') unless $archive eq $spec->{sha};
  my $hash=textfile("$cache/node.sha256");$hash=~s/\s+$//;fail('HANAMESH_NODE_RUNTIME_CHECKSUM_MISMATCH') unless $hash eq filehash($node).'  bin/node';
  open my $p,'-|',$node,'--version' or fail('HANAMESH_NODE_RUNTIME_VERSION_MISMATCH');my $v=<$p>;close $p or fail('HANAMESH_NODE_RUNTIME_VERSION_MISMATCH');chomp $v;fail('HANAMESH_NODE_RUNTIME_VERSION_MISMATCH') unless $v eq 'v24.13.1';return 1;
 }
@@ -96,10 +96,10 @@ sub producer {
  my $ok=eval{
   atomic($statefile,$state);$scratch=tempdir('.node-download-XXXXXXXX',DIR=>$base,CLEANUP=>0);my $archive="$scratch/node.tar.xz";
   $curlpid=fork();fail('RUNTIME_DOWNLOAD_FAILED') unless defined $curlpid;
-  if(!$curlpid){exec {'/usr/bin/curl'} '/usr/bin/curl','--fail','--show-error','--silent','--location','--proto','=https','--proto-redir','=https','--connect-timeout','15','--speed-time','30','--speed-limit','1',"https://nodejs.org/dist/v24.13.1/node-v24.13.1-darwin-$arch.tar.xz",'-o',$archive or exit 127;}
+  if(!$curlpid){exec {'/usr/bin/curl'} '/usr/bin/curl','--fail','--show-error','--silent','--location','--proto','=https','--proto-redir','=https','--connect-timeout','15','--speed-time','30','--speed-limit','1',"https://nodejs.org/dist/v24.13.1/node-v24.13.1-$platform.tar.xz",'-o',$archive or exit 127;}
   for(;;){my $done=waitpid($curlpid,WNOHANG);$state->{downloadedBytes}=-e $archive?0+(-s $archive):0;atomic($statefile,$state);if($done==$curlpid){my $exit=$?;$curlpid=undef;fail('RUNTIME_DOWNLOAD_FAILED') if $exit!=0;last;}sleep(0.2);}
   $state->{phase}='verifying';atomic($statefile,$state);fail('RUNTIME_ARCHIVE_CHECKSUM_MISMATCH') unless filehash($archive) eq $spec->{sha};
-  $state->{phase}='extracting';atomic($statefile,$state);my $name="node-v24.13.1-darwin-$arch";
+  $state->{phase}='extracting';atomic($statefile,$state);my $name="node-v24.13.1-$platform";
   system {'/usr/bin/tar'} '/usr/bin/tar','-xf',$archive,'-C',$scratch,"$name/bin/node","$name/LICENSE";fail('RUNTIME_EXTRACT_FAILED') if $?!=0;
   open my $p,'-|',"$scratch/$name/bin/node",'--version' or fail('RUNTIME_VERSION_MISMATCH');my $version=<$p>;close $p or fail('RUNTIME_VERSION_MISMATCH');chomp $version;fail('RUNTIME_VERSION_MISMATCH') unless $version eq 'v24.13.1';
   $state->{phase}='publishing';atomic($statefile,$state);

@@ -19,7 +19,7 @@ try {
   const core=JSON.parse(await readFile(join(temp,'package/package.json'),'utf8'));
   if(core.name!=='@hanamesh/core'||core.version!=='0.3.28')throw new Error('CORE_ARTIFACT_INVALID');
   const probeHome=join(temp,'core-probe');await mkdir(probeHome);
-  const probe=spawnSync(process.execPath,[join(temp,'package/lib/agent-cli.js')],{encoding:'utf8',input:JSON.stringify({config:{sharedHome:probeHome,serverOrigin:null,websiteOrigin:null},input:{operation:'state'}}),env:{PATH:process.env.PATH,HOME:temp}});
+  const probe=spawnSync(process.execPath,[join(temp,'package/lib/agent-cli.js')],{encoding:'utf8',input:JSON.stringify({config:{sharedHome:probeHome,serverOrigin:null,websiteOrigin:null},input:{operation:'state'}}),env:{PATH:process.env.PATH,HOME:temp,USERPROFILE:temp,SystemRoot:process.env.SystemRoot,TEMP:temp,TMP:temp}});
   let capability;try{const result=JSON.parse(probe.stdout).result;capability=result?.agentProtocolVersion;}catch{throw Error('CORE_AGENT_CAPABILITY_REQUIRED');}
   if(probe.status!==0||capability!==2||(await readdir(probeHome)).length!==0)throw Error('CORE_AGENT_CAPABILITY_REQUIRED');
   const nodeRecipe=JSON.parse(await readFile('agent/bin/node-runtime.json'));

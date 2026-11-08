@@ -1,4 +1,4 @@
-# HanaMesh Agent 0.2.8
+# HanaMesh Agent 0.2.9
 
 通过Claude Code或Codex原生插件市场安装。Codex须本人先Trust hooks。安装后默认在本机记录插件调用；固定Node运行时后台准备期间，只暂存最小插件调用标识、原时间和成败，就绪后处理，不丢弃这段调用。不会保存对话、原始命令、工具输入输出正文或凭据。
 
@@ -7,3 +7,5 @@
 Codex远程插件按宿主的remote_plugin_id识别，任何版本均可归属，不校验版本、下载包指纹或文件内容。Gmail、Google Drive等连接器与其它插件一样记录ID和名字；是否收录以及归属哪个Hana由收录侧决定。客户端仅上传收录映射命中的活动，未收录信息留在本机。未知成败保持null，是否上报按后台现有设置。
 
 Runtime包来自Node官方固定SHA，这是运行时完整性校验，与插件身份/版本无关。普通服务地址为api.hanamesh.com、market.hanamesh.com；测试与维护环境须完整显式覆盖。新证据/日志/tgz/proof只放HanaMesh docs的证据目录或R2 relay，产品仓库只留SHA和链接。
+
+Agent 0.2.9 extends the same automatic preparation and local-only-before-website-consent behavior to macOS/Linux/Windows arm64/x64. POSIX uses the Perl readiness bridge; Windows uses native PowerShell and an OS file lease, with no Windows Perl dependency. Claude hooks and MCP use official Git Bash on Windows; Codex hooks use commandWindows.

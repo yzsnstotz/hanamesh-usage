@@ -6,7 +6,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/bin/sh \"${CLAUDE_PLUGIN_ROOT:-${PLUGIN_ROOT:?HANAMESH_PLUGIN_ROOT_REQUIRED}}/bin/hm-agent\" hook --event SessionStart"
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/bin/hm-agent\" hook --event SessionStart",
+            "shell": "bash"
           }
         ]
       }
@@ -17,7 +18,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/bin/sh \"${CLAUDE_PLUGIN_ROOT:-${PLUGIN_ROOT:?HANAMESH_PLUGIN_ROOT_REQUIRED}}/bin/hm-agent\" hook --event PostToolUse"
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/bin/hm-agent\" hook --event PostToolUse",
+            "shell": "bash"
           }
         ]
       }
@@ -28,7 +30,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/bin/sh \"${CLAUDE_PLUGIN_ROOT:-${PLUGIN_ROOT:?HANAMESH_PLUGIN_ROOT_REQUIRED}}/bin/hm-agent\" hook --event PostToolUseFailure"
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/bin/hm-agent\" hook --event PostToolUseFailure",
+            "shell": "bash"
           }
         ]
       }
@@ -39,7 +42,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/bin/sh \"${CLAUDE_PLUGIN_ROOT:-${PLUGIN_ROOT:?HANAMESH_PLUGIN_ROOT_REQUIRED}}/bin/hm-agent\" hook --event PreToolUse"
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/bin/hm-agent\" hook --event PreToolUse",
+            "shell": "bash"
           }
         ]
       }

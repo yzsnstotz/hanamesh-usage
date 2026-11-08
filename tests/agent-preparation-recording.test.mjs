@@ -10,7 +10,7 @@ import {spawn,spawnSync} from 'node:child_process';
 import {once} from 'node:events';
 const sha=b=>createHash('sha256').update(b).digest('hex');
 async function fixture(t,channel){
- const root=await mkdtemp(join(tmpdir(),'hm-preparing-record-')),plugin=join(root,'plugin'),shared=join(root,'shared'),agent=join(shared,'agent/usage'),host=join(root,channel),cache=join(shared,'runtime',`node-v24.13.1-darwin-${process.arch}`);
+ const root=await mkdtemp(join(tmpdir(),'hm-preparing-record-')),plugin=join(root,'plugin'),shared=join(root,'shared'),agent=join(shared,'agent/usage'),host=join(root,channel),cache=join(shared,'runtime',`node-v24.13.1-${process.platform}-${process.arch}`);
  await mkdir(join(plugin,'lib'),{recursive:true});await copyAgentBootstrap(plugin);await cp(join(source,agentSource),join(plugin,'lib/agent'),{recursive:true});await writeFile(join(plugin,'package.json'),'{"type":"module"}');await mkdir(join(cache,'bin'),{recursive:true});await mkdir(agent,{recursive:true});await mkdir(join(host,'plugins'),{recursive:true});
  const target=join(root,'target');await mkdir(target);await writeFile(join(target,'.mcp.json'),JSON.stringify({mcpServers:{probe:{command:'FIXTURE'}}}));
  if(channel==='claude')await writeFile(join(host,'plugins/installed_plugins.json'),JSON.stringify({plugins:{'target@market':[{installPath:target}]}}));
@@ -23,7 +23,7 @@ async function fixture(t,channel){
  const base={session_id:'PRIVATE_SESSION',tool_use_id:'original-call',tool_name:channel==='claude'?'mcp__plugin_target_probe__echo':'mcp__probe__echo',tool_input:{password:'PRIVATE_INPUT'},tool_response:{isError:false,content:[{type:'text',text:'PRIVATE_OUTPUT'}]}};
  const hook=(event,extra={})=>{const p=spawnSync('/bin/sh',[join(plugin,'bin/hm-agent'),'hook','--event',event],{env,input:JSON.stringify({...base,hook_event_name:event,...extra}),encoding:'utf8'});assert.equal(p.status,0,p.stderr);};
  const pending=async()=>{const names=await readdir(join(agent,'preparation')).catch(e=>e.code==='ENOENT'?[]:Promise.reject(e));return Promise.all(names.map(async n=>JSON.parse(await readFile(join(agent,'preparation',n)))));};
- const publish=async()=>{await release();await copyFile(process.execPath,join(cache,'bin/node'));const recipe=JSON.parse(await readFile(join(plugin,'bin/node-runtime.json')));await writeFile(join(cache,'archive.sha256'),recipe.architectures[process.arch].sha256+'\n');await writeFile(join(cache,'node.sha256'),sha(await readFile(process.execPath))+'  bin/node\n');await writeFile(join(cache,'prepare-state.json'),JSON.stringify({code:'RUNTIME_READY',finishedAt:new Date().toISOString()}));};
+ const publish=async()=>{await release();await copyFile(process.execPath,join(cache,'bin/node'));const recipe=JSON.parse(await readFile(join(plugin,'bin/node-runtime.json')));await writeFile(join(cache,'archive.sha256'),recipe.platforms[`${process.platform}-${process.arch}`].sha256+'\n');await writeFile(join(cache,'node.sha256'),sha(await readFile(process.execPath))+'  bin/node\n');await writeFile(join(cache,'prepare-state.json'),JSON.stringify({code:'RUNTIME_READY',finishedAt:new Date().toISOString()}));};
  return{root,agent,hook,pending,publish,base};
 }
 for(const channel of ['claude','codex'])test(`actual Node-free ${channel} Pre/Post retain original time then become one minimal activity after publication`,async t=>{

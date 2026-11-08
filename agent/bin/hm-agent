@@ -1,7 +1,9 @@
 #!/bin/sh
-# macOS bootstrap uses only built-in Perl while fixed Node prepares asynchronously.
 set -eu
 umask 077
 [ -n "${1:-}" ] || { printf '%s\n' HANAMESH_AGENT_ACTION_REQUIRED >&2; exit 1; }
-plugin=$(CDPATH= cd -- "$(/usr/bin/dirname "$0")/.." && pwd -P)
-exec /usr/bin/env LC_ALL=C /usr/bin/perl "$plugin/bin/runtime-bootstrap.pl" "$@"
+plugin=$(CDPATH= cd -- "$(dirname "$0")/.." && pwd -P)
+case "$(uname -s)" in
+ MINGW*|MSYS*|CYGWIN*) exec powershell.exe -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "$(cygpath -w "$plugin/bin/hm-agent.ps1")" "$@" ;;
+ *) exec /usr/bin/env LC_ALL=C /usr/bin/perl "$plugin/bin/runtime-bootstrap.pl" "$@" ;;
+esac

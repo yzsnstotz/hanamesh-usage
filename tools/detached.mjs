@@ -3,6 +3,7 @@ import {mkdtempSync, cpSync, rmSync, mkdirSync, existsSync, writeFileSync} from 
 import {tmpdir, homedir} from 'node:os';
 import {join, basename, resolve, delimiter} from 'node:path';
 import {spawnSync} from 'node:child_process';
+import {nodeToolCommand} from './node-tool.mjs';
 import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
 
@@ -32,7 +33,8 @@ try {
     [process.execPath,['tools/build.mjs','--offline']],[process.execPath,['tools/check.mjs']]];
   for(const [program,args] of commands) {
     console.log('$ '+program+' '+args.join(' '));
-    const result=spawnSync(program,args,{cwd:copy,env,encoding:'utf8',maxBuffer:8*1024*1024});
+    const command=program==='npm'?nodeToolCommand('npm',args):{file:program,args};
+    const result=spawnSync(command.file,command.args,{cwd:copy,env,encoding:'utf8',maxBuffer:8*1024*1024});
     const number=receipt.commands.length+1,stdout=`${number}.stdout.log`,stderr=`${number}.stderr.log`;
     writeFileSync(join(parent,stdout),result.stdout??'');writeFileSync(join(parent,stderr),result.stderr??'');
     receipt.commands.push({program,args,cwd:copy,status:result.status,signal:result.signal,errorCode:result.error?.code??null,stdout,stderr});

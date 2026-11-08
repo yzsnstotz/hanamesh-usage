@@ -1,17 +1,36 @@
 {
   "version": "24.13.1",
-  "archiveFormat": "tar.xz",
   "downloadOrigin": "https://nodejs.org",
-  "architectures": {
-    "arm64": {
+  "platforms": {
+    "darwin-arm64": {
       "sha256": "d82a321541d65109c696505135be3b7dd46e3358f0f04d664f50f0d1e1ccb8a6",
-      "legacyGzipSha256": "8c039d59f2fec6195e4281ad5b0d02b9a940897b4df7b849c6fb48be6787bba6",
-      "bytes": 26464732
+      "bytes": 26464732,
+      "archiveFormat": "tar.xz"
     },
-    "x64": {
+    "darwin-x64": {
       "sha256": "013a8f786a022ad1729cf435e3675e097a77d5a42eaf139a2d5d1d5309a027d4",
-      "legacyGzipSha256": "527f0578d9812e7dfa225121bda0b1546a6a0e4b5f556295fc8299c272de5fbf",
-      "bytes": 28117144
+      "bytes": 28117144,
+      "archiveFormat": "tar.xz"
+    },
+    "linux-arm64": {
+      "sha256": "c827d3d301e2eed1a51f36d0116b71b9e3d9e3b728f081615270ea40faac34c1",
+      "bytes": 29964164,
+      "archiveFormat": "tar.xz"
+    },
+    "linux-x64": {
+      "sha256": "30215f90ea3cd04dfbc06e762c021393fa173a1d392974298bbc871a8e461089",
+      "bytes": 31008136,
+      "archiveFormat": "tar.xz"
+    },
+    "win-arm64": {
+      "sha256": "0cd29eeb64f3c649db2c4c868779ca277f5a4c49e26c69e5928d01fe0ae06da8",
+      "bytes": 32553174,
+      "archiveFormat": "zip"
+    },
+    "win-x64": {
+      "sha256": "fba577c4bb87df04d54dd87bbdaa5a2272f1f99a2acbf9152e1a91b8b5f0b279",
+      "bytes": 36180122,
+      "archiveFormat": "zip"
     }
   }
 }

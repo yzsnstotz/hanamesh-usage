@@ -11,12 +11,12 @@ import {once} from 'node:events';
 import {root as source} from './fixtures/helpers.mjs';
 
 async function fixture(t){
- const root=await mkdtemp(join(tmpdir(),'hm-published-recovery 中文-')),plugin=join(root,'plugin'),shared=join(root,'shared'),agent=join(root,'usage'),cache=join(shared,'runtime',`node-v24.13.1-darwin-${process.arch}`),holders=[];
+ const root=await mkdtemp(join(tmpdir(),'hm-published-recovery 中文-')),plugin=join(root,'plugin'),shared=join(root,'shared'),agent=join(root,'usage'),cache=join(shared,'runtime',`node-v24.13.1-${process.platform}-${process.arch}`),holders=[];
  t.after(async()=>{for(const child of holders){child.stdin.end();if(child.exitCode===null&&child.signalCode===null)await once(child,'close');}await rm(root,{recursive:true,force:true});});
  await mkdir(join(plugin,'lib'),{recursive:true});await copyAgentBootstrap(plugin);
  for(const name of ['agent','core'])await cp(join(source,'lib',name),join(plugin,'lib',name),{recursive:true});
  await writeFile(join(plugin,'package.json'),'{"type":"module"}');await mkdir(join(cache,'bin'),{recursive:true});await copyFile(process.execPath,join(cache,'bin/node'));
- const recipe=JSON.parse(await readFile(join(plugin,'bin/node-runtime.json'))),target=recipe.architectures[process.arch],digest=createHash('sha256').update(await readFile(join(cache,'bin/node'))).digest('hex');
+ const recipe=JSON.parse(await readFile(join(plugin,'bin/node-runtime.json'))),target=recipe.platforms[`${process.platform}-${process.arch}`],digest=createHash('sha256').update(await readFile(join(cache,'bin/node'))).digest('hex');
  await writeFile(join(cache,'archive.sha256'),target.sha256+'\n');await writeFile(join(cache,'node.sha256'),digest+'  bin/node\n');await writeFile(join(cache,'prepare.lock'),'');
  const initial={code:'RUNTIME_PREPARING',phase:'publishing',initialEntry:'session',startedAt:new Date(Date.now()-5000).toISOString(),downloadedBytes:target.bytes,totalBytes:target.bytes,attemptCount:1,pid:99999999};
  await writeFile(join(cache,'prepare-state.json'),JSON.stringify(initial));

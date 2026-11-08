@@ -51,12 +51,12 @@ async function fixture(t,mode='failure'){
  const curl=join(root,'fixture-curl');await link(curlTemplate,curl);const linked=await stat(curl),template=await stat(curlTemplate);assert.equal(linked.ino,template.ino);assert.equal(linked.dev,template.dev);await writeFile(join(root,'fixture-inode.json'),JSON.stringify({inode:linked.ino,device:linked.dev,templateInode:template.ino,warmedInBefore:true,perRootHardLink:true}));await writeFile(join(root,'fixture-mode'),mode);
  for(const file of await readdir(join(plugin,'bin'))){const p=join(plugin,'bin',file),s=await readFile(p,'utf8');await writeFile(p,file.endsWith('.pl')?s.replaceAll("'/usr/bin/curl'",JSON.stringify(curl)):s.replaceAll('/usr/bin/curl',shellquote(curl)));}
  if(mode!=='failure'){
-  const name=`node-v24.13.1-darwin-${process.arch}`,tree=join(root,'archive-tree',name);await mkdir(join(tree,'bin'),{recursive:true});
+  const name=`node-v24.13.1-${process.platform}-${process.arch}`,tree=join(root,'archive-tree',name);await mkdir(join(tree,'bin'),{recursive:true});
   // The extracted wrapper is a fresh inode. Measure after its final real --version child exits,
   // so the one-time OS scan is not attributed to the producer's state commit latency.
   await writeFile(join(tree,'bin/node'),`#!/usr/bin/perl\nuse strict;use warnings;use Time::HiRes qw(time);use JSON::PP;\nmy $node=${perlquote(process.execPath)};if(@ARGV==1&&$ARGV[0] eq '--version'){my $status=system {$node} $node,@ARGV;open my $f,'>>',"$ENV{HOME}/node-exits" or die;print $f JSON::PP->new->encode({exitedAt=>int(time()*1000)})."\\n";close $f;exit($status>>8);}exec {$node} $node,@ARGV;\n`,{mode:0o755});await writeFile(join(tree,'LICENSE'),'TEST FIXTURE ONLY');
   const archive=join(root,'fixture.tar.xz');assert.equal(spawnSync('/usr/bin/tar',['-cJf',archive,'-C',join(root,'archive-tree'),name],{env:{...process.env,LC_ALL:'C'}}).status,0);
-  const bytes=await readFile(archive),recipePath=join(plugin,'bin/node-runtime.json'),recipe=JSON.parse(await readFile(recipePath));recipe.architectures[process.arch].sha256=mode==='badsha'?'0'.repeat(64):createHash('sha256').update(bytes).digest('hex');recipe.architectures[process.arch].bytes=bytes.length;await writeFile(recipePath,JSON.stringify(recipe));
+  const bytes=await readFile(archive),recipePath=join(plugin,'bin/node-runtime.json'),recipe=JSON.parse(await readFile(recipePath));recipe.platforms[`${process.platform}-${process.arch}`].sha256=mode==='badsha'?'0'.repeat(64):createHash('sha256').update(bytes).digest('hex');recipe.platforms[`${process.platform}-${process.arch}`].bytes=bytes.length;await writeFile(recipePath,JSON.stringify(recipe));
   await mkdir(join(plugin,'lib/agent'),{recursive:true});await writeFile(join(plugin,'lib/agent/preparation.mjs'),'// Explicit no-activity runtime publication fixture.\n');await writeFile(join(plugin,'lib/agent/cli.mjs'),`import{writeFileSync}from'node:fs';import{createInterface}from'node:readline';writeFileSync(${JSON.stringify(join(root,'takeover-mode'))},process.argv[2]);for await(const line of createInterface({input:process.stdin})){const q=JSON.parse(line);if(q.id!==undefined)console.log(JSON.stringify({jsonrpc:'2.0',id:q.id,result:{content:[{type:'text',text:JSON.stringify({runtime:{code:'RUNTIME_READY'},mode:process.argv[2]})}]}}));}`);
  }
  const env={PATH:'/usr/bin:/bin',HOME:root,HANAMESH_SHARED_HOME:shared,HANAMESH_AGENT_HOME:join(root,'agent'),CLAUDE_CONFIG_DIR:join(root,'claude'),HANAMESH_AGENT_CHANNEL:'claude'};
@@ -64,15 +64,14 @@ async function fixture(t,mode='failure'){
  const state=async()=>JSON.parse((await launch('status')).stdout);
  const captureFailure=async({gate='MCP response',limitMs=5000}={})=>{
   let preparation;
-  try{preparation=JSON.parse(await readFile(join(shared,'runtime',`node-v24.13.1-darwin-${process.arch}`,'prepare-state.json')));}catch(error){preparation={readError:error.code??'UNKNOWN'};}
-  const processes=spawnSync('/bin/ps',['-axo','pid=,ppid=,stat=,etime=,args='],{encoding:'utf8'}).stdout.split('\n').flatMap(line=>{const m=line.match(/^\s*(\d+)\s+(\d+)\s+(\S+)\s+(\S+)\s+(.*)$/);return m?[{pid:Number(m[1]),parent:Number(m[2]),state:m[3],elapsed:m[4],command:m[5]}]:[];});const owned=new Set([preparation.pid,...children.map(p=>p.pid)].filter(Boolean));let changed=true;while(changed){const n=owned.size;for(const p of processes)if(owned.has(p.parent))owned.add(p.pid);changed=owned.size>n;}
-  const signalState=spawnSync('/bin/ps',['-o','pid=,ppid=,sigmask=,sig=,wchan=','-p',[...owned].join(',')],{encoding:'utf8'});
-  const snapshot={signalState:signalState.stdout,ownedProcesses:processes.filter(p=>owned.has(p.pid)),gate,acceptanceWindowMs:limitMs,failedAt:new Date().toISOString(),preparation,children:children.map(p=>({pid:p.pid,exitCode:p.exitCode,signalCode:p.signalCode}))};
+  try{preparation=JSON.parse(await readFile(join(shared,'runtime',`node-v24.13.1-${process.platform}-${process.arch}`,'prepare-state.json')));}catch(error){preparation={readError:error.code??'UNKNOWN'};}
+  const ownedProcesses=children.map(p=>({pid:p.pid,exitCode:p.exitCode,signalCode:p.signalCode}));
+  const snapshot={ownedProcesses,gate,acceptanceWindowMs:limitMs,failedAt:new Date().toISOString(),preparation};
   await writeFile(join(root,'deadline-failure.json'),JSON.stringify(snapshot,null,2));
 
   console.error('RUNTIME_FIXED_WINDOW_FAILURE: '+JSON.stringify(snapshot));
  };
- const cache=join(shared,'runtime',`node-v24.13.1-darwin-${process.arch}`),raw=async()=>JSON.parse(await readFile(join(cache,'prepare-state.json'),'utf8'));
+ const cache=join(shared,'runtime',`node-v24.13.1-${process.platform}-${process.arch}`),raw=async()=>JSON.parse(await readFile(join(cache,'prepare-state.json'),'utf8'));
  const rows=async file=>{try{return(await readFile(join(root,file),'utf8')).trim().split('\n').filter(Boolean).map(line=>JSON.parse(line));}catch(error){if(error.code==='ENOENT')return[];throw error;}};
  const started=number=>eventUntil(root,async()=>{const attempts=await rows('downloads');return attempts[number-1];},t.signal);
  const settle=async(attempt,expected)=>{
@@ -113,7 +112,7 @@ test('an already-initialized MCP bridge hands off while idle, preserving queued 
  for(const id of [2,3])p.stdin.write(JSON.stringify({jsonrpc:'2.0',id,method:'tools/call',params:{name:'hanamesh_status',arguments:{}}})+'\n');await f.waitFor(async()=>replies.length===3);assert.deepEqual(replies.map(r=>r.id),[1,2,3]);assert.equal(JSON.parse(replies[2].result.content[0].text).mode,'mcp-ready');p.stdin.end();
 });
 test('a checksum mismatch is named and never publishes a runtime or falls back to PATH',async t=>{
- const f=await fixture(t,'badsha');await f.launch('hook',['--event','SessionStart'],ss('badsha'));const attempt=await f.started(1);assert.equal((await f.state()).runtime.code,'RUNTIME_PREPARING');await f.settle(attempt,'RUNTIME_ARCHIVE_CHECKSUM_MISMATCH');assert.equal((await f.state()).runtime.code,'RUNTIME_ARCHIVE_CHECKSUM_MISMATCH');await assert.rejects(readFile(join(f.shared,'runtime',`node-v24.13.1-darwin-${process.arch}`,'bin/node')));
+ const f=await fixture(t,'badsha');await f.launch('hook',['--event','SessionStart'],ss('badsha'));const attempt=await f.started(1);assert.equal((await f.state()).runtime.code,'RUNTIME_PREPARING');await f.settle(attempt,'RUNTIME_ARCHIVE_CHECKSUM_MISMATCH');assert.equal((await f.state()).runtime.code,'RUNTIME_ARCHIVE_CHECKSUM_MISMATCH');await assert.rejects(readFile(join(f.shared,'runtime',`node-v24.13.1-${process.platform}-${process.arch}`,'bin/node')));
 });
 
 test('runtime becoming ready during a fragmented MCP request preserves the consumed prefix',async t=>{
