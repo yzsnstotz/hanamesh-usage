@@ -9,7 +9,7 @@ const repo=resolve(import.meta.dirname,'../..'),root=resolve(process.env.RUNNER_
 await mkdir(evidence,{recursive:true});
 const env={};
 for(const key of ['PATH','Path','SystemRoot','SYSTEMROOT','WINDIR','COMSPEC','PATHEXT','PROCESSOR_ARCHITECTURE','OS','NUMBER_OF_PROCESSORS','LANG','LC_ALL','SHELL'])if(process.env[key])env[key]=process.env[key];
-for(const [key,leaf]of Object.entries({HOME:'home',USERPROFILE:'home',CFFIXED_USER_HOME:'home',DSH_HOME:'dsh',XDG_CONFIG_HOME:'config',XDG_DATA_HOME:'data',XDG_CACHE_HOME:'cache',XDG_STATE_HOME:'state',TMPDIR:'tmp',TMP:'tmp',TEMP:'tmp',npm_config_cache:'npm',CLAUDE_CONFIG_DIR:'claude',CODEX_HOME:'codex'})){env[key]=join(root,leaf);await mkdir(env[key],{recursive:true});}
+for(const [key,leaf]of Object.entries({HOME:'home',USERPROFILE:'home',APPDATA:'appdata',LOCALAPPDATA:'localappdata',CFFIXED_USER_HOME:'home',DSH_HOME:'dsh',XDG_CONFIG_HOME:'config',XDG_DATA_HOME:'data',XDG_CACHE_HOME:'cache',XDG_STATE_HOME:'state',TMPDIR:'tmp',TMP:'tmp',TEMP:'tmp',npm_config_cache:'npm',CLAUDE_CONFIG_DIR:'claude',CODEX_HOME:'codex'})){env[key]=join(root,leaf);await mkdir(env[key],{recursive:true});}
 Object.assign(env,{CI:'true',npm_config_update_notifier:'false',npm_config_manage_package_manager_versions:'false',pnpm_config_manage_package_manager_versions:'false',COREPACK_ENABLE_AUTO_PIN:'0',GIT_CONFIG_NOSYSTEM:'1',GIT_TERMINAL_PROMPT:'0',GIT_CONFIG_COUNT:'1',GIT_CONFIG_KEY_0:'credential.helper',GIT_CONFIG_VALUE_0:''});
 const bin=dirname(process.execPath);
 async function tool(name,entry){
@@ -23,6 +23,7 @@ async function tool(name,entry){
 const npm=await tool('npm','bin/npm-cli.js'),pnpm=await tool('pnpm','bin/pnpm.cjs');
 const redact=line=>String(line).replace(/([?&]token=)[^\s&]+/g,'$1[REDACTED]');
 async function command(file,args,cwd=repo,overrides={}){
+ if(file==='tar'&&process.platform==='win32')file=join(env.SystemRoot??env.SYSTEMROOT??env.WINDIR,'System32','tar.exe');
  console.log(JSON.stringify({command:[file,...args],cwd}));
  const child=spawn(file,args,{cwd,env:{...env,...overrides},stdio:['ignore','pipe','pipe']});
  for(const stream of [child.stdout,child.stderr])createInterface({input:stream}).on('line',line=>console.log(redact(line)));
@@ -85,8 +86,8 @@ try{
   const source=await createSuitePackageSource({archives,port:0,peerRegistry:'https://registry.npmjs.org/',maxArchiveBytes:32*1024*1024,maxExpandedBytes:128*1024*1024,maxEntries:10000,maxManifestBytes:2*1024*1024,maxResponseBytes:32*1024*1024,timeoutMs:10000});
   const results=[];
   try{for(const kind of ['core','usage','apphost','suite']){
-   const home=join(root,'cases',kind,'home'),dsh=join(root,'cases',kind,'dsh');await mkdir(home,{recursive:true});await mkdir(dsh,{recursive:true});
-   try{await command(process.execPath,[join(host,'native-case.mjs'),kind,source.registry],host,{HOME:home,USERPROFILE:home,CFFIXED_USER_HOME:home,DSH_HOME:dsh});results.push({kind,status:'PASS'});}catch(error){results.push({kind,status:'FAIL',error:error.message});}
+   const home=join(root,'cases',kind,'home'),dsh=join(root,'cases',kind,'dsh'),appdata=join(home,'AppData','Roaming'),localappdata=join(home,'AppData','Local');await mkdir(home,{recursive:true});await mkdir(dsh,{recursive:true});await mkdir(appdata,{recursive:true});await mkdir(localappdata,{recursive:true});
+   try{await command(process.execPath,[join(host,'native-case.mjs'),kind,source.registry],host,{HOME:home,USERPROFILE:home,APPDATA:appdata,LOCALAPPDATA:localappdata,CFFIXED_USER_HOME:home,DSH_HOME:dsh});results.push({kind,status:'PASS'});}catch(error){results.push({kind,status:'FAIL',error:error.message});}
    try{await copyFile(join(dsh,'evidence/native-load.json'),join(evidence,'native-'+kind+'.json'));}catch{}
   }}finally{await source.close();receipt.profiles=results;receipt.archives=archives;}
   if(results.some(r=>r.status!=='PASS'))throw Error('NATIVE_PROFILES_FAILED');

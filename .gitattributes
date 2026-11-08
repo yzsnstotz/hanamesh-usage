@@ -1,0 +1,4 @@
+
+# Source and lock fixtures retain their canonical bytes on every runner.
+* text=auto eol=lf
+*.tgz -text
