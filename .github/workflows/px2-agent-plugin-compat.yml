@@ -5,13 +5,11 @@ on:
   pull_request:
     paths: ['.gitattributes', 'tests/agent-node-runtime.test.mjs', 'agent/**', 'src/agent/**', 'lib/agent/**', 'tools/*agent*', '.github/workflows/px2-agent-plugin-compat.yml']
   workflow_dispatch:
-concurrency:
-  group: px2-agent-${{ github.ref }}
-  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
   plugin:
+    timeout-minutes: 20 # 待追认：仅限制本矩阵单 job，避免原生 runner 收尾无限占用。
     strategy:
       fail-fast: false
       matrix:
