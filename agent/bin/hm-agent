@@ -2,7 +2,11 @@
 set -eu
 umask 077
 [ -n "${1:-}" ] || { printf '%s\n' HANAMESH_AGENT_ACTION_REQUIRED >&2; exit 1; }
-plugin=$(CDPATH= cd -- "$(dirname "$0")/.." && pwd -P)
+case "$0" in
+ */*) script_dir=${0%/*}; [ -n "$script_dir" ] || script_dir=/ ;;
+ *) script_dir=. ;;
+esac
+plugin=$(CDPATH= cd -- "$script_dir/.." && pwd -P)
 case "${OS:-}:${OSTYPE:-}:${MSYSTEM:-}" in
  Windows_NT:*|*:msys*:*|*:cygwin*:*|*:*:MINGW*|*:*:MSYS*)
    # Native drive/UNC paths need no extra emulated cygpath processes on ARM64.
