@@ -4,6 +4,7 @@ import {mkdtemp,mkdir,readFile,writeFile,readdir,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
 import {spawnSync} from 'node:child_process';
+import {pathToFileURL} from 'node:url';
 const plugin=resolve(process.argv[2]);
 const root=await mkdtemp(join(tmpdir(),'hm-px2-smoke-'));
 let failure;
@@ -25,7 +26,7 @@ try {
   // Installed Node children (including Core) inherit this tripwire; no credential/network probe is needed.
   const tripwire=join(root,'no-network.mjs');
   await writeFile(tripwire,`import http from 'node:http';import https from 'node:https';import net from 'node:net';import tls from 'node:tls';import dgram from 'node:dgram';import fs from 'node:fs';const deny=()=>{fs.writeFileSync(${JSON.stringify(join(root,'network-attempt'))},'attempt');throw Error('PX2_NETWORK_FORBIDDEN')};globalThis.fetch=deny;http.request=http.get=https.request=https.get=net.connect=net.createConnection=tls.connect=dgram.createSocket=deny;`);
-  env.NODE_OPTIONS=`--import=${JSON.stringify(tripwire)}`;
+  env.NODE_OPTIONS=`--import=${pathToFileURL(tripwire).href}`;
   let count=0;
   for(const channel of ['claude','codex']) {
     const hooks=JSON.parse(await readFile(join(plugin,'hooks',channel==='claude'?'hooks.json':'codex.json'))).hooks;
