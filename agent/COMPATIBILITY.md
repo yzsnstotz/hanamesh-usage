@@ -28,4 +28,4 @@
 
 测试仅在公开 Actions 标准 runner：六平台 × minimum/latest。严格目标 build、POSIX/Windows 各自真实桥接用例、官方 CLI validate/install/list/MCP list、真实 hooks 命令 + 官方字段合成 JSON；网站未同意时 HTTP 上传 tripwire，显式本机关闭后零记录，无真实账号/模型/API key。Core 子进程保留生产环境白名单，不继承测试预加载器；其 consent/upload 权限边界由既有 Core 契约和本门明确状态检查共同验证。直接 payload 驱动不冒充真实用户库存、已 Trust 的登录会话或 UI 展示 ACK。
 
-待追认：Windows Git for Windows、Linux 完整 Perl；两个额外 arm64 hosted runner；单 job25分钟期限；Windows 原生冷 shell10秒测试门。原 POSIX500ms门不变。此处的待追认标记不把失败或取消算 PASS。
+待追认：Windows Git for Windows、Linux 完整 Perl；两个额外 arm64 hosted runner；单 job25分钟期限；Windows 原生冷 shell10秒测试门。原 POSIX500ms门不变；计时敏感文件串行供给以避免其它测试的哈希/压缩争抢，文件内并发竞争用例保留，此供给方式待追认。此处的待追认标记不把失败或取消算 PASS。
