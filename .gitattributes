@@ -1,4 +1,7 @@
-# Agent packages must have the same source/build bytes on Windows and POSIX.
+# Source and lock fixtures retain canonical bytes on every runner.
+* text=auto eol=lf
+*.tgz -text
+# Preserve the reviewed agent helper binary and launcher bytes.
 agent/** text eol=lf
 src/agent/** text eol=lf
 lib/agent/** text eol=lf
