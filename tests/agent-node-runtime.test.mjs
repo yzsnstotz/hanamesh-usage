@@ -22,7 +22,8 @@ const launcher=(f,action)=>process.platform==='win32'?spawnSync('powershell.exe'
 for(const channel of ['claude','codex'])test('installed '+channel+' hooks use fixed runtime: '+platform,async t=>{
  const f=await fixture(t),hooks=JSON.parse(await readFile('agent/hooks/'+(channel==='claude'?'hooks.json':'codex.json')));
  for(const[event,rows]of Object.entries(hooks.hooks)){
-  const hook=rows[0].hooks[0];const r=process.platform==='win32'&&channel==='codex'?spawnSync(hook.commandWindows,{shell:true,env:f.env,input:'{}',encoding:'utf8'}):spawnSync(process.platform==='win32'?'bash':'/bin/sh',['-c',hook.command],{env:f.env,input:'{}',encoding:'utf8'});
+  const hook=rows[0].hooks[0],started=performance.now();const r=process.platform==='win32'&&channel==='codex'?spawnSync(hook.commandWindows,{shell:true,env:f.env,input:'{}',encoding:'utf8'}):spawnSync(process.platform==='win32'?'bash':'/bin/sh',['-c',hook.command],{env:f.env,input:'{}',encoding:'utf8'});
+  if(process.platform==='win32')assert.ok(performance.now()-started<10000,channel+': '+event+' actual manifest command must meet the existing Windows 10s shell budget (待追认)');
   assert.equal(r.status,0,event+': '+r.stderr);assert.match(r.stdout,/HOOK_OK:v24\.13\.1/);assert.deepEqual(JSON.parse(r.stdout.trim().split(/\r?\n/)[1]),['--event',event],channel+': '+event);
  }
 });
