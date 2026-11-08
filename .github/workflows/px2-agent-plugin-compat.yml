@@ -34,6 +34,8 @@ jobs:
           PX2_REVISION: ${{ github.sha }}
         run: |
           git -c credential.helper= init -q
+          git config core.autocrlf false
+          git config core.eol lf
           git -c credential.helper= fetch --depth=1 "https://github.com/$PX2_REPOSITORY.git" "$PX2_REVISION"
           git checkout --detach FETCH_HEAD
       - name: Native Windows syntax
@@ -69,6 +71,13 @@ jobs:
         if: matrix.cli == 'minimum'
         timeout-minutes: 8
         run: node --test --test-concurrency=1 --test-reporter=tap tests/agent*.test.mjs
+      - name: Confirm clean isolated Git source before materialization
+        env:
+          GIT_CONFIG_NOSYSTEM: '1'
+          GIT_CONFIG_GLOBAL: ${{ runner.os == 'Windows' && 'NUL' || '/dev/null' }}
+        run: |
+          git status --short
+          test -z "$(git status --porcelain --untracked-files=normal)"
       - name: Official CLI minimum or latest installation gates
         run: node tools/agent-compat-cli.mjs '${{ matrix.cli }}'
       - name: Current Agent consent-withheld and closed hook payloads
