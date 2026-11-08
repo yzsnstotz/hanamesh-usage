@@ -63,7 +63,7 @@ jobs:
       - name: Normal strict target build
         run: node tools/build.mjs
       - name: Current Agent fixed-runtime and manifest unit gates
-        run: node --test --test-reporter=tap tests/agent-node-runtime.test.mjs tests/node-tool.test.mjs
+        run: node --test --test-reporter=tap tests/agent-node-runtime.test.mjs tests/agent-runtime-background.test.mjs tests/agent-runtime-recovery.test.mjs tests/agent-preparation-recording.test.mjs tests/node-tool.test.mjs
       - name: Official CLI minimum or latest installation gates
         run: node tools/agent-compat-cli.mjs '${{ matrix.cli }}'
       - name: Current Agent consent-withheld and closed hook payloads

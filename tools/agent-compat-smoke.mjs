@@ -22,7 +22,7 @@ try {
   const launch=(action,...args)=>process.platform==='win32'
     ?run('powershell.exe',['-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',join(plugin,'bin/hm-agent.ps1'),action,...args])
     :run('/bin/sh',[join(plugin,'bin/hm-agent'),action,...args]);
-  launch('install-runtime');
+  launch('status');
   const platform=`${process.platform==='win32'?'win':process.platform}-${process.arch}`;
   const preparation=join(env.HANAMESH_SHARED_HOME,`runtime/node-v24.13.1-${platform}/prepare-state.json`);
   const until=Date.now()+240000;

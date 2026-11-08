@@ -36,7 +36,8 @@ try {
   function Reject-Reparse([string]$Path) {
     # Walk every existing ancestor; Windows junctions are reparse points too.
     for ($p = [IO.Path]::GetFullPath($Path); $p; $p = [IO.Path]::GetDirectoryName($p)) {
-      if ((Test-Path -LiteralPath $p) -and ((Get-Item -Force -LiteralPath $p).Attributes -band [IO.FileAttributes]::ReparsePoint)) { Fail 'HANAMESH_NODE_RUNTIME_SYMLINK_REJECTED' }
+      try { $attributes=[IO.File]::GetAttributes($p) } catch [IO.FileNotFoundException] { continue } catch [IO.DirectoryNotFoundException] { continue }
+      if ($attributes -band [IO.FileAttributes]::ReparsePoint) { Fail 'HANAMESH_NODE_RUNTIME_SYMLINK_REJECTED' }
     }
   }
   function Check-Version([string]$Executable) {
