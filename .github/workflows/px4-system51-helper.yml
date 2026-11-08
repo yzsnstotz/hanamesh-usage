@@ -25,7 +25,10 @@ jobs:
           $binary="$env:RUNNER_TEMP/px4-helper/windows-detached.dll"
           & "$env:WINDIR/Microsoft.NET/Framework64/v4.0.30319/csc.exe" /nologo /target:library /platform:anycpu /optimize+ "/out:$binary" (Join-Path $PWD 'agent\bin\windows-detached.cs')
           if($LASTEXITCODE -ne 0){throw 'COMPILE_FAILED'}
-          @{builtFromRevision='${{ github.sha }}';schemaVersion=1;architecture='AnyCPU';targetFramework='.NET Framework 4';sourceSha256=(Get-FileHash agent/bin/windows-detached.cs).Hash.ToLowerInvariant();sha256=(Get-FileHash $binary).Hash.ToLowerInvariant()}|ConvertTo-Json|Set-Content -Encoding UTF8 "$env:RUNNER_TEMP/px4-helper/windows-detached.json"
+          $launcher="$env:RUNNER_TEMP/px4-helper/windows-launcher.exe"
+          & "$env:WINDIR/Microsoft.NET/Framework64/v4.0.30319/csc.exe" /nologo /target:exe /platform:anycpu /optimize+ "/out:$launcher" (Join-Path $PWD 'agent\bin\windows-detached.cs')
+          if($LASTEXITCODE -ne 0){throw 'COMPILE_FAILED'}
+          @{builtFromRevision='${{ github.sha }}';schemaVersion=1;architecture='AnyCPU';targetFramework='.NET Framework 4';sourceSha256=(Get-FileHash agent/bin/windows-detached.cs).Hash.ToLowerInvariant();sha256=(Get-FileHash $binary).Hash.ToLowerInvariant();launcherSha256=(Get-FileHash $launcher).Hash.ToLowerInvariant()}|ConvertTo-Json|Set-Content -Encoding UTF8 "$env:RUNNER_TEMP/px4-helper/windows-detached.json"
           [Reflection.Assembly]::Load([IO.File]::ReadAllBytes($binary))|Out-Null
           if([HanaMeshDetached]::NativeArchitecture() -ne 'x64'){throw 'ARCH_FAILED'}
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
