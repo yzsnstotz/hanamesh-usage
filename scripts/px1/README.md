@@ -26,3 +26,7 @@ fileURLToPath handles Windows paths. Logs and JSON receipts preserve failures.
 This is Node/web-profile loading, not GUI/product, owned Windows process, CLI
 real-vendor installation, or paid-model acceptance. Unsupported functionality
 must remain explicitly reported even if its refusal is expected.
+
+## PK3 consolidation
+
+The four fixture archives are a single consolidated candidate snapshot. `fixtures/provenance.json` records each normal pack source commit, exact SHA256, reviewed gate source and previous provenance. The role archive is still replaced by that runner’s normal pack; failed packs remain failures. Core includes the PX3 Windows ACL implementation, Usage includes R128b Agent 0.2.9, and AppHost includes PX3 with the reviewed gate 0.1.12. No published version bytes are claimed to have changed.
