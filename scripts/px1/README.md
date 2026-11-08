@@ -9,7 +9,10 @@ repository tests, normal pack, and official npm DSH 0.2.2-rc.1 loading. AppHost
 also runs AH1 installation-* tests separately. Commands receive an environment
 allowlist and fresh HOME/USERPROFILE/DSH_HOME; ports are random, models unused.
 
-fixtures/provenance.json pins PK2's exact normal archives and source commits.
+fixtures/provenance.json pins the normal archives and source commits: PK2's
+Core/Usage inputs and PX1's AppHost native-root fix. The previous PK2 AppHost
+hash is retained explicitly; the same unpublished version has new candidate
+bytes, never a replacement claimed to be the old artifact.
 The local repository's normal pack replaces its fixture for native loading;
 other components remain those locked archives. The unchanged suite tuple/patch
 is normally repacked with the actual input hashes in release.json. A failed

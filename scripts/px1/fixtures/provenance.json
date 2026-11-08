@@ -1,9 +1,9 @@
 {
-  "source": "PK2-gate-handoff.md, 2026-11-08 AH1 .24 final artifacts",
+  "source": "PK2-gate-handoff.md, 2026-11-08 AH1 .24 final artifacts; AppHost: PX1 normal Linux pack from GitHub Actions run 42468476191, secureDirectory native-root fix",
   "commits": {
     "core": "e70b233f42c487a8684fc14f4c9769630bb9f2c4",
     "usage": "0ddb376bf8dab43348520079872a173e0e988f15",
-    "apphost": "dbb685d33e2c5717de24843b7de8ead4e5b4bae6"
+    "apphost": "14c54d0864808991e898d17b25ffe5a6d7bc18dc"
   },
   "archives": [
     {
@@ -16,11 +16,14 @@
     },
     {
       "file": "hanamesh-dsh-app-host-0.6.24.tgz",
-      "sha256": "fce7b8066fce1945295d8977b4ca2a48807060bbcf7b141e7c747ab33e1a64f6"
+      "sha256": "e47b4dee4047fca664b5f60594354a1649338f462d5229cd757e84e326c668d8",
+      "previousPk2Sha256": "fce7b8066fce1945295d8977b4ca2a48807060bbcf7b141e7c747ab33e1a64f6",
+      "workflow": "https://github.com/yzsnstotz/hanamesh-plugin-app-host/actions/runs/42468476191"
     },
     {
       "file": "hanamesh-hanamesh-0.1.4.tgz",
       "sha256": "27bc017030fdffff45ca3e4e89b8b500d12e38a2e611e60fc0513e9af13ca086"
     }
-  ]
+  ],
+  "previousAppHostCommit": "dbb685d33e2c5717de24843b7de8ead4e5b4bae6"
 }

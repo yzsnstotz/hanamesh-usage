@@ -7,7 +7,7 @@ my $action=shift(@ARGV)//''; my $plugin=abs_path(dirname(__FILE__).'/..');
 my $shared=$ENV{HANAMESH_SHARED_HOME}//(($ENV{HOME}//'').'/.hanamesh-shared');
 sub fail { die "$_[0]\n"; }
 fail('HANAMESH_NODE_RUNTIME_HOME_INVALID') unless $shared=~m{^/};
-my $os=`/usr/bin/uname -s`; chomp $os; my $machine=`/usr/bin/uname -m`; chomp $machine;
+my ($os,$machine)=(POSIX::uname())[0,4];
 fail('HANAMESH_NODE_PLATFORM_UNSUPPORTED') unless $os eq 'Darwin' && ($machine eq 'arm64'||$machine eq 'x86_64');
 my $arch=$machine eq 'arm64'?'arm64':'x64';
 open my $recipe_f,'<:raw',"$plugin/bin/node-runtime.json" or fail('RUNTIME_RECIPE_UNAVAILABLE');my $recipe;{local $/;$recipe=$json->decode(<$recipe_f>);}close $recipe_f;
