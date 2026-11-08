@@ -129,6 +129,6 @@ try {
 } catch(error){failure=error;throw error;}finally{
   for(const child of children){child.stdin.end();child.kill();}
   await Promise.all([...children].map(p=>p.exitCode===null?once(p,'close'):Promise.resolve()));
-  await new Promise(r=>server.close(r));server.closeAllConnections();
+  server.closeAllConnections();await new Promise(r=>server.close(r));
   try{await rm(root,{recursive:true,force:true,maxRetries:5,retryDelay:200});}catch(error){if(!failure)throw error;}
 }
