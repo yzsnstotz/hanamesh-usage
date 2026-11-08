@@ -225,7 +225,7 @@ try {
       if ($name -eq 'Skill' -and $payload.tool_input.skill -cmatch '^[A-Za-z0-9_.:@-]+$') {$valid=$true;$selector.skill=$payload.tool_input.skill}
       if ($channel -eq 'codex' -and $name -match '^(functions\.)?exec_command$') {
         $cmd=if ($payload.tool_input.cmd) {$payload.tool_input.cmd} else {$payload.tool_input.command}
-        if ($cmd -cmatch '^\s*cat (?:"([^"\n]+[\\/]SKILL\.md)"|''([^''\n]+[\\/]SKILL\.md)''|([^\s]+[\\/]SKILL\.md))\s*$') { $valid=$true;$path=if($Matches[1]){$Matches[1]}elseif($Matches[2]){$Matches[2]}else{$Matches[3]};$selector.skillPathHash=Hash-Text ($path.Replace('\','/').ToLowerInvariant()) }
+        if ($cmd -match '^\s*cat (?:"([^"\n]+[\\/]SKILL\.md)"|''([^''\n]+[\\/]SKILL\.md)''|([^\s]+[\\/]SKILL\.md))\s*$') { $valid=$true;$path=if($Matches[1]){$Matches[1]}elseif($Matches[2]){$Matches[2]}else{$Matches[3]};$selector.skillPathHash=Hash-Text ($path.Replace('\','/').ToLowerInvariant()) }
       }
       if ($valid) {
         $fact=Hash-Text (ConvertTo-Json -InputObject @($channel,$payload.session_id,$call) -Compress)
