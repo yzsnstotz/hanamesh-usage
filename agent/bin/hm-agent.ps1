@@ -100,18 +100,14 @@ try {
     'hook' { @("$plugin/lib/agent/hook.mjs") + $AgentArgs }
     default { @("$plugin/lib/agent/cli.mjs", $Action) + $AgentArgs }
   }
-  # Inherit raw stdio handles. PowerShell 5.1 must not turn native stderr into
-  # terminating NativeCommandError records or transcode the JSON hook streams.
-  $start = New-Object System.Diagnostics.ProcessStartInfo
-  $start.FileName = $node
-  $start.UseShellExecute = $false
-  $start.CreateNoWindow = $true
-  $quoted = foreach ($arg in $entryArgs) {
-    '"' + [Regex]::Replace([Regex]::Replace($arg, '(\\*)"', '$1$1\"'), '(\\+)$', '$1$1') + '"'
-  }
-  $start.Arguments = $quoted -join ' '
-  $child = [System.Diagnostics.Process]::Start($start)
-  try { $child.WaitForExit(); $nodeExit = $child.ExitCode } finally { $child.Dispose() }
+  # PowerShell's native invocation preserves the host's pipes. Allow native
+  # stderr (for example node:sqlite warnings) without turning it into a
+  # terminating PowerShell error; the native exit code remains authoritative.
+  $ErrorActionPreference = 'Continue'
+  & $node @entryArgs
+  $nativeSucceeded = $?
+  $nodeExit = $LASTEXITCODE
+  if (!$nativeSucceeded -and !$nodeExit) { Fail 'HANAMESH_RUNTIME_EXEC_FAILED' }
   exit $nodeExit
 } catch {
   $code = $_.Exception.Message
