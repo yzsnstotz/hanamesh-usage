@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 permissions: {}
 concurrency:
-  group: px1-${{ github.repository }}-${{ github.ref }}
+  group: px1-${{ github.repository }}-${{ github.ref }}-${{ github.sha }}
   cancel-in-progress: false
 jobs:
   public-runner-probe:
@@ -67,16 +67,19 @@ jobs:
         if: success()
         run: node scripts/px1/run.mjs build
       - name: Run repository unit tests
-        if: always() && steps.install.outcome == 'success'
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        timeout-minutes: 6
         run: node scripts/px1/run.mjs unit
       - name: Run AH1 CLI discovery and platform path cases
-        if: always() && steps.install.outcome == 'success' && env.PX1_ROLE == 'apphost'
+        if: ${{ !cancelled() && steps.install.outcome == 'success' && env.PX1_ROLE == 'apphost' }}
+        timeout-minutes: 5
         run: node scripts/px1/run.mjs cli
       - name: Produce the normal local package
-        if: always() && steps.install.outcome == 'success'
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: node scripts/px1/run.mjs pack
       - name: Official npm DSH and four isolated native profiles
-        if: always() && steps.install.outcome == 'success'
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        timeout-minutes: 12
         run: node scripts/px1/run.mjs native
       - name: Preserve receipts and package artifacts
         if: always()
