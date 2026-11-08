@@ -15,13 +15,13 @@ try {
     $errorWriter=New-Object IO.StreamWriter([Console]::OpenStandardError(),$utf8);$errorWriter.AutoFlush=$true;[Console]::SetError($errorWriter)
   }
   if (!$Action) { Fail 'HANAMESH_AGENT_ACTION_REQUIRED' }
-  if($PSVersionTable.PSVersion -lt [version]'7.4'){Fail 'HANAMESH_POWERSHELL74_REQUIRED'}
-  # .NET 8+ uses IsWow64Process2 for native OS architecture, including emulated Git Bash.
-  $arch=[Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString().ToLowerInvariant()
-  $processArch=[Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString().ToLowerInvariant()
-  if($processArch -ne $arch){Fail 'HANAMESH_POWERSHELL_NATIVE_ARCH_REQUIRED'}
-  if($arch -notin @('x64','arm64')){Fail 'HANAMESH_NODE_PLATFORM_UNSUPPORTED'}
+  if($PSVersionTable.PSVersion -lt [version]'5.1'){Fail 'HANAMESH_POWERSHELL51_REQUIRED'}
+  $powershell=[Diagnostics.Process]::GetCurrentProcess().MainModule.FileName
   $plugin=Split-Path -Parent $PSScriptRoot
+  . (Join-Path $PSScriptRoot 'windows-detached.ps1')
+  Initialize-HanaMeshDetached
+  $arch=[HanaMeshDetached]::NativeArchitecture()
+  if($arch -notin @('x64','arm64')){Fail 'HANAMESH_NODE_PLATFORM_UNSUPPORTED'}
   $recipe=Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'node-runtime.json')|ConvertFrom-Json
   $target=$recipe.platforms.('win-'+$arch)
   if($recipe.version -ne '24.13.1' -or $recipe.downloadOrigin -ne 'https://nodejs.org' -or $target.archiveFormat -ne 'zip' -or $target.sha256 -notmatch '^[a-f0-9]{64}$'){Fail 'HANAMESH_RUNTIME_RECIPE_INVALID'}
@@ -231,7 +231,7 @@ try {
     if ($payload.hook_event_name -eq $event -and $call -is [string] -and $payload.session_id -is [string] -and $name -is [string]) {
       $selector=@{};$valid=$name -cmatch '^mcp__[A-Za-z0-9_]+$'
       if ($name -eq 'Skill' -and $payload.tool_input.skill -cmatch '^[A-Za-z0-9_.:@-]+$') {$valid=$true;$selector.skill=$payload.tool_input.skill}
-      if ($channel -eq 'codex' -and $name -match '^(functions\.)?exec_command$') {
+      if ($channel -eq 'codex' -and $name -match '^(Bash|(?:functions\.)?exec_command)$') {
         $cmd=if ($payload.tool_input.cmd) {$payload.tool_input.cmd} else {$payload.tool_input.command}
         if ($cmd -match '^\s*cat (?:"([^"\n]+[\\/]SKILL\.md)"|''([^''\n]+[\\/]SKILL\.md)''|([^\s]+[\\/]SKILL\.md))\s*$') { $valid=$true;$path=if($Matches[1]){$Matches[1]}elseif($Matches[2]){$Matches[2]}else{$Matches[3]};$selector.skillPathHash=Hash-Text ($path.Replace('\','/').ToLowerInvariant()) }
       }
@@ -282,7 +282,7 @@ try {
         . (Join-Path $PSScriptRoot 'windows-detached.ps1')
         Initialize-HanaMeshDetached
         $launchPhase='create-process'
-        $workerId=[HanaMeshDetached]::Start((Join-Path $PSHOME 'pwsh.exe'),('-NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "'+$PSCommandPath+'" prepare-worker '+$initial.token),$cache,$stdinFile,(Join-Path $cache 'prepare.log'),(Join-Path $cache 'prepare-error.log'))
+        $workerId=[HanaMeshDetached]::Start($powershell,('-NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "'+$PSCommandPath+'" prepare-worker '+$initial.token),$cache,$stdinFile,(Join-Path $cache 'prepare.log'),(Join-Path $cache 'prepare-error.log'))
         $workerTicks=$null
         try{$worker=[Diagnostics.Process]::GetProcessById($workerId);$workerTicks=$worker.StartTime.ToUniversalTime().Ticks.ToString();$worker.Dispose()}catch{}
         $lease=Lease

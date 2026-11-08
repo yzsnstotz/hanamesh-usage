@@ -7,7 +7,7 @@ import {readFile,writeFile,readdir} from 'node:fs/promises';
 import {windowsFixture} from '../fixtures/windows-agent-runtime.mjs';
 const ss=id=>({session_id:id,source:'startup'});
 async function mcp(f){
- const p=spawn('pwsh.exe',[...f.psArgs,'-File',join(f.plugin,'bin/hm-agent.ps1'),'mcp'],{env:f.env,stdio:['pipe','pipe','pipe']});f.children.push(p);p.stdin.on('error',()=>{});let buf='',stderr='';const replies=[];let notify=()=>{};
+ const p=spawn('powershell.exe',[...f.psArgs,'-File',join(f.plugin,'bin/hm-agent.ps1'),'mcp'],{env:f.env,stdio:['pipe','pipe','pipe']});f.children.push(p);p.stdin.on('error',()=>{});let buf='',stderr='';const replies=[];let notify=()=>{};
  p.stderr.on('data',c=>stderr+=c);p.stdout.on('data',c=>{buf+=c;for(;;){const at=buf.indexOf('\n');if(at<0)break;replies.push(JSON.parse(buf.slice(0,at)));buf=buf.slice(at+1)}notify()});
  const wait=n=>new Promise((ok,bad)=>{const timer=setTimeout(()=>bad(Error('NATIVE_MCP_NO_REPLY: '+stderr)),10000);notify=()=>{if(replies.length>=n){clearTimeout(timer);ok()}};notify()});
  const send=(id,method,params={})=>p.stdin.write(JSON.stringify({jsonrpc:'2.0',id,method,params})+'\n');
@@ -46,5 +46,5 @@ test('native first non-session failure consumes the first SessionStart attempt b
 });
 
 test('native preparer refuses a modified pinned detacher before any download or publication',async t=>{
- const f=await windowsFixture(t);await writeFile(join(f.plugin,'bin/windows-detached.dll'),'CORRUPT TEST FIXTURE');await f.hook('SessionStart',ss('invalid-helper'));const state=await f.disk();assert.equal(state.code,'RUNTIME_PREPARER_START_FAILED');assert.equal(state.startFailurePhase,'load-verified-helper');assert.equal((await f.rows('downloads')).length,0);await assert.rejects(readFile(join(f.cache,'node.exe')));
+ const f=await windowsFixture(t);await writeFile(join(f.plugin,'bin/windows-detached.dll'),'CORRUPT TEST FIXTURE');const r=await f.launch('hook',['--event','SessionStart'],JSON.stringify({hook_event_name:'SessionStart',...ss('invalid-helper')}));assert.notEqual(r.code,0);assert.match(r.stderr,/HANAMESH_WINDOWS_DETACH_HELPER_CHECKSUM_MISMATCH/);await assert.rejects(f.disk(),{code:'ENOENT'});assert.equal((await f.rows('downloads')).length,0);await assert.rejects(readFile(join(f.cache,'node.exe')));
 });

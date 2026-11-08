@@ -10,4 +10,4 @@ Runtime包来自Node官方固定SHA，这是运行时完整性校验，与插件
 
 Agent 0.2.9 extends the same automatic preparation and local-only-before-website-consent behavior to macOS/Linux/Windows arm64/x64. POSIX uses the Perl readiness bridge; Windows uses native PowerShell and an OS file lease, with no Windows Perl dependency. Claude hooks and MCP use official Git Bash on Windows; Codex hooks use commandWindows.
 
-Windows prerequisites: native x64/ARM64 PowerShell 7.4+ (`pwsh.exe` on PATH) and Git for Windows. This explicit prerequisite is 待追认. [Microsoft installation guide](https://learn.microsoft.com/en-us/powershell/scripting/install/install-powershell-on-windows).
+Windows uses built-in Windows PowerShell 5.1 (`powershell.exe`); no PowerShell 7 installation is required. The fixed .NET Framework helper detects the native OS ISA through IsWow64Process2 even when Git Bash or the shell is emulated. Git for Windows is used by the declared Claude hooks and both MCP commands (待追认 as a package prerequisite).

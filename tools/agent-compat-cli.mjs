@@ -55,14 +55,21 @@ try {
   // Distinct marketplace formats are accepted by each official CLI.
   const market=join(root,'market');await mkdir(join(market,'.claude-plugin'),{recursive:true});await mkdir(join(market,'.agents/plugins'),{recursive:true});
   await cp(plugin,join(market,'plugin'),{recursive:true});
-  const common={name:'px2-local',owner:{name:'HanaMesh'},plugins:[{name:'hanamesh',source:'./plugin',category:'productivity'}]};
+  const target=join(market,'target');await mkdir(join(target,'.claude-plugin'),{recursive:true});await mkdir(join(target,'.codex-plugin'));await mkdir(join(target,'skills/demo'),{recursive:true});
+  const targetManifest={name:'target',version:'1.0.0',description:'Isolated attribution fixture; never executes a model or tool'};
+  for(const host of ['.claude-plugin','.codex-plugin'])await writeFile(join(target,host,'plugin.json'),JSON.stringify(targetManifest));
+  await writeFile(join(target,'.mcp.json'),JSON.stringify({mcpServers:{probe:{command:'node',args:['-e','process.stdin.resume()']}}}));
+  await writeFile(join(target,'skills/demo/SKILL.md'),'Fixture only');
+  const common={name:'px2-local',owner:{name:'HanaMesh'},plugins:[{name:'hanamesh',source:'./plugin',category:'productivity'},{name:'target',source:'./target',category:'productivity'}]};
   await writeFile(join(market,'.claude-plugin/marketplace.json'),JSON.stringify(common));
-  await writeFile(join(market,'.agents/plugins/marketplace.json'),JSON.stringify({...common,plugins:[{name:'hanamesh',source:{source:'local',path:'./plugin'},category:'Productivity',policy:{installation:'AVAILABLE',authentication:'ON_USE'}}]}));
+  await writeFile(join(market,'.agents/plugins/marketplace.json'),JSON.stringify({...common,plugins:[{name:'hanamesh',source:{source:'local',path:'./plugin'},category:'Productivity',policy:{installation:'AVAILABLE',authentication:'ON_USE'}},{name:'target',source:{source:'local',path:'./target'},category:'Productivity',policy:{installation:'AVAILABLE',authentication:'ON_USE'}}]}));
   await cli('@anthropic-ai/claude-code',['plugin','marketplace','add',market]);
   await cli('@anthropic-ai/claude-code',['plugin','install','hanamesh@px2-local']);
+  await cli('@anthropic-ai/claude-code',['plugin','install','target@px2-local']);
   await cli('@anthropic-ai/claude-code',['plugin','list','--json']);
   await cli('@openai/codex',['plugin','marketplace','add',market,'--json']);
   await cli('@openai/codex',['plugin','add','hanamesh@px2-local','--json']);
+  await cli('@openai/codex',['plugin','add','target@px2-local','--json']);
   await cli('@openai/codex',['plugin','list','--json']);
   const mcp=JSON.parse(await cli('@openai/codex',['mcp','list','--json'])).find(row=>row.name==='hanamesh');
   assert.ok(mcp,'installed plugin MCP must be visible');assert.equal(mcp.transport.command,'bash');

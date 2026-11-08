@@ -7,7 +7,7 @@
           {
             "type": "command",
             "command": "bash \"${CLAUDE_PLUGIN_ROOT}/bin/hm-agent\" hook --event SessionStart",
-            "commandWindows": "pwsh.exe -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command \"& (Join-Path $env:PLUGIN_ROOT 'bin/hm-agent.ps1') hook --event SessionStart; exit $LASTEXITCODE\""
+            "commandWindows": "powershell.exe -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command \"& (Join-Path $env:PLUGIN_ROOT 'bin/hm-agent.ps1') hook --event SessionStart; exit $LASTEXITCODE\""
           }
         ]
       }
@@ -19,7 +19,7 @@
           {
             "type": "command",
             "command": "bash \"${CLAUDE_PLUGIN_ROOT}/bin/hm-agent\" hook --event PostToolUse",
-            "commandWindows": "pwsh.exe -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command \"& (Join-Path $env:PLUGIN_ROOT 'bin/hm-agent.ps1') hook --event PostToolUse; exit $LASTEXITCODE\""
+            "commandWindows": "powershell.exe -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command \"& (Join-Path $env:PLUGIN_ROOT 'bin/hm-agent.ps1') hook --event PostToolUse; exit $LASTEXITCODE\""
           }
         ]
       }
@@ -31,7 +31,7 @@
           {
             "type": "command",
             "command": "bash \"${CLAUDE_PLUGIN_ROOT}/bin/hm-agent\" hook --event PreToolUse",
-            "commandWindows": "pwsh.exe -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command \"& (Join-Path $env:PLUGIN_ROOT 'bin/hm-agent.ps1') hook --event PreToolUse; exit $LASTEXITCODE\""
+            "commandWindows": "powershell.exe -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command \"& (Join-Path $env:PLUGIN_ROOT 'bin/hm-agent.ps1') hook --event PreToolUse; exit $LASTEXITCODE\""
           }
         ]
       }

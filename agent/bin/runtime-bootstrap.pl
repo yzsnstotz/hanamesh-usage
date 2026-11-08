@@ -55,7 +55,7 @@ sub retain_preparing_hook {
  my $input=ref($p->{tool_input}) eq 'HASH'?$p->{tool_input}:{};my %selector;
  if($name=~/^mcp__[A-Za-z0-9_]+$/){}
  elsif($name eq 'Skill'&&defined($input->{skill})&&!ref($input->{skill})&&$input->{skill}=~/^[A-Za-z0-9_.:@-]+$/){$selector{skill}=$input->{skill};}
- elsif($channel eq 'codex'&&$name=~/^(?:functions\.)?exec_command$/){my $cmd=$input->{cmd}//$input->{command}//'';return if ref($cmd);if($cmd=~/^\s*cat (?:"([^"\n]+\/SKILL\.md)"|'([^'\n]+\/SKILL\.md)'|([^\s]+\/SKILL\.md))\s*$/){$selector{skillPathHash}=sha256_hex(encode('UTF-8',$1//$2//$3));}else{return;}}
+ elsif($channel eq 'codex'&&$name=~/^(?:Bash|(?:functions\.)?exec_command)$/){my $cmd=$input->{cmd}//$input->{command}//'';return if ref($cmd);if($cmd=~/^\s*cat (?:"([^"\n]+\/SKILL\.md)"|'([^'\n]+\/SKILL\.md)'|([^\s]+\/SKILL\.md))\s*$/){$selector{skillPathHash}=sha256_hex(encode('UTF-8',$1//$2//$3));}else{return;}}
  else{return;}
  my $success=undef;my $response=$p->{tool_response};
  if($event eq 'PostToolUseFailure'){$success=JSON::PP::false;}

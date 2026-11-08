@@ -12,6 +12,17 @@ jobs:
       matrix:
         include:
           - {runner: ubuntu-latest, os: linux, arch: x64, cli: minimum}
+          - {runner: ubuntu-latest, os: linux, arch: x64, cli: latest}
+          - {runner: ubuntu-24.04-arm, os: linux, arch: arm64, cli: minimum}
+          - {runner: ubuntu-24.04-arm, os: linux, arch: arm64, cli: latest}
+          - {runner: windows-latest, os: win32, arch: x64, cli: minimum}
+          - {runner: windows-latest, os: win32, arch: x64, cli: latest}
+          - {runner: windows-11-arm, os: win32, arch: arm64, cli: minimum}
+          - {runner: windows-11-arm, os: win32, arch: arm64, cli: latest}
+          - {runner: macos-26-intel, os: darwin, arch: x64, cli: minimum}
+          - {runner: macos-26-intel, os: darwin, arch: x64, cli: latest}
+          - {runner: macos-latest, os: darwin, arch: arm64, cli: minimum}
+          - {runner: macos-latest, os: darwin, arch: arm64, cli: latest}
     runs-on: ${{ matrix.runner }}
     defaults:
       run:
@@ -27,13 +38,17 @@ jobs:
           git config core.eol lf
           git -c credential.helper= fetch --depth=1 "https://github.com/$PX2_REPOSITORY.git" "$PX2_REVISION"
           git checkout --detach FETCH_HEAD
-      - name: Native Windows syntax
+      - name: System Windows PowerShell 5.1 syntax and native OS detection
         if: runner.os == 'Windows'
-        shell: pwsh
+        shell: powershell
         run: |
-          if($PSVersionTable.PSVersion -lt [version]'7.4'){throw 'HANAMESH_POWERSHELL74_REQUIRED'}
-          if([Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString().ToLowerInvariant() -ne '${{ matrix.arch }}'){throw 'HANAMESH_POWERSHELL_NATIVE_ARCH_REQUIRED'}
-          @{version=$PSVersionTable.PSVersion.ToString();process=[Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString();os=[Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString()}|ConvertTo-Json -Compress
+          $ErrorActionPreference='Stop'
+          if($PSVersionTable.PSVersion.Major -ne 5 -or $PSVersionTable.PSVersion.Minor -ne 1){throw 'SYSTEM_PS51_REQUIRED'}
+          . ./agent/bin/windows-detached.ps1
+          Initialize-HanaMeshDetached
+          $native=[HanaMeshDetached]::NativeArchitecture()
+          if($native -ne '${{ matrix.arch }}'){throw 'NATIVE_OS_ARCH_REQUIRED'}
+          @{version=$PSVersionTable.PSVersion.ToString();executable=[Diagnostics.Process]::GetCurrentProcess().MainModule.FileName;nativeOS=$native;pointerSize=[IntPtr]::Size}|ConvertTo-Json -Compress
           $errors=$null
           [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $PWD 'agent/bin/hm-agent.ps1'),[ref]$null,[ref]$errors)|Out-Null
           if($errors.Count){$errors|ForEach-Object{Write-Error $_.Message};exit 1}
@@ -56,16 +71,43 @@ jobs:
           if [[ "$RUNNER_OS" == Windows ]]; then echo "$(cygpath -w /usr/bin)" >> "$GITHUB_PATH"; fi
       - name: Normal strict target build
         run: node tools/build.mjs
-      - name: R128 P2-1 red regression against unchanged bridge
-        run: node --test --test-reporter=tap tests/posix/agent-preparation-recording.test.mjs 2>&1 | tee "$RUNNER_TEMP/px2/native-tests.log"
+      - name: Remove PS7 resolution for every Windows runtime and CLI gate
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $clean=($env:PATH.Split(';')|Where-Object {$_ -and !(Test-Path -LiteralPath (Join-Path $_ 'pwsh.exe'))}) -join ';'
+          "PATH=$clean"|Out-File -Encoding utf8 -Append $env:GITHUB_ENV
+      - name: Prove pwsh is unavailable and system 5.1 remains executable
+        if: runner.os == 'Windows'
+        run: |
+          node -e "const{spawnSync:s}=require('node:child_process');if(s('where.exe',['pwsh.exe']).status===0)throw Error('PWSH_MUST_NOT_RESOLVE');const r=s('powershell.exe',['-NoProfile','-Command','[Console]::Write(\$PSVersionTable.PSVersion.ToString())'],{encoding:'utf8'});console.log(r.stdout);if(r.status!==0||!r.stdout.startsWith('5.1.'))throw Error('SYSTEM_PS51_REQUIRED')"
+      - name: Current Agent fixed-runtime and manifest unit gates
+        timeout-minutes: 8
+        run: node --test --test-concurrency=1 --test-reporter=tap tests/agent-node-runtime.test.mjs tests/agent-runtime-background.test.mjs tests/agent-runtime-recovery.test.mjs tests/agent-preparation-recording.test.mjs tests/node-tool.test.mjs 2>&1 | tee "$RUNNER_TEMP/px2/native-tests.log"
+      - name: All current Agent behavior tests
+        if: matrix.cli == 'minimum'
+        timeout-minutes: 8
+        run: node --test --test-concurrency=1 --test-reporter=tap tests/agent*.test.mjs
+      - name: Confirm clean isolated Git source before materialization
+        env:
+          GIT_CONFIG_NOSYSTEM: '1'
+          GIT_CONFIG_GLOBAL: ${{ runner.os == 'Windows' && 'NUL' || '/dev/null' }}
+        run: |
+          git status --short
+          test -z "$(git status --porcelain --untracked-files=normal)"
+      - name: Official CLI minimum or latest installation gates
+        run: node tools/agent-compat-cli.mjs '${{ matrix.cli }}'
+      - name: Current Agent consent-withheld and closed hook payloads
+        run: node tools/verify-agent-package.mjs "$RUNNER_TEMP/px2/plugin with spaces" 2>&1 | tee "$RUNNER_TEMP/px2/privacy.log"
       - name: Preserve receipts
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: px2-${{ matrix.runner }}-${{ matrix.cli }}
+          name: px4-${{ matrix.runner }}-${{ matrix.cli }}
           path: |
             ${{ runner.temp }}/px2/results.json
             ${{ runner.temp }}/px2/native-tests.log
+            ${{ runner.temp }}/px2/privacy.log
           retention-days: 7
       - name: Archive exact current publish candidate with modes
         if: matrix.os == 'linux' && matrix.arch == 'x64' && matrix.cli == 'minimum'
@@ -74,38 +116,7 @@ jobs:
         if: matrix.os == 'linux' && matrix.arch == 'x64' && matrix.cli == 'minimum'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: px2-agent-0.2.9-candidate
+          name: px4-agent-0.2.9-candidate
           path: ${{ runner.temp }}/px2/agent-0.2.9.tgz
           include-hidden-files: true
-          retention-days: 7
-
-  helper:
-    runs-on: windows-latest
-    steps:
-      - name: Fetch exact public source without credentials
-        shell: bash
-        env:
-          SOURCE_REPOSITORY: ${{ github.repository }}
-          SOURCE_REVISION: ${{ github.sha }}
-        run: |
-          git -c credential.helper= init -q
-          git config core.autocrlf false
-          git -c credential.helper= fetch --depth=1 "https://github.com/$SOURCE_REPOSITORY.git" "$SOURCE_REVISION"
-          git checkout --detach FETCH_HEAD
-      - name: Compile fixed AnyCPU .NET Framework helper using system 5.1
-        shell: powershell
-        run: |
-          $ErrorActionPreference='Stop'
-          if($PSVersionTable.PSVersion.Major -ne 5){throw 'SYSTEM_PS51_REQUIRED'}
-          New-Item -ItemType Directory -Path "$env:RUNNER_TEMP/px4-helper"|Out-Null
-          $binary="$env:RUNNER_TEMP/px4-helper/windows-detached.dll"
-          & "$env:WINDIR/Microsoft.NET/Framework64/v4.0.30319/csc.exe" /nologo /target:library /platform:anycpu /optimize+ "/out:$binary" (Join-Path $PWD 'agent\bin\windows-detached.cs')
-          if($LASTEXITCODE -ne 0){throw 'COMPILE_FAILED'}
-          @{builtFromRevision='${{ github.sha }}';schemaVersion=1;architecture='AnyCPU';targetFramework='.NET Framework 4';sourceSha256=(Get-FileHash agent/bin/windows-detached.cs).Hash.ToLowerInvariant();sha256=(Get-FileHash $binary).Hash.ToLowerInvariant()}|ConvertTo-Json|Set-Content -Encoding UTF8 "$env:RUNNER_TEMP/px4-helper/windows-detached.json"
-          [Reflection.Assembly]::Load([IO.File]::ReadAllBytes($binary))|Out-Null
-          if([HanaMeshDetached]::NativeArchitecture() -ne 'x64'){throw 'ARCH_FAILED'}
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: px4-system51-helper
-          path: ${{ runner.temp }}/px4-helper
           retention-days: 7
