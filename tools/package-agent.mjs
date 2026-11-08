@@ -1,3 +1,4 @@
+import {verifyNativeHelper} from './native-helper.mjs';
 import {DEFAULT_AGENT_ORIGINS} from '../lib/agent/profile.mjs';
 /** Build a self-contained agent plugin from this repo's build and a packed Core CLI artifact, never sibling sources. */
 import {mkdtemp,rm,mkdir,cp,readFile,writeFile,readdir} from 'node:fs/promises';
@@ -14,6 +15,7 @@ const [coreTarball,outputPath]=process.argv.slice(2);
 if(!coreTarball||!outputPath)throw new Error('Usage: node tools/package-agent.mjs <core.tgz> <new-output-directory>');
 const output=resolve(outputPath),temp=await mkdtemp(join(tmpdir(),'hm-agent-pack-'));
 try {
+  verifyNativeHelper();
   const result=spawnSync(process.platform==='win32'?join(process.env.SystemRoot,'System32/tar.exe'):'tar',['-xzf',resolve(coreTarball),'-C',temp],{encoding:'utf8',env:{...process.env,LC_ALL:'C'}});
   if(result.status!==0)throw new Error('CORE_ARTIFACT_UNREADABLE');
   const core=JSON.parse(await readFile(join(temp,'package/package.json'),'utf8'));

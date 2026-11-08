@@ -4,6 +4,7 @@ import { spawnSync } from 'node:child_process';
 import {nodeToolSync} from './node-tool.mjs';
 import { mkdirSync, rmSync, copyFileSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import ts from 'typescript';
+import {verifyNativeHelper} from './native-helper.mjs';
 import { createRequire } from 'node:module';
 import { installedPeer, satisfies } from './pins.mjs';
 const offline = process.argv.includes('--offline');
@@ -24,6 +25,7 @@ if (!offline) {
     } catch { console.error(`PINNED_PEER_MISSING_OR_MISMATCHED: ${name}@${version}`); process.exit(2); }
   }
 }
+verifyNativeHelper();
 rmSync('lib',{recursive:true,force:true});
 const compile = nodeToolSync('tsc',['-p','tsconfig.core.json'],{stdio:'inherit'});
 if (compile.status !== 0) process.exit(compile.status ?? 1);

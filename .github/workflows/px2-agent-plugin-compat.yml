@@ -43,26 +43,6 @@ jobs:
           $errors=$null
           [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $PWD 'agent/bin/hm-agent.ps1'),[ref]$null,[ref]$errors)|Out-Null
           if($errors.Count){$errors|ForEach-Object{Write-Error $_.Message};exit 1}
-      - name: Build locked AnyCPU native detacher asset
-        if: matrix.os == 'win32' && matrix.arch == 'x64' && matrix.cli == 'minimum'
-        shell: powershell
-        env:
-          PX2_SOURCE: ${{ github.sha }}
-        run: |
-          $out=Join-Path $env:RUNNER_TEMP 'px2-native-helper'
-          [IO.Directory]::CreateDirectory($out)|Out-Null
-          $source=Join-Path $PWD 'agent/bin/windows-detached.cs'
-          $binary=Join-Path $out 'windows-detached.dll'
-          Add-Type -Path $source -OutputAssembly $binary -OutputType Library
-          $record=@{schemaVersion=1;architecture='AnyCPU';sourceSha256=(Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash.ToLowerInvariant();sha256=(Get-FileHash -LiteralPath $binary -Algorithm SHA256).Hash.ToLowerInvariant();builtFromRevision=$env:PX2_SOURCE}
-          [IO.File]::WriteAllText((Join-Path $out 'windows-detached.json'),($record|ConvertTo-Json),([Text.UTF8Encoding]::new($false)))
-      - name: Preserve locked native asset
-        if: matrix.os == 'win32' && matrix.arch == 'x64' && matrix.cli == 'minimum'
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: px2-native-detach-helper
-          path: ${{ runner.temp }}/px2-native-helper
-          retention-days: 7
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '24.13.1'

@@ -29,3 +29,5 @@
 测试仅在公开 Actions 标准 runner：六平台 × minimum/latest。严格目标 build、POSIX/Windows 各自真实桥接用例、官方 CLI validate/install/list/MCP list、真实 hooks 命令 + 官方字段合成 JSON；网站未同意时 HTTP 上传 tripwire，显式本机关闭后零记录，无真实账号/模型/API key。Core 子进程保留生产环境白名单，不继承测试预加载器；其 consent/upload 权限边界由既有 Core 契约和本门明确状态检查共同验证。直接 payload 驱动不冒充真实用户库存、已 Trust 的登录会话或 UI 展示 ACK。
 
 待追认：Windows Git for Windows、Linux 完整 Perl；两个额外 arm64 hosted runner；单 job25分钟期限；Windows 原生冷 shell10秒测试门。原 POSIX500ms门不变；计时敏感文件串行供给以避免其它测试的哈希/压缩争抢，文件内并发竞争用例保留，此供给方式待追认。此处的待追认标记不把失败或取消算 PASS。
+
+Windows 后台派生辅助程序集为 Actions 以 `bin/windows-detached.cs` 编译的 AnyCPU .NET 资产；来源提交与源码/二进制 SHA256 固定于 `bin/windows-detached.json`。构建和物化均核对两个 SHA；运行时对同一份 DLL 字节校验后加载，不在用户目录运行 C# 编译器。此方式避开 .NET Framework 编译器在中文 TEMP/输出目录的失败，支持标准 Windows PowerShell5.1；原生 x64/arm64 后台准备门验证相同资产，损坏即拒绝派生。初始资产构建证据：[Actions 42480489339](https://github.com/yzsnstotz/hanamesh-usage/actions/runs/42480489339)。

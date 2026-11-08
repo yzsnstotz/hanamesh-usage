@@ -44,3 +44,7 @@ test('native ready publication during a fragmented MCP line never loses the cons
 test('native first non-session failure consumes the first SessionStart attempt budget',async t=>{
  const f=await windowsFixture(t);await f.launch('status');await f.settle(await f.started(1),'RUNTIME_DOWNLOAD_FAILED');await f.hook('SessionStart',ss('first'));assert.equal((await f.disk()).attemptCount,1);await f.hook('SessionStart',ss('next'));await f.settle(await f.started(2),'RUNTIME_DOWNLOAD_FAILED');
 });
+
+test('native preparer refuses a modified pinned detacher before any download or publication',async t=>{
+ const f=await windowsFixture(t);await writeFile(join(f.plugin,'bin/windows-detached.dll'),'CORRUPT TEST FIXTURE');await f.hook('SessionStart',ss('invalid-helper'));const state=await f.disk();assert.equal(state.code,'RUNTIME_PREPARER_START_FAILED');assert.equal(state.startFailurePhase,'load-verified-helper');assert.equal((await f.rows('downloads')).length,0);await assert.rejects(readFile(join(f.cache,'node.exe')));
+});
