@@ -46,7 +46,7 @@ export async function windowsFixture(t,{mode='failure',ready=false,channel='clau
  });
  const rows=async file=>{try{return(await readFile(join(root,file),'utf8')).trim().split(/\r?\n/).filter(Boolean).map(JSON.parse)}catch(e){if(e.code==='ENOENT')return[];throw e}};
  const disk=async()=>JSON.parse(await readFile(join(cache,'prepare-state.json')));
- const started=n=>until(root,async()=>{const a=await rows('downloads');return a[n-1]});
+ const started=n=>until(root,async()=>{const a=await rows('downloads');if(a[n-1])return a[n-1];const state=await disk();if(state.code!=='RUNTIME_PREPARING'){let detail='';try{detail=await readFile(join(cache,'prepare-error.log'),'utf8')}catch{}throw Error('NATIVE_PREPARER_NOT_STARTED: '+JSON.stringify(state)+' '+detail);}return false;});
  const settle=async(attempt,expected)=>{const done=until(cache,async()=>{const s=await disk();return s.code!=='RUNTIME_PREPARING'?s:false});await writeFile(join(root,'release-'+attempt.pid),'release');const result=await done;if(result.code!==expected)throw Error(JSON.stringify(result));return result;};
  const pending=async()=>{let names;try{names=await readdir(join(agent,'preparation'))}catch(e){if(e.code==='ENOENT')return[];throw e}return Promise.all(names.map(async n=>JSON.parse(await readFile(join(agent,'preparation',n)))))};
  const base={session_id:'PRIVATE_SESSION',tool_use_id:'original-call',tool_name:channel==='claude'?'mcp__plugin_target_probe__echo':'mcp__probe__echo',tool_input:{password:'PRIVATE_INPUT'},tool_response:{isError:false,content:[{type:'text',text:'PRIVATE_OUTPUT'}]}};

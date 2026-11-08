@@ -5,11 +5,15 @@ $AgentArgs = @($args)
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 $utf8 = New-Object System.Text.UTF8Encoding($false)
-[Console]::InputEncoding = $utf8
-[Console]::OutputEncoding = $utf8
 $OutputEncoding = $utf8
 function Fail([string]$Code) { throw $Code }
 try {
+  # A detached PowerShell 5.1 process has valid redirected handles but no console code page.
+  try { [Console]::InputEncoding=$utf8;[Console]::OutputEncoding=$utf8 } catch [IO.IOException] {
+    [Console]::SetIn((New-Object IO.StreamReader([Console]::OpenStandardInput(),$utf8)))
+    $writer=New-Object IO.StreamWriter([Console]::OpenStandardOutput(),$utf8);$writer.AutoFlush=$true;[Console]::SetOut($writer)
+    $errorWriter=New-Object IO.StreamWriter([Console]::OpenStandardError(),$utf8);$errorWriter.AutoFlush=$true;[Console]::SetError($errorWriter)
+  }
   if (!$Action) { Fail 'HANAMESH_AGENT_ACTION_REQUIRED' }
   # Windows 5.1/.NET Framework under x64 Git Bash emulation can report X64 on ARM64.
   # WOW64 exports the native processor architecture separately from the process ISA.
@@ -272,13 +276,15 @@ try {
     if($start){
       try {
         $stdinFile=Join-Path $cache 'prepare.stdin';[IO.File]::WriteAllText($stdinFile,'',$utf8)
+        $launchPhase='compile-helper'
         Add-Type -Path (Join-Path $PSScriptRoot 'windows-detached.cs')
+        $launchPhase='create-process'
         $workerId=[HanaMeshDetached]::Start((Join-Path $PSHOME 'powershell.exe'),('-NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "'+$PSCommandPath+'" prepare-worker '+$initial.token),$cache,$stdinFile,(Join-Path $cache 'prepare.log'),(Join-Path $cache 'prepare-error.log'))
         $workerTicks=$null
         try{$worker=[Diagnostics.Process]::GetProcessById($workerId);$workerTicks=$worker.StartTime.ToUniversalTime().Ticks.ToString();$worker.Dispose()}catch{}
         $lease=Lease
         if($lease){try{$s=Read-State;if($s.token -eq $initial.token -and $s.code -eq 'RUNTIME_PREPARING'){$s.pid=$workerId;$s.processStartedTicks=$workerTicks;Atomic-JSON $statePath $s}}finally{$lease.Dispose()}}
-      } catch { $lease=Lease;if($lease){try{$s=Read-State;if($s.token -eq $initial.token){$s.code='RUNTIME_PREPARER_START_FAILED';$s.phase='failed';$s.finishedAt=[DateTime]::UtcNow.ToString("yyyy-MM-dd'T'HH:mm:ss.fff'Z'");Atomic-JSON $statePath $s}}finally{$lease.Dispose()}} }
+      } catch { $failureLine=$_.InvocationInfo.ScriptLineNumber;$nativeError=$_.Exception.InnerException.NativeErrorCode;$lease=Lease;if($lease){try{$s=Read-State;if($s.token -eq $initial.token -and $s.code -eq 'RUNTIME_PREPARING'){$s.startFailurePhase=$launchPhase;$s.startFailureLine=$failureLine;$s.nativeErrorCode=$nativeError;$s.code='RUNTIME_PREPARER_START_FAILED';$s.phase='failed';$s.finishedAt=[DateTime]::UtcNow.ToString("yyyy-MM-dd'T'HH:mm:ss.fff'Z'");Atomic-JSON $statePath $s}}finally{$lease.Dispose()}} }
     }
   }
   if($Action -eq 'hook'){
