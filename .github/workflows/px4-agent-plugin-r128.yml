@@ -81,6 +81,13 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           node -e "const{spawnSync:s}=require('node:child_process');if(s('where.exe',['pwsh.exe']).status===0)throw Error('PWSH_MUST_NOT_RESOLVE');const r=s('powershell.exe',['-NoProfile','-Command','[Console]::Write(\$PSVersionTable.PSVersion.ToString())'],{encoding:'utf8'});console.log(r.stdout);if(r.status!==0||!r.stdout.startsWith('5.1.'))throw Error('SYSTEM_PS51_REQUIRED')"
+      # 待追认：首次 Git Bash → 系统 5.1 的空命令本身在 windows-11-arm 约 10s、之后 <1s
+      # （x64 Git Bash 经仿真派生原生 ARM64 powershell.exe 的一次性 OS 成本，非插件代码；run 42490408070）。
+      # 先实测并打印这次空启动，后续插件门期限一律不变。
+      - name: Measure the runner's own Git Bash to system 5.1 first launch outside plugin gates
+        if: runner.os == 'Windows'
+        run: |
+          node -e "const{spawnSync:s}=require('node:child_process'),t=performance.now(),r=s('bash',['-c','\"\$SYSTEMROOT/System32/WindowsPowerShell/v1.0/powershell.exe\" -NoLogo -NoProfile -NonInteractive -Command \"exit 0\"'],{encoding:'utf8'});console.log('SYSTEM_CHAIN_FIRST_LAUNCH_MS='+Math.round(performance.now()-t));if(r.status!==0)throw Error('SYSTEM_PS51_LAUNCH_FAILED: '+r.stderr)"
       - name: Current Agent fixed-runtime and manifest unit gates
         timeout-minutes: 8
         run: node --test --test-concurrency=1 --test-reporter=tap tests/agent-node-runtime.test.mjs tests/agent-runtime-background.test.mjs tests/agent-runtime-recovery.test.mjs tests/agent-preparation-recording.test.mjs tests/node-tool.test.mjs 2>&1 | tee "$RUNNER_TEMP/px2/native-tests.log"
