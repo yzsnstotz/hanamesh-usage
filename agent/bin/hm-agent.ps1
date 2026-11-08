@@ -122,10 +122,11 @@ try {
     Reject-Reparse $Path
     [IO.Directory]::CreateDirectory((Split-Path -Parent $Path)) | Out-Null
     $temp = $Path + '.' + [Guid]::NewGuid().ToString('N') + '.tmp'
+    $previous = $temp + '.previous'
     try {
       [IO.File]::WriteAllText($temp,($Value | ConvertTo-Json -Depth 20 -Compress),$utf8)
-      if (Test-Path -LiteralPath $Path) { [IO.File]::Replace($temp,$Path,$null) } else { [IO.File]::Move($temp,$Path) }
-    } finally { if (Test-Path -LiteralPath $temp) { [IO.File]::Delete($temp) } }
+      if (Test-Path -LiteralPath $Path) { [IO.File]::Replace($temp,$Path,$previous) } else { [IO.File]::Move($temp,$Path) }
+    } finally { if ([IO.File]::Exists($temp)) { [IO.File]::Delete($temp) }; if ([IO.File]::Exists($previous)) { [IO.File]::Delete($previous) } }
   }
   function Lease {
     Reject-Reparse $cache
