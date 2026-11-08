@@ -303,7 +303,7 @@ try {
                 'initialize'{$initialized=$true;$result=@{protocolVersion=if($q.params.protocolVersion){$q.params.protocolVersion}else{'2024-11-05'};capabilities=@{tools=@{}};serverInfo=@{name='hanamesh-usage';version=$manifestVersion}}}
                 'ping'{$result=@{}}
                 'tools/list'{$result=@{tools=@(@{name='hanamesh_status';description='Read runtime preparation status';inputSchema=@{type='object';properties=@{};additionalProperties=$false};annotations=@{readOnlyHint=$true;destructiveHint=$false;openWorldHint=$false}})}}
-                'tools/call'{$status=Public-State;$result=@{isError=$true;content=@(@{type='text';text=($status|ConvertTo-Json -Depth 10 -Compress)})}}
+                'tools/call'{if($q.params.name -eq 'hanamesh_status' -and ($null -eq $q.params.arguments -or @($q.params.arguments.PSObject.Properties).Count -eq 0)){$status=Public-State;$result=@{isError=$true;content=@(@{type='text';text=($status|ConvertTo-Json -Depth 10 -Compress)})}}}
               }
               if($null -ne $result){@{jsonrpc='2.0';id=$q.id;result=$result}|ConvertTo-Json -Depth 20 -Compress}else{@{jsonrpc='2.0';id=$q.id;error=@{code=-32601;message='Method not found'}}|ConvertTo-Json -Compress}
             }
