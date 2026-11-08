@@ -3,7 +3,7 @@
   "commits": {
     "core": "969a89a1f7e383fca7d6aefa7f27507d3a1605d5",
     "usage": "073d6c584d3cd441f2bf96a7d7feb92e04278b94",
-    "apphost": "d5b659a91cf053dc875efcb84ee53fdbe2133818"
+    "apphost": "01905780532c7be338882c2d5f2235f4a7cf016d"
   },
   "archives": [
     {
@@ -65,5 +65,13 @@
     "mutationsTotal": 130,
     "evidence": "questions/AH2-delivery.md",
     "scope": "AH2 local full check and package verification; GT19 and new consolidated platform matrices remain separate"
+  },
+  "apphostPlatformFix": {
+    "sourceCommit": "01905780532c7be338882c2d5f2235f4a7cf016d",
+    "reviewFinding": "R138-P2-01",
+    "change": "Use the existing native Windows system tar selection in the installation qualification fixture. All five matrix and risk assertions remain unchanged.",
+    "redRunId": 42533448322,
+    "redJobId": 128892497692,
+    "productPayloadChanged": false
   }
 }
