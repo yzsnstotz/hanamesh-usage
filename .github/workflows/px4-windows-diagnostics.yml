@@ -1,0 +1,31 @@
+name: PX4 system Windows shell diagnostics
+on:
+  push:
+    branches: [ci/px4-system51-diagnostics]
+permissions: {}
+jobs:
+  shell:
+    runs-on: windows-11-arm
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.13.1'
+          token: ''
+      - name: Compare system shell startup and command costs without private state
+        run: |
+          node --input-type=module <<'JS'
+          import {spawnSync} from 'node:child_process';
+          import {readFileSync} from 'node:fs';
+          import {join} from 'node:path';
+          const root=process.env.SystemRoot;
+          const cases=[['version','[Console]::Write($PSVersionTable.PSVersion.ToString())'],['json',"@{a=1}|ConvertTo-Json -Compress"],['path',"Join-Path $PSHOME 'powershell.exe'"],['hash',"(Get-FileHash -LiteralPath ($PSHOME+'\\powershell.exe')).Hash.Substring(0,4)"]];
+          for(const folder of ['System32','SysWOW64']){
+            const exe=join(root,folder,'WindowsPowerShell/v1.0/powershell.exe'),b=readFileSync(exe),machine=b.readUInt16LE(b.readUInt32LE(0x3c)+4);
+            console.log(JSON.stringify({folder,machine:machine.toString(16)}));
+            for(const[label,command]of cases){const t=performance.now(),r=spawnSync(exe,['-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-Command',command],{encoding:'utf8',timeout:60000});console.log(JSON.stringify({folder,label,ms:performance.now()-t,status:r.status,stdout:r.stdout,stderr:r.stderr,error:r.error?.code}));}
+          }
+          JS
