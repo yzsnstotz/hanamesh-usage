@@ -5,6 +5,9 @@ on:
   pull_request:
     paths: ['.gitattributes', 'tests/agent-node-runtime.test.mjs', 'agent/**', 'src/agent/**', 'lib/agent/**', 'tools/*agent*', '.github/workflows/px2-agent-plugin-compat.yml']
   workflow_dispatch:
+concurrency:
+  group: px2-agent-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
@@ -30,6 +33,7 @@ jobs:
         shell: bash
         run: node tools/agent-compat-smoke.mjs "$RUNNER_TEMP/px2/plugin with spaces"
       - name: Reject missing and corrupt runtime caches on this native platform
+        if: always()
         shell: bash
         run: node --test --test-reporter=tap tests/agent-node-runtime.test.mjs
       - uses: actions/upload-artifact@v4

@@ -1,6 +1,11 @@
 # Windows-native launcher. No PATH Node discovery and no implicit consent/download.
 param([Parameter(Position=0)][string]$Action, [Parameter(ValueFromRemainingArguments=$true)][string[]]$AgentArgs)
 $ErrorActionPreference = 'Stop'
+$ProgressPreference = 'SilentlyContinue'
+$utf8 = New-Object System.Text.UTF8Encoding($false)
+[Console]::InputEncoding = $utf8
+[Console]::OutputEncoding = $utf8
+$OutputEncoding = $utf8
 function Fail([string]$Code) { throw $Code }
 try {
   if (!$Action) { Fail 'HANAMESH_AGENT_ACTION_REQUIRED' }
@@ -30,7 +35,9 @@ try {
     if ([IO.File]::ReadAllText("$cache/archive.sha256").TrimEnd() -cne $digest) { Fail 'HANAMESH_NODE_RUNTIME_CHECKSUM_MISMATCH' }
     $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $node).Hash.ToLowerInvariant()
     if ([IO.File]::ReadAllText("$cache/node.sha256").TrimEnd() -cne "$hash  node.exe") { Fail 'HANAMESH_NODE_RUNTIME_CHECKSUM_MISMATCH' }
-    if ((& $node --version) -cne 'v24.13.1' -or $LASTEXITCODE -ne 0) { Fail 'HANAMESH_NODE_RUNTIME_VERSION_MISMATCH' }
+    $version = & $node --version
+    $versionExit = $LASTEXITCODE
+    if ($version -cne 'v24.13.1' -or $versionExit -ne 0) { Fail 'HANAMESH_NODE_RUNTIME_VERSION_MISMATCH' }
   }
   function Publish([string]$Source, [string]$Destination) {
     try { [IO.File]::Copy($Source,$Destination,$false) }
@@ -61,7 +68,9 @@ try {
           [IO.Compression.ZipFileExtensions]::ExtractToFile($entry,"$scratch/$file",$false)
         }
       } finally { $zip.Dispose() }
-      if ((& "$scratch/node.exe" --version) -cne 'v24.13.1' -or $LASTEXITCODE -ne 0) { Fail 'HANAMESH_NODE_RUNTIME_VERSION_MISMATCH' }
+      $version = & "$scratch/node.exe" --version
+      $versionExit = $LASTEXITCODE
+      if ($version -cne 'v24.13.1' -or $versionExit -ne 0) { Fail 'HANAMESH_NODE_RUNTIME_VERSION_MISMATCH' }
       $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath "$scratch/node.exe").Hash.ToLowerInvariant()
       [IO.File]::WriteAllText("$scratch/node.sha256", "$hash  node.exe`n")
       [IO.File]::WriteAllText("$scratch/archive.sha256", "$digest`n")
@@ -82,7 +91,7 @@ try {
   exit $LASTEXITCODE
 } catch {
   $code = $_.Exception.Message
-  if ($code -notmatch '^HANAMESH_[A-Z0-9_]+$') { $code = 'HANAMESH_WINDOWS_LAUNCH_FAILED' }
+  if ($code -notmatch '^HANAMESH_[A-Z0-9_]+$') { $code = 'HANAMESH_WINDOWS_LAUNCH_FAILED'; [Console]::Error.WriteLine('HanaMesh launcher line ' + $_.InvocationInfo.ScriptLineNumber + ' category ' + $_.CategoryInfo.Category) }
   [Console]::Error.WriteLine($code)
   exit 1
 }
