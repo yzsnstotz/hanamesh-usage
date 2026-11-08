@@ -1,0 +1,68 @@
+name: WA1 Windows first-entry cost attribution
+on:
+  push:
+    branches: [ci/wa1-arm-first-entry-diag]
+permissions: {}
+jobs:
+  diag:
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {runner: windows-11-arm, order: test-first}
+          - {runner: windows-11-arm, order: probes-first}
+          - {runner: windows-latest, order: probes-first}
+    runs-on: ${{ matrix.runner }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Fetch exact public source without credentials
+        env:
+          SOURCE_REPOSITORY: ${{ github.repository }}
+          SOURCE_REVISION: ${{ github.sha }}
+        run: |
+          git -c credential.helper= init -q
+          git config core.autocrlf false
+          git -c credential.helper= fetch --depth=1 "https://github.com/$SOURCE_REPOSITORY.git" "$SOURCE_REVISION"
+          git checkout --detach FETCH_HEAD
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.13.1'
+          token: ''
+      - name: Select installed Git Bash
+        run: echo "$(cygpath -w /usr/bin)" >> "$GITHUB_PATH"
+      - name: Instrument disposable copy of the manifest test
+        run: |
+          node -e "const fs=require('fs');let s=fs.readFileSync('tests/agent-node-runtime.test.mjs','utf8');s=s.replace(\"  if(process.platform==='win32')assert.ok\",\"  console.log('WA1_MANIFEST_MS='+Math.round(performance.now()-started)+' '+channel+' '+event);\n  if(process.platform==='win32')assert.ok\");fs.writeFileSync('tests/agent-node-runtime.test.mjs',s)"
+      - name: Attribute first-entry cost
+        env:
+          WA1_ORDER: ${{ matrix.order }}
+        run: |
+          cat > "$RUNNER_TEMP/wa1.mjs" <<'JS'
+          import {spawnSync} from 'node:child_process';
+          import {readFileSync,cpSync,writeFileSync,mkdtempSync,appendFileSync} from 'node:fs';
+          import {join} from 'node:path';
+          import {tmpdir} from 'node:os';
+          const ps=join(process.env.SystemRoot,'System32/WindowsPowerShell/v1.0/powershell.exe');
+          const pe=f=>{try{const b=readFileSync(f);return b.readUInt16LE(b.readUInt32LE(0x3c)+4).toString(16)}catch(e){return e.code}};
+          const time=(label,cmd,args,opts={})=>{const t=performance.now(),r=spawnSync(cmd,args,{encoding:'utf8',timeout:120000,input:'{}',...opts});console.log('WA1_PROBE '+JSON.stringify({label,ms:Math.round(performance.now()-t),status:r.status,err:r.error?.code,out:(r.stdout||'').slice(0,80),stderr:(r.stderr||'').slice(0,120)}));};
+          const psArgs=['-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass'];
+          const tests=n=>{for(let i=1;i<=n;i++){const t=performance.now(),r=spawnSync(process.execPath,['--test','--test-concurrency=1','--test-reporter=tap','--test-name-pattern=installed','tests/agent-node-runtime.test.mjs'],{encoding:'utf8',timeout:300000});console.log((r.stdout||'').split(/\r?\n/).filter(l=>/WA1_MANIFEST_MS|^not ok|^ok/.test(l)).map(l=>'WA1_TEST'+i+' '+l.trim()).join('\n'));console.log('WA1_TEST'+i+'_TOTAL_MS='+Math.round(performance.now()-t));}};
+          const probes=()=>{
+            console.log('WA1_PE '+JSON.stringify({powershell:pe(ps),bash:pe('C:/Program Files/Git/usr/bin/bash.exe'),msys:pe('C:/Program Files/Git/usr/bin/msys-2.0.dll'),node:process.arch}));
+            for(let i=1;i<=3;i++)time('node->ps bare #'+i,ps,[...psArgs,'-Command','exit 0']);
+            for(let i=1;i<=3;i++)time('bash->ps bare #'+i,'bash',['-c','"$SYSTEMROOT/System32/WindowsPowerShell/v1.0/powershell.exe" -NoLogo -NoProfile -NonInteractive -Command "exit 0"']);
+            const uniq=n=>{const d=mkdtempSync(join(tmpdir(),'wa1-u-')),f=join(d,'u.ps1');writeFileSync(f,'# '+n+' '+Math.random()+'\n[Console]::Write($PSVersionTable.PSVersion.ToString())\n');return f};
+            const u=uniq('a');time('node->ps -File new tiny script #1',ps,[...psArgs,'-File',u]);time('node->ps -File same tiny script #2',ps,[...psArgs,'-File',u]);time('node->ps -File another new tiny script',ps,[...psArgs,'-File',uniq('b')]);
+            const copy=tag=>{const d=mkdtempSync(join(tmpdir(),'wa1-'+tag+'-'));cpSync('agent/bin',join(d,'bin'),{recursive:true});return join(d,'bin/hm-agent.ps1')};
+            const a=copy('a');time('node->ps -File hm-agent.ps1 copyA no-action #1',ps,[...psArgs,'-File',a]);time('node->ps -File hm-agent.ps1 copyA no-action #2',ps,[...psArgs,'-File',a]);
+            const b=copy('b');appendFileSync(b,'\n# wa1 unique '+Math.random()+'\n');time('node->ps -File hm-agent.ps1 copyB changed-bytes',ps,[...psArgs,'-File',b]);
+            const c=copy('c');time('bash->ps -File hm-agent.ps1 copyC identical',' bash'.trim(),['-c','"$SYSTEMROOT/System32/WindowsPowerShell/v1.0/powershell.exe" -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "$0"',c]);
+            for(const k of ['Real-Time Protection','Spynet']){const r=spawnSync('reg.exe',['query','HKLM\\SOFTWARE\\Microsoft\\Windows Defender\\'+k],{encoding:'utf8'});console.log('WA1_DEFENDER '+k+' '+JSON.stringify((r.stdout||r.stderr||'').replace(/\s+/g,' ').slice(0,400)));}
+            const n=spawnSync('tasklist.exe',['/fo','csv','/nh'],{encoding:'utf8'}).stdout||'';console.log('WA1_BACKGROUND '+JSON.stringify(['mscorsvw.exe','ngen.exe','ngentask.exe','MsMpEng.exe','TiWorker.exe','MpDefenderCoreService.exe'].map(x=>[x,n.split(/\r?\n/).filter(l=>l.toLowerCase().startsWith('"'+x.toLowerCase())).length])));
+          };
+          if(process.env.WA1_ORDER==='test-first'){tests(2);probes();}else{probes();tests(2);}
+          JS
+          node "$RUNNER_TEMP/wa1.mjs"
