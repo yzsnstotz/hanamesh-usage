@@ -88,6 +88,7 @@ try {
       if ((Get-FileHash -Algorithm SHA256 -LiteralPath "$scratch/node.zip").Hash.ToLowerInvariant() -cne $digest) { Fail 'HANAMESH_NODE_ARCHIVE_CHECKSUM_MISMATCH' }
       [Console]::Error.WriteLine('HanaMesh [Node 2/3] SHA256 verified; extract this architecture only')
       $s.phase='extracting';Atomic-JSON $statePath $s
+      Add-Type -AssemblyName System.IO.Compression
       Add-Type -AssemblyName System.IO.Compression.FileSystem
       $zip = [IO.Compression.ZipFile]::OpenRead("$scratch/node.zip")
       try {
