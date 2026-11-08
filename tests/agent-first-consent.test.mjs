@@ -3,6 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile,readFile,readdir} from 'node:fs/promises';
 import {join,resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
 import {spawnSync} from 'node:child_process';
 import {root as implementationRoot} from './fixtures/helpers.mjs';
 
@@ -37,14 +38,14 @@ test('first notice persists emitted metadata daily per shared root/channel; no u
  assert.equal(f.run('SessionStart').stdout,'');
  const codex=f.run('SessionStart',{HANAMESH_AGENT_CHANNEL:'codex',CODEX_HOME:join(f.root,'codex')});assert.equal(codex.status,0,codex.stderr);assert.ok(codex.stdout);
  const other=f.run('SessionStart',{CLAUDE_CONFIG_DIR:join(f.root,'other-claude')});assert.equal(other.status,0,other.stderr);assert.equal(other.stdout,'');
- const {symlink}=await import('node:fs/promises');await mkdir(f.env.CLAUDE_CONFIG_DIR);await symlink(f.env.CLAUDE_CONFIG_DIR,join(f.root,'claude-alias'));
+ const {symlink}=await import('node:fs/promises');await mkdir(f.env.CLAUDE_CONFIG_DIR);await symlink(f.env.CLAUDE_CONFIG_DIR,join(f.root,'claude-alias'),process.platform==='win32'?'junction':'dir');
  assert.equal(f.run('SessionStart',{CLAUDE_CONFIG_DIR:join(f.root,'claude-alias')}).stdout,'');
  const names=await readdir(join(f.env.HANAMESH_AGENT_HOME,'notices'));const markers=names.filter(n=>n.endsWith('.json'));assert.equal(markers.length,2);
  for(const name of markers){const value=JSON.parse(await readFile(join(f.env.HANAMESH_AGENT_HOME,'notices',name)));assert.equal(value.state,'emitted');assert.equal(value.shown,undefined);assert.equal(value.consent,undefined);}
  assert.ok(!(await readdir(f.env.HANAMESH_AGENT_HOME)).includes('events'));
 });
 test('output failure leaves no emitted marker and never changes consent',async t=>{
- const f=await fixture(t);const {runtime}=await import(new URL('file://'+join(implementationRoot,'lib/agent/runtime.mjs')));const {firstConsentNotice}=await import(new URL('file://'+join(implementationRoot,'lib/agent/notice.mjs')));
+ const f=await fixture(t);const {runtime}=await import(pathToFileURL(join(implementationRoot,'lib/agent/runtime.mjs')));const {firstConsentNotice}=await import(pathToFileURL(join(implementationRoot,'lib/agent/notice.mjs')));
  const r=await runtime(f.env);await assert.rejects(firstConsentNotice(r,async()=>{throw new Error('AGENT_NOTICE_OUTPUT_FAILED');},{payload:{session_id:'fixture-new-session',source:'startup'}}),/AGENT_NOTICE_OUTPUT_FAILED/);
  assert.equal((await readdir(join(f.env.HANAMESH_AGENT_HOME,'notices'))).filter(n=>n.endsWith('.json')).length,0);
  let count=0;assert.equal(await firstConsentNotice(r,async()=>{count++;},{payload:{session_id:'fixture-new-session',source:'startup'}}),true);assert.equal(count,1);
@@ -55,12 +56,12 @@ test('concurrent SessionStart processes emit only once',async t=>{
  const results=await Promise.all([run(),run(),run()]);for(const r of results)assert.equal(r.status,0,r.stderr);assert.equal(results.filter(r=>r.stdout).length,1);
 });
 test('stdout callback failure still consumes the following stream error',async()=>{
- const {EventEmitter}=await import('node:events');const {writeNotice}=await import(new URL('file://'+join(implementationRoot,'lib/agent/notice.mjs')));
+ const {EventEmitter}=await import('node:events');const {writeNotice}=await import(pathToFileURL(join(implementationRoot,'lib/agent/notice.mjs')));
  const stream=new EventEmitter();stream.write=(_data,callback)=>callback(new Error('fixture-output'));
  await assert.rejects(writeNotice('notice',stream),/AGENT_NOTICE_OUTPUT_FAILED/);
  assert.equal(stream.listenerCount('error'),1);stream.emit('error',new Error('fixture-output'));assert.equal(stream.listenerCount('error'),0);
 });
 test('a default Codex installation uses its actual Codex channel and profile without an exported CODEX_HOME',async()=>{
- const {hostContext}=await import(new URL('file://'+join(implementationRoot,'lib/agent/runtime.mjs')));const {homedir}=await import('node:os');
+ const {hostContext}=await import(pathToFileURL(join(implementationRoot,'lib/agent/runtime.mjs')));const {homedir}=await import('node:os');
  const context=hostContext({},'/fixture/.codex/plugins/cache/market/hanamesh/0.1.1');assert.equal(context.channel,'codex');assert.equal(context.home,join(homedir(),'.codex'));
 });

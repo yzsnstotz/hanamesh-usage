@@ -282,7 +282,10 @@ try {
   }
   if($Action -in @('mcp','mcp-ready')){
     $initialized=$Action -eq 'mcp-ready';$child=$null;$childLine=$null;$stderrTask=$null
-    $inputTask=[Console]::In.ReadLineAsync()
+    # Console.In is a SyncTextReader on Windows PowerShell 5.1: its async call blocks.
+    # An independent StreamReader lets readiness and child replies progress while stdin is idle.
+    $inputReader=New-Object IO.StreamReader([Console]::OpenStandardInput(),$utf8)
+    $inputTask=$inputReader.ReadLineAsync()
     try {
       for(;;){
         if(!$child -and (Read-State).code -eq 'RUNTIME_READY' -and (Test-Path -LiteralPath $node)){
@@ -308,7 +311,7 @@ try {
               if($null -ne $result){@{jsonrpc='2.0';id=$q.id;result=$result}|ConvertTo-Json -Depth 20 -Compress}else{@{jsonrpc='2.0';id=$q.id;error=@{code=-32601;message='Method not found'}}|ConvertTo-Json -Compress}
             }
           }
-          $inputTask=[Console]::In.ReadLineAsync()
+          $inputTask=$inputReader.ReadLineAsync()
         }
         if($child -and $child.HasExited -and !$childLine){break}
         Start-Sleep -Milliseconds 20

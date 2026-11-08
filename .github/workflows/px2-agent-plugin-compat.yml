@@ -79,3 +79,11 @@ jobs:
           name: px2-${{ matrix.runner }}-${{ matrix.cli }}
           path: ${{ runner.temp }}/px2/results.json
           retention-days: 7
+      - name: Preserve exact current publish candidate
+        if: matrix.os == 'linux' && matrix.arch == 'x64' && matrix.cli == 'minimum'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: px2-agent-0.2.9-candidate
+          path: ${{ runner.temp }}/px2/plugin with spaces
+          include-hidden-files: true
+          retention-days: 7
