@@ -117,8 +117,14 @@ try {
   $utf8 = New-Object Text.UTF8Encoding($false)
   function Read-State {
     Reject-Reparse $statePath
-    if (!(Test-Path -LiteralPath $statePath)) { return $null }
-    $stream=[IO.File]::Open($statePath,[IO.FileMode]::Open,[IO.FileAccess]::Read,([IO.FileShare]::ReadWrite -bor [IO.FileShare]::Delete))
+    $stream=$null
+    for($readAttempt=0;$readAttempt -lt 20 -and !$stream;$readAttempt++){
+      try{$stream=[IO.File]::Open($statePath,[IO.FileMode]::Open,[IO.FileAccess]::Read,([IO.FileShare]::ReadWrite -bor [IO.FileShare]::Delete))}
+      catch [IO.FileNotFoundException]{if($readAttempt -eq 19){return $null}}
+      catch [IO.DirectoryNotFoundException]{if($readAttempt -eq 19){return $null}}
+      catch [IO.IOException]{if($readAttempt -eq 19){Fail 'RUNTIME_STATE_UNAVAILABLE'}}
+      if(!$stream){Start-Sleep -Milliseconds 5}
+    }
     $reader=New-Object IO.StreamReader($stream,$utf8)
     try { $s=$reader.ReadToEnd() | ConvertFrom-Json } finally { $reader.Dispose() }
     if ($s.code -notmatch '^RUNTIME_[A-Z_]+$') { Fail 'HANAMESH_RUNTIME_STATE_INVALID' }

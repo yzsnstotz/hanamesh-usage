@@ -1,5 +1,5 @@
 /** Native Windows bridge fixtures. No POSIX launcher, signals, Perl, real account or network. */
-import {mkdtemp,mkdir,cp,copyFile,readFile,writeFile,readdir,rm} from 'node:fs/promises';
+import {mkdtemp,mkdir,cp,copyFile,readFile,writeFile,readdir,rm,open} from 'node:fs/promises';
 import {watch} from 'node:fs';
 import {join,resolve} from 'node:path';
 import {tmpdir} from 'node:os';
@@ -11,7 +11,7 @@ const sha=b=>createHash('sha256').update(b).digest('hex');
 const q=v=>"'"+v.replaceAll("'","''")+"'";
 const platform='win-'+process.arch,source=resolve(process.env.USAGE_TEST_ROOT??'.');
 const psArgs=['-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass'];
-let templatePromise,compilerChecked=false;
+let templatePromise,helperChecked=false;
 async function template(){
  if(!templatePromise)templatePromise=(async()=>{
   const root=await mkdtemp(join(tmpdir(),'hm-native-template-')),name='node-v24.13.1-'+platform,tree=join(root,'tree',name),archive=join(root,'node.zip');
@@ -23,7 +23,7 @@ async function template(){
 after(async()=>{if(templatePromise){const t=await templatePromise;await rm(t.root,{recursive:true,force:true,maxRetries:5,retryDelay:100});}});
 export async function until(dir,read,timeoutMs=30000){
  const stop=AbortSignal.timeout(timeoutMs);let wake,version=0;const changed=()=>{version++;wake?.();},w=watch(dir,changed);stop.addEventListener('abort',changed);
- try{for(;;){stop.throwIfAborted();const n=version,value=await read();if(value)return value;await new Promise(r=>{wake=r;if(n!==version||stop.aborted)r()});wake=null;}}finally{w.close();stop.removeEventListener('abort',changed)}
+ try{for(;;){stop.throwIfAborted();const n=version;let value,transient=false;try{value=await read()}catch(error){if(!['ENOENT','EBUSY','EACCES'].includes(error.code))throw error;transient=true;}if(value)return value;let retry;await new Promise(r=>{wake=r;if(transient)retry=setTimeout(r,10);if(n!==version||stop.aborted)r()});clearTimeout(retry);wake=null;}}finally{w.close();stop.removeEventListener('abort',changed)}
 }
 export async function windowsFixture(t,{mode='failure',ready=false,channel='claude',defaultProfile=false}={}){
  const root=await mkdtemp(join(tmpdir(),'hm-native-中文-')),plugin=defaultProfile?join(root,'.codex/plugins/cache/market/hanamesh/0.2.9'):join(root,'plugin with spaces'),shared=join(root,'shared'),agent=join(root,'agent'),host=join(root,defaultProfile?'.codex':channel),cache=join(shared,'runtime/node-v24.13.1-'+platform),children=[];
@@ -36,10 +36,10 @@ export async function windowsFixture(t,{mode='failure',ready=false,channel='clau
  const core=join(root,'core-fixture.mjs');await writeFile(core,`for await(const c of process.stdin){};console.log(JSON.stringify({result:{agentProtocolVersion:2,deviceId:null,consent:{state:'withheld',changedAt:null,consentId:null,authorization:null}}}));`);
  const env={...process.env,HOME:root,USERPROFILE:root,TEMP:root,TMP:root,HANAMESH_SHARED_HOME:shared,HANAMESH_AGENT_HOME:agent,HANAMESH_CORE_AGENT_CLI:core,HANAMESH_AGENT_CHANNEL:channel,CLAUDE_CONFIG_DIR:host,CODEX_HOME:host,CLAUDE_PLUGIN_ROOT:plugin,PLUGIN_ROOT:plugin};
  if(defaultProfile){delete env.HANAMESH_AGENT_CHANNEL;delete env.CODEX_HOME;}
- if(!compilerChecked){
+ if(!helperChecked){
   const command=`$ErrorActionPreference='Stop';. ${q(join(plugin,'bin/windows-detached.ps1'))};Initialize-HanaMeshDetached`;
   const check=spawnSync('powershell.exe',[...psArgs,'-Command',command],{env,encoding:'utf8',timeout:20000});
-  if(check.status!==0)throw Error('NATIVE_HELPER_LOAD: '+check.stderr);compilerChecked=true;
+  if(check.status!==0)throw Error('NATIVE_HELPER_LOAD: '+check.stderr);helperChecked=true;
  }
  const recipePath=join(plugin,'bin/node-runtime.json'),recipe=JSON.parse(await readFile(recipePath));
  const zip=await template();await copyFile(zip.archive,join(root,'fixture.zip'));recipe.platforms[platform]={archiveFormat:'zip',sha256:mode==='badsha'?'0'.repeat(64):zip.sha256,bytes:zip.bytes};await writeFile(recipePath,JSON.stringify(recipe));
@@ -52,7 +52,7 @@ export async function windowsFixture(t,{mode='failure',ready=false,channel='clau
  const rows=async file=>{try{return(await readFile(join(root,file),'utf8')).trim().split(/\r?\n/).filter(Boolean).map(JSON.parse)}catch(e){if(e.code==='ENOENT')return[];throw e}};
  const disk=async()=>JSON.parse(await readFile(join(cache,'prepare-state.json')));
  const started=n=>until(root,async()=>{const a=await rows('downloads');if(a[n-1])return a[n-1];const state=await disk();if(state.code!=='RUNTIME_PREPARING'){let detail='';try{detail=await readFile(join(cache,'prepare-error.log'),'utf8')}catch{}throw Error('NATIVE_PREPARER_NOT_STARTED: '+JSON.stringify(state)+' '+detail);}return false;});
- const settle=async(attempt,expected)=>{const done=until(cache,async()=>{const s=await disk();return s.code!=='RUNTIME_PREPARING'?s:false});await writeFile(join(root,'release-'+attempt.pid),'release');const result=await done;if(result.code!==expected)throw Error(JSON.stringify(result));return result;};
+ const settle=async(attempt,expected)=>{const done=until(cache,async()=>{const s=await disk();return s.code!=='RUNTIME_PREPARING'?s:false});await writeFile(join(root,'release-'+attempt.pid),'release');const result=await done;if(result.code!==expected)throw Error(JSON.stringify(result));await until(cache,async()=>{const lease=await open(join(cache,'prepare.lock'),'r+');await lease.close();return true});return result;};
  const pending=async()=>{let names;try{names=await readdir(join(agent,'preparation'))}catch(e){if(e.code==='ENOENT')return[];throw e}return Promise.all(names.map(async n=>JSON.parse(await readFile(join(agent,'preparation',n)))))};
  const base={session_id:'PRIVATE_SESSION',tool_use_id:'original-call',tool_name:channel==='claude'?'mcp__plugin_target_probe__echo':'mcp__probe__echo',tool_input:{password:'PRIVATE_INPUT'},tool_response:{isError:false,content:[{type:'text',text:'PRIVATE_OUTPUT'}]}};
  const hook=async(event,extra={})=>{const r=await launch('hook',['--event',event],JSON.stringify({...base,hook_event_name:event,...extra}));if(r.code!==0)throw Error(r.stderr);return r;};
