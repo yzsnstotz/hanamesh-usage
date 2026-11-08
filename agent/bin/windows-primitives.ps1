@@ -2,10 +2,10 @@
 # Utility/Management modules costs 20-30 seconds per hook. Keep the same JSON,
 # exact-path IO, SHA256 and bounded HTTPS operations on built-in .NET Framework.
 $PSModuleAutoLoadingPreference = 'None'
-if (!$script:HanaMeshJSON) {
+if (!$HanaMeshJSON) {
   [Reflection.Assembly]::Load('System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35') | Out-Null
-  $script:HanaMeshJSON=[System.Web.Script.Serialization.JavaScriptSerializer]::new()
-  $script:HanaMeshJSON.MaxJsonLength=[int]::MaxValue
+  $HanaMeshJSON=[System.Web.Script.Serialization.JavaScriptSerializer]::new()
+  $HanaMeshJSON.MaxJsonLength=[int]::MaxValue
 }
 function Join-Path([string]$Path,[string]$ChildPath) { return [IO.Path]::Combine($Path,$ChildPath) }
 function Split-Path([string]$Path,[switch]$Parent) { return [IO.Path]::GetDirectoryName($Path) }
@@ -31,11 +31,11 @@ function Convert-HanaMeshJSONValue($Value) {
 }
 function ConvertFrom-Json {
   param([Parameter(ValueFromPipeline=$true)][string]$InputObject)
-  process { return ,(Convert-HanaMeshJSONValue ($script:HanaMeshJSON.DeserializeObject($InputObject))) }
+  process { return ,(Convert-HanaMeshJSONValue ($HanaMeshJSON.DeserializeObject($InputObject))) }
 }
 function ConvertTo-Json {
   param([Parameter(ValueFromPipeline=$true)]$InputObject,[switch]$Compress,[int]$Depth=100)
-  process { return $script:HanaMeshJSON.Serialize($InputObject) }
+  process { return $HanaMeshJSON.Serialize($InputObject) }
 }
 function Invoke-WebRequest([string]$Uri,[string]$OutFile,[int]$TimeoutSec,[int]$MaximumRedirection,[switch]$UseBasicParsing) {
   $request=[Net.HttpWebRequest]::CreateHttp($Uri)
