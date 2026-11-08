@@ -10,7 +10,7 @@ const root=await mkdtemp(join(tmpdir(),'hm-px2-smoke-'));
 let failure;
 try {
   // Intentionally do not inherit API keys, login state, credential helpers or user configs.
-  const env={PATH:process.env.PATH,SystemRoot:process.env.SystemRoot,WINDIR:process.env.WINDIR,COMSPEC:process.env.COMSPEC,
+  const env={PATH:process.env.PATH,SystemRoot:process.env.SystemRoot,WINDIR:process.env.WINDIR,COMSPEC:process.env.COMSPEC,PATHEXT:process.env.PATHEXT,
     TEMP:root,TMP:root,TMPDIR:root,HOME:root,USERPROFILE:root,APPDATA:join(root,'appdata'),LOCALAPPDATA:join(root,'local'),
     HANAMESH_SHARED_HOME:join(root,'shared'),HANAMESH_AGENT_HOME:join(root,'agent'),
     CLAUDE_CONFIG_DIR:join(root,'claude'),CODEX_HOME:join(root,'codex'),CLAUDE_PLUGIN_ROOT:plugin,PLUGIN_ROOT:plugin,LANG:'C',LC_ALL:'C'};
@@ -28,6 +28,10 @@ try {
   const tripwire=join(root,'no-network.mjs');
   await writeFile(tripwire,`import http from 'node:http';import https from 'node:https';import {syncBuiltinESMExports} from 'node:module';import fs from 'node:fs';const deny=()=>{fs.writeFileSync(${JSON.stringify(join(root,'network-attempt'))},'attempt');throw Error('PX2_NETWORK_FORBIDDEN')};globalThis.fetch=deny;http.request=http.get=https.request=https.get=deny;syncBuiltinESMExports();`);
   env.NODE_OPTIONS=`--import=${pathToFileURL(tripwire).href}`;
+  if(process.platform==='win32'){
+    const nativeNode=join(env.HANAMESH_SHARED_HOME,`runtime/node-v24.13.1-win-${process.arch}/node.exe`);
+    assert.match(run(nativeNode,['-e',"console.log('PX2_DIRECT_READY')"]),/PX2_DIRECT_READY/,'direct pinned runtime preserves preload stdout');
+  }
   assert.match(launch('node','--input-type=module','-e',"console.log('PX2_PRELOAD_READY')"),/PX2_PRELOAD_READY/,'verified runtime must preserve preload stdout');
   const initialStatus=JSON.parse(launch('status'));assert.equal(initialStatus.consent.state,'withheld');
   let count=0;
