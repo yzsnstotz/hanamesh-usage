@@ -6,6 +6,17 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
 public static class HanaMeshDetached {
+  [DllImport("kernel32.dll", SetLastError=true)]
+  static extern bool IsWow64Process2(IntPtr process, out ushort processMachine, out ushort nativeMachine);
+  [DllImport("kernel32.dll")] static extern IntPtr GetCurrentProcess();
+  // Native ISA from the OS, independent of shell emulation and Git Bash's environment.
+  public static string NativeArchitecture() {
+    ushort processMachine, nativeMachine;
+    Check(IsWow64Process2(GetCurrentProcess(), out processMachine, out nativeMachine));
+    if(nativeMachine == 0x8664) return "x64";
+    if(nativeMachine == 0xaa64) return "arm64";
+    throw new InvalidOperationException("HANAMESH_NODE_PLATFORM_UNSUPPORTED");
+  }
   [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Unicode)]
   struct StartupInfo {
     public int cb; public string reserved, desktop, title;

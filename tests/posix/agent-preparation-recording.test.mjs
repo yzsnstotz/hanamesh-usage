@@ -24,7 +24,7 @@ async function fixture(t,channel){
  const hook=(event,extra={})=>{const p=spawnSync('/bin/sh',[join(plugin,'bin/hm-agent'),'hook','--event',event],{env,input:JSON.stringify({...base,hook_event_name:event,...extra}),encoding:'utf8'});assert.equal(p.status,0,p.stderr);};
  const pending=async()=>{const names=await readdir(join(agent,'preparation')).catch(e=>e.code==='ENOENT'?[]:Promise.reject(e));return Promise.all(names.map(async n=>JSON.parse(await readFile(join(agent,'preparation',n)))));};
  const publish=async()=>{await release();await copyFile(process.execPath,join(cache,'bin/node'));const recipe=JSON.parse(await readFile(join(plugin,'bin/node-runtime.json')));await writeFile(join(cache,'archive.sha256'),recipe.platforms[`${process.platform}-${process.arch}`].sha256+'\n');await writeFile(join(cache,'node.sha256'),sha(await readFile(process.execPath))+'  bin/node\n');await writeFile(join(cache,'prepare-state.json'),JSON.stringify({code:'RUNTIME_READY',finishedAt:new Date().toISOString()}));};
- return{root,agent,hook,pending,publish,base};
+ return{root,host,agent,hook,pending,publish,base};
 }
 for(const channel of ['claude','codex'])test(`actual Node-free ${channel} Pre/Post retain original time then become one minimal activity after publication`,async t=>{
  const f=await fixture(t,channel);f.hook('PreToolUse');f.hook('PostToolUse');const pending=await f.pending();assert.equal(pending.length,2);assert.equal(pending[0].factId,sha(JSON.stringify([channel,'PRIVATE_SESSION','original-call'])));assert.doesNotMatch(JSON.stringify(pending),/PRIVATE_|password|tool_input|tool_response/);const first=pending.find(p=>p.event==='PreToolUse').occurredAt;
@@ -32,4 +32,19 @@ for(const channel of ['claude','codex'])test(`actual Node-free ${channel} Pre/Po
 });
 test('Node-free preparation ignores non-plugin Read and respects an explicit local close',async t=>{
  const f=await fixture(t,'claude');f.hook('PreToolUse',{tool_name:'Read'});assert.deepEqual(await f.pending(),[]);await writeFile(join(f.agent,'withdrawal.json'),JSON.stringify({state:'sent'}));f.hook('PreToolUse');f.hook('PostToolUse');assert.deepEqual(await f.pending(),[]);
+});
+
+test('official Codex Bash cold Pre/Post drains exactly once with original time and no private path',async t=>{
+ const f=await fixture(t,'codex'),skill=join(f.host,'plugins/cache/market/target/1.0/skills/demo');
+ await mkdir(skill,{recursive:true});await writeFile(join(skill,'SKILL.md'),'FIXTURE ONLY');
+ const extra={tool_name:'Bash',tool_input:{command:`cat "${join(skill,'SKILL.md')}"`},tool_response:{exit_code:0}};
+ f.hook('PreToolUse',extra);f.hook('PostToolUse',extra);
+ const pending=await f.pending();assert.equal(pending.length,2,'official Bash must be queued during preparation');
+ const first=pending.find(p=>p.event==='PreToolUse').occurredAt;
+ assert.doesNotMatch(JSON.stringify(pending),/PRIVATE_|SKILL|hm-preparing|tool_input|tool_response/);
+ await f.publish();f.hook('PreToolUse',{tool_name:'Read'});f.hook('PreToolUse',{tool_name:'Read'});
+ const files=await readdir(join(f.agent,'events'));assert.equal(files.length,1);
+ const row=JSON.parse(await readFile(join(f.agent,'events',files[0])));
+ assert.equal(row.occurredAt,first);assert.equal(row.feature,'skill:demo');assert.equal(row.success,true);
+ assert.equal((await f.pending()).length,0);assert.doesNotMatch(JSON.stringify(row),/PRIVATE_|SKILL|hm-preparing|tool_input|tool_response/);
 });

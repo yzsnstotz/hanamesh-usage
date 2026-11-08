@@ -1,0 +1,111 @@
+name: PX4 R128 Agent plugin repair
+on:
+  push:
+    branches: [fix/px4-agent-plugin-r128-1109]
+  workflow_dispatch:
+permissions: {}
+jobs:
+  plugin:
+    timeout-minutes: 25 # 待追认：原生 job 封顶，保留全部失败。
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {runner: ubuntu-latest, os: linux, arch: x64, cli: minimum}
+    runs-on: ${{ matrix.runner }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Fetch exact public source without credentials
+        env:
+          PX2_REPOSITORY: ${{ github.repository }}
+          PX2_REVISION: ${{ github.sha }}
+        run: |
+          git -c credential.helper= init -q
+          git config core.autocrlf false
+          git config core.eol lf
+          git -c credential.helper= fetch --depth=1 "https://github.com/$PX2_REPOSITORY.git" "$PX2_REVISION"
+          git checkout --detach FETCH_HEAD
+      - name: Native Windows syntax
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          if($PSVersionTable.PSVersion -lt [version]'7.4'){throw 'HANAMESH_POWERSHELL74_REQUIRED'}
+          if([Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString().ToLowerInvariant() -ne '${{ matrix.arch }}'){throw 'HANAMESH_POWERSHELL_NATIVE_ARCH_REQUIRED'}
+          @{version=$PSVersionTable.PSVersion.ToString();process=[Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString();os=[Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString()}|ConvertTo-Json -Compress
+          $errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $PWD 'agent/bin/hm-agent.ps1'),[ref]$null,[ref]$errors)|Out-Null
+          if($errors.Count){$errors|ForEach-Object{Write-Error $_.Message};exit 1}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.13.1'
+          token: ''
+      - name: Assert actual native OS and architecture
+        run: node -e "if(process.platform!=='${{ matrix.os }}'||process.arch!=='${{ matrix.arch }}')process.exit(1)"
+      - name: Prepare isolated paths
+        run: node tools/agent-compat-cli.mjs prepare
+      - name: Prepare strict pinned build tools and dependencies
+        env:
+          NPM_CONFIG_USERCONFIG: ${{ runner.temp }}/px2/npmrc
+          NPM_CONFIG_GLOBALCONFIG: ${{ runner.temp }}/px2/global-npmrc
+        run: |
+          npm install --global pnpm@10.33.0
+          npm ci --cache .npm-cache
+          pnpm install --frozen-lockfile
+          if [[ "$RUNNER_OS" == Windows ]]; then echo "$(cygpath -w /usr/bin)" >> "$GITHUB_PATH"; fi
+      - name: Normal strict target build
+        run: node tools/build.mjs
+      - name: R128 P2-1 red regression against unchanged bridge
+        run: node --test --test-reporter=tap tests/posix/agent-preparation-recording.test.mjs 2>&1 | tee "$RUNNER_TEMP/px2/native-tests.log"
+      - name: Preserve receipts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: px2-${{ matrix.runner }}-${{ matrix.cli }}
+          path: |
+            ${{ runner.temp }}/px2/results.json
+            ${{ runner.temp }}/px2/native-tests.log
+          retention-days: 7
+      - name: Archive exact current publish candidate with modes
+        if: matrix.os == 'linux' && matrix.arch == 'x64' && matrix.cli == 'minimum'
+        run: tar -czf "$RUNNER_TEMP/px2/agent-0.2.9.tgz" -C "$RUNNER_TEMP/px2/plugin with spaces" .
+      - name: Preserve exact current publish candidate
+        if: matrix.os == 'linux' && matrix.arch == 'x64' && matrix.cli == 'minimum'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: px2-agent-0.2.9-candidate
+          path: ${{ runner.temp }}/px2/agent-0.2.9.tgz
+          include-hidden-files: true
+          retention-days: 7
+
+  helper:
+    runs-on: windows-latest
+    steps:
+      - name: Fetch exact public source without credentials
+        shell: bash
+        env:
+          SOURCE_REPOSITORY: ${{ github.repository }}
+          SOURCE_REVISION: ${{ github.sha }}
+        run: |
+          git -c credential.helper= init -q
+          git config core.autocrlf false
+          git -c credential.helper= fetch --depth=1 "https://github.com/$SOURCE_REPOSITORY.git" "$SOURCE_REVISION"
+          git checkout --detach FETCH_HEAD
+      - name: Compile fixed AnyCPU .NET Framework helper using system 5.1
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if($PSVersionTable.PSVersion.Major -ne 5){throw 'SYSTEM_PS51_REQUIRED'}
+          New-Item -ItemType Directory -Path "$env:RUNNER_TEMP/px4-helper"|Out-Null
+          $binary="$env:RUNNER_TEMP/px4-helper/windows-detached.dll"
+          & "$env:WINDIR/Microsoft.NET/Framework64/v4.0.30319/csc.exe" /nologo /target:library /platform:anycpu /optimize+ "/out:$binary" agent/bin/windows-detached.cs
+          if($LASTEXITCODE -ne 0){throw 'COMPILE_FAILED'}
+          @{builtFromRevision='${{ github.sha }}';schemaVersion=1;architecture='AnyCPU';targetFramework='.NET Framework 4';sourceSha256=(Get-FileHash agent/bin/windows-detached.cs).Hash.ToLowerInvariant();sha256=(Get-FileHash $binary).Hash.ToLowerInvariant()}|ConvertTo-Json|Set-Content -Encoding UTF8 "$env:RUNNER_TEMP/px4-helper/windows-detached.json"
+          [Reflection.Assembly]::Load([IO.File]::ReadAllBytes($binary))|Out-Null
+          if([HanaMeshDetached]::NativeArchitecture() -ne 'x64'){throw 'ARCH_FAILED'}
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: px4-system51-helper
+          path: ${{ runner.temp }}/px4-helper
+          retention-days: 7
