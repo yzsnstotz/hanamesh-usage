@@ -36,13 +36,6 @@ jobs:
           git -c credential.helper= init -q
           git -c credential.helper= fetch --depth=1 "https://github.com/$PX2_REPOSITORY.git" "$PX2_REVISION"
           git checkout --detach FETCH_HEAD
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
-        with:
-          node-version: '24.13.1'
-          token: ''
-          mirror: 'https://nodejs.org/dist'
-      - name: Assert actual native OS and architecture
-        run: node -e "if(process.platform!=='${{ matrix.os }}'||process.arch!=='${{ matrix.arch }}')process.exit(1)"
       - name: Native Windows syntax
         if: runner.os == 'Windows'
         shell: powershell
@@ -51,6 +44,17 @@ jobs:
           [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $PWD 'agent/bin/hm-agent.ps1'),[ref]$null,[ref]$errors)|Out-Null
           if($errors.Count){$errors|ForEach-Object{Write-Error $_.Message};exit 1}
           Add-Type -Path (Join-Path $PWD 'agent/bin/windows-detached.cs')
+          $compilerHome=Join-Path $env:RUNNER_TEMP ('px2-compiler-中文-'+[Guid]::NewGuid().ToString('N'))
+          [IO.Directory]::CreateDirectory($compilerHome)|Out-Null
+          $env:TEMP=$compilerHome;$env:TMP=$compilerHome
+          Copy-Item -LiteralPath (Join-Path $PWD 'agent/bin/windows-detached.cs') -Destination (Join-Path $compilerHome 'helper.cs')
+          Add-Type -Path (Join-Path $compilerHome 'helper.cs')
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.13.1'
+          token: ''
+      - name: Assert actual native OS and architecture
+        run: node -e "if(process.platform!=='${{ matrix.os }}'||process.arch!=='${{ matrix.arch }}')process.exit(1)"
       - name: Prepare isolated paths
         run: node tools/agent-compat-cli.mjs prepare
       - name: Prepare strict pinned build tools and dependencies
