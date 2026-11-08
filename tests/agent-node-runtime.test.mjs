@@ -14,7 +14,7 @@ async function fixture(t){
  const plugin=join(root,'plugin with spaces'),shared=join(root,'shared'),cache=join(shared,'runtime/node-v24.13.1-'+platform),relative=process.platform==='win32'?'node.exe':'bin/node';
  await mkdir(join(plugin,'lib/agent'),{recursive:true});await mkdir(join(cache,'bin'),{recursive:true});await cp('agent/bin',join(plugin,'bin'),{recursive:true});
  await cp(process.execPath,join(cache,relative));await writeFile(join(cache,'node.sha256'),sha(await readFile(process.execPath))+'  '+relative+'\n');await writeFile(join(cache,'archive.sha256'),digests[platform]+'\n');
- await writeFile(join(plugin,'lib/agent/hook.mjs'),"console.log('HOOK_OK:'+process.version)");await writeFile(join(plugin,'lib/agent/cli.mjs'),"console.log('MCP_OK:'+process.argv[2])");
+ await writeFile(join(plugin,'lib/agent/hook.mjs'),"console.log('HOOK_OK:'+process.version);console.log(JSON.stringify(process.argv.slice(2)))");await writeFile(join(plugin,'lib/agent/cli.mjs'),"console.log('MCP_OK:'+process.argv[2])");
  const env={...process.env,HOME:root,USERPROFILE:root,HANAMESH_SHARED_HOME:shared,CLAUDE_PLUGIN_ROOT:plugin,PLUGIN_ROOT:plugin};
  if(process.platform!=='win32')env.PATH='/usr/bin:/bin';
  return{root,plugin,cache,relative,env};
@@ -24,7 +24,7 @@ for(const channel of ['claude','codex'])test('installed '+channel+' hooks use fi
  const f=await fixture(t),hooks=JSON.parse(await readFile('agent/hooks/'+(channel==='claude'?'hooks.json':'codex.json')));
  for(const[event,rows]of Object.entries(hooks.hooks)){
   const hook=rows[0].hooks[0];const r=process.platform==='win32'&&channel==='codex'?spawnSync(hook.commandWindows,{shell:true,env:f.env,input:'{}',encoding:'utf8'}):spawnSync(process.platform==='win32'?'bash':'/bin/sh',['-c',hook.command],{env:f.env,input:'{}',encoding:'utf8'});
-  assert.equal(r.status,0,event+': '+r.stderr);assert.match(r.stdout,/HOOK_OK:v24\.13\.1/);
+  assert.equal(r.status,0,event+': '+r.stderr);assert.match(r.stdout,/HOOK_OK:v24\.13\.1/);assert.deepEqual(JSON.parse(r.stdout.trim().split(/\r?\n/)[1]),['--event',event],channel+': '+event);
  }
 });
 for(const channel of ['claude','codex'])test(channel+' MCP launch uses the verified runtime',async t=>{

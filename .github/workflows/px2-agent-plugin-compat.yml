@@ -21,6 +21,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24.13.1
+      - name: Reject missing and corrupt runtime caches on this native platform
+        if: always()
+        shell: bash
+        run: node --test --test-reporter=tap tests/agent-node-runtime.test.mjs
       - name: Prepare isolated credential-free paths
         shell: bash
         run: node tools/agent-compat-cli.mjs prepare
@@ -30,10 +34,6 @@ jobs:
       - name: Execute official hook payload fixtures, assert no collection or upload
         shell: bash
         run: node tools/agent-compat-smoke.mjs "$RUNNER_TEMP/px2/plugin with spaces"
-      - name: Reject missing and corrupt runtime caches on this native platform
-        if: always()
-        shell: bash
-        run: node --test --test-reporter=tap tests/agent-node-runtime.test.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

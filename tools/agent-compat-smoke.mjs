@@ -45,7 +45,7 @@ try {
         // Claude shell:bash is documented on Windows (Git for Windows), sh on Unix.
         output=run(process.platform==='win32'?'bash':'/bin/sh',['-c',hook.command],JSON.stringify(payload),extra);
       }
-      if(event==='SessionStart'){assert.match(JSON.parse(output).systemMessage,/默认关闭/);}else assert.equal(output,'');
+      if(event==='SessionStart'){assert.ok(output.trim(),`${channel} SessionStart must emit the first consent notice`);assert.match(JSON.parse(output).systemMessage,/默认关闭/);}else assert.equal(output,'');
       assert.ok(!output.includes('PX2_PRIVATE_SENTINEL'));count++;
     }
   }
