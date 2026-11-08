@@ -16,7 +16,7 @@ async function template(){
  if(!templatePromise)templatePromise=(async()=>{
   const root=await mkdtemp(join(tmpdir(),'hm-native-template-')),name='node-v24.13.1-'+platform,tree=join(root,'tree',name),archive=join(root,'node.zip');
   await mkdir(tree,{recursive:true});await copyFile(process.execPath,join(tree,'node.exe'));await writeFile(join(tree,'LICENSE'),'NATIVE TEST FIXTURE ONLY');
-  const r=spawnSync('powershell.exe',[...psArgs,'-Command',`Add-Type -AssemblyName System.IO.Compression;Add-Type -AssemblyName System.IO.Compression.FileSystem;$z=[IO.Compression.ZipFile]::Open(${q(archive)},[IO.Compression.ZipArchiveMode]::Create);try{foreach($f in @('node.exe','LICENSE')){[IO.Compression.ZipFileExtensions]::CreateEntryFromFile($z,(${q(tree)}+'/'+$f),('${name}/'+$f))|Out-Null}}finally{$z.Dispose()}`],{encoding:'utf8'});if(r.status!==0)throw Error(r.stderr);
+  const r=spawnSync('pwsh.exe',[...psArgs,'-Command',`Add-Type -AssemblyName System.IO.Compression;Add-Type -AssemblyName System.IO.Compression.FileSystem;$z=[IO.Compression.ZipFile]::Open(${q(archive)},[IO.Compression.ZipArchiveMode]::Create);try{foreach($f in @('node.exe','LICENSE')){[IO.Compression.ZipFileExtensions]::CreateEntryFromFile($z,(${q(tree)}+'/'+$f),('${name}/'+$f),[IO.Compression.CompressionLevel]::NoCompression)|Out-Null}}finally{$z.Dispose()}`],{encoding:'utf8'});if(r.status!==0)throw Error(r.stderr);
   const bytes=await readFile(archive);return{root,archive,sha256:sha(bytes),bytes:bytes.length};
  })();return templatePromise;
 }
@@ -38,7 +38,7 @@ export async function windowsFixture(t,{mode='failure',ready=false,channel='clau
  if(defaultProfile){delete env.HANAMESH_AGENT_CHANNEL;delete env.CODEX_HOME;}
  if(!helperChecked){
   const command=`$ErrorActionPreference='Stop';. ${q(join(plugin,'bin/windows-detached.ps1'))};Initialize-HanaMeshDetached`;
-  const check=spawnSync('powershell.exe',[...psArgs,'-Command',command],{env,encoding:'utf8',timeout:20000});
+  const check=spawnSync('pwsh.exe',[...psArgs,'-Command',command],{env,encoding:'utf8',timeout:20000});
   if(check.status!==0)throw Error('NATIVE_HELPER_LOAD: '+check.stderr);helperChecked=true;
  }
  const recipePath=join(plugin,'bin/node-runtime.json'),recipe=JSON.parse(await readFile(recipePath));
@@ -47,7 +47,7 @@ export async function windowsFixture(t,{mode='failure',ready=false,channel='clau
  await writeFile(join(root,'download.ps1'),`param([string]$Destination)\n$ErrorActionPreference='Stop'\n$r=$env:HOME\n[IO.File]::AppendAllText((Join-Path $r 'downloads'),(@{pid=$PID;startedAt=[DateTime]::UtcNow.ToString('o')}|ConvertTo-Json -Compress)+[Environment]::NewLine)\nwhile(!(Test-Path -LiteralPath (Join-Path $r ('release-'+$PID)))){Start-Sleep -Milliseconds 20}\nif([IO.File]::ReadAllText((Join-Path $r 'fixture-mode')) -eq 'failure'){throw 'RUNTIME_DOWNLOAD_FAILED'}\n[IO.File]::Copy((Join-Path $r 'fixture.zip'),$Destination,$false)\n`,'utf8');
  let script=await readFile(join(plugin,'bin/hm-agent.ps1'),'utf8');script=script.replace(/      Invoke-WebRequest[^\n]+/,`      & ${q(join(root,'download.ps1'))} "$scratch/node.zip"`);await writeFile(join(plugin,'bin/hm-agent.ps1'),script,'utf8');
  const launch=(action,args=[],input='')=>new Promise((ok,bad)=>{
-  const start=performance.now(),p=spawn('powershell.exe',[...psArgs,'-File',join(plugin,'bin/hm-agent.ps1'),action,...args],{env,stdio:['pipe','pipe','pipe']});children.push(p);let stdout='',stderr='';p.stdout.on('data',c=>stdout+=c);p.stderr.on('data',c=>stderr+=c);p.on('error',bad);const timer=setTimeout(()=>{p.kill('SIGTERM');bad(Error('NATIVE_LAUNCH_TIMEOUT: action='+action+' exited='+p.exitCode+' stdout='+stdout+' stderr='+stderr));},20000);p.on('close',code=>{clearTimeout(timer);ok({code,stdout,stderr,ms:performance.now()-start})});p.stdin.on('error',()=>{});p.stdin.end(input);
+  const start=performance.now(),p=spawn('pwsh.exe',[...psArgs,'-File',join(plugin,'bin/hm-agent.ps1'),action,...args],{env,stdio:['pipe','pipe','pipe']});children.push(p);let stdout='',stderr='';p.stdout.on('data',c=>stdout+=c);p.stderr.on('data',c=>stderr+=c);p.on('error',bad);const timer=setTimeout(()=>{p.kill('SIGTERM');bad(Error('NATIVE_LAUNCH_TIMEOUT: action='+action+' exited='+p.exitCode+' stdout='+stdout+' stderr='+stderr));},20000);p.on('close',code=>{clearTimeout(timer);ok({code,stdout,stderr,ms:performance.now()-start})});p.stdin.on('error',()=>{});p.stdin.end(input);
  });
  const rows=async file=>{try{return(await readFile(join(root,file),'utf8')).trim().split(/\r?\n/).filter(Boolean).map(JSON.parse)}catch(e){if(e.code==='ENOENT')return[];throw e}};
  const disk=async()=>JSON.parse(await readFile(join(cache,'prepare-state.json')));
@@ -59,7 +59,7 @@ export async function windowsFixture(t,{mode='failure',ready=false,channel='clau
  const publish=async(state={code:'RUNTIME_READY',phase:'ready'})=>{await copyFile(process.execPath,join(cache,'node.exe'));await writeFile(join(cache,'node.sha256'),sha(await readFile(process.execPath))+'  node.exe\n');await writeFile(join(cache,'archive.sha256'),recipe.platforms[platform].sha256+'\n');await writeFile(join(cache,'prepare-state.json'),JSON.stringify(state));};
  const lock=async()=>{
   const code=`$f=[IO.File]::Open(${q(join(cache,'prepare.lock'))},[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None);[Console]::Out.WriteLine('LOCKED');[Console]::In.ReadLine()|Out-Null;$f.Dispose()`;
-  const p=spawn('powershell.exe',[...psArgs,'-Command',code],{env,stdio:['pipe','pipe','pipe']});children.push(p);p.stdin.on('error',()=>{});p.stderr.resume();await once(p.stdout,'data');let released=false;return async()=>{if(released)return;released=true;p.stdin.end();if(p.exitCode===null)await once(p,'close');};
+  const p=spawn('pwsh.exe',[...psArgs,'-Command',code],{env,stdio:['pipe','pipe','pipe']});children.push(p);p.stdin.on('error',()=>{});p.stderr.resume();await once(p.stdout,'data');let released=false;return async()=>{if(released)return;released=true;p.stdin.end();if(p.exitCode===null)await once(p,'close');};
  };
  t.after(async()=>{try{let s;try{s=await disk()}catch{}if(s?.code==='RUNTIME_PREPARING'&&s.pid)try{process.kill(s.pid,'SIGTERM')}catch{}for(const p of children){if(p.exitCode===null){p.stdin.end();p.kill('SIGTERM')}}await Promise.all(children.filter(p=>p.exitCode===null&&p.signalCode===null).map(p=>once(p,'close').catch(()=>{})));}finally{await rm(root,{recursive:true,force:true,maxRetries:10,retryDelay:100});}});
  if(ready)await publish();

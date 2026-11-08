@@ -18,7 +18,7 @@ async function fixture(t){
  if(process.platform!=='win32')env.PATH='/usr/bin:/bin';
  return{root,plugin,cache,relative,env};
 }
-const launcher=(f,action)=>process.platform==='win32'?spawnSync('powershell.exe',['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',join(f.plugin,'bin/hm-agent.ps1'),action],{env:f.env,encoding:'utf8'}):spawnSync('/bin/sh',[join(f.plugin,'bin/hm-agent'),action],{env:f.env,encoding:'utf8'});
+const launcher=(f,action)=>process.platform==='win32'?spawnSync('pwsh.exe',['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',join(f.plugin,'bin/hm-agent.ps1'),action],{env:f.env,encoding:'utf8'}):spawnSync('/bin/sh',[join(f.plugin,'bin/hm-agent'),action],{env:f.env,encoding:'utf8'});
 for(const channel of ['claude','codex'])test('installed '+channel+' hooks use fixed runtime: '+platform,async t=>{
  const f=await fixture(t),hooks=JSON.parse(await readFile('agent/hooks/'+(channel==='claude'?'hooks.json':'codex.json')));
  for(const[event,rows]of Object.entries(hooks.hooks)){
@@ -38,5 +38,5 @@ test('failed preparation never falls back to PATH; corrupt published cache is re
 test('manifest channels declare only documented events and Windows override',async()=>{
  const c=JSON.parse(await readFile('agent/.codex-plugin/plugin.json'));assert.equal(c.hooks,'./hooks/codex.json');assert.equal(c.extensions,undefined);
  const h=JSON.parse(await readFile('agent/hooks/codex.json'));assert.deepEqual(Object.keys(h.hooks),['SessionStart','PostToolUse','PreToolUse']);
- for(const rows of Object.values(h.hooks))assert.match(rows[0].hooks[0].commandWindows,/powershell.exe/);
+ for(const rows of Object.values(h.hooks))assert.match(rows[0].hooks[0].commandWindows,/pwsh.exe/);
 });

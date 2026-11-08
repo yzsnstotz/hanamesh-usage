@@ -15,15 +15,11 @@ try {
     $errorWriter=New-Object IO.StreamWriter([Console]::OpenStandardError(),$utf8);$errorWriter.AutoFlush=$true;[Console]::SetError($errorWriter)
   }
   if (!$Action) { Fail 'HANAMESH_AGENT_ACTION_REQUIRED' }
-  # Windows 5.1/.NET Framework under x64 Git Bash emulation can report X64 on ARM64.
-  # WOW64 exports the native processor architecture separately from the process ISA.
-  $nativeArch = $env:PROCESSOR_ARCHITEW6432
-  if (!$nativeArch) { $nativeArch = $env:PROCESSOR_ARCHITECTURE }
-  $arch = switch ($nativeArch) {
-    'ARM64' { 'arm64' }
-    'AMD64' { 'x64' }
-    default { [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString().ToLowerInvariant() }
-  }
+  if($PSVersionTable.PSVersion -lt [version]'7.4'){Fail 'HANAMESH_POWERSHELL74_REQUIRED'}
+  # .NET 8+ uses IsWow64Process2 for native OS architecture, including emulated Git Bash.
+  $arch=[Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString().ToLowerInvariant()
+  $processArch=[Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString().ToLowerInvariant()
+  if($processArch -ne $arch){Fail 'HANAMESH_POWERSHELL_NATIVE_ARCH_REQUIRED'}
   if($arch -notin @('x64','arm64')){Fail 'HANAMESH_NODE_PLATFORM_UNSUPPORTED'}
   $plugin=Split-Path -Parent $PSScriptRoot
   $recipe=Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'node-runtime.json')|ConvertFrom-Json
@@ -286,7 +282,7 @@ try {
         . (Join-Path $PSScriptRoot 'windows-detached.ps1')
         Initialize-HanaMeshDetached
         $launchPhase='create-process'
-        $workerId=[HanaMeshDetached]::Start((Join-Path $PSHOME 'powershell.exe'),('-NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "'+$PSCommandPath+'" prepare-worker '+$initial.token),$cache,$stdinFile,(Join-Path $cache 'prepare.log'),(Join-Path $cache 'prepare-error.log'))
+        $workerId=[HanaMeshDetached]::Start((Join-Path $PSHOME 'pwsh.exe'),('-NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "'+$PSCommandPath+'" prepare-worker '+$initial.token),$cache,$stdinFile,(Join-Path $cache 'prepare.log'),(Join-Path $cache 'prepare-error.log'))
         $workerTicks=$null
         try{$worker=[Diagnostics.Process]::GetProcessById($workerId);$workerTicks=$worker.StartTime.ToUniversalTime().Ticks.ToString();$worker.Dispose()}catch{}
         $lease=Lease
@@ -300,7 +296,7 @@ try {
   }
   if($Action -in @('mcp','mcp-ready')){
     $initialized=$Action -eq 'mcp-ready';$child=$null;$childLine=$null;$stderrTask=$null
-    # Console.In is a SyncTextReader on Windows PowerShell 5.1: its async call blocks.
+    # Console.In is a SyncTextReader on a redirected PowerShell host: its async call blocks.
     # An independent StreamReader lets readiness and child replies progress while stdin is idle.
     $inputReader=New-Object IO.StreamReader([Console]::OpenStandardInput(),$utf8)
     $inputTask=$inputReader.ReadLineAsync()

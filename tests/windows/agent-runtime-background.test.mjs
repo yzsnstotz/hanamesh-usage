@@ -7,7 +7,7 @@ import {readFile,writeFile,readdir} from 'node:fs/promises';
 import {windowsFixture} from '../fixtures/windows-agent-runtime.mjs';
 const ss=id=>({session_id:id,source:'startup'});
 async function mcp(f){
- const p=spawn('powershell.exe',[...f.psArgs,'-File',join(f.plugin,'bin/hm-agent.ps1'),'mcp'],{env:f.env,stdio:['pipe','pipe','pipe']});f.children.push(p);p.stdin.on('error',()=>{});let buf='',stderr='';const replies=[];let notify=()=>{};
+ const p=spawn('pwsh.exe',[...f.psArgs,'-File',join(f.plugin,'bin/hm-agent.ps1'),'mcp'],{env:f.env,stdio:['pipe','pipe','pipe']});f.children.push(p);p.stdin.on('error',()=>{});let buf='',stderr='';const replies=[];let notify=()=>{};
  p.stderr.on('data',c=>stderr+=c);p.stdout.on('data',c=>{buf+=c;for(;;){const at=buf.indexOf('\n');if(at<0)break;replies.push(JSON.parse(buf.slice(0,at)));buf=buf.slice(at+1)}notify()});
  const wait=n=>new Promise((ok,bad)=>{const timer=setTimeout(()=>bad(Error('NATIVE_MCP_NO_REPLY: '+stderr)),10000);notify=()=>{if(replies.length>=n){clearTimeout(timer);ok()}};notify()});
  const send=(id,method,params={})=>p.stdin.write(JSON.stringify({jsonrpc:'2.0',id,method,params})+'\n');

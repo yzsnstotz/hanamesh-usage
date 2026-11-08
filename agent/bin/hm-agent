@@ -4,6 +4,6 @@ umask 077
 [ -n "${1:-}" ] || { printf '%s\n' HANAMESH_AGENT_ACTION_REQUIRED >&2; exit 1; }
 plugin=$(CDPATH= cd -- "$(dirname "$0")/.." && pwd -P)
 case "${OS:-}:${OSTYPE:-}:${MSYSTEM:-}" in
- Windows_NT:*|*:msys*:*|*:cygwin*:*|*:*:MINGW*|*:*:MSYS*) exec powershell.exe -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "$(cygpath -w "$plugin/bin/hm-agent.ps1")" "$@" ;;
+ Windows_NT:*|*:msys*:*|*:cygwin*:*|*:*:MINGW*|*:*:MSYS*) command -v pwsh.exe >/dev/null 2>&1 || { printf '%s\n' HANAMESH_POWERSHELL74_REQUIRED >&2; exit 1; }; exec pwsh.exe -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "$(cygpath -w "$plugin/bin/hm-agent.ps1")" "$@" ;;
  *) exec /usr/bin/env LC_ALL=C /usr/bin/perl "$plugin/bin/runtime-bootstrap.pl" "$@" ;;
 esac

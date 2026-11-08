@@ -20,7 +20,7 @@ try {
     assert.equal(r.status,0,`${command}: ${r.stderr} ${r.error?.message??''}`);if(r.stderr)process.stderr.write(r.stderr);return r.stdout;
   };
   const launch=(action,...args)=>process.platform==='win32'
-    ?run('powershell.exe',['-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',join(plugin,'bin/hm-agent.ps1'),action,...args])
+    ?run('pwsh.exe',['-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',join(plugin,'bin/hm-agent.ps1'),action,...args])
     :run('/bin/sh',[join(plugin,'bin/hm-agent'),action,...args]);
   launch('status');
   const platform=`${process.platform==='win32'?'win':process.platform}-${process.arch}`;

@@ -40,8 +40,11 @@ jobs:
           git checkout --detach FETCH_HEAD
       - name: Native Windows syntax
         if: runner.os == 'Windows'
-        shell: powershell
+        shell: pwsh
         run: |
+          if($PSVersionTable.PSVersion -lt [version]'7.4'){throw 'HANAMESH_POWERSHELL74_REQUIRED'}
+          if([Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString().ToLowerInvariant() -ne '${{ matrix.arch }}'){throw 'HANAMESH_POWERSHELL_NATIVE_ARCH_REQUIRED'}
+          @{version=$PSVersionTable.PSVersion.ToString();process=[Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString();os=[Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString()}|ConvertTo-Json -Compress
           $errors=$null
           [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $PWD 'agent/bin/hm-agent.ps1'),[ref]$null,[ref]$errors)|Out-Null
           if($errors.Count){$errors|ForEach-Object{Write-Error $_.Message};exit 1}
