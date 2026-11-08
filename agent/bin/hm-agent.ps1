@@ -177,7 +177,7 @@ try {
       Atomic-JSON $statePath $s
       try {
         Install-Runtime
-        $s.code='RUNTIME_READY';$s.phase='ready';$s.downloadedBytes=$target.bytes;$s.finishedAt=[DateTime]::UtcNow.ToString('o');Atomic-JSON $statePath $s
+        $s.code='RUNTIME_READY';$s.phase='ready';$s.downloadedBytes=$target.bytes;$s.finishedAt=[DateTime]::UtcNow.ToString("yyyy-MM-dd'T'HH:mm:ss.fff'Z'");Atomic-JSON $statePath $s
         Node-Invoke @((Join-Path $plugin 'lib/agent/preparation.mjs'))
       } catch {
         $code=$_.Exception.Message
@@ -187,7 +187,7 @@ try {
           'HANAMESH_NODE_RUNTIME_VERSION_MISMATCH' {'RUNTIME_VERSION_MISMATCH'}
           default {if($code -match '^RUNTIME_[A-Z_]+$'){$code}elseif($code -match '^HANAMESH_NODE_'){'RUNTIME_CACHE_INVALID'}else{'RUNTIME_PREPARATION_FAILED'}}
         }
-        $s.phase='failed';$s.finishedAt=[DateTime]::UtcNow.ToString('o');Atomic-JSON $statePath $s
+        $s.phase='failed';$s.finishedAt=[DateTime]::UtcNow.ToString("yyyy-MM-dd'T'HH:mm:ss.fff'Z'");Atomic-JSON $statePath $s
       }
     } finally { $lease.Dispose() }
     exit 0
@@ -197,7 +197,7 @@ try {
     $s=Read-State
     if ($s -and $s.code -ne 'RUNTIME_READY') {
       $lease=Lease
-      if ($lease) { try { $s=Read-State; if ($s.code -ne 'RUNTIME_READY') { $s.previousError=$s.code;$s.code='RUNTIME_READY';$s.phase='ready';$s.finishedAt=[DateTime]::UtcNow.ToString('o');Atomic-JSON $statePath $s } } finally { $lease.Dispose() } }
+      if ($lease) { try { $s=Read-State; if ($s.code -ne 'RUNTIME_READY') { $s.previousError=$s.code;$s.code='RUNTIME_READY';$s.phase='ready';$s.finishedAt=[DateTime]::UtcNow.ToString("yyyy-MM-dd'T'HH:mm:ss.fff'Z'");Atomic-JSON $statePath $s } } finally { $lease.Dispose() } }
     }
     if ($Action -eq 'install-runtime') { @{runtime=@{code='RUNTIME_READY'}} | ConvertTo-Json -Compress; exit 0 }
     $entryArgs = switch ($Action) {
@@ -238,7 +238,7 @@ try {
           elseif ($name -match '^mcp__' -and $response.content -is [array]) {$success=$true}
           elseif ($name -match '^mcp__' -and $response -is [array] -and $response.Count) {$success=$true}
         }
-        $row=@{factId=$fact;channel=$channel;occurredAt=[DateTime]::UtcNow.ToString('o');event=$event;toolName=$name;success=$success}
+        $row=@{factId=$fact;channel=$channel;occurredAt=[DateTime]::UtcNow.ToString("yyyy-MM-dd'T'HH:mm:ss.fff'Z'");event=$event;toolName=$name;success=$success}
         foreach($k in $selector.Keys){$row[$k]=$selector[$k]}
         $dir=Join-Path $agentHome 'preparation';[IO.Directory]::CreateDirectory($dir)|Out-Null;$path=Join-Path $dir "$fact-$event.json"
         $temp=$path+'.'+[Guid]::NewGuid().ToString('N')+'.tmp'
@@ -258,9 +258,9 @@ try {
     $start=$false;$initial=$null
     try {
       $s=Read-State
-      if ($s -and $s.code -eq 'RUNTIME_PREPARING' -and !(Active-Starter $s)) {$s.code='RUNTIME_PREPARATION_INTERRUPTED';$s.phase='failed';$s.finishedAt=[DateTime]::UtcNow.ToString('o');Atomic-JSON $statePath $s}
+      if ($s -and $s.code -eq 'RUNTIME_PREPARING' -and !(Active-Starter $s)) {$s.code='RUNTIME_PREPARATION_INTERRUPTED';$s.phase='failed';$s.finishedAt=[DateTime]::UtcNow.ToString("yyyy-MM-dd'T'HH:mm:ss.fff'Z'");Atomic-JSON $statePath $s}
       if (!$s -or ($isSession -and $newSession -and !($firstSession -and $s.initialEntry -eq 'non-session') -and $s.code -ne 'RUNTIME_PREPARING')) {
-        $initial=@{code='RUNTIME_PREPARING';phase='download';token=[Guid]::NewGuid().ToString('N');downloadedBytes=0;totalBytes=$target.bytes;attemptCount=1;startedAt=[DateTime]::UtcNow.ToString('o');finishedAt=$null;previousError=$null;pid=$null;processStartedTicks=$null;starterPid=$PID;starterTicks=[Diagnostics.Process]::GetCurrentProcess().StartTime.ToUniversalTime().Ticks.ToString();initialEntry=if($isSession -and $payload.session_id){'session'}else{'non-session'}}
+        $initial=@{code='RUNTIME_PREPARING';phase='download';token=[Guid]::NewGuid().ToString('N');downloadedBytes=0;totalBytes=$target.bytes;attemptCount=1;startedAt=[DateTime]::UtcNow.ToString("yyyy-MM-dd'T'HH:mm:ss.fff'Z'");finishedAt=$null;previousError=$null;pid=$null;processStartedTicks=$null;starterPid=$PID;starterTicks=[Diagnostics.Process]::GetCurrentProcess().StartTime.ToUniversalTime().Ticks.ToString();initialEntry=if($isSession -and $payload.session_id){'session'}else{'non-session'}}
         if($s){$initial.attemptCount=1+$s.attemptCount;$initial.previousError=$s.code;$initial.initialEntry=$s.initialEntry}
         Atomic-JSON $statePath $initial;$start=$true
       }
@@ -271,7 +271,7 @@ try {
         $worker=Start-Process -FilePath (Join-Path $PSHOME 'powershell.exe') -ArgumentList @('-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',('"'+$PSCommandPath+'"'),'prepare-worker',$initial.token) -WorkingDirectory $cache -RedirectStandardInput $stdinFile -RedirectStandardOutput (Join-Path $cache 'prepare.log') -RedirectStandardError (Join-Path $cache 'prepare-error.log') -WindowStyle Hidden -PassThru
         $lease=Lease
         if($lease){try{$s=Read-State;if($s.token -eq $initial.token -and $s.code -eq 'RUNTIME_PREPARING'){$s.pid=$worker.Id;$s.processStartedTicks=$worker.StartTime.ToUniversalTime().Ticks.ToString();Atomic-JSON $statePath $s}}finally{$lease.Dispose()}}
-      } catch { $lease=Lease;if($lease){try{$s=Read-State;if($s.token -eq $initial.token){$s.code='RUNTIME_PREPARER_START_FAILED';$s.phase='failed';$s.finishedAt=[DateTime]::UtcNow.ToString('o');Atomic-JSON $statePath $s}}finally{$lease.Dispose()}} }
+      } catch { $lease=Lease;if($lease){try{$s=Read-State;if($s.token -eq $initial.token){$s.code='RUNTIME_PREPARER_START_FAILED';$s.phase='failed';$s.finishedAt=[DateTime]::UtcNow.ToString("yyyy-MM-dd'T'HH:mm:ss.fff'Z'");Atomic-JSON $statePath $s}}finally{$lease.Dispose()}} }
     }
   }
   if($Action -eq 'hook'){
@@ -321,6 +321,10 @@ try {
 
 } catch {
   $code=$_.Exception.Message
-  if($code -notmatch '^(?:HANAMESH|RUNTIME)_[A-Z0-9_]+$'){$code='HANAMESH_WINDOWS_BOOTSTRAP_FAILED'}
+  if($code -notmatch '^(?:HANAMESH|RUNTIME)_[A-Z0-9_]+$'){
+    $line=$_.InvocationInfo.ScriptLineNumber;$category=$_.CategoryInfo.Category.ToString().ToUpperInvariant()
+    [Console]::Error.WriteLine('HANAMESH_WINDOWS_FAILURE_LINE_'+$line+'_CATEGORY_'+$category)
+    $code='HANAMESH_WINDOWS_BOOTSTRAP_FAILED'
+  }
   [Console]::Error.WriteLine($code);exit 1
 }
