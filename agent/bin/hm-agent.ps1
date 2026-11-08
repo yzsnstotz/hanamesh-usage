@@ -1,5 +1,7 @@
 # Windows-native launcher. No PATH Node discovery and no implicit consent/download.
-param([Parameter(Position=0)][string]$Action, [Parameter(ValueFromRemainingArguments=$true)][string[]]$AgentArgs)
+param([string]$Action)
+# Simple binding preserves Node flags verbatim (advanced common parameters consume -e).
+$AgentArgs = @($args)
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 $utf8 = New-Object System.Text.UTF8Encoding($false)

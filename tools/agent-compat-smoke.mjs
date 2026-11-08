@@ -28,6 +28,7 @@ try {
   await writeFile(tripwire,`import http from 'node:http';import https from 'node:https';import net from 'node:net';import tls from 'node:tls';import dgram from 'node:dgram';import fs from 'node:fs';const deny=()=>{fs.writeFileSync(${JSON.stringify(join(root,'network-attempt'))},'attempt');throw Error('PX2_NETWORK_FORBIDDEN')};globalThis.fetch=deny;http.request=http.get=https.request=https.get=net.connect=net.createConnection=tls.connect=dgram.createSocket=deny;`);
   env.NODE_OPTIONS=`--import=${pathToFileURL(tripwire).href}`;
   assert.match(launch('node','--input-type=module','-e',"console.log('PX2_PRELOAD_READY')"),/PX2_PRELOAD_READY/,'verified runtime must preserve preload stdout');
+  const initialStatus=JSON.parse(launch('status'));assert.equal(initialStatus.consent.state,'withheld');
   let count=0;
   for(const channel of ['claude','codex']) {
     const hooks=JSON.parse(await readFile(join(plugin,'hooks',channel==='claude'?'hooks.json':'codex.json'))).hooks;
@@ -46,6 +47,7 @@ try {
         // Claude shell:bash is documented on Windows (Git for Windows), sh on Unix.
         output=run(process.platform==='win32'?'bash':'/bin/sh',['-c',hook.command],JSON.stringify(payload),extra);
       }
+      console.log(`PX2 ${channel} ${event} stdoutBytes=${Buffer.byteLength(output)}`);
       if(event==='SessionStart'){assert.ok(output.trim(),`${channel} SessionStart must emit the first consent notice`);assert.match(JSON.parse(output).systemMessage,/默认关闭/);}else assert.equal(output,'');
       assert.ok(!output.includes('PX2_PRIVATE_SENTINEL'));count++;
     }

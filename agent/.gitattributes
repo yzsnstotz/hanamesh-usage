@@ -1,0 +1,2 @@
+# Keep packaged receipt hashes and shell entry points stable after Git installation.
+* text=auto eol=lf
