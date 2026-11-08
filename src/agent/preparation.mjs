@@ -3,7 +3,7 @@ import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
 import {readJSON} from './store.mjs';
-import {projectHook} from './project.mjs';
+import {projectHook,canonicalSkillPath} from './project.mjs';
 import {installedPlugins} from './inventory.mjs';
 import {localRecordingEnabled} from './onboarding.mjs';
 import {agentLock} from './sender-lock.mjs';
@@ -11,7 +11,7 @@ import {agentLock} from './sender-lock.mjs';
 export function projectPreparation(item,installed){
  const payload={hook_event_name:item.event,session_id:'preparation',tool_call_id:item.factId,tool_name:item.toolName,tool_input:{},...(typeof item.success==='boolean'?{tool_response:{isError:!item.success}}:{})};
  if(item.skill)payload.tool_input.skill=item.skill;
- if(item.skillPathHash){const paths=installed.flatMap(p=>p.skills.map(s=>`${p.root}/skills/${s}/SKILL.md`));const path=paths.find(p=>createHash('sha256').update(p).digest('hex')===item.skillPathHash);if(!path)return null;payload.tool_input.cmd=`cat ${path}`;}
+ if(item.skillPathHash){const paths=installed.flatMap(p=>p.skills.map(s=>`${p.root}/skills/${s}/SKILL.md`));const path=paths.find(p=>createHash('sha256').update(canonicalSkillPath(p)).digest('hex')===item.skillPathHash);if(!path)return null;payload.tool_input.cmd=`cat ${path}`;}
  const row=projectHook(payload,item.channel,installed,Date.parse(item.occurredAt));return row?{...row,factId:item.factId}:null;
 }
 export async function drainPreparation(r,{now=Date.now()}={}){

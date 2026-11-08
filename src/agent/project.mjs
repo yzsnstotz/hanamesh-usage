@@ -1,6 +1,7 @@
 import {createHash} from 'node:crypto';
 
 const token = value => typeof value === 'string' && /^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,159}$/.test(value) && !/secret|password|api.?key|ghp_|sk-/i.test(value);
+export const canonicalSkillPath = path => process.platform==='win32'?path.replaceAll('\\','/').toLowerCase():path;
 const normalized = value => value.replace(/[^A-Za-z0-9_]/g,'_');
 /** Opaque native invocation identity; never persist the original session/call ids. */
 export function hookCallIdentity(payload,channel,now=Date.now()) {
@@ -46,7 +47,7 @@ export function projectHook(payload,channel,installed,now=Date.now()) {
   if(channel === 'codex' && typeof command === 'string') {
     for(const plugin of installed) for(const skill of plugin.skills) {
       const path = `${plugin.root}/skills/${skill}/SKILL.md`;
-      if(command.trim() === `cat ${path}` || command.trim() === `cat "${path}"` || command.trim() === `cat '${path}'`) add(plugin,`skill:${skill}`);
+      if([`cat ${path}`,`cat "${path}"`,`cat '${path}'`].some(expected=>canonicalSkillPath(command.trim())===canonicalSkillPath(expected))) add(plugin,`skill:${skill}`);
     }
   }
   const unique = [...new Map(candidates.map(row=>[JSON.stringify([row.remote?.remotePluginId??row.pluginId,row.feature]),row])).values()];

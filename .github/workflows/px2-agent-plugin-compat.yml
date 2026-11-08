@@ -63,7 +63,8 @@ jobs:
       - name: Normal strict target build
         run: node tools/build.mjs
       - name: Current Agent fixed-runtime and manifest unit gates
-        run: node --test --test-concurrency=1 --test-reporter=tap tests/agent-node-runtime.test.mjs tests/agent-runtime-background.test.mjs tests/agent-runtime-recovery.test.mjs tests/agent-preparation-recording.test.mjs tests/node-tool.test.mjs
+        timeout-minutes: 8
+        run: node --test --test-concurrency=1 --test-reporter=tap tests/agent-node-runtime.test.mjs tests/agent-runtime-background.test.mjs tests/agent-runtime-recovery.test.mjs tests/agent-preparation-recording.test.mjs tests/node-tool.test.mjs 2>&1 | tee "$RUNNER_TEMP/px2/native-tests.log"
       - name: All current Agent behavior tests
         if: matrix.cli == 'minimum'
         timeout-minutes: 8
@@ -77,7 +78,9 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: px2-${{ matrix.runner }}-${{ matrix.cli }}
-          path: ${{ runner.temp }}/px2/results.json
+          path: |
+            ${{ runner.temp }}/px2/results.json
+            ${{ runner.temp }}/px2/native-tests.log
           retention-days: 7
       - name: Archive exact current publish candidate with modes
         if: matrix.os == 'linux' && matrix.arch == 'x64' && matrix.cli == 'minimum'
