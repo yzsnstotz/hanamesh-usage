@@ -34,6 +34,6 @@ Claude changelog 的 2.1.119 已记录 PostToolUse/Failure 新增 `duration_ms`�
 
 `.github/workflows/px2-agent-plugin-compat.yml` 与 PX1 的 `px1-platform-matrix.yml` 分离。六个原生 runner × minimum/latest，共 12 格：四种要求的 runner 外，加 Linux/Windows arm64。官方 CLI 只执行版本、validate、marketplace add、install/add、list 和 MCP list；不运行推理，不登录，不使用 secrets/API key。安装时工作目录和 HOME/USERPROFILE/CLI 配置均隔离；npm 只使用临时空 npmrc。
 
-`tools/agent-compat-smoke.mjs` 直接驱动清单中命令，输入来自上方官方字段表的合成样例；断言 7 个 hooks 返回、SessionStart 提示、withheld、local=0、无正文持久化，并对 agent Node 网络 API 设置 tripwire。此为命令执行验证，不冒充登录后的宿主自动分派/显示 ACK；Core 子进程使用生产白名单环境，不继承测试 NODE_OPTIONS。
+`tools/agent-compat-smoke.mjs` 直接驱动清单中命令，输入来自上方官方字段表的合成样例；断言 7 个 hooks 返回、SessionStart 提示、withheld、local=0、无正文持久化，并对 agent Node 的 HTTP 上传 API 设置 tripwire。此为命令执行验证，不冒充登录后的宿主自动分派/显示 ACK；Core 子进程使用生产白名单环境，不继承测试 NODE_OPTIONS。
 
 待追认：新增 Windows Git for Windows 前置条件（Claude hooks 和两宿主 MCP 使用官方 Bash 执行入口）；额外两个 arm64 GitHub hosted runner 的采用。未扩大到付费 self-hosted/large runner。合并前必须读取真实矩阵结果，不能把 workflow 已添加当作各平台已通过。

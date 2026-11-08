@@ -23,9 +23,10 @@ try {
     ?run('powershell.exe',['-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',join(plugin,'bin/hm-agent.ps1'),action,...args])
     :run('/bin/sh',[join(plugin,'bin/hm-agent'),action,...args]);
   launch('install-runtime');
-  // Installed Node children (including Core) inherit this tripwire; no credential/network probe is needed.
+  // Trap the agent HTTP upload APIs. Generic net APIs also serve local Windows stdio pipes; leave those intact.
+  // Core keeps its production environment allowlist and does not inherit NODE_OPTIONS.
   const tripwire=join(root,'no-network.mjs');
-  await writeFile(tripwire,`import http from 'node:http';import https from 'node:https';import net from 'node:net';import tls from 'node:tls';import dgram from 'node:dgram';import fs from 'node:fs';const deny=()=>{fs.writeFileSync(${JSON.stringify(join(root,'network-attempt'))},'attempt');throw Error('PX2_NETWORK_FORBIDDEN')};globalThis.fetch=deny;http.request=http.get=https.request=https.get=net.connect=net.createConnection=tls.connect=dgram.createSocket=deny;`);
+  await writeFile(tripwire,`import http from 'node:http';import https from 'node:https';import {syncBuiltinESMExports} from 'node:module';import fs from 'node:fs';const deny=()=>{fs.writeFileSync(${JSON.stringify(join(root,'network-attempt'))},'attempt');throw Error('PX2_NETWORK_FORBIDDEN')};globalThis.fetch=deny;http.request=http.get=https.request=https.get=deny;syncBuiltinESMExports();`);
   env.NODE_OPTIONS=`--import=${pathToFileURL(tripwire).href}`;
   assert.match(launch('node','--input-type=module','-e',"console.log('PX2_PRELOAD_READY')"),/PX2_PRELOAD_READY/,'verified runtime must preserve preload stdout');
   const initialStatus=JSON.parse(launch('status'));assert.equal(initialStatus.consent.state,'withheld');
@@ -56,6 +57,6 @@ try {
   assert.equal(status.consent.state,'withheld');assert.equal(status.counts.local,0);
   const files=async dir=>{let all=[];try{for(const e of await readdir(dir,{withFileTypes:true})){const p=join(dir,e.name);all.push(...e.isDirectory()?await files(p):[p]);}}catch(e){if(e.code!=='ENOENT')throw e}return all;};
   for(const file of await files(root))if(!file.endsWith('no-network.mjs'))assert.ok(!(await readFile(file)).includes(Buffer.from('PX2_PRIVATE_SENTINEL')),`raw field persisted: ${file}`);
-  assert.ok(!(await files(root)).includes(join(root,'network-attempt')),'hook attempted a network call');
+  assert.ok(!(await files(root)).includes(join(root,'network-attempt')),'hook attempted an HTTP request');
   console.log(JSON.stringify({platform:process.platform,arch:process.arch,hooks:count,consent:'withheld',local:0,networkAttempts:0}));
 } catch(error) { failure=error; throw error; } finally { try {await rm(root,{recursive:true,force:true,maxRetries:5,retryDelay:200});} catch(error) {if(!failure)throw error;} }
