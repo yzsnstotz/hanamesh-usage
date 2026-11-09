@@ -25,8 +25,9 @@ if(process.platform==='win32'){
   });
   test('Q61 Windows refuses when the run directory owner cannot be read',()=>{
     const run=runDir('unreadable');assert.equal(cardRun(['--card',card,'--run',run],env).run,run);
-    // OWNER RIGHTS removes the owner's implicit READ_CONTROL, so the security descriptor read itself fails.
-    icacls(run,'/deny','*'+OWNER_RIGHTS_SID+':(RC)');
+    // One DACL write: OWNER RIGHTS removes the owner's implicit READ_CONTROL and Everyone loses the inherited grant,
+    // so the security descriptor read itself fails (a later icacls could no longer read the DACL).
+    icacls(run,'/deny','*'+OWNER_RIGHTS_SID+':(RC)','*S-1-1-0:(RC)');
     assert.throws(()=>ownerSid(run));
     assert.throws(()=>cardRun(['--card',card,'--run',run],env),/RUN_NOT_OWNED/);
   });
