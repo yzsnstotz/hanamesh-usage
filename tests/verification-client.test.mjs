@@ -349,7 +349,8 @@ test('VCLIENT12 Usage Settings shows the records natively (no iframe), with reas
   assert.match(all, /服务端已收到 · 官方插件 · 不计积分/, 'host note read automatically once consent is on');
   assert.match(all, /服务端回了 HTTP 502/);assert.match(all, /插件清单：读取 DSH 插件管理服务出错（TypeError）/);
   assert.match(all, /有 1 个已装插件这次读不到版本信息/);assert.match(all, /已忽略 2 次命令、1 次页面打开/);
-  assert(!nodes(h.tree).some(node=>node.type==='textarea'||node.type==='select')); one(h, 'details');
+  assert(!nodes(h.tree).some(node=>node.type==='textarea'));
+  assert.equal(nodes(h.tree).filter(node=>node.type==='select'&&node.props['aria-label']==='上传状态').length,1);assert.equal(nodes(h.tree).filter(node=>node.type==='details').length>=2,true);
   assert.equal(calls.filter(call => call.init?.method === 'POST').length, 0, 'reading the panel never writes');
   click(h, /查看服务端记录数/); await h.settle();
   assert.match(text(h.tree), /服务端有本设备的原始记录 4 条/);
@@ -391,4 +392,17 @@ test('VCLIENT15 native editor shows bounded transport error without a fabricated
   assert.match(alerts, /USAGE_VERIFICATION_[A-Z_]+/);
   assert(!/raw secret|\/private\/path|\bPASS\b|returned-event-fixture/.test(text(h.tree)));
   h.dispose();
+});
+
+
+test('CL1 record filters change only displayed rows and reset restores the local page',async()=>{
+  const {h,calls}=enabledClient();requireBridge(h);h.render(h.api.UsagePanel);await h.settle();
+  const visible=()=>nodes(h.tree).filter(node=>node.type==='tr'&&node.props['data-hanamesh-usage-row']);
+  assert.equal(visible().length,3);
+  const search=nodes(h.tree).find(node=>node.type==='input'&&node.props['aria-label']==='搜索使用记录');
+  search.props.onChange({currentTarget:{value:'not in these records'}});h.render();assert.equal(visible().length,0);
+  assert.match(text(h.tree),/没有符合筛选条件/);click(h,/清空筛选/);h.render();assert.equal(visible().length,3);
+  nodes(h.tree).find(node=>node.type==='select'&&node.props['aria-label']==='上传状态').props.onChange({currentTarget:{value:'pending'}});h.render();
+  assert.equal(visible().length,1);assert.equal(visible()[0].props['data-hanamesh-usage-row'],'pending');
+  assert.equal(calls.filter(call=>call.init?.method==='POST').length,0);h.dispose();
 });

@@ -2,8 +2,8 @@ import { createElement as h, useEffect, useState, useRef } from 'react';
 
 /** Public Settings Slot subset used here; mirrors the frozen platform contract. */
 interface SettingsSlots {
-  inject(name:'settings.section', mount:()=>()=>void):unknown;
-  register(options:{name:'settings.section';id:string;order:number;label:string}, component:typeof UsagePanel):()=>void;
+  inject(name:string, mount:()=>()=>void):unknown;
+  register(options:{name:string;id?:string;key?:string;order:number;label:string}, component:import('react').ComponentType<any>):()=>void;
 }
 interface PageSource {entryId:string;moduleName:string;surface:string}
 type IssueResult={disposition:string;credential?:string};
@@ -13,6 +13,7 @@ interface PagesRemote {
 }
 interface ClientContext {
   slots:SettingsSlots;
+  layout?:{selectPanel(id:string):void};
   remote:{$mount(contribution:import('@deepseek-ai/dsh-typert-protocol').TypertRemoteContribution):Promise<()=>void>;hanameshUsagePages:PagesRemote};
   on(name:'internal/get',listener:(caller:unknown,name:string,error:unknown,next:()=>unknown)=>unknown):()=>void;
   effect(fn:()=>unknown):unknown;
@@ -286,11 +287,18 @@ async function fetchRemoteRecords(signal:AbortSignal):Promise<RemoteView> {
 const localTime=(iso:string)=>{const date=new Date(iso);return Number.isNaN(date.getTime())?iso:date.toLocaleString();};
 
 /** The person's view of their usage records. Reading never collects, uploads or resends anything. */
-export function UsageRecords({revision=0}:{revision?:number}) {
+/** Filter only the already-read local page. Unknown uploads never become successes. */
+export function visibleUsageRows(rows:readonly UsageRecordRow[],query:string,status:string):UsageRecordRow[] {
+  const needle=query.trim().toLocaleLowerCase();
+  return rows.filter(row=>(status==='all'||row.upload===status)&&(!needle||[row.hanaRef,actionText[row.action],row.eventId].some(value=>value.toLocaleLowerCase().includes(needle))));
+}
+export function UsageRecords({revision=0,onManageConsent}:{revision?:number;onManageConsent?:()=>void}) {
   const [snapshot,setSnapshot]=useState<UsageRecordsSnapshot|null>(null);
   const [error,setError]=useState<string|null>(null);
   const [remote,setRemote]=useState<RemoteView|null>(null);
   const [remoteBusy,setRemoteBusy]=useState(false);
+  const [query,setQuery]=useState('');
+  const [status,setStatus]=useState('all');
   const remoteRequest=useRef<AbortController|null>(null);
   useEffect(()=>()=>remoteRequest.current?.abort(),[]);
   useEffect(()=>{
@@ -312,7 +320,10 @@ export function UsageRecords({revision=0}:{revision?:number}) {
     :snapshot.consent==='granted'
       ?'已同意：记录你安装、打开和使用的插件（只有时间、插件名和动作，不含对话内容）。'
       :'未同意：不记录任何使用。要开始记录，到「设置 → HanaMesh」打开「数据授权」。';
-  return h('div',{'data-hanamesh-usage-records':'ready'},
+  const rows=visibleUsageRows(snapshot.rows,query,status);
+  return h('div',{'data-hanamesh-usage-records':'ready',className:'hm-usage-card'},
+    h('h2',null,'本机使用记录'),
+    h('details',{className:'hm-usage-status-details'},h('summary',null,'记录与上报详情'),
     h('p',{'data-hanamesh-usage-consent':snapshot.consent},consentLine),
     h('p',{'data-hanamesh-usage-outbox':snapshot.outbox.state},outboxText(snapshot)),
     snapshot.outbox.state==='backoff'&&snapshot.outbox.nextAttemptAt!==null
@@ -326,25 +337,50 @@ export function UsageRecords({revision=0}:{revision?:number}) {
       h('button',{type:'button',disabled:remoteBusy,onClick:checkRemote},remoteBusy?'查询中…':'查看服务端记录数'),
       remote===null?null:h('span',{role:'status','data-hanamesh-usage-remote':remote.state},
         remote.state==='available'?` 服务端有本设备的原始记录 ${remote.total??0} 条。`
-          :remote.state==='offline'?' 没有配置服务端。':` 服务端暂时查不到（${usageReason(remote.code)}），不代表 0 条。`)),
-    snapshot.rows.length===0
-      ?h('p',null,snapshot.consent==='granted'?'还没有记录。打开一个插件页面或执行一个插件命令后会出现在这里。':'没有记录。')
-      :h('table',{'aria-label':'本设备使用记录'},
+          :remote.state==='offline'?' 没有配置服务端。':` 服务端暂时查不到（${usageReason(remote.code)}），不代表 0 条。`))),
+    snapshot.consent!=='granted'
+      ?h('div',{className:'hm-usage-empty'},h('span',{className:'hm-usage-empty-icon','aria-hidden':true}),h('b',null,'使用记录未开启'),h('p',null,'开启后才记录摘要。登录与设备绑定不会自动授权。撤回时清空本机记录，并单独核对服务端删除结果。'),onManageConsent?h('button',{type:'button',onClick:onManageConsent},'管理数据授权'):null)
+      :h('div',null,
+        h('div',{className:'hm-usage-metrics','aria-label':'本机记录摘要'},
+          ...[['本机记录',snapshot.total],['等待上报',snapshot.outbox.pending],['已接收',snapshot.outbox.sent+snapshot.outbox.duplicate]].map(([label,value])=>h('div',{key:label},h('span',null,label),h('strong',null,value)))),
+        h('div',{className:'hm-usage-toolbar'},
+          h('input',{type:'search','aria-label':'搜索使用记录',placeholder:'搜索插件、动作或记录编号',value:query,onChange:(event:{currentTarget:{value:string}})=>setQuery(event.currentTarget.value)}),
+          h('select',{'aria-label':'上传状态',value:status,onChange:(event:{currentTarget:{value:string}})=>setStatus(event.currentTarget.value)},...([['all','全部状态'],['pending','等待上报'],['sent','已接收'],['duplicate','重复已接收'],['rejected','未被接收']] as const).map(([value,label])=>h('option',{key:value,value},label)))),
+        rows.length===0?h('div',{className:'hm-usage-empty'},h('b',null,snapshot.rows.length===0?'还没有记录':'没有符合筛选条件的记录'),h('p',null,snapshot.rows.length===0?'打开一个插件页面或执行一个插件命令后会出现在这里。':'请调整搜索或状态筛选。'),query||status!=='all'?h('button',{type:'button',onClick:()=>{setQuery('');setStatus('all');}},'清空筛选'):null)
+        :h('div',{className:'hm-usage-table'},h('table',{'aria-label':'本设备使用记录'},
         h('thead',null,h('tr',null,h('th',null,'时间'),h('th',null,'插件'),h('th',null,'动作'),h('th',null,'状态'))),
-        h('tbody',null,...snapshot.rows.map(row=>h('tr',{key:row.eventId,'data-hanamesh-usage-row':row.upload},
-          h('td',null,localTime(row.occurredAt)),h('td',null,row.hanaRef),h('td',null,actionText[row.action]),h('td',null,uploadText(row,remote?.notes[row.eventId])))))),
+        h('tbody',null,...rows.map(row=>h('tr',{key:row.eventId,'data-hanamesh-usage-row':row.upload},
+          h('td',null,localTime(row.occurredAt)),h('td',null,row.hanaRef),h('td',null,actionText[row.action]),h('td',null,uploadText(row,remote?.notes[row.eventId])))))))),
   );
 }
 
-/** Settings section: the records first; resend stays under 诊断. */
-export function UsagePanel() {
+
+const usageIconAsset='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWFjdGl2aXR5IiBhcmlhLWhpZGRlbj0idHJ1ZSI+PHBhdGggZD0iTTIyIDEyaC0yLjQ4YTIgMiAwIDAgMC0xLjkzIDEuNDZsLTIuMzUgOC4zNmEuMjUuMjUgMCAwIDEtLjQ4IDBMOS4yNCAyLjE4YS4yNS4yNSAwIDAgMC0uNDggMGwtMi4zNSA4LjM2QTIgMiAwIDAgMSA0LjQ5IDEySDIiPjwvcGF0aD48L3N2Zz4=';
+function UsagePanelIcon({size=20}:{size?:number}){return h('span',{'aria-hidden':true,style:{display:'block',width:size,height:size,background:'currentColor',maskImage:`url(${usageIconAsset})`,maskSize:'contain',maskRepeat:'no-repeat'}});}
+const usagePageStyles=`
+.hm-usage-page{box-sizing:border-box;min-width:0;max-width:1360px;margin:0 auto;padding:36px 38px;color:var(--dsw-alias-label-primary,CanvasText);font:14px/1.55 var(--dsw-font-family,system-ui);height:100%;overflow:auto;background:var(--dsw-alias-bg-base,Canvas)}
+.hm-usage-page *{box-sizing:border-box}.hm-usage-page>header{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:28px}.hm-usage-page h1{font-size:32px;line-height:1.25;letter-spacing:-.025em;margin:0}.hm-usage-page h2{font-size:17px;margin:0 0 18px}.hm-usage-eyebrow{font-size:11px;letter-spacing:.16em;font-weight:700;color:var(--dsw-alias-brand-primary);margin-bottom:10px}
+.hm-usage-breadcrumb{font-size:12px;color:var(--dsw-alias-label-tertiary);margin-bottom:24px}.hm-usage-page p{color:var(--dsw-alias-label-secondary);line-height:1.7}.hm-usage-page button,.hm-usage-page input,.hm-usage-page select{font:inherit;color:inherit;min-height:44px;max-width:100%;border:1px solid var(--dsw-alias-border-l2);border-radius:10px;background:var(--dsw-alias-bg-layer-3);padding:10px 14px}.hm-usage-page button{cursor:pointer}.hm-usage-page button:disabled{opacity:.5;cursor:default}.hm-usage-page :focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:3px}
+.hm-usage-card{padding:22px;border:1px solid var(--dsw-alias-border-l1);border-radius:18px;background:var(--dsw-alias-bg-layer-2);min-width:0}.hm-usage-empty{padding:42px 12px;text-align:center;display:grid;justify-items:center;gap:10px}.hm-usage-empty p{max-width:540px;font-size:12px;margin:0 0 8px}.hm-usage-empty-icon{width:30px;height:30px;display:block;background:var(--dsw-alias-state-business-primary);mask:var(--hm-usage-icon) center/contain no-repeat}
+.hm-usage-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:22px 0}.hm-usage-metrics>div{padding:17px 20px;border:1px solid var(--dsw-alias-border-l1);border-radius:14px;background:var(--dsw-alias-bg-layer-1)}.hm-usage-metrics span{font-size:12px;color:var(--dsw-alias-label-secondary)}.hm-usage-metrics strong{display:block;font:28px/1.5 var(--dsh-font-family-code-default,monospace);margin-top:8px}
+.hm-usage-toolbar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}.hm-usage-toolbar input{flex:1;min-width:160px}.hm-usage-table{overflow:auto}.hm-usage-page table{border-collapse:collapse;width:100%;font-size:12px}.hm-usage-page th{text-align:left;color:var(--dsw-alias-label-tertiary);font-weight:500;background:var(--dsw-alias-bg-layer-1)}.hm-usage-page th,.hm-usage-page td{padding:15px 12px;border-bottom:1px solid var(--dsw-alias-border-l1);overflow-wrap:anywhere}.hm-usage-page details{border:1px solid var(--dsw-alias-border-l1);border-radius:12px;padding:14px;margin-top:20px}.hm-usage-page summary{cursor:pointer;min-height:28px}.hm-usage-page footer{margin-top:26px;font-size:11px;color:var(--dsw-alias-label-tertiary)}
+@media(max-width:640px){.hm-usage-page{padding:24px 18px}.hm-usage-page h1{font-size:26px}.hm-usage-card{padding:18px}.hm-usage-page>header{align-items:flex-start;flex-wrap:wrap}.hm-usage-metrics{grid-template-columns:1fr}.hm-usage-toolbar>*{width:100%}.hm-usage-page th,.hm-usage-page td{padding:10px 8px}}
+.hm-usage-page{--hm-usage-icon:url("${usageIconAsset}")}`;
+
+/** Settings section and keyed main page share the same authoritative records. */
+export function UsagePanel({onManageConsent}:{onManageConsent?:()=>void}={}) {
   const [revision,setRevision]=useState(0);
-  return h('section',{'aria-label':'HanaMesh 使用记录'},
-    h('h2',null,'HanaMesh 使用记录'),
-    h('button',{type:'button',onClick:()=>setRevision(value=>value+1)},'刷新'),
-    h(UsageRecords,{revision}),
+  const [navigationError,setNavigationError]=useState(false);
+  const manage=onManageConsent?()=>{try{onManageConsent();setNavigationError(false);}catch{setNavigationError(true);}}:undefined;
+  return h('section',{'aria-label':'HanaMesh 使用记录',className:'hm-usage-page'},
+    h('style',null,usagePageStyles),
+    h('nav',{'aria-label':'位置',className:'hm-usage-breadcrumb'},'HanaMesh 使用记录'),
+    h('header',null,h('div',null,h('div',{className:'hm-usage-eyebrow'},'USAGE / ACTIVITY'),h('h1',null,'记录，由你决定。'),h('p',null,'本机摘要与上传状态。账号绑定、数据授权和模型连接分别管理。')),h('button',{type:'button',onClick:()=>setRevision(value=>value+1)},'刷新')),
+    navigationError?h('p',{role:'alert'},'账号与设备页面暂不可用。请确认 HanaMesh Core 已启用，或在设置 → HanaMesh 管理数据授权。'):null,
+    h(UsageRecords,{revision,...(manage?{onManageConsent:manage}:{})}),
     h('details',null,h('summary',null,'诊断'),
       h(UsageResendPanel,{revision})),
+    h('footer',null,'HanaMesh · Let every use bloom.'),
   );
 }
 
@@ -430,5 +466,11 @@ export async function apply(ctx:ClientContext):Promise<void> {
     pagesContext=scoped;
     scoped.effect(()=>()=>{if(pagesContext===scoped)pagesContext=null;});
     scoped.slots.inject('settings.section',()=>scoped.slots.register({name:'settings.section',id:'hanamesh-usage',order:80,label:'HanaMesh 使用记录'},UsagePanel));
+    // Optional feature scope: the immediate Usage observer never waits on layout.
+    // Keys are documented public navigation seats, not Session identities.
+    scoped.inject(['layout'],page=>{
+      page.slots.inject('main',()=>page.slots.register({name:'main',key:'hanamesh-usage',order:12,label:'使用记录'},()=>h<{onManageConsent?:()=>void}>(UsagePanel,{onManageConsent:()=>page.layout!.selectPanel('hanamesh-account')})));
+      page.slots.inject('sidebar.panellist',()=>page.slots.register({name:'sidebar.panellist',id:'hanamesh-usage',order:12,label:'使用记录'},UsagePanelIcon));
+    });
   });
 }
