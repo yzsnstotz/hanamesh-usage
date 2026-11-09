@@ -1,4 +1,4 @@
-import {readFileSync,readdirSync,existsSync} from 'node:fs';import {join} from 'node:path';import {fileURLToPath} from 'node:url';import assert from 'node:assert/strict';import {validateConsistency} from './consistency-schema.mjs';
+import {readFileSync,readdirSync,existsSync} from 'node:fs';import {posix} from 'node:path';import {fileURLToPath} from 'node:url';import assert from 'node:assert/strict';import {validateConsistency} from './consistency-schema.mjs';
 import {spawnSync} from 'node:child_process';
 import {load} from 'js-yaml';
 import {assertPhysicalClosure} from './closure.mjs';
@@ -36,7 +36,8 @@ if(tarball){
  assertPatch(packedRead(packed.dsh.bundle.patch.replace(/^\.\//,'')),packed);
  console.log(JSON.stringify({packedPatchYamlValid:true,tarball,name:packed.name,version:packed.version}));
 }
-const walk=dir=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(join(dir,e.name)):[join(dir,e.name)]);
+// Repository-relative '/' paths on every OS: the per-file rules below match 'src/client/index.ts', never 'src\\client\\index.ts'.
+const walk=dir=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(posix.join(dir,e.name)):[posix.join(dir,e.name)]);
 const sources=walk('src').filter(p=>/\.(ts|js)$/.test(p));
 const forbiddenSibling=/(?:from\s+|import\s*\()['"](?:hanamesh-[^'"]*|@hanamesh\/[^'"]*)['"]/;
 for(const p of sources){
