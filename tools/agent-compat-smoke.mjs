@@ -55,7 +55,9 @@ try {
   const platform=`${process.platform==='win32'?'win':process.platform}-${process.arch}`;
   const preparation=join(env.HANAMESH_SHARED_HOME,`runtime/node-v24.13.1-${platform}/prepare-state.json`),deadline=Date.now()+240000;
   for(;;){
-    let state;try{state=JSON.parse(await readFile(preparation));}catch(e){if(e.code!=='ENOENT')throw e;}
+    // Windows File.Replace briefly holds the state file unshared; the product readers treat EBUSY/EACCES as
+    // not-yet-readable on win32 (src/agent/runtime.mjs, hm-agent.ps1 Read-State), and so does this poll.
+    let state;try{state=JSON.parse(await readFile(preparation));}catch(e){if(e.code!=='ENOENT'&&!(process.platform==='win32'&&['EBUSY','EACCES'].includes(e.code)))throw e;}
     if(state?.code==='RUNTIME_READY')break;
     if(state&&state.code!=='RUNTIME_PREPARING')throw Error('PX4_RUNTIME_PREPARATION:'+state.code);
     assert.ok(Date.now()<deadline,'automatic fixed runtime preparation deadline');await delay(200);

@@ -22,7 +22,7 @@ try {
   if(existsSync(seed))cpSync(seed,join(cache,'_cacache'),{recursive:true});
   const userconfig=join(home,'.npmrc'),globalconfig=join(home,'global.npmrc');
   writeFileSync(userconfig,'');writeFileSync(globalconfig,'');
-  const env={...process.env,HOME:home,DSH_HOME:join(home,'dsh-home'),TMPDIR:join(parent,'tmp'),
+  const env={...process.env,HOME:home,USERPROFILE:home,DSH_HOME:join(home,'dsh-home'),TMPDIR:join(parent,'tmp'),TMP:join(parent,'tmp'),TEMP:join(parent,'tmp'),
     XDG_CACHE_HOME:join(home,'.cache'),XDG_CONFIG_HOME:join(home,'.config'),
     npm_config_cache:cache,npm_config_userconfig:userconfig,npm_config_globalconfig:globalconfig,
     npm_config_legacy_peer_deps:'false',npm_config_omit:'',npm_config_include:'dev',

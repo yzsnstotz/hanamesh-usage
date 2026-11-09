@@ -2,6 +2,7 @@ import {readFileSync,readdirSync,existsSync} from 'node:fs';import {join} from '
 import {spawnSync} from 'node:child_process';
 import {load} from 'js-yaml';
 import {assertPhysicalClosure} from './closure.mjs';
+import {nodeToolSync} from './node-tool.mjs';
 process.chdir(fileURLToPath(new URL('../',import.meta.url)));
 const read=p=>readFileSync(p,'utf8');
 const pkg=JSON.parse(read('package.json')),lock=JSON.parse(read('package-lock.json'));
@@ -9,7 +10,7 @@ validateConsistency(JSON.parse(read('consistency.json')));
 assert.deepEqual(lock.packages[''].peerDependencies,pkg.peerDependencies);
 assert.deepEqual(lock.packages[''].devDependencies,pkg.devDependencies);
 const pnpmLayout=existsSync('node_modules/.modules.yaml');
-const closure=spawnSync(pnpmLayout?'pnpm':'npm',pnpmLayout?['list','--depth','Infinity','--json']:['ls','--all','--json'],{encoding:'utf8'});
+const closure=nodeToolSync(pnpmLayout?'pnpm':'npm',pnpmLayout?['list','--depth','Infinity','--json']:['ls','--all','--json'],{encoding:'utf8'});
 assert.equal(closure.status,0,closure.stderr);
 const closureTree=JSON.parse(closure.stdout);
 for(const entry of Array.isArray(closureTree)?closureTree:[closureTree])assert.deepEqual(entry.problems??[],[]);
