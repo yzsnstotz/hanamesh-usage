@@ -470,7 +470,7 @@ export async function apply(ctx:ClientContext):Promise<void> {
     // Keys are documented public navigation seats, not Session identities.
     scoped.inject(['layout'],page=>{
       page.slots.inject('main',()=>page.slots.register({name:'main',key:'hanamesh-usage',order:12,label:'使用记录'},()=>h<{onManageConsent?:()=>void}>(UsagePanel,{onManageConsent:()=>page.layout!.selectPanel('hanamesh-account')})));
-      page.slots.inject('sidebar.panellist',()=>page.slots.register({name:'sidebar.panellist',id:'hanamesh-usage',order:12,label:'使用记录'},UsagePanelIcon));
+      page.slots.inject('sidebar.panellist',()=>page.slots.register({name:'sidebar.panellist',id:'hanamesh-usage',order:-10,label:'使用记录'},UsagePanelIcon));
     });
   });
 }
