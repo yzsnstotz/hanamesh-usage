@@ -10,6 +10,7 @@ const parent=mkdtempSync(join(realpathSync(tmpdir()),'usage-card-runs-'));
 after(()=>rmSync(parent,{recursive:true,force:true}));
 const runs=join(parent,'.cache/hanamesh-runs');mkdirSync(runs,{recursive:true});
 const card='J2S2-USAGE-08',run=join(runs,card,'isolated');mkdirSync(run,{recursive:true});
+if(process.platform==='win32')(await import('./fixtures/windows-owner.mjs')).ownByCurrentUser(run);
 
 test('Q61 assembly accepts an explicit current card run with original isolated profile checks',()=>{
   const desktop=join(run,'desktop');mkdirSync(join(desktop,'apps/cli/lib'),{recursive:true});
@@ -25,6 +26,8 @@ test('Q61 missing, mismatched, traversal, symlink and personal paths are rejecte
   const env={HANAMESH_RUNS_ROOT:runs};
   assert.throws(()=>cardRun(['--card',card,'--run',run],{HANAMESH_RUNS_ROOT:join(parent,'.dsh')}),/RUNS_ROOT_NOT_ISOLATED/);
   assert.throws(()=>cardRun(['--card',card,'--run',run],{HANAMESH_RUNS_ROOT:join(parent,'.dsh','.cache','hanamesh-runs')}),/RUNS_ROOT_NOT_ISOLATED/);
+  // Windows path components are case-insensitive and drop trailing dots/spaces: all of these name the same .dsh.
+  if(process.platform==='win32')for(const name of ['.DSH','.Dsh','.dsh.','.dsh '])assert.throws(()=>cardRun(['--card',card,'--run',run],{HANAMESH_RUNS_ROOT:join(parent,name,'.cache','hanamesh-runs')}),/RUNS_ROOT_NOT_ISOLATED/,name);
   assert.equal(cardRun(['--card',card,'--run',run],env).run,run);
   for(const args of [[],['--card',card,'--run',runs],['--card',card,'--run',join(runs,'OTHER')],['--card','../OTHER','--run',run]])assert.throws(()=>cardRun(args,env));
   const sibling=join(runs,'OTHER-CARD','isolated');mkdirSync(sibling,{recursive:true});
