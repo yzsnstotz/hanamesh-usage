@@ -13,7 +13,7 @@ import {createLaunchEnvironmentSnapshot} from '@deepseek-ai/dsh-launch-environme
 // @deepseek-ai/cordis 4.1.0 public FiberState: ACTIVE=2, DISPOSED=4; UNLOADING=5 is transient.
 const FIBER_ACTIVE=2,FIBER_DISPOSED=4;
 const [kind,registry]=process.argv.slice(2),profile='px1-'+kind;
-const definitions={core:['@hanamesh/core','0.3.33','hanamesh-core','hanameshCore'],usage:['@hanamesh/usage','0.3.0-rc.18','hanamesh-usage','hanameshUsage'],apphost:['@hanamesh/dsh-app-host','0.6.24','hanamesh-app-host','hanameshApps']};
+const definitions={core:['@hanamesh/core','0.3.34','hanamesh-core','hanameshCore'],usage:['@hanamesh/usage','0.3.0-rc.19','hanamesh-usage','hanameshUsage'],apphost:['@hanamesh/dsh-app-host','0.6.25','hanamesh-app-host','hanameshApps'],theme:['@hanamesh/theme','0.1.0','hanamesh-theme',null]};
 const roles=kind==='suite'?Object.keys(definitions):[kind];
 const redact=line=>String(line).replace(/([?&]token=)[^\s&]+/g,'$1[REDACTED]');
 for(const stream of [process.stdout,process.stderr]){const write=stream.write.bind(stream);stream.write=(chunk,...args)=>write(redact(chunk),...args);}
@@ -26,7 +26,7 @@ async function command(args){
 }
 assert.equal(getDshRuntimeVersion(),'0.2.2-rc.1');
 const dir=resolveProfileDir(profile);initProfile(dir,PROFILE_TEMPLATES.web.bundles);
-const target=kind==='suite'?'@hanamesh/hanamesh@0.1.4':definitions[kind].slice(0,2).join('@');
+const target=kind==='suite'?'@hanamesh/hanamesh@0.1.5':definitions[kind].slice(0,2).join('@');
 await command(['plugin','--profile',profile,'add','--save-exact','--registry='+registry,target]);
 const patch=[{id:'update-notifier',disabled:true}];
 if(roles.includes('core'))patch.push({id:'hanamesh-core',config:{serverOrigin:null,websiteOrigin:null,allowSystemBrowser:false,sharedIdentityDir:join(process.env.DSH_HOME,'shared-identity')}});
@@ -41,7 +41,7 @@ try{
  for(const role of roles){
   const [name,version,id,service]=definitions[role];
   const entry=[...ctx.loader.entries()].find(row=>row.options.name===name||role==='apphost'&&row.options.name===name+'/dsh');
-  assert(entry?.fiber,'ENTRY_MISSING '+role);assert.equal(entry.fiber.state,FIBER_ACTIVE,'ENTRY_NOT_ACTIVE '+role);assert(ctx.get(service),'SERVICE_MISSING '+role);
+  assert(entry?.fiber,'ENTRY_MISSING '+role);assert.equal(entry.fiber.state,FIBER_ACTIVE,'ENTRY_NOT_ACTIVE '+role);if(service)assert(ctx.get(service),'SERVICE_MISSING '+role);
   const metadata=ctx.pluginPackages.packageOf(entry.options.name,entry.parent.tree.ctx.baseUrl);
   assert.equal(metadata.name,name);assert.equal(metadata.version,version);
   pluginFibers.push({role,fiber:entry.fiber});
@@ -62,7 +62,7 @@ try{
   await app.shutdown.shutdown(receipt.status==='PASS'?0:1);
   receipt.rootAfterDispose=app.ctx.fiber.state;receipt.rootReleaseObserved=rootReleased;assert(rootReleased,'ROOT_EFFECT_NOT_RELEASED');
   receipt.disposedEntries=pluginFibers.map(({role,fiber})=>({role,uid:fiber.uid,state:fiber.state}));
-  for(const {role,fiber} of pluginFibers){assert.equal(fiber.uid,null,'PLUGIN_NOT_DISPOSED '+role);assert.equal(fiber.state,FIBER_DISPOSED,'PLUGIN_NOT_DISPOSED_STATE '+role);assert.equal(app.ctx.get(definitions[role][3]),undefined,'SERVICE_NOT_REVOKED '+role);}
+  for(const {role,fiber} of pluginFibers){assert.equal(fiber.uid,null,'PLUGIN_NOT_DISPOSED '+role);assert.equal(fiber.state,FIBER_DISPOSED,'PLUGIN_NOT_DISPOSED_STATE '+role);if(definitions[role][3])assert.equal(app.ctx.get(definitions[role][3]),undefined,'SERVICE_NOT_REVOKED '+role);}
   receipt.listenerClosed=await new Promise(resolve=>{const socket=connect({host:'127.0.0.1',port:receipt.port});socket.once('connect',()=>{socket.destroy();resolve(false);});socket.once('error',e=>{socket.destroy();resolve(e.code==='ECONNREFUSED');});});assert(receipt.listenerClosed,'PROFILE_LISTENER_NOT_CLOSED');
  }catch(error){receipt.cleanupFailure=String(error.message);if(!primaryError)primaryError=error;receipt.status='FAIL';}
  await mkdir(join(process.env.DSH_HOME,'evidence'),{recursive:true});

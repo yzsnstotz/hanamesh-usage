@@ -1,77 +1,115 @@
 {
-  "source": "PK3 consolidated normal archives; development candidate, not npm publication. All three platform workflows consume this same companion snapshot.",
-  "commits": {
-    "core": "969a89a1f7e383fca7d6aefa7f27507d3a1605d5",
-    "usage": "073d6c584d3cd441f2bf96a7d7feb92e04278b94",
-    "apphost": "01905780532c7be338882c2d5f2235f4a7cf016d"
+  "source": "PK4 reviewed CL1 UI + DT2 detection combined normal archives; unpublished exact candidate. Theme uses isolated test transport, never the production Core archive whitelist.",
+  "sourceInputs": {
+    "coreCL1": "60359d2f3960be8acb8030124cd194b81b30bd38",
+    "usageCL1": "3070fee2e183292b5228a206ce02f31cd98bcf04",
+    "appHostCL1": "5e3e24f97f69924f27b9a54040f4d42969ed8444",
+    "appHostDT2": "f8d72a94ec799b1abb1498d53c4db7877f65803f"
+  },
+  "versions": {
+    "@hanamesh/core": "0.3.34",
+    "@hanamesh/usage": "0.3.0-rc.19",
+    "@hanamesh/dsh-app-host": "0.6.25",
+    "@hanamesh/theme": "0.1.0",
+    "@hanamesh/hanamesh": "0.1.5"
   },
   "archives": [
     {
-      "file": "hanamesh-core-0.3.33.tgz",
-      "sha256": "088cf6a7b7575fa1d22116d6af8a6b0312fbbb825c50d9bf38f0447ef36c7c78"
+      "file": "hanamesh-core-0.3.34.tgz",
+      "sha256": "f38d6f8205d87061712203446577a61a1080e77dff83598d6acd452260752cb2"
     },
     {
-      "file": "hanamesh-usage-0.3.0-rc.18.tgz",
-      "sha256": "19fd7a25424312e0957c1cbaaf9685472c81db1f0a36857e0e0d1b3f9055badd"
+      "file": "hanamesh-usage-0.3.0-rc.19.tgz",
+      "sha256": "6ac14a7fd2d470ad12832047c144cc3624cfa7f6af9d7831d0b6cc6d43c89971"
     },
     {
-      "file": "hanamesh-dsh-app-host-0.6.24.tgz",
-      "sha256": "57c0fcfff6baf6bfe569a2d8589b212d2a963e2c541587116f8cd53ab89c24bd"
+      "file": "hanamesh-dsh-app-host-0.6.25.tgz",
+      "sha256": "adcff90e203e5fdc7de0216d52137685d9770906bb52d3eb9d87b01b6c0cf3e4"
     },
     {
-      "file": "hanamesh-hanamesh-0.1.4.tgz",
-      "sha256": "254cff23df41a167393e21a05173b0fb34c976105a2896a5feace23b6de3975c"
+      "file": "hanamesh-theme-0.1.0.tgz",
+      "sha256": "20f4501c78e0168177e37123937d0d626a49aa46c278eb0cea485168012699a8"
+    },
+    {
+      "file": "hanamesh-hanamesh-0.1.5.tgz",
+      "sha256": "289307d0b780c14f2ebee73c17e79d674dfb21b47ff0873af82b545db79554a1"
     }
   ],
   "previousProvenance": {
-    "source": "PK2-gate-handoff.md, 2026-11-08 AH1 .24 final artifacts; AppHost: PX1 normal Linux pack from GitHub Actions run 42468476191, secureDirectory native-root fix",
+    "source": "PK3 consolidated normal archives; development candidate, not npm publication. All three platform workflows consume this same companion snapshot.",
     "commits": {
-      "core": "e70b233f42c487a8684fc14f4c9769630bb9f2c4",
-      "usage": "0ddb376bf8dab43348520079872a173e0e988f15",
-      "apphost": "14c54d0864808991e898d17b25ffe5a6d7bc18dc"
+      "core": "969a89a1f7e383fca7d6aefa7f27507d3a1605d5",
+      "usage": "073d6c584d3cd441f2bf96a7d7feb92e04278b94",
+      "apphost": "01905780532c7be338882c2d5f2235f4a7cf016d"
     },
     "archives": [
       {
         "file": "hanamesh-core-0.3.33.tgz",
-        "sha256": "e0e3f68eac7b1d09472b5f3bf00200ecb2436e398f41b379b13995cfdc746026"
+        "sha256": "088cf6a7b7575fa1d22116d6af8a6b0312fbbb825c50d9bf38f0447ef36c7c78"
       },
       {
         "file": "hanamesh-usage-0.3.0-rc.18.tgz",
-        "sha256": "866cb3261b6c21f13e1492b29c6926c45459591ed90ea7c866ef3145602a74b1"
+        "sha256": "19fd7a25424312e0957c1cbaaf9685472c81db1f0a36857e0e0d1b3f9055badd"
       },
       {
         "file": "hanamesh-dsh-app-host-0.6.24.tgz",
-        "sha256": "e47b4dee4047fca664b5f60594354a1649338f462d5229cd757e84e326c668d8",
-        "previousPk2Sha256": "fce7b8066fce1945295d8977b4ca2a48807060bbcf7b141e7c747ab33e1a64f6",
-        "workflow": "https://github.com/yzsnstotz/hanamesh-plugin-app-host/actions/runs/42468476191"
+        "sha256": "57c0fcfff6baf6bfe569a2d8589b212d2a963e2c541587116f8cd53ab89c24bd"
       },
       {
         "file": "hanamesh-hanamesh-0.1.4.tgz",
-        "sha256": "27bc017030fdffff45ca3e4e89b8b500d12e38a2e611e60fc0513e9af13ca086"
+        "sha256": "254cff23df41a167393e21a05173b0fb34c976105a2896a5feace23b6de3975c"
       }
     ],
-    "previousAppHostCommit": "dbb685d33e2c5717de24843b7de8ead4e5b4bae6"
-  },
-  "gate": {
-    "version": "0.1.12",
-    "sourceCommit": "95e54102f9380ea2e8e4d8a2e36eacd387c3f7e7"
-  },
-  "apphostVerification": {
-    "sourceCommit": "d5b659a91cf053dc875efcb84ee53fdbe2133818",
-    "originalArchiveSourceCommit": "4671fbf5ab12edc469bfe6313d82b3cf9a719c48",
-    "archiveSha256": "57c0fcfff6baf6bfe569a2d8589b212d2a963e2c541587116f8cd53ab89c24bd",
-    "productPayloadChanged": false,
-    "mutationsPassed": 130,
-    "mutationsTotal": 130,
-    "evidence": "questions/AH2-delivery.md",
-    "scope": "AH2 local full check and package verification; GT19 and new consolidated platform matrices remain separate"
-  },
-  "apphostPlatformFix": {
-    "sourceCommit": "01905780532c7be338882c2d5f2235f4a7cf016d",
-    "reviewFinding": "R138-P2-01",
-    "change": "Use the existing native Windows system tar selection in the installation qualification fixture. All five matrix and risk assertions remain unchanged.",
-    "redRunId": 42533448322,
-    "redJobId": 128892497692,
-    "productPayloadChanged": false
+    "previousProvenance": {
+      "source": "PK2-gate-handoff.md, 2026-11-08 AH1 .24 final artifacts; AppHost: PX1 normal Linux pack from GitHub Actions run 42468476191, secureDirectory native-root fix",
+      "commits": {
+        "core": "e70b233f42c487a8684fc14f4c9769630bb9f2c4",
+        "usage": "0ddb376bf8dab43348520079872a173e0e988f15",
+        "apphost": "14c54d0864808991e898d17b25ffe5a6d7bc18dc"
+      },
+      "archives": [
+        {
+          "file": "hanamesh-core-0.3.33.tgz",
+          "sha256": "e0e3f68eac7b1d09472b5f3bf00200ecb2436e398f41b379b13995cfdc746026"
+        },
+        {
+          "file": "hanamesh-usage-0.3.0-rc.18.tgz",
+          "sha256": "866cb3261b6c21f13e1492b29c6926c45459591ed90ea7c866ef3145602a74b1"
+        },
+        {
+          "file": "hanamesh-dsh-app-host-0.6.24.tgz",
+          "sha256": "e47b4dee4047fca664b5f60594354a1649338f462d5229cd757e84e326c668d8",
+          "previousPk2Sha256": "fce7b8066fce1945295d8977b4ca2a48807060bbcf7b141e7c747ab33e1a64f6",
+          "workflow": "https://github.com/yzsnstotz/hanamesh-plugin-app-host/actions/runs/42468476191"
+        },
+        {
+          "file": "hanamesh-hanamesh-0.1.4.tgz",
+          "sha256": "27bc017030fdffff45ca3e4e89b8b500d12e38a2e611e60fc0513e9af13ca086"
+        }
+      ],
+      "previousAppHostCommit": "dbb685d33e2c5717de24843b7de8ead4e5b4bae6"
+    },
+    "gate": {
+      "version": "0.1.12",
+      "sourceCommit": "95e54102f9380ea2e8e4d8a2e36eacd387c3f7e7"
+    },
+    "apphostVerification": {
+      "sourceCommit": "d5b659a91cf053dc875efcb84ee53fdbe2133818",
+      "originalArchiveSourceCommit": "4671fbf5ab12edc469bfe6313d82b3cf9a719c48",
+      "archiveSha256": "57c0fcfff6baf6bfe569a2d8589b212d2a963e2c541587116f8cd53ab89c24bd",
+      "productPayloadChanged": false,
+      "mutationsPassed": 130,
+      "mutationsTotal": 130,
+      "evidence": "questions/AH2-delivery.md",
+      "scope": "AH2 local full check and package verification; GT19 and new consolidated platform matrices remain separate"
+    },
+    "apphostPlatformFix": {
+      "sourceCommit": "01905780532c7be338882c2d5f2235f4a7cf016d",
+      "reviewFinding": "R138-P2-01",
+      "change": "Use the existing native Windows system tar selection in the installation qualification fixture. All five matrix and risk assertions remain unchanged.",
+      "redRunId": 42533448322,
+      "redJobId": 128892497692,
+      "productPayloadChanged": false
+    }
   }
 }

@@ -1,5 +1,6 @@
 // PX1: runner commands use JavaScript entrypoints, never a Windows .cmd shell.
 import {spawn} from 'node:child_process';
+import {themeFixtureRegistry} from './theme-fixture-registry.mjs';
 import {mkdir,readFile,writeFile,copyFile,readdir,stat,realpath} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {join,resolve,dirname,delimiter} from 'node:path';
@@ -33,7 +34,7 @@ async function command(file,args,cwd=repo,overrides={}){
 const pm=(args,cwd=repo)=>command(process.execPath,[pnpm,...args],cwd);
 const nm=(args,cwd=repo)=>command(process.execPath,[npm,...args],cwd);
 const role=process.env.PX1_ROLE,phase=process.argv[2];
-const names={core:'hanamesh-core-0.3.33.tgz',usage:'hanamesh-usage-0.3.0-rc.18.tgz',apphost:'hanamesh-dsh-app-host-0.6.24.tgz'};
+const names={core:'hanamesh-core-0.3.34.tgz',usage:'hanamesh-usage-0.3.0-rc.19.tgz',apphost:'hanamesh-dsh-app-host-0.6.25.tgz'};
 const artifacts=join(root,'artifacts'),host=join(root,'native');
 const receipt={phase,role,platform:process.platform,arch:process.arch,node:process.version,startedAt:new Date().toISOString()};
 try{
@@ -41,14 +42,23 @@ try{
   if(process.version!=='v24.13.1')throw Error('NODE_VERSION_MISMATCH');
   await nm(['ci','--ignore-scripts','--strict-peer-deps','--include=dev','--include=peer','--include=optional']);
   await pm(['install','--frozen-lockfile','--strict-peer-dependencies']);
- }else if(phase==='build')await pm(['run','build']);
- else if(phase==='unit')await pm(['test']);
+ }else if(phase==='build'){
+  await pm(['run','build']);
+  if(role==='core')await nm(['--prefix','packages/hanamesh-theme','run','build']);
+ }else if(phase==='unit'){
+  await pm(['test']);
+  if(role==='core'){
+   await nm(['--prefix','packages/hanamesh-theme','test']);
+   await nm(['--prefix','packages/hanamesh-theme','run','test:mutations']);
+  }
+ }
  else if(phase==='cli'){
   const files=(await readdir(join(repo,'tests'))).filter(f=>/^installation-.*\.test\.mjs$/.test(f)).sort();
   await command(process.execPath,['--test','--test-reporter=tap','--test-concurrency=1',...files.map(f=>'tests/'+f)]);
  }else if(phase==='pack'){
   await mkdir(artifacts,{recursive:true});
   await pm(['pack','--pack-destination',artifacts]);
+  if(role==='core')await nm(['pack','--pack-destination',artifacts],join(repo,'packages/hanamesh-theme'));
   await stat(join(artifacts,names[role]));
  }else if(phase==='native'){
   const fixture=join(import.meta.dirname,'fixtures'),provenance=JSON.parse(await readFile(join(fixture,'provenance.json'),'utf8'));
@@ -56,7 +66,7 @@ try{
   for(const row of provenance.archives){
    const bytes=await readFile(join(fixture,row.file));
    if(createHash('sha256').update(bytes).digest('hex')!==row.sha256)throw Error('FIXTURE_HASH_MISMATCH '+row.file);
-   if(row.file!==names[role])await copyFile(join(fixture,row.file),join(artifacts,row.file));
+   if(row.file!==names[role]&&!(role==='core'&&row.file==='hanamesh-theme-0.1.0.tgz'))await copyFile(join(fixture,row.file),join(artifacts,row.file));
   }
   // A failed local pack remains a failed candidate. Run the locked baseline only
   // as a separate diagnostic so a build failure cannot hide native OS failures.
@@ -73,23 +83,23 @@ try{
   await command('tar',['-xzf',join(fixture,names.core),'-C',core,'--strip-components=1']);
   const {createSuitePackageSource}=await import(pathToFileURL(join(core,'lib/suite/source.js')));
   // Repack the unchanged suite tuple/patch with the actual local archive hashes.
-  // Tuple and patch come from PK2's normal builder; no dependency ranges change.
+  // Tuple and patch come from PK4's normal four-package builder; no dependency ranges change.
   const suite=join(root,'suite');await mkdir(suite,{recursive:true});
-  await command('tar',['-xzf',join(fixture,'hanamesh-hanamesh-0.1.4.tgz'),'-C',suite]);
+  await command('tar',['-xzf',join(fixture,'hanamesh-hanamesh-0.1.5.tgz'),'-C',suite]);
   const releasePath=join(suite,'package/release.json'),release=JSON.parse(await readFile(releasePath,'utf8'));
-  const files=Object.values(names),archives=[];
+  const files=[...Object.values(names),'hanamesh-theme-0.1.0.tgz'],archives=[];
   for(const file of files){const path=join(artifacts,file),bytes=await readFile(path);archives.push({path,integrity:'sha512-'+createHash('sha512').update(bytes).digest('base64')});}
   for(const [i,row]of release.sources.entries())row.sha256=createHash('sha256').update(await readFile(archives[i].path)).digest('hex');
   await writeFile(releasePath,JSON.stringify(release,null,2)+'\n');
   await nm(['pack','--ignore-scripts','--offline','--pack-destination',artifacts],join(suite,'package'));
-  const suiteFile=join(artifacts,'hanamesh-hanamesh-0.1.4.tgz');archives.push({path:suiteFile,integrity:'sha512-'+createHash('sha512').update(await readFile(suiteFile)).digest('base64')});
-  const source=await createSuitePackageSource({archives,port:0,peerRegistry:'https://registry.npmjs.org/',maxArchiveBytes:32*1024*1024,maxExpandedBytes:128*1024*1024,maxEntries:10000,maxManifestBytes:2*1024*1024,maxResponseBytes:32*1024*1024,timeoutMs:10000});
-  const results=[];
-  try{for(const kind of ['core','usage','apphost','suite']){
+  const suiteFile=join(artifacts,'hanamesh-hanamesh-0.1.5.tgz');archives.push({path:suiteFile,integrity:'sha512-'+createHash('sha512').update(await readFile(suiteFile)).digest('base64')});
+  const source=await createSuitePackageSource({archives:archives.filter(row=>!row.path.endsWith('hanamesh-theme-0.1.0.tgz')),port:0,peerRegistry:'https://registry.npmjs.org/',maxArchiveBytes:32*1024*1024,maxExpandedBytes:128*1024*1024,maxEntries:10000,maxManifestBytes:2*1024*1024,maxResponseBytes:32*1024*1024,timeoutMs:10000});
+  let themeSource;const results=[];
+  try{themeSource=await themeFixtureRegistry(source.registry,join(artifacts,'hanamesh-theme-0.1.0.tgz')); for(const kind of ['core','usage','apphost','suite']){
    const home=join(root,'cases',kind,'home'),dsh=join(root,'cases',kind,'dsh'),appdata=join(home,'AppData','Roaming'),localappdata=join(home,'AppData','Local');await mkdir(home,{recursive:true});await mkdir(dsh,{recursive:true});await mkdir(appdata,{recursive:true});await mkdir(localappdata,{recursive:true});
-   try{await command(process.execPath,[join(host,'native-case.mjs'),kind,source.registry],host,{HOME:home,USERPROFILE:home,APPDATA:appdata,LOCALAPPDATA:localappdata,CFFIXED_USER_HOME:home,DSH_HOME:dsh});results.push({kind,status:'PASS'});}catch(error){results.push({kind,status:'FAIL',error:error.message});}
+   try{await command(process.execPath,[join(host,'native-case.mjs'),kind,themeSource.registry],host,{HOME:home,USERPROFILE:home,APPDATA:appdata,LOCALAPPDATA:localappdata,CFFIXED_USER_HOME:home,DSH_HOME:dsh});results.push({kind,status:'PASS'});}catch(error){results.push({kind,status:'FAIL',error:error.message});}
    try{await copyFile(join(dsh,'evidence/native-load.json'),join(evidence,'native-'+kind+'.json'));}catch{}
-  }}finally{await source.close();receipt.profiles=results;receipt.archives=archives;}
+  }}finally{await themeSource?.close();await source.close();receipt.profiles=results;receipt.archives=archives;}
   if(results.some(r=>r.status!=='PASS'))throw Error('NATIVE_PROFILES_FAILED');
   if(!candidate)throw Error('BASELINE_ONLY_LOCAL_PACK_FAILED');
  }else throw Error('UNKNOWN_PHASE');
