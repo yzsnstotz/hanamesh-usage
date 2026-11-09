@@ -16,7 +16,7 @@
   "archives": [
     {
       "file": "hanamesh-core-0.3.34.tgz",
-      "sha256": "f38d6f8205d87061712203446577a61a1080e77dff83598d6acd452260752cb2"
+      "sha256": "c1649d3b32a6b19496401ac09d9d7c57bd5994e4398e53f37ae938679df7a7f7"
     },
     {
       "file": "hanamesh-usage-0.3.0-rc.19.tgz",
@@ -32,7 +32,7 @@
     },
     {
       "file": "hanamesh-hanamesh-0.1.5.tgz",
-      "sha256": "289307d0b780c14f2ebee73c17e79d674dfb21b47ff0873af82b545db79554a1"
+      "sha256": "8919501d6943233ef72156ccfe68d92cb5975381dafadd481148201da70bc47f"
     }
   ],
   "previousProvenance": {
