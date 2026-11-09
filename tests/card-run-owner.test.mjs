@@ -6,7 +6,7 @@ import {join} from 'node:path';
 // Windows has no stat uid; these native cases prove the owner SID rule. POSIX keeps the uid rule (card-run.test.mjs);
 // a different-uid POSIX directory needs a second account, which the runner does not provide.
 if(process.platform==='win32'){
-  const {ownByCurrentUser,ownerSid,currentUserSid,icacls,SYSTEM_SID,ADMINISTRATORS_SID,OWNER_RIGHTS_SID}=await import('./fixtures/windows-owner.mjs');
+  const {ownByCurrentUser,ownerSid,currentUserSid,icacls,SYSTEM_SID,ADMINISTRATORS_SID}=await import('./fixtures/windows-owner.mjs');
   const {cardRun}=await import('../tools/card-run.mjs');
   const parent=mkdtempSync(join(realpathSync(tmpdir()),'usage-card-owner-'));
   after(()=>rmSync(parent,{recursive:true,force:true}));
@@ -25,10 +25,9 @@ if(process.platform==='win32'){
   });
   test('Q61 Windows refuses when the run directory owner cannot be read',()=>{
     const run=runDir('unreadable');assert.equal(cardRun(['--card',card,'--run',run],env).run,run);
-    // One DACL write: OWNER RIGHTS removes the owner's implicit READ_CONTROL and Everyone loses the inherited grant,
-    // so the security descriptor read itself fails (a later icacls could no longer read the DACL).
-    icacls(run,'/deny','*'+OWNER_RIGHTS_SID+':(RC)','*S-1-1-0:(RC)');
-    assert.throws(()=>ownerSid(run));
-    assert.throws(()=>cardRun(['--card',card,'--run',run],env),/RUN_NOT_OWNED/);
+    // The owner SID is read by the system PowerShell under SystemRoot; when that read cannot run, ownership is unproven.
+    const saved=process.env.SystemRoot;process.env.SystemRoot=join(parent,'no-system-root');
+    try{assert.throws(()=>cardRun(['--card',card,'--run',run],env),/RUN_NOT_OWNED/);}finally{process.env.SystemRoot=saved;}
+    assert.equal(cardRun(['--card',card,'--run',run],env).run,run);
   });
 }
