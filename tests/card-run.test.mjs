@@ -4,7 +4,8 @@ import {mkdtempSync,mkdirSync,writeFileSync,symlinkSync,realpathSync,rmSync} fro
 import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
 import {spawnSync} from 'node:child_process';
-const root=resolve(new URL('../',import.meta.url).pathname);
+import {fileURLToPath} from 'node:url';
+const root=fileURLToPath(new URL('../',import.meta.url));
 const parent=mkdtempSync(join(realpathSync(tmpdir()),'usage-card-runs-'));
 after(()=>rmSync(parent,{recursive:true,force:true}));
 const runs=join(parent,'.cache/hanamesh-runs');mkdirSync(runs,{recursive:true});
@@ -23,8 +24,11 @@ test('Q61 missing, mismatched, traversal, symlink and personal paths are rejecte
   const {cardRun}=await import('../tools/card-run.mjs');
   const env={HANAMESH_RUNS_ROOT:runs};
   assert.throws(()=>cardRun(['--card',card,'--run',run],{HANAMESH_RUNS_ROOT:join(parent,'.dsh')}),/RUNS_ROOT_NOT_ISOLATED/);
+  assert.throws(()=>cardRun(['--card',card,'--run',run],{HANAMESH_RUNS_ROOT:join(parent,'.dsh','.cache','hanamesh-runs')}),/RUNS_ROOT_NOT_ISOLATED/);
   assert.equal(cardRun(['--card',card,'--run',run],env).run,run);
   for(const args of [[],['--card',card,'--run',runs],['--card',card,'--run',join(runs,'OTHER')],['--card','../OTHER','--run',run]])assert.throws(()=>cardRun(args,env));
+  const sibling=join(runs,'OTHER-CARD','isolated');mkdirSync(sibling,{recursive:true});
+  assert.throws(()=>cardRun(['--card',card,'--run',sibling],env),/RUN_NOT_THIS_CARD/);
   const outside=mkdtempSync(join(tmpdir(),'usage-outside-'));t.after(()=>rmSync(outside,{recursive:true,force:true}));symlinkSync(outside,join(runs,card,'escape'));
   assert.throws(()=>cardRun(['--card',card,'--run',join(runs,card,'escape')],env),/RUN_NOT_THIS_CARD/);
 });

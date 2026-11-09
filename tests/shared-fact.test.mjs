@@ -1,11 +1,11 @@
 import {sharedSettingsResponse} from './fixtures/shared-settings.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {pathToFileURL} from 'node:url';
+import {pathToFileURL,fileURLToPath} from 'node:url';
 import {resolve} from 'node:path';
 import {createCoreProviderFixture,coreCanonicalRequest,verifyCoreSignature} from '@hanamesh/core/contract/fixtures';
 import {capturingFetch} from './fixtures/capturing-fetch.mjs';
-const root=process.env.USAGE_TEST_ROOT??resolve(new URL('..',import.meta.url).pathname);
+const root=process.env.USAGE_TEST_ROOT??fileURLToPath(new URL('..',import.meta.url));
 const {EventStore,wireEvent,signingJSON}=await import(pathToFileURL(resolve(root,'lib/core/index.js')));
 const {createRecordSeat}=await import(pathToFileURL(resolve(root,'lib/host/record.js')));
 const {signUsageEvent}=await import(pathToFileURL(resolve(root,'lib/host/core-link.js')));

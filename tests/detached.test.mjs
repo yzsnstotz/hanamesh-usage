@@ -14,7 +14,7 @@ function run(t,cache) {
   t.after(()=>rmSync(directory,{recursive:true,force:true}));
   const home=join(directory,'caller-home');mkdirSync(home);
   const result=nodeToolSync('npm',['run','test:detached'],{cwd:root,encoding:'utf8',maxBuffer:8*1024*1024,
-    env:{...process.env,HOME:home,TMPDIR:directory,DSH_HOME:join(directory,'caller-dsh-home'),
+    env:{...process.env,HOME:home,USERPROFILE:home,TMPDIR:directory,TMP:directory,TEMP:directory,DSH_HOME:join(directory,'caller-dsh-home'),
       npm_config_cache:cache,npm_config_legacy_peer_deps:'true',npm_config_omit:'dev',NODE_ENV:'production'}});
   const evidence=readdirSync(directory).find(name=>name.startsWith('usage-detached-'));
   return {directory,result,evidence:evidence&&join(directory,evidence)};
