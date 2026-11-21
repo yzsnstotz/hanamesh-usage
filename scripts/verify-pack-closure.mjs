@@ -6,7 +6,7 @@ import {spawnSync} from 'node:child_process';
 import {realpathSync, statSync} from 'node:fs';
 import {createRequire} from 'node:module';
 import {tmpdir} from 'node:os';
-import {delimiter, dirname, isAbsolute, join, relative, resolve} from 'node:path';
+import {delimiter, dirname, isAbsolute, join, relative, resolve, sep} from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
 
 const tar = process.platform === 'win32' ? join(process.env.SystemRoot, 'System32/tar.exe') : 'tar';
@@ -67,13 +67,112 @@ export function relativeReferences(source, filename) {
   return references;
 }
 
+// Inspect every declared branch, rather than resolving just the current Node condition.
+// https://github.com/nodejs/node/blob/v24.13.1/doc/api/packages.md#subpath-patterns
+function exportLeaves(value, entry, leaves = []) {
+  if (value === null) return leaves; // An intentional disabled export is not a missing file.
+  if (Array.isArray(value)) value.forEach((child, index) => exportLeaves(child, `${entry}[${index}]`, leaves));
+  else if (value && typeof value === 'object') {
+    for (const [key, child] of Object.entries(value)) exportLeaves(child, `${entry}[${JSON.stringify(key)}]`, leaves);
+  } else leaves.push({entry, specifier: value});
+  return leaves;
+}
+function entryPath(root, specifier, exported) {
+  if (typeof specifier !== 'string' || !specifier) return {code: 'PACK_ENTRY_INVALID'};
+  if (/^[A-Za-z][\w+.-]*:|^[/\\]/u.test(specifier)) return {code: 'PACK_ENTRY_OUTSIDE'};
+  let target;
+  if (exported) {
+    if (!specifier.startsWith('./') || specifier.includes('\\')) return {code: 'PACK_ENTRY_INVALID'};
+    try {
+      const segments = decodeURIComponent(specifier.split(/[?#]/u)[0]).slice(2).split('/');
+      if (segments.includes('..')) return {code: 'PACK_ENTRY_OUTSIDE'};
+      if (segments.some(segment => segment === '.' || segment === 'node_modules')) return {code: 'PACK_ENTRY_INVALID'};
+      target = fileURLToPath(new URL(specifier, pathToFileURL(join(root, 'package.json'))));
+    } catch { return {code: 'PACK_ENTRY_INVALID'}; }
+  } else target = resolve(root, specifier);
+  return inside(root, target) ? {target} : {code: 'PACK_ENTRY_OUTSIDE'};
+}
+function patternExpression(pattern) {
+  const escape = value => value.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+  // Node substitutes the same capture into every RHS star, including nested paths.
+  return new RegExp('^' + pattern.split('*').map(escape).join('\u0000')
+    .replace('\u0000', '(?<subpath>.*)').replaceAll('\u0000', '\\k<subpath>') + '$', 'u');
+}
+function subpathMapping(subpath, mappings) {
+  const exact = mappings.find(([key]) => key === subpath && !key.includes('*'));
+  if (exact) return exact[0];
+  const matches = mappings.filter(([key]) => key.includes('*') && patternExpression(key).test(subpath));
+  // Node prefers the longest pattern prefix, then the longest full key.
+  matches.sort(([left], [right]) => right.indexOf('*') - left.indexOf('*') || right.length - left.length);
+  return matches[0]?.[0];
+}
+
+async function manifestEntries(archiveRoot, manifestFile, packageFiles) {
+  const root = dirname(manifestFile), pkg = JSON.parse(await readFile(manifestFile, 'utf8'));
+  const file = relative(archiveRoot, manifestFile), failures = [];
+  let entryTargets = 0;
+  async function check(row, exported = false) {
+    entryTargets++;
+    const location = entryPath(root, row.specifier, exported);
+    if (location.code) { failures.push({file, ...row, code: location.code}); return; }
+    try {
+      const target = row.entry === 'main'
+        ? createRequire(manifestFile).resolve('./' + relative(root, location.target).split(sep).join('/')) : location.target;
+      if (!inside(root, await realpath(target))) failures.push({file, ...row, code: 'PACK_ENTRY_OUTSIDE'});
+      else if (!(await stat(target)).isFile()) failures.push({file, ...row, code: 'PACK_ENTRY_MISSING'});
+    } catch (error) {
+      if (['ENOENT', 'ENOTDIR', 'MODULE_NOT_FOUND'].includes(error.code)) failures.push({file, ...row, code: 'PACK_ENTRY_MISSING'});
+      else throw error;
+    }
+  }
+  if (pkg.exports !== undefined) {
+    const subpaths = pkg.exports && !Array.isArray(pkg.exports) && typeof pkg.exports === 'object' &&
+      Object.keys(pkg.exports).some(key => key.startsWith('.'));
+    const mappings = subpaths ? Object.entries(pkg.exports) : [['.', pkg.exports]];
+    for (const [key, value] of mappings) {
+      const leaves = exportLeaves(value, subpaths ? `exports[${JSON.stringify(key)}]` : 'exports');
+      const patterns = [], captures = new Set();
+      for (const row of leaves) {
+        const location = entryPath(root, row.specifier, true);
+        if (location.code || !key.includes('*') || !row.specifier.includes('*')) { await check(row, true); continue; }
+        const expression = patternExpression(relative(root, location.target).split(sep).join('/'));
+        for (const candidate of packageFiles) {
+          if (!inside(root, candidate)) continue;
+          const match = expression.exec(relative(root, candidate).split(sep).join('/'));
+          if (match && !match[1].split('/').some(segment => ['.', '..', 'node_modules'].includes(segment))) captures.add(match[1]);
+        }
+        patterns.push(row);
+      }
+      // A conditional wildcard must provide each enumerated subpath in every declared branch.
+      const enabled = [...captures].filter(capture => subpathMapping(key.replace('*', capture), mappings) === key);
+      for (const row of patterns) {
+        if (!captures.size) { entryTargets++; failures.push({file, ...row, code: 'PACK_ENTRY_MISSING'}); }
+        for (const capture of enabled) {
+          const replacement = capture.split('/').map(encodeURIComponent).join('/');
+          await check({...row, specifier: row.specifier.replaceAll('*', replacement)}, true);
+        }
+      }
+    }
+  }
+  for (const entry of ['main', 'module', 'types']) if (pkg[entry] !== undefined) await check({entry, specifier: pkg[entry]});
+  if (pkg.bin !== undefined) {
+    if (pkg.bin && !Array.isArray(pkg.bin) && typeof pkg.bin === 'object') {
+      for (const [name, specifier] of Object.entries(pkg.bin)) await check({entry: `bin[${JSON.stringify(name)}]`, specifier});
+    } else await check({entry: 'bin', specifier: pkg.bin});
+  }
+  return {entryTargets, failures};
+}
+
 export async function scanPackage(directory) {
   const root = await realpath(directory), failures = [];
+  const packageFiles = [], manifests = [];
   let files = 0, references = 0;
   async function walk(directory) {
     for (const entry of await readdir(directory, {withFileTypes: true})) {
       const file = join(directory, entry.name);
       if (entry.isDirectory()) { await walk(file); continue; }
+      packageFiles.push(file);
+      if (entry.name === 'package.json') manifests.push(file);
       if (!/\.(?:js|mjs|cjs)$/u.test(entry.name)) continue;
       const physical = await realpath(file);
       if (!inside(root, physical)) { failures.push({file: relative(root, file), code: 'PACK_RELATIVE_OUTSIDE'}); continue; }
@@ -96,8 +195,14 @@ export async function scanPackage(directory) {
     }
   }
   await walk(root);
+  let entryTargets = 0;
+  for (const manifest of manifests) {
+    const result = await manifestEntries(root, manifest, packageFiles);
+    entryTargets += result.entryTargets;
+    failures.push(...result.failures);
+  }
   const pkg = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
-  return {name: pkg.name, version: pkg.version, files, references, failures};
+  return {name: pkg.name, version: pkg.version, files, references, entryTargets, failures};
 }
 
 export async function checkTarball(archive) {

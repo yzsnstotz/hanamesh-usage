@@ -24,7 +24,7 @@ function pack(root) {
   return archive;
 }
 
-test('packed closure parses imports, exports, dynamic import, require and require.resolve, ignoring text and comments', () => {
+test('packed closure parses JS imports, re-exports, dynamic import, require and require.resolve, ignoring text and comments', () => {
   const source = `// import './comment-missing.js'
     const text = "require('./string-missing.js')";
     import './one.js'; export * from './two.mjs'; export {x} from './three.js';
@@ -117,4 +117,146 @@ test('the release CLI exits nonzero for a broken tarball', async t => {
   const receipt = JSON.parse(result.stdout.trim());
   assert.equal(receipt.failures.length,1);
   assert.equal(receipt.failures[0].code,'PACK_RELATIVE_MISSING');
+});
+
+function manifest(fields) {
+  return JSON.stringify({name:'@fixture/closure',version:'1.0.0',type:'module',...fields});
+}
+
+test('R482 F1: package.json exports missing subpath makes the release CLI fail', async t => {
+  const root = await fixture(t, {
+    'package/package.json': manifest({exports:{'.':'./index.mjs','./broken':'./missing.mjs'}}),
+    'package/index.mjs': 'export const x=1;',
+  });
+  const result = spawnSync(process.execPath, [fileURLToPath(new URL('../scripts/verify-pack-closure.mjs',import.meta.url)),pack(root)], {encoding:'utf8'});
+  assert.equal(result.status,1,result.stdout+'\n'+result.stderr);
+  const receipt = JSON.parse(result.stdout.trim());
+  assert.deepEqual(receipt.failures.map(row=>[row.entry,row.specifier,row.code]),[
+    ['exports["./broken"]','./missing.mjs','PACK_ENTRY_MISSING'],
+  ]);
+});
+
+test('package.json exports checks every nested condition and array fallback, preserving null', async t => {
+  const root = await fixture(t, {
+    'package/package.json': manifest({exports:{
+      '.':{node:{import:'./index.mjs',require:'./missing.cjs'},browser:'./browser.mjs',types:'./index.d.ts',default:['./index.mjs',null,'./fallback.mjs']},
+      './disabled':null,'./private/*':null,
+    }}),
+    'package/index.mjs': 'export const x=1;',
+  });
+  const result = await checkTarball(pack(root));
+  assert.deepEqual(result.failures.map(row=>row.specifier).sort(),['./browser.mjs','./fallback.mjs','./index.d.ts','./missing.cjs']);
+  assert.ok(result.failures.every(row=>row.code==='PACK_ENTRY_MISSING'));
+});
+
+for (const [field,value,entry] of [
+  ['main','missing.js','main'],['module','./missing.mjs','module'],['types','./missing.d.ts','types'],
+  ['bin','bin/missing','bin'],['bin',{valid:'bin/valid',broken:'bin/missing'},'bin["broken"]'],
+]) {
+  test(`package.json ${entry} is checked even with valid exports`,async t=>{
+    const root = await fixture(t,{
+      'package/package.json':manifest({exports:'./index.mjs',[field]:value}),
+      'package/index.mjs':'export const x=1;','package/bin/valid':'#!/bin/sh\nexit 0\n',
+    });
+    const result = await checkTarball(pack(root));
+    assert.deepEqual(result.failures.map(row=>[row.entry,row.code]),[[entry,'PACK_ENTRY_MISSING']]);
+  });
+}
+
+test('package.json valid entry files, nested exports conditions, arrays, and null pass',async t=>{
+  const root=await fixture(t,{
+    'package/package.json':manifest({main:'legacy',module:'./index.mjs',types:'types/index.d.ts',bin:{tool:'bin/tool'},exports:{
+      '.':{types:'./types/index.d.ts',node:[{import:'./index.mjs',require:'./legacy.js'},null],default:'./index.mjs'},
+      './disabled':null,'./private/*':null,
+    }}),
+    'package/index.mjs':'export const x=1;','package/legacy.js':'export const x=1;',
+    'package/types/index.d.ts':'export declare const x:number;','package/bin/tool':'#!/bin/sh\nexit 0\n',
+  });
+  const cli=spawnSync(process.execPath,[fileURLToPath(new URL('../scripts/verify-pack-closure.mjs',import.meta.url)),pack(root)],{encoding:'utf8'});
+  assert.equal(cli.status,0,cli.stdout+'\n'+cli.stderr);
+  const result=JSON.parse(cli.stdout.trim());
+  assert.deepEqual(result.failures,[]);
+  assert.equal(result.entryTargets,8);
+});
+
+test('package.json exports patterns replace every star with the same nested subpath',async t=>{
+  const root=await fixture(t,{
+    'package/package.json':manifest({exports:{
+      './features/*.js':{types:'./types/*.d.ts',default:'./src/*/copy/*.mjs'},'./features/private/*':null,
+    }}),
+    'package/types/a.d.ts':'export {};','package/types/deep/b.d.ts':'export {};',
+    'package/src/a/copy/a.mjs':'export {};','package/src/deep/b/copy/deep/b.mjs':'export {};',
+  });
+  const result=await checkTarball(pack(root));
+  assert.deepEqual(result.failures,[]);
+  assert.equal(result.entryTargets,4);
+});
+
+test('package.json exports patterns check missing sibling-condition targets for every expanded subpath',async t=>{
+  const root=await fixture(t,{
+    'package/package.json':manifest({exports:{'./feature/*':{import:'./esm/*.mjs',require:'./cjs/*.cjs'}}}),
+    'package/esm/a.mjs':'export {};','package/esm/b.mjs':'export {};','package/cjs/a.cjs':'module.exports={};',
+  });
+  const result=await checkTarball(pack(root));
+  assert.deepEqual(result.failures.map(row=>[row.entry,row.specifier,row.code]),[
+    ['exports["./feature/*"]["require"]','./cjs/b.cjs','PACK_ENTRY_MISSING'],
+  ]);
+});
+
+test('package.json exports pattern with no packed targets fails',async t=>{
+  const root=await fixture(t,{'package/package.json':manifest({exports:{'./feature/*':'./missing/*.js'}})});
+  const result=await checkTarball(pack(root));
+  assert.deepEqual(result.failures.map(row=>[row.specifier,row.code]),[['./missing/*.js','PACK_ENTRY_MISSING']]);
+});
+
+test('package.json null exclusions remove private wildcard subpaths before checking sibling conditions',async t=>{
+  const root=await fixture(t,{
+    'package/package.json':manifest({exports:{
+      './feature/*':{import:'./esm/*.mjs',require:'./cjs/*.cjs'},
+      './feature/private/*':null,'./feature/hidden':null,
+      './feature/private/public/*':'./special/*.mjs',
+    }}),
+    'package/esm/public.mjs':'export {};','package/cjs/public.cjs':'module.exports={};',
+    'package/esm/private/internal.mjs':'export {};','package/esm/hidden.mjs':'export {};',
+    'package/esm/private/public/allowed.mjs':'export {};','package/special/allowed.mjs':'export {};',
+  });
+  const result=await checkTarball(pack(root));
+  assert.deepEqual(result.failures,[]);
+  assert.equal(result.entryTargets,3);
+});
+
+test('package.json entries reject outside paths and exports targets inside node_modules',async t=>{
+  const root=await fixture(t,{
+    'package/package.json':manifest({main:'../outside.js',module:'../outside.mjs',types:'../outside.d.ts',bin:'../outside-bin',exports:{
+      './outside':'./../outside.mjs','./encoded':'./%2e%2e/outside.mjs','./dependency':'./node_modules/dependency/index.js',
+    }}),
+    'package/node_modules/dependency/index.js':'export {};',
+  });
+  const cli=spawnSync(process.execPath,[fileURLToPath(new URL('../scripts/verify-pack-closure.mjs',import.meta.url)),pack(root)],{encoding:'utf8'});
+  assert.equal(cli.status,1,cli.stdout+'\n'+cli.stderr);
+  const result=JSON.parse(cli.stdout.trim());
+  assert.equal(result.failures.length,7);
+  assert.ok(result.failures.every(row=>['PACK_ENTRY_OUTSIDE','PACK_ENTRY_INVALID'].includes(row.code)));
+});
+
+test('package.json entry realpaths cannot escape the package, and directory exports cannot replace files',async t=>{
+  const root=await fixture(t,{
+    'package/package.json':manifest({types:'./linked.d.ts',exports:{'.':'./directory'}}),
+    'package/directory/index.mjs':'export {};','outside.d.ts':'export {};',
+  });
+  await symlink(join(root,'outside.d.ts'),join(root,'package/linked.d.ts'));
+  const result=await scanPackage(join(root,'package'));
+  assert.deepEqual(result.failures.map(row=>[row.entry,row.code]),[
+    ['exports["."]','PACK_ENTRY_MISSING'],['types','PACK_ENTRY_OUTSIDE'],
+  ]);
+});
+
+test('package.json entries of packed nested packages are checked too',async t=>{
+  const root=await fixture(t,{
+    'package/node_modules/dependency/package.json':manifest({exports:{'.':'./missing.mjs'}}),
+  });
+  const result=await checkTarball(pack(root));
+  assert.deepEqual(result.failures.map(row=>[row.file,row.entry,row.code]),[
+    ['node_modules/dependency/package.json','exports["."]','PACK_ENTRY_MISSING'],
+  ]);
 });
