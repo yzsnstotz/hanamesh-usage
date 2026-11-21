@@ -163,6 +163,11 @@ async function manifestEntries(archiveRoot, manifestFile, packageFiles) {
   return {entryTargets, failures};
 }
 
+// Public diagnostics use package-relative paths; filesystem checks above stay native.
+export function formatFailures(failures) {
+  return failures.map(failure => ({...failure, file: failure.file.replaceAll('\\', '/')}));
+}
+
 export async function scanPackage(directory) {
   const root = await realpath(directory), failures = [];
   const packageFiles = [], manifests = [];
@@ -202,7 +207,7 @@ export async function scanPackage(directory) {
     failures.push(...result.failures);
   }
   const pkg = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
-  return {name: pkg.name, version: pkg.version, files, references, entryTargets, failures};
+  return {name: pkg.name, version: pkg.version, files, references, entryTargets, failures: formatFailures(failures)};
 }
 
 export async function checkTarball(archive) {

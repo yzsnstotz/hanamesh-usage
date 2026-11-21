@@ -5,7 +5,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
-import {relativeReferences, checkTarball, scanPackage} from '../scripts/verify-pack-closure.mjs';
+import {relativeReferences, checkTarball, scanPackage, formatFailures} from '../scripts/verify-pack-closure.mjs';
 
 async function fixture(t, files) {
   const root = await mkdtemp(join(tmpdir(), 'pack-closure-test-'));
@@ -23,6 +23,23 @@ function pack(root) {
   assert.equal(result.status, 0, result.stderr);
   return archive;
 }
+
+test('public closure diagnostics use POSIX package paths for Windows-style inputs', () => {
+  const failures = [
+    {file: String.raw`node_modules\@fixture\bundled\index.cjs`, specifier: './missing', code: 'PACK_RELATIVE_MISSING'},
+    {file: String.raw`node_modules\dependency\package.json`, entry: 'exports["."]', specifier: './missing.mjs', code: 'PACK_ENTRY_MISSING'},
+    {file: String.raw`tools\link.js`, code: 'PACK_RELATIVE_OUTSIDE'},
+    {file: 'tools/unused.mjs', specifier: './native-helper.mjs', code: 'PACK_RELATIVE_MISSING'},
+  ];
+  const original = structuredClone(failures);
+  assert.deepEqual(JSON.parse(JSON.stringify(formatFailures(failures))), [
+    {file: 'node_modules/@fixture/bundled/index.cjs', specifier: './missing', code: 'PACK_RELATIVE_MISSING'},
+    {file: 'node_modules/dependency/package.json', entry: 'exports["."]', specifier: './missing.mjs', code: 'PACK_ENTRY_MISSING'},
+    {file: 'tools/link.js', code: 'PACK_RELATIVE_OUTSIDE'},
+    {file: 'tools/unused.mjs', specifier: './native-helper.mjs', code: 'PACK_RELATIVE_MISSING'},
+  ]);
+  assert.deepEqual(failures, original, 'formatting does not mutate the native diagnostic inputs');
+});
 
 test('packed closure parses JS imports, re-exports, dynamic import, require and require.resolve, ignoring text and comments', () => {
   const source = `// import './comment-missing.js'
