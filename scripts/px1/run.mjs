@@ -34,7 +34,7 @@ async function command(file,args,cwd=repo,overrides={}){
 const pm=(args,cwd=repo)=>command(process.execPath,[pnpm,...args],cwd);
 const nm=(args,cwd=repo)=>command(process.execPath,[npm,...args],cwd);
 const role=process.env.PX1_ROLE,phase=process.argv[2];
-const names={core:'hanamesh-core-0.3.34.tgz',usage:'hanamesh-usage-0.3.0-rc.19.tgz',apphost:'hanamesh-dsh-app-host-0.6.25.tgz'};
+const names={core:'hanamesh-core-0.3.34.tgz',usage:'hanamesh-usage-0.3.0-rc.20.tgz',apphost:'hanamesh-dsh-app-host-0.6.25.tgz'};
 const artifacts=join(root,'artifacts'),host=join(root,'native');
 const receipt={phase,role,platform:process.platform,arch:process.arch,node:process.version,startedAt:new Date().toISOString()};
 try{
@@ -82,11 +82,15 @@ try{
   const core=join(host,'node_modules/@hanamesh/core');await mkdir(core,{recursive:true});
   await command('tar',['-xzf',join(fixture,names.core),'-C',core,'--strip-components=1']);
   const {createSuitePackageSource}=await import(pathToFileURL(join(core,'lib/suite/source.js')));
-  // Repack the unchanged suite tuple/patch with the actual local archive hashes.
-  // Tuple and patch come from PK4's normal four-package builder; no dependency ranges change.
+  // Keep the locked peer fixtures and patch; the suite fixture must consume this
+  // release's Usage candidate, with its exact version and actual archive hash.
   const suite=join(root,'suite');await mkdir(suite,{recursive:true});
   await command('tar',['-xzf',join(fixture,'hanamesh-hanamesh-0.1.5.tgz'),'-C',suite]);
   const releasePath=join(suite,'package/release.json'),release=JSON.parse(await readFile(releasePath,'utf8'));
+  const suiteManifestPath=join(suite,'package/package.json'),suiteManifest=JSON.parse(await readFile(suiteManifestPath,'utf8'));
+  suiteManifest.dependencies['@hanamesh/usage']='0.3.0-rc.20';
+  release.sources.find(row=>row.name==='@hanamesh/usage').version='0.3.0-rc.20';
+  await writeFile(suiteManifestPath,JSON.stringify(suiteManifest,null,2)+'\n');
   const files=[...Object.values(names),'hanamesh-theme-0.1.0.tgz'],archives=[];
   for(const file of files){const path=join(artifacts,file),bytes=await readFile(path);archives.push({path,integrity:'sha512-'+createHash('sha512').update(bytes).digest('base64')});}
   for(const [i,row]of release.sources.entries())row.sha256=createHash('sha256').update(await readFile(archives[i].path)).digest('hex');

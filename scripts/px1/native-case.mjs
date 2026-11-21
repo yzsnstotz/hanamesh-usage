@@ -13,7 +13,7 @@ import {createLaunchEnvironmentSnapshot} from '@deepseek-ai/dsh-launch-environme
 // @deepseek-ai/cordis 4.1.0 public FiberState: ACTIVE=2, DISPOSED=4; UNLOADING=5 is transient.
 const FIBER_ACTIVE=2,FIBER_DISPOSED=4;
 const [kind,registry]=process.argv.slice(2),profile='px1-'+kind;
-const definitions={core:['@hanamesh/core','0.3.34','hanamesh-core','hanameshCore'],usage:['@hanamesh/usage','0.3.0-rc.19','hanamesh-usage','hanameshUsage'],apphost:['@hanamesh/dsh-app-host','0.6.25','hanamesh-app-host','hanameshApps'],theme:['@hanamesh/theme','0.1.0','hanamesh-theme',null]};
+const definitions={core:['@hanamesh/core','0.3.34','hanamesh-core','hanameshCore'],usage:['@hanamesh/usage','0.3.0-rc.20','hanamesh-usage','hanameshUsage'],apphost:['@hanamesh/dsh-app-host','0.6.25','hanamesh-app-host','hanameshApps'],theme:['@hanamesh/theme','0.1.0','hanamesh-theme',null]};
 const roles=kind==='suite'?Object.keys(definitions):[kind];
 const redact=line=>String(line).replace(/([?&]token=)[^\s&]+/g,'$1[REDACTED]');
 for(const stream of [process.stdout,process.stderr]){const write=stream.write.bind(stream);stream.write=(chunk,...args)=>write(redact(chunk),...args);}
