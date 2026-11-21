@@ -12,10 +12,19 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '24.13.1'
-      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
-        with:
-          version: '10.33.0'
-          run_install: false
+      - name: Pin pnpm beside the target Node used by build tools
+        run: |
+          ci_node_prefix=$(node --input-type=module -e "import {dirname} from 'node:path'; console.log(dirname(dirname(process.execPath)))")
+          npm install --global --prefix "$ci_node_prefix" pnpm@10.33.0
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import {nodeToolCommand,nodeToolSync} from './tools/node-tool.mjs';
+          const command=nodeToolCommand('pnpm',['--version']);
+          const result=nodeToolSync('pnpm',['--version'],{encoding:'utf8'});
+          console.log(JSON.stringify({gate:'PINNED_BUILD_PNPM',command,version:result.stdout?.trim(),exit:result.status}));
+          assert.equal(result.status,0,result.stderr);
+          assert.equal(result.stdout.trim(),'10.33.0');
+          JS
       - run: pnpm install --frozen-lockfile
       - run: node --test --test-reporter=tap tests/pack-closure.test.mjs
       - run: npm run verify:closure
